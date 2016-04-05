@@ -22,3 +22,11 @@ insecure                # Allow all DB writes from clients (for prototyping)
 iron:router
 check
 http
+shammar13:busboy
+harrison:papa-parse
+meteorhacks:npm
+meteorhacks:async
+
+
+npm-container
+random
