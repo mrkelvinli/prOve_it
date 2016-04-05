@@ -41,6 +41,7 @@ API = {
         var range_name = "";
 
         var status_code = 200;
+        var other_vars = {};
 
         for (var key in params) {
           if (key == "upper_window"){
@@ -64,7 +65,9 @@ API = {
           if (match != null) {
             lower_range = params[key];
             range_name = match[1];
+            continue;
           }
+          other_vars[key] = params[key];
         }
 
         API.utility.response( context, 200, {
@@ -73,6 +76,7 @@ API = {
           upper_range  : upper_range,
           lower_range  : lower_range,
           range_name   : range_name,
+          other_var    : other_vars,
           csv          : rows,
         });
       } else {
