@@ -31,6 +31,7 @@ if (Meteor.isServer) {
         file.on('end', function() {
           // console.log(datas);
           files.push({
+            fieldname: fieldname,
             originalFilename: filename,
             contents : contents,
             size: fileSizeBytes,

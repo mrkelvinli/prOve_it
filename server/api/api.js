@@ -77,7 +77,8 @@ API = {
           lower_range  : lower_range,
           range_name   : range_name,
           other_var    : other_vars,
-          csv          : rows,
+          csv1_name    : files[0]['fieldname'],
+          csv1         : rows,
         });
       } else {
         API.utility.response( context, 404, { error: 404, message: "No parameters found, dude." } );
