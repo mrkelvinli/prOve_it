@@ -1,0 +1,1 @@
+{"head":"","body":"","js":"\nTemplate.__checkName(\"example\");\nTemplate[\"example\"] = new Template(\"Template.example\", (function() {\n  var view = this;\n  return HTML.Raw('<input type=\"file\">\\n<input type=\"submit\">');\n}));\n","bodyAttrs":{}}

@@ -1,0 +1,1 @@
+{"head":"<title>simple</title>","body":"","js":"\nTemplate.body.addContent((function() {\n  var view = this;\n  return [ HTML.Raw(\"<h1>Welcome to Meteor!</h1>\\n\\n  \"), Spacebars.include(view.lookupTemplate(\"hello\")), \"\\n  \", Spacebars.include(view.lookupTemplate(\"info\")) ];\n}));\nMeteor.startup(Template.body.renderToDocument);\n","bodyAttrs":{}}
