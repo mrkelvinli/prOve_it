@@ -3,7 +3,7 @@
     "rimraf": {
       "version": "2.2.8",
       "resolved": "https://registry.npmjs.org/rimraf/-/rimraf-2.2.8.tgz",
-      "from": "rimraf@2.2.8"
+      "from": "https://registry.npmjs.org/rimraf/-/rimraf-2.2.8.tgz"
     }
   }
 }
