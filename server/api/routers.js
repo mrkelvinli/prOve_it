@@ -4,9 +4,10 @@ if (Meteor.isServer) {
       path = Npm.require("path");
 
   Router.onBeforeAction(function(req, res, next) {
+//    console.log(req.headers);
     var files = []; // Store a file and then pass it to the request.
 
-    if (req.method === "POST") {
+    if (req.method === "POST" && parseInt(req.headers['content-length']) > 0) {
       var busboy = new Busboy({
           headers: req.headers
       });

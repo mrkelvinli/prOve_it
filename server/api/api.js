@@ -24,53 +24,66 @@ API = {
 
   methods: {
     POST: function( context, params, files ) {
+      var upper_window = "";
+      var lower_window = "";
+      var upper_range = "";
+      var lower_range = "";
+      var range_name = "";
+
+      var status_code = 200;
+      var other_vars = {};
+
+      for (var key in params) {
+        if (key == "upper_window"){
+          upper_window = params['upper_window'];
+          continue;
+        }
+        if (key == "lower_window"){
+          lower_window = params['lower_window'];
+          continue;
+        }
+        var upperRegex = /upper_([a-zA-Z\-]+)/g;
+        var lowerRegex = /lower_([a-zA-Z\-]+)/g;
+        var match = upperRegex.exec(key);
+        if (match != null) {
+          upper_range = params[key];
+          var match_value = match[1];
+          console.log(match_value);
+          if (API.utility.match_range_name(range_name, match_value)){
+            range_name = match_value;
+          }
+          continue;
+        }
+        match = lowerRegex.exec(key);
+        if (match != null) {
+          lower_range = params[key];
+//            lower_range = parseFloat.(params[key]);
+          var match_value = match[1];
+          if (API.utility.match_range_name(range_name, match_value)){
+            range_name = match_value;
+          }
+          continue;
+        }
+        other_vars[key] = params[key];
+      }
+      
       // Make sure that our request has data and that the data is valid.
-      var hasData   = API.utility.hasData( params );
+      var requestOK   = API.utility.validateRequest( upper_window , lower_window, upper_range, lower_range, range_name, files);
+
+      if ( requestOK ) {
+        upper_window = parseFloat(upper_window);
+        lower_window = parseFloat(lower_window);
+        upper_range = parseFloat(upper_range);
+        lower_range = parseFloat(lower_range);
+        
+        for (var id in files) {
+          files[id]['json'] = Papa.parse(files[id]['contents']).data;
+        }
+
           // the validation does nothing at the moment
           // validData = API.utility.validate( connection.data, { "a": String, "b": String });
 
-      if ( hasData) {
-
-        var csv = files[0]['contents'];
-        var rows = Papa.parse(csv).data;
-
-        var upper_window = "";
-        var lower_window = "";
-        var upper_range = "";
-        var lower_range = "";
-        var range_name = "";
-
-        var status_code = 200;
-        var other_vars = {};
-
-        for (var key in params) {
-          if (key == "upper_window"){
-            upper_window = params['upper_window'];
-            continue;
-          }
-          if (key == "lower_window"){
-            lower_window = params['lower_window'];
-            continue;
-          }
-          var upperRegex = /upper_([a-zA-Z\-]+)/g;
-          var lowerRegex = /lower_([a-zA-Z\-]+)/g;
-          var match = upperRegex.exec(key);
-          if (match != null) {
-            upper_range = params[key];
-
-            range_name = match[1];
-            continue;
-          }
-          match = lowerRegex.exec(key);
-          if (match != null) {
-            lower_range = params[key];
-            range_name = match[1];
-            continue;
-          }
-          other_vars[key] = params[key];
-        }
-
-        API.utility.response( context, 200, {
+        API.utility.response( context, status_code, {
           upper_window : upper_window,
           lower_window : lower_window,
           upper_range  : upper_range,
@@ -78,10 +91,10 @@ API = {
           range_name   : range_name,
           other_var    : other_vars,
           csv1_name    : files[0]['fieldname'],
-          csv1         : rows,
+          csv1         : files[0]['json'],
         });
       } else {
-        API.utility.response( context, 404, { error: 404, message: "No parameters found, dude." } );
+        API.utility.response( context, 404, { error: 404, message: "Invalid Request, dude." } );
       }
     },
   },
@@ -99,8 +112,31 @@ API = {
       context.response.end( JSON.stringify( data) );
     },
     validate: function( data, pattern ) {
-      return true;
       return Match.test( data, pattern );
-    }
+    },
+    validateRequest: function ( upper_window , lower_window, upper_range, lower_range, range_name, files ) {
+      return files.length == 2 &&
+        isNumeric(upper_window) &&
+        isNumeric(lower_window) &&
+        isNumeric(upper_range) &&
+        isNumeric(lower_range) &&
+        range_name != "" &&
+        parseFloat(upper_window) <= parseFloat(lower_window);
+    },
+    match_range_name: function (range_name, matching_range_name) {
+      if (range_name == "") {
+        return true;
+      } else if (range_name == matching_range_name) {
+        return true;
+      } else {
+        return false;
+      }
+    },
   }
 };
+
+
+function isNumeric(num) {
+    return !isNaN(num)
+}
+
