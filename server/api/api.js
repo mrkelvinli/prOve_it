@@ -95,7 +95,7 @@ API = {
           // validData = API.utility.validate( connection.data, { "a": String, "b": String });
 
         API.utility.response( context, status_code, {
-            log : API.utility.api_log(params, files, context.request.start_time, status_code),
+            log : API.utility.api_log(params, files, context.request.start_time, "successful"),
 //          upper_window : upper_window,
 //          lower_window : lower_window,
 //          upper_range  : upper_range,
