@@ -4,6 +4,7 @@ if (Meteor.isServer) {
       path = Npm.require("path");
 
   Router.onBeforeAction(function(req, res, next) {
+    req.start_time = new Date();
 //    console.log(req.headers);
     var files = []; // Store a file and then pass it to the request.
 
@@ -32,7 +33,7 @@ if (Meteor.isServer) {
           // console.log(datas);
           files.push({
             fieldname: fieldname,
-            originalFilename: filename,
+            filename: filename,
             contents : contents,
             size: fileSizeBytes,
           });

@@ -76,7 +76,6 @@ API = {
         var parseObject = Papa.parse(files[id]['contents'])
         files[id]['json'] = parseObject.data;
         files[id]['errors'] = parseObject.errors;
-        console.log(parseObject.errors);
         if (files[id]['errors'].length > 0) {
           API.utility.response( context, 422, { error: 422, message: "CSV file isn't formatted correctly." } );
         }
@@ -96,14 +95,15 @@ API = {
           // validData = API.utility.validate( connection.data, { "a": String, "b": String });
 
         API.utility.response( context, status_code, {
-          upper_window : upper_window,
-          lower_window : lower_window,
-          upper_range  : upper_range,
-          lower_range  : lower_range,
-          range_name   : range_name,
-          other_var    : other_vars,
-          csv1_name    : files[0]['fieldname'],
-          csv1         : files[0]['json'],
+            log : API.utility.api_log(params, files, context.request.start_time, status_code),
+//          upper_window : upper_window,
+//          lower_window : lower_window,
+//          upper_range  : upper_range,
+//          lower_range  : lower_range,
+//          range_name   : range_name,
+//          other_var    : other_vars,
+//          csv1_name    : files[0]['fieldname'],
+//          csv1         : files[0]['json'],
         });
       } else {
         API.utility.response( context, 404, { error: 404, message: "Invalid Request, dude." } );
@@ -145,11 +145,59 @@ API = {
         return false;
       }
     },
-  }
+    api_log: function (params, files, start_time, exec_status) {
+      var end_time = new Date();
+      var elapsed_time = end_time.getMilliseconds() - start_time.getMilliseconds();
+      var filenames = [];
+      for (var id in files) {
+        filenames.push(files[id]['filename']);
+      }
+      
+      var log = {};
+      log['team_name'] = "prOve it";
+      log['version'] = 'v1';
+      log['input_filename'] = filenames;
+      log['parameters_passed'] = params;
+      log['exec_status'] = exec_status;
+      log['start_time'] = Meteor.methods.displayTime(start_time);
+      log['end_time'] = Meteor.methods.displayTime(end_time);
+      log['elapsed_time'] = elapsed_time.toString() + "ms";
+      return log;
+    },
+  },
 };
 
 
 function isNumeric(num) {
     return !isNaN(num)
 }
+
+Meteor.methods = {
+  displayTime: function (d) {
+      var str = "";
+      var currentTime = d;
+      var hours = currentTime.getHours();
+      var minutes = currentTime.getMinutes();
+      var seconds = currentTime.getSeconds();
+      var years = currentTime.getFullYear();
+      var month = currentTime.getMonth()+1;
+      var date = currentTime.getDate();
+
+      str = years+"-"+month+"-"+date+" "
+
+      if (minutes < 10) {
+          minutes = "0" + minutes
+      }
+      if (seconds < 10) {
+          seconds = "0" + seconds
+      }
+      str += hours + ":" + minutes + ":" + seconds + " ";
+      if(hours > 11){
+          str += "PM"
+      } else {
+          str += "AM"
+      }
+      return str;
+  }
+};
 
