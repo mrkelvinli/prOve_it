@@ -29,10 +29,24 @@ API = {
           // the validation does nothing at the moment
           // validData = API.utility.validate( connection.data, { "a": String, "b": String });
 
-      if ( hasData) {
+      if ( hasData ) {
 
         var csv = files[0]['contents'];
-        var rows = Papa.parse(csv).data;
+        var result = Papa.parse(csv, {
+          error: function(err, file, inputElem, reason) {
+            // executed if an error occurs while loading the file,
+            // or if before callback aborted for some reason
+          }
+        });
+
+        var rows = result.data;
+        var errors = result.errors;
+        if (errors != false) {
+          console.log('ERRORS:');
+          console.log(errors);
+
+          API.utility.response( context, 422, { error: 422, message: "CSV file isn't formatted correctly." } );
+        }
 
         var upper_window = "";
         var lower_window = "";
@@ -45,11 +59,11 @@ API = {
 
         for (var key in params) {
           if (key == "upper_window"){
-            upper_window = params['upper_window'];
+            upper_window = parseFloat(params['upper_window']);
             continue;
           }
           if (key == "lower_window"){
-            lower_window = params['lower_window'];
+            lower_window = parseFloat(params['lower_window']);
             continue;
           }
           var upperRegex = /upper_([a-zA-Z\-]+)/g;
