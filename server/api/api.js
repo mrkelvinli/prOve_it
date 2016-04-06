@@ -125,7 +125,8 @@ API = {
         isNumeric(upper_range) &&
         isNumeric(lower_range) &&
         range_name != "" &&
-        parseFloat(upper_window) <= parseFloat(lower_window);
+        parseFloat(upper_window) >= parseFloat(lower_window) &&
+        parseFloat(upper_range) >= parseFloat(lower_range);
     },
     match_range_name: function (range_name, matching_range_name) {
       if (range_name == "") {
