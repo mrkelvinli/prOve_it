@@ -20,7 +20,6 @@ if (Meteor.isServer) {
         var fileSizeBytes = 0;
         var contents = '';
 
-
         // file.pipe(fs.createWriteStream(saveTo));
         // var string = Assets.getText(filename);
 

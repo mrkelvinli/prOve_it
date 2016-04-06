@@ -81,7 +81,13 @@ API = {
         lower_range = parseFloat(lower_range);
         
         for (var id in files) {
-          files[id]['json'] = Papa.parse(files[id]['contents']).data;
+          var parseObject = Papa.parse(files[id]['contents'])
+          files[id]['json'] = parseObject.data;
+          files[id]['errors'] = parseObject.errors;
+          
+          if (files[id]['errors']) {
+            API.utility.response( context, 422, { error: 422, message: "CSV file isn't formatted correctly." } );
+          }
         }
 
           // the validation does nothing at the moment
