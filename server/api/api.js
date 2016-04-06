@@ -24,6 +24,10 @@ API = {
 
   methods: {
     POST: function( context, params, files ) {
+      if (!API.utility.hasData(params)){
+        API.utility.response( context, 404, { error: 404, message: "Invalid Request (no parameters found), dude." } );
+      }
+      
       var upper_window = "";
       var lower_window = "";
       var upper_range = "";
