@@ -52,7 +52,7 @@ API = {
         if (match != null) {
           upper_range = params[key];
           var match_value = match[1];
-          console.log(match_value);
+//          console.log(match_value);
           if (API.utility.match_range_name(range_name, match_value)){
             range_name = match_value;
           }
@@ -71,6 +71,17 @@ API = {
         other_vars[key] = params[key];
       }
       
+      // files parsing
+      for (var id in files) {
+        var parseObject = Papa.parse(files[id]['contents'])
+        files[id]['json'] = parseObject.data;
+        files[id]['errors'] = parseObject.errors;
+        console.log(parseObject.errors);
+        if (files[id]['errors'].length > 0) {
+          API.utility.response( context, 422, { error: 422, message: "CSV file isn't formatted correctly." } );
+        }
+      }
+      
       // Make sure that our request has data and that the data is valid.
       var requestOK   = API.utility.validateRequest( upper_window , lower_window, upper_range, lower_range, range_name, files);
 
@@ -80,15 +91,6 @@ API = {
         upper_range = parseFloat(upper_range);
         lower_range = parseFloat(lower_range);
         
-        for (var id in files) {
-          var parseObject = Papa.parse(files[id]['contents'])
-          files[id]['json'] = parseObject.data;
-          files[id]['errors'] = parseObject.errors;
-          
-          if (files[id]['errors']) {
-            API.utility.response( context, 422, { error: 422, message: "CSV file isn't formatted correctly." } );
-          }
-        }
 
           // the validation does nothing at the moment
           // validData = API.utility.validate( connection.data, { "a": String, "b": String });
