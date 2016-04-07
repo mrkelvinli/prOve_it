@@ -77,7 +77,10 @@ API = {
         files[id]['json'] = parseObject.data;
         files[id]['errors'] = parseObject.errors;
         if (files[id]['errors'].length > 0) {
-          API.utility.response( context, 422, { error: 422, message: "CSV file isn't formatted correctly." } );
+          API.utility.response( context, 422, {
+            error: 422,
+            log : API.utility.api_log(params, files, context.request.start_time, "CSV file isn't formatted correctly."),
+          });
         }
       }
       
@@ -106,7 +109,10 @@ API = {
 //          csv1         : files[0]['json'],
         });
       } else {
-        API.utility.response( context, 404, { error: 404, message: "Invalid Request, dude." } );
+        API.utility.response( context, 404, {
+          error: 404,
+          log : API.utility.api_log(params, files, context.request.start_time, "Invalid Request."),
+        });
       }
     },
   },
@@ -127,7 +133,18 @@ API = {
       return Match.test( data, pattern );
     },
     validateRequest: function ( upper_window , lower_window, upper_range, lower_range, range_name, files ) {
+      var stock_price_file_OK = false;
+      var stock_characteristic_file_OK = false
+      for (var id in files) {
+        if (files[id]['fieldname'] == "stock_price_file" && !stock_price_file_OK){
+          stock_price_file_OK = true;
+        } else if (files[id]['fieldname'] == "stock_characteristic_file" && !stock_characteristic_file_OK) {
+          stock_characteristic_file_OK = true;
+        }
+      }
       return files.length == 2 &&
+        stock_price_file_OK &&
+        stock_characteristic_file_OK &&
         isNumeric(upper_window) &&
         isNumeric(lower_window) &&
         isNumeric(upper_range) &&
