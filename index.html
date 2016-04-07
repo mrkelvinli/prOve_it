@@ -36,7 +36,7 @@
 
 
         <h1>Event Study API</h1>
-        <div class="app-desc">Event study nade by prOve_it which analyses events and determines whether the events have an affect on stocks.</div>
+        <div class="app-desc">An Event Study API provided by prOve_it which analyses events and determines their effects on stock returns.</div>
         <br/>
         <div class="app-desc">URI related to this API: <a href="https://helloreverb.com">http://prove-it-unsw.herokuapp.com/api/v1/event-study</a></div>
         <div class="app-desc">Version: 1.0</div>
@@ -68,9 +68,9 @@
           <div class="method-path">
             <!--        <a class="up" href="#__Methods">Up</a>-->
             <pre class="post"><code class="huge"><span class="http-method">post</span> /cumulative_return</code></pre></div>
-          <div class="method-summary">Retrun cumulative return of event study. (<span class="nickname">cumulativeReturnPost</span>)</div>
+          <div class="method-summary">Returns cumulative return (%) of event study. (<span class="nickname">cumulativeReturnPost</span>)</div>
 
-          <div class="method-notes">This endpoint returns the cumulative returns (%) to determine whether \na certain event has affected the stock price abnormally in some way. The \nresponse includes the display name and other details about each product, \nand lists the products in the proper display order.\n</div>
+          <div class="method-notes">This endpoint returns the cumulative returns as a percentage to determine if \na certain event has affected the stock price. The \nresponse includes the display name and other details about each product, \nand lists the products in the proper display order.\n</div>
 
 
 
@@ -98,7 +98,7 @@
             <div class="param">stock_price_file (required)</div>
 
             <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash; Stock price file. </div>
-            <div class="param">stock_chara_file (required)</div>
+            <div class="param">stock_characteristic_file (required)</div>
 
             <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash; Stock characteristic file. </div>
           </div>
