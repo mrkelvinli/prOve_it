@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>DRF Docs</title>
+    <link rel="stylesheet" href="http://demo.drfdocs.com/static/rest_framework_docs/css/style.css">
+    <style>
+      h1,h2,h3,h4,h5,h6 {
+        color: #18BC9C;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+    <h1 id="organisations-group">Paths</h1>
+
+    <div class="panel-group" role="tablist">
+      <div class="panel panel-default endpoint">
+        <div class="panel-heading" role="tab" data-toggle="collapse" data-target="#organisationscreate">
+          <div class="row">
+            <div class="col-md-7">
+              <h4 class="panel-title title">
+                <i class="fa fa-link"></i> /cumulative_returns
+              </h4>
+            </div>
+
+            <div class="col-md-5">
+              <ul class="list-inline methods">
+                  <li class="method post">POST</li>
+                  <li class="method plug"
+                    data-toggle="modal"
+                    data-path="/organisations/create/"
+                    data-methods="[&#39;POST&#39;, &#39;OPTIONS&#39;]"
+                    data-permissions="IsAuthenticated"
+                    data-fields="[{&quot;type&quot;: &quot;CharField&quot;, &quot;required&quot;: true, &quot;name&quot;: &quot;name&quot;}, {&quot;type&quot;: &quot;SlugField&quot;, &quot;required&quot;: true, &quot;name&quot;: &quot;slug&quot;}]">
+                    <i class="fa fa-plug"></i></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div id="organisationscreate" class="panel-collapse active" role="tabpanel">
+          <div class="panel-body">
+            <p class="lead">
+              <h4>Summary</h4>
+              Allows users to calculate the cumulative return of the event study.
+              <h4>Description</h4>
+              This endpoint returns the cumulative returns (%) to determine whether a certain event has affected the stock price abnormally in some way. The response includes the display name and other details about each product, and lists the products in the proper display order.
+            </p>
+            <p class="fields-desc"><h4>Query parameters</h4></p>
+              <ul class="list fields">
+              
+                <li class="field">upper_window<span class="label label-primary label-required" title="Required">R</span>
+                  <p style='color: #888'>
+                    The upper window of time relative to the event date.
+                  </p>
+                </li>
+              
+                <li class="field">lower_window<span class="label label-primary label-required" title="Required">R</span>
+                  <p style='color: #888'>
+                    The lower window of time relative to the event date.
+                  </p>
+                </li>
+
+                <li class="field">upper_&lt;var_name&gt;<span class="label label-primary label-required" title="Required">R</span>
+                  <p style='color: #888'>
+                    The upper threshold value for the event type.
+                  </p>
+                </li>
+
+                <li class="field">lower_&lt;var_name&gt;<span class="label label-primary label-required" title="Required">R</span>
+                  <p style='color: #888'>
+                    The lower threshold value for the event type.
+                  </p>
+                </li>
+
+                <li class="field">stock_price_file<span class="label label-warning">asdfasdfs</span> <span class="label label-primary label-required" title="Required">R</span>
+                  <p style='color: #888'>
+                  The .csv file containing the stock prices.
+                  </p>
+                </li>
+
+                <li class="field">stock_characteristic file<span class="label label-primary label-required" title="Required">R</span>
+                  <p style='color: #888'>
+                    The .csv file containing the stock characteristic.
+                  </p>
+                </li>
+              </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  <!-- Modal -->
+  <div class="modal fade api-modal" id="liveAPIModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title">Live API Endpoints <span class="label label-info">Beta</span></h4>
+        </div>
+
+        <div id="liveAPIEndpoints"></div>
+      </div>
+    </div>
+  </div>
+
+    <!-- Dist.js - Inlcuded Live API, jQuery, Bootstrap -->
+    <script type="text/javascript" src="http://demo.drfdocs.com/static/rest_framework_docs/js/dist.min.js"></script>
+  </body>
+</html>
