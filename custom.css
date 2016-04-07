@@ -1,6 +1,6 @@
 footer {
     background-color: lightblue;
-    position: relative;
+    position: absolute;
     left: 0;
     bottom: 0;
 /*    height: 40px;*/
