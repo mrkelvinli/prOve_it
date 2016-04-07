@@ -53,7 +53,7 @@ if (Meteor.isServer) {
   });
 }
 
-Router.route( '/api/v1/event-study', function() {
+Router.route( '/api/v1/event-study/cumulative_returns', function() {
 
   this.response.setHeader( 'Access-Control-Allow-Origin', '*' );
 
