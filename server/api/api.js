@@ -78,7 +78,6 @@ API = {
         files[id]['errors'] = parseObject.errors;
         if (files[id]['errors'].length > 0) {
           API.utility.response( context, 422, {
-            error: 422,
             log : API.utility.api_log(params, files, context.request.start_time, "CSV file isn't formatted correctly."),
           });
         }
@@ -110,7 +109,6 @@ API = {
         });
       } else {
         API.utility.response( context, 404, {
-          error: 404,
           log : API.utility.api_log(params, files, context.request.start_time, "Invalid Request."),
         });
       }
