@@ -1,232 +1,239 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <title>prOve it</title>
 
-    <!-- Bootstrap -->
-    <link href="https://bootswatch.com/sandstone/bootstrap.min.css" rel="stylesheet">
-    <link href="http://iron-meteor.github.io/iron-router/stylesheets/prism.css" rel="stylesheet">
-    <link href="custom.css" rel="stylesheet">
-    <link href="swagger.css" rel="stylesheet">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+  <title>prOve it</title>
 
-    <title>prOve_it</title>
-  </head>
-  <body>
-    <div class="container">
-      <img src="proveit.jpg" class="img-responsive" style="margin: 0 auto; max-height: 200px;">
+  <!-- Bootstrap -->
+  <link href="https://bootswatch.com/sandstone/bootstrap.min.css" rel="stylesheet">
+  <link href="http://iron-meteor.github.io/iron-router/stylesheets/prism.css" rel="stylesheet">
+  <link href="custom.css" rel="stylesheet">
+  <link href="swagger.css" rel="stylesheet">
 
-      <div style="border:0.1px solid #DDDDDD; margin: 20px;"></div>
+  <title>prOve_it</title>
+</head>
 
-      <center>
+<body>
+  <div class="container">
+    <img src="proveit.jpg" class="img-responsive" style="margin: 0 auto; max-height: 200px;">
 
-        <h4>UNSW Software Engineering Workshop 3</h4>
-        <a href="https://github.com/kelvinlcf/prOve_it" class="btn btn-primary btn-sm">Find us on GitHub</a>
-      </center>
+    <div style="border:0.1px solid #DDDDDD; margin: 20px;"></div>
 
-      
-      
-      
-      <h1>Event Study API</h1>
+    <center>
+
+      <h4>UNSW Software Engineering Workshop 3</h4>
+      <a href="https://github.com/kelvinlcf/prOve_it" class="btn btn-primary btn-sm">Find us on GitHub</a>
+    </center>
+
+
+
+
+    <h1>Event Study API</h1>
     <div class="app-desc">Event study nade by prOve_it which analyses events and determines whether the events have an affect on stocks.</div>
     <div class="app-desc">More information: <a href="https://helloreverb.com">https://helloreverb.com</a></div>
     <div class="app-desc">Contact Info: <a href="hello@helloreverb.com">hello@helloreverb.com</a></div>
     <div class="app-desc">Version: 1.0.1</div>
     <div class="license-info">All rights reserved</div>
     <div class="license-url">http://apache.org/licenses/LICENSE-2.0.html</div>
-  <h2>Access</h2>
-  
+    <h2>Access</h2>
 
-  <h2><a name="__Methods">Methods</a></h2>
-  [ Jump to <a href="#__Models">Models</a> ]
 
-  
-  <h2>Table of Contents </h2>
-  <div class="method-summary"></div>
-  
-  <ol>
-  
-  
-  
-  <li><a href="#cumulativeReturnPost"><code><span class="http-method">post</span> /cumulative_return</code></a></li>
-  
-  
-  
-  </ol>
-  
+    <h2><a name="__Methods">Methods</a></h2> [ Jump to <a href="#__Models">Models</a> ]
 
-  
-  
-  
-  
-  <div class="method"><a name="cumulativeReturnPost"/>
-    <div class="method-path">
-    <a class="up" href="#__Methods">Up</a>
-    <pre class="post"><code class="huge"><span class="http-method">post</span> /cumulative_return</code></pre></div>
-    <div class="method-summary">Retrun cumulative return of event study. (<span class="nickname">cumulativeReturnPost</span>)</div>
-    
-    <div class="method-notes">This endpoint returns the cumulative returns (%)  to determine whether \na certain event has affected the stock price abnormally in some way. The \nresponse includes the display name and other details about each product, \nand lists the products in the proper display order.\n</div>
 
-    
+    <h2>Table of Contents </h2>
+    <div class="method-summary"></div>
 
-    
+    <ol>
 
-    
 
-    
 
-    
-    <h3 class="field-label">Query parameters</h3>
-    <div class="field-items">
-      <div class="param">upper_window (required)</div>
+      <li><a href="#cumulativeReturnPost"><code><span class="http-method">post</span> /cumulative_return</code></a></li>
 
-      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; The upper window of time relative to the event date. </div><div class="param">lower_window (required)</div>
 
-      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Lower window of time relative to the event date. </div><div class="param">upper_&lt;var_name&gt; (required)</div>
 
-      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Upper number for the event type. </div><div class="param">lower_&lt;var_name&gt; (required)</div>
+    </ol>
 
-      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Lower number for the event type. </div><div class="param">stock_price_file (required)</div>
 
-      <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash; Stock price file. </div><div class="param">stock_chara_file (required)</div>
 
-      <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash; Stock characteristic file. </div>
-    </div>  <!-- field-items -->
-    
 
-    
 
-    
-    <h3 class="field-label">Return type</h3>
-    <div class="return-type">
-      array[<a href="#completeJSON">completeJSON</a>]
-      
+
+    <div class="method"><a name="cumulativeReturnPost" />
+      <div class="method-path">
+        <a class="up" href="#__Methods">Up</a>
+        <pre class="post"><code class="huge"><span class="http-method">post</span> /cumulative_return</code></pre></div>
+      <div class="method-summary">Retrun cumulative return of event study. (<span class="nickname">cumulativeReturnPost</span>)</div>
+
+      <div class="method-notes">This endpoint returns the cumulative returns (%) to determine whether \na certain event has affected the stock price abnormally in some way. The \nresponse includes the display name and other details about each product, \nand lists the products in the proper display order.\n</div>
+
+
+
+
+
+
+
+
+
+
+      <h3 class="field-label">Query parameters</h3>
+      <div class="field-items">
+        <div class="param">upper_window (required)</div>
+
+        <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; The upper window of time relative to the event date. </div>
+        <div class="param">lower_window (required)</div>
+
+        <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Lower window of time relative to the event date. </div>
+        <div class="param">upper_&lt;var_name&gt; (required)</div>
+
+        <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Upper number for the event type. </div>
+        <div class="param">lower_&lt;var_name&gt; (required)</div>
+
+        <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Lower number for the event type. </div>
+        <div class="param">stock_price_file (required)</div>
+
+        <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash; Stock price file. </div>
+        <div class="param">stock_chara_file (required)</div>
+
+        <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash; Stock characteristic file. </div>
+      </div>
+      <!-- field-items -->
+
+
+
+
+
+      <h3 class="field-label">Return type</h3>
+      <div class="return-type">
+        array[<a href="#completeJSON">completeJSON</a>]
+
+      </div>
+
+
+      <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+
+
+      <h3 class="field-label">Produces</h3> This API call produces the following media types according to the <span class="header">Accept</span> request header; the media type will be conveyed by the <span class="heaader">Content-Type</span> response header.
+      <ul>
+
+        <li><code>application/json</code></li>
+
+      </ul>
+
+
+      <h3 class="field-label">Responses</h3>
+      <ul>
+        <li>
+          <h4 class="field-label">200</h4>A JSON array.
+        </li>
+        <li>
+          <h4 class="field-label">404</h4>Provided parameters are incorrect.
+        </li>
+        <li>
+          <h4 class="field-label">422</h4> File(s) are not in CSV format.
+        </li>
+      </ul>
+
+
     </div>
-    
+    <!-- method -->
+    <hr/>
 
-    <!--Todo: process Response Object and its headers, schema, examples -->
 
-    
 
-    
-    <h3 class="field-label">Produces</h3>
-    This API call produces the following media types according to the <span class="header">Accept</span> request header;
-    the media type will be conveyed by the <span class="heaader">Content-Type</span> response header.
-    <ul>
-    
-      <li><code>application/json</code></li>
-    
-    </ul>
-    
 
-    <h3 class="field-label">Responses</h3>
-    
-    <h4 class="field-label">200 - A JSON array.</h4>
-    A JSON array.
-    
-    
-    <h4 class="field-label">404</h4>
-    Provided parameters are incorrect.
-    
-    
-    <h4 class="field-label">0</h4>
-    File(s) are not in CSV format.
-    
-    
-  </div> <!-- method -->
-  <hr/>
-  
-  
-  
-  
 
-  <div class="up"><a href="#__Models">Up</a></div>
-  <h2><a name="__Models">Models</a></h2>
-  [ Jump to <a href="#__Methods">Methods</a> ]
+    <div class="up"><a href="#__Models">Up</a></div>
+    <h2><a name="__Models">Models</a></h2> [ Jump to <a href="#__Methods">Methods</a> ]
 
-  <h2>Table of Contents</h2>
-  <ol>
-  
-  
-    <li><a href="#404"><code>404</code></a></li>
-  
-  
-  
-    <li><a href="#422"><code>422</code></a></li>
-  
-  
-  
-    <li><a href="#CompleteJSON"><code>CompleteJSON</code></a></li>
-  
-  
-  </ol>
+    <h2>Table of Contents</h2>
+    <ol>
 
-  
-  
-  <div class="model">
-    <h3 class="field-label"><a name="404">404</a> <a class="up" href="#__Models">Up</a></h3>
-    <div class="field-items">
-      <div class="param">code </div><div class="param-desc"><span class="param-type">Integer</span> </div>
-      
-      <div class="param">message </div><div class="param-desc"><span class="param-type">String</span> </div>
-      
-      <div class="param">fields </div><div class="param-desc"><span class="param-type">String</span> </div>
-      
-      
-    </div>  <!-- field-items -->
-  </div>
-  
-  
-  
-  <div class="model">
-    <h3 class="field-label"><a name="422">422</a> <a class="up" href="#__Models">Up</a></h3>
-    <div class="field-items">
-      <div class="param">code </div><div class="param-desc"><span class="param-type">Integer</span> </div>
-      
-      <div class="param">message </div><div class="param-desc"><span class="param-type">String</span> </div>
-      
-      <div class="param">fields </div><div class="param-desc"><span class="param-type">String</span> </div>
-      
-      
-    </div>  <!-- field-items -->
-  </div>
-  
-  
-  
-  <div class="model">
-    <h3 class="field-label"><a name="CompleteJSON">CompleteJSON</a> <a class="up" href="#__Models">Up</a></h3>
-    <div class="field-items">
-      <div class="param">log </div><div class="param-desc"><span class="param-type">String</span> </div>
-      
-      <div class="param">output </div><div class="param-desc"><span class="param-type">String</span> </div>
-      
-      
-    </div>  <!-- field-items -->
-  </div>
-      
-      
-      
-      
-      
-      
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-      <footer>
-        <div class="container">
+
+      <li><a href="#404"><code>404</code></a></li>
+
+
+
+      <li><a href="#422"><code>422</code></a></li>
+
+
+
+      <li><a href="#CompleteJSON"><code>CompleteJSON</code></a></li>
+
+
+    </ol>
+
+
+
+    <div class="model">
+      <h3 class="field-label"><a name="404">404</a> <a class="up" href="#__Models">Up</a></h3>
+      <div class="field-items">
+        <div class="param">code </div>
+        <div class="param-desc"><span class="param-type">Integer</span> </div>
+
+        <div class="param">message </div>
+        <div class="param-desc"><span class="param-type">String</span> </div>
+
+        <div class="param">fields </div>
+        <div class="param-desc"><span class="param-type">String</span> </div>
+
+
+      </div>
+      <!-- field-items -->
+    </div>
+
+
+
+    <div class="model">
+      <h3 class="field-label"><a name="422">422</a> <a class="up" href="#__Models">Up</a></h3>
+      <div class="field-items">
+        <div class="param">code </div>
+        <div class="param-desc"><span class="param-type">Integer</span> </div>
+
+        <div class="param">message </div>
+        <div class="param-desc"><span class="param-type">String</span> </div>
+
+        <div class="param">fields </div>
+        <div class="param-desc"><span class="param-type">String</span> </div>
+
+
+      </div>
+      <!-- field-items -->
+    </div>
+
+
+
+    <div class="model">
+      <h3 class="field-label"><a name="CompleteJSON">CompleteJSON</a> <a class="up" href="#__Models">Up</a></h3>
+      <div class="field-items">
+        <div class="param">log </div>
+        <div class="param-desc"><span class="param-type">String</span> </div>
+
+        <div class="param">output </div>
+        <div class="param-desc"><span class="param-type">String</span> </div>
+
+
+      </div>
+      <!-- field-items -->
+    </div>
+
+    <br/>
+    <footer>
+      <div class="container">
         <h5>Build by: Keith Lai, Yan Chi Ku, Mendel Liang, Kelvin Li, Gino Conte</h5>
-        </div>
-      </footer>
-    </div>
+      </div>
+    </footer>
+  </div>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-    <script   src="https://code.jquery.com/jquery-2.2.2.min.js"   integrity="sha256-36cp2Co+/62rEAAYHLmRCPIych47CvdM+uTBJwSzWjI="   crossorigin="anonymous"></script>
-  </body>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+  <script src="https://code.jquery.com/jquery-2.2.2.min.js" integrity="sha256-36cp2Co+/62rEAAYHLmRCPIych47CvdM+uTBJwSzWjI=" crossorigin="anonymous"></script>
+</body>
+
 </html>
