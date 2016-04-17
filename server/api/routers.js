@@ -22,7 +22,7 @@ if (Meteor.isServer) {
         var contents = '';
 
         file.pipe(fs.createWriteStream(saveTo));
-        console.log(saveTo);
+//        console.log(saveTo);
 //         var string = Assets.getText(filename);
 
         file.on("data", function(data) {
