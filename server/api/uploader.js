@@ -29,15 +29,14 @@ Uploader = {
           });
         }
       }
-
+      
       // Make sure that our request has data and that the data is valid.
-      var requestOK   = Uploader.utility.validateRequest(files);
+      var requestOK = Uploader.utility.validateRequest(files);
 
       if ( requestOK ) {
         API.utility.response( context, 200, {
           log : API.utility.api_log(params, files, context.request.start_time, "successful"),
           token: token,
-
         });
       } else {
         API.utility.response( context, 404, {
