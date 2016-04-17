@@ -36,11 +36,7 @@ API = {
       var upper_range = "";
       var lower_range = "";
       var range_name = "";
-<<<<<<< HEAD
       var token = params['token'];
-=======
-      var token = "";
->>>>>>> 614f9fd72597673087b6785d8f9d6f0bc8036ef4
 
       var status_code = 200;
       var other_vars = {};
@@ -54,13 +50,6 @@ API = {
           lower_window = params['lower_window'];
           continue;
         }
-<<<<<<< HEAD
-//        console.log("param: " + key);
-=======
-        if (key == "token") {
-          token = params['token'];
-        }
->>>>>>> 614f9fd72597673087b6785d8f9d6f0bc8036ef4
         var upperRegex = /upper_([a-zA-Z\-]+)/g;
         var lowerRegex = /lower_([a-zA-Z\-]+)/g;
         var match = upperRegex.exec(key);
