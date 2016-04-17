@@ -33,6 +33,7 @@ API = {
       var upper_range = "";
       var lower_range = "";
       var range_name = "";
+      var token = "";
 
       var status_code = 200;
       var other_vars = {};
@@ -45,6 +46,9 @@ API = {
         if (key == "lower_window"){
           lower_window = params['lower_window'];
           continue;
+        }
+        if (key == "token") {
+          token = params['token'];
         }
         var upperRegex = /upper_([a-zA-Z\-]+)/g;
         var lowerRegex = /lower_([a-zA-Z\-]+)/g;
@@ -84,7 +88,7 @@ API = {
       }
       
       // Make sure that our request has data and that the data is valid.
-      var requestOK   = API.utility.validateRequest( upper_window , lower_window, upper_range, lower_range, range_name, files);
+      var requestOK   = API.utility.validateRequest( upper_window , lower_window, upper_range, lower_range, range_name, token, files);
 
       if ( requestOK ) {
         upper_window = parseFloat(upper_window);
@@ -130,24 +134,45 @@ API = {
     validate: function( data, pattern ) {
       return Match.test( data, pattern );
     },
-    validateRequest: function ( upper_window , lower_window, upper_range, lower_range, range_name, files ) {
-      var stock_price_file_OK = false;
-      var stock_characteristic_file_OK = false
-      for (var id in files) {
-        if (files[id]['fieldname'] == "stock_price_file" && !stock_price_file_OK){
-          stock_price_file_OK = true;
-        } else if (files[id]['fieldname'] == "stock_characteristic_file" && !stock_characteristic_file_OK) {
-          stock_characteristic_file_OK = true;
+    validateRequest: function ( upper_window , lower_window, upper_range, lower_range, range_name, token, files ) {
+      var path = Npm.require("path");
+          fs = Npm.require("fs");
+
+      // 1. Token
+      var tokenOK = false;
+      var check_dir = path.join(process.env.PWD, "private", token);
+      try {      
+        // Is there a folder called <token>?
+        if (fs.lstatSync(check_dir)) {
+          var supposedPrice = path.join(check_dir, "stock_price_file.csv");
+          var supposedChar = path.join(check_dir, "stock_characteristic_file.csv");
+          if (fs.lstatSync(supposedPrice) && fs.lstatSync(supposedChar)) {
+            // Do the 2 expected files exist?
+            if (true) {
+              // Are the 2 files in correct format?
+              tokenOK = true;
+            }
+          }
         }
+      } catch (e) {
+        console.warn(e.message);
       }
-      return files.length == 2 &&
-        stock_price_file_OK &&
-        stock_characteristic_file_OK &&
-        isNumeric(upper_window) &&
+
+      var asdf = (range_name != "");
+      var wind = (parseFloat(upper_window) >= parseFloat(lower_window));
+      var range = (parseFloat(upper_range) >= parseFloat(lower_range));
+      console.log("asdf: " + asdf);
+      console.log("wind: " + wind);
+      console.log("range: " + range);
+      console.log("token: " + tokenOK);
+
+      // 2. Rest of the params
+      return isNumeric(upper_window) &&
         isNumeric(lower_window) &&
         isNumeric(upper_range) &&
         isNumeric(lower_range) &&
         range_name != "" &&
+        tokenOK &&
         parseFloat(upper_window) >= parseFloat(lower_window) &&
         parseFloat(upper_range) >= parseFloat(lower_range);
     },
