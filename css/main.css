@@ -1,0 +1,44 @@
+@import url(https://fonts.googleapis.com/css?family=Poiret+One|Slabo+27px);
+
+
+
+
+
+.head-brandname {
+  color: #F47C3C;
+  text-align: center;
+  font-size: 60px;
+  font-family: 'Poiret One', cursive;
+  font-weight: 500;
+  text-shadow: 0 0 30px black,0 0 30px black;
+}
+
+.center-content{
+  display:inline;
+  padding-top: 9px;
+  position: fixed;
+  left: 50%;
+  transform: translate(-50%, 0%);
+  text-align: center;
+  top: 30%;
+  width:100%;
+}
+
+.about-us {
+  text-shadow: 0 0 30px black,0 0 30px black,0 0 30px black,0 0 30px black;
+  color:lightgrey;
+  font-size:18px;
+  margin:20px;
+  font-family: 'Slabo 27px', serif;
+}
+
+
+.background-img {
+  background: url('../img/0kHZoh41.jpg')no-repeat center center fixed;
+/*   position the background image */
+  background-position: center;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}

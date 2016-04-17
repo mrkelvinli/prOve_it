@@ -1,0 +1,28 @@
+@import url(https://fonts.googleapis.com/css?family=Roboto|Montserrat|Titillium+Web|Poiret+One);
+
+.head-brandname {
+  padding-top:9px;
+  color:#F47C3C;
+  position:fixed;
+  left:50%;
+  transform: translate(-50%, 0%);
+  text-align: center;
+  font-size:30px;
+  font-family: 'Poiret One', cursive;
+  font-weight: 500;
+  top:0px;
+}
+
+body, html {
+    height: 100%;
+/*    overflow: hidden;*/
+    padding-top: 44px;
+    padding-bottom: 25px;
+  background-color: white;
+}
+
+.api_doc_page {
+/*  overflow: auto;*/
+  height:100%;
+  padding:0;
+}

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+  <title>prOve it</title>
+
+  <!-- Bootstrap -->
+  <link href="https://bootswatch.com/sandstone/bootstrap.min.css" rel="stylesheet">
+  <link href="http://iron-meteor.github.io/iron-router/stylesheets/prism.css" rel="stylesheet">
+  <link href="custom.css" rel="stylesheet">
+<!--   <link rel="stylesheet" href="http://demo.drfdocs.com/static/rest_framework_docs/css/style.css"> -->
+  <style>
+    h1,h2,h3,h4,h5,h6 {
+      color: #18BC9C;
+    }
+  </style>
+  <title>prOve_it</title>
+</head>
+
+<body>
+  <div class="container">
+    <img src="proveit.jpg" class="img-responsive" style="margin: 0 auto; max-height: 200px;">
+    <center>
+      <h4 style="color:grey">A UNSW Software Engineering Workshop 3 Project</h4>
+      <!--      <a href="https://github.com/kelvinlcf/prOve_it" class="btn btn-primary btn-sm">Find us on GitHub</a>-->
+    </center>
+    <div style="border:0.1px solid #DDDDDD; margin: 20px;"></div>
+  </div>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-8 col-md-offset-2">
+        <h3 style=" padding:10px" class="well well-lg">Event Study API</h3>
+        <div style="margin: 10px">
+
+        <div class="app-desc">An Event Study API provided by prOve_it which analyses events and determines their effects on stock returns.</div>
+        <br/>
+          <div class="app-desc"><strong>URI related to this API:</strong>&nbsp;&nbsp;<a href="https://helloreverb.com">http://prove-it-unsw.herokuapp.com/api/v1/event-study</a></div>
+        <br/>
+          <div class="app-desc"><strong>Version:</strong>&nbsp;&nbsp;1.0</div>
+      </div>
+        <iframe src="apidocs/DRF Docs.html" style="width: 100%;" frameborder="0" scrolling="no" onload="resizeIframe(this)">
+          <p>Your browser does not support iframes.</p>
+        </iframe>
+
+      </div>
+    </div>
+
+
+    <br/>
+    <footer>
+      <div class="container" style="margin:4px">
+        <center>Build by: Keith Lai, Yan Chi Ku, Mendel Liang, Kelvin Li, Gino Conte</center>
+      </div>
+    </footer>
+  </div>
+  
+  <!-- adjust the iframe height automatically -->
+  <script language="javascript" type="text/javascript">
+    function resizeIframe(obj) {
+      obj.style.height = obj.contentWindow.document.body.scrollHeight + 'px';
+    }
+  </script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+  <script src="https://code.jquery.com/jquery-2.2.2.min.js" integrity="sha256-36cp2Co+/62rEAAYHLmRCPIych47CvdM+uTBJwSzWjI=" crossorigin="anonymous"></script>
+</body>
+
+</html>
