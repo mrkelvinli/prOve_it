@@ -34,14 +34,16 @@
         </button>
       </div>
 
-      <div class="head-brandname">
-        prOve it
-      </div>
+      <a href="/">
+        <div class="head-brandname">
+          prOve it
+        </div>
+      </a>
 
       <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
         <ul class="nav navbar-nav">
           <li class=""><a href="/">About us</a></li>
-          <li class="active"><a href="api">Event Study API</a></li>
+          <li class="active"><a href="/api">Event Study API - DOCS</a></li>
 
         </ul>
 
@@ -50,158 +52,171 @@
         </ul>
       </div>
     </div>
+    <div class="btn-group btn-group-justified btn-group-sm section-button">
+      <a href="#docs" class="btn btn-default">Latest Docs</a>
+      <a href="#gui" class="btn btn-default">GUI Demo</a>
+    </div>
   </nav>
 
-  <div class="container api_doc_page">
-    <!-- <iframe src="api_docs/DRF Docs.html" style="width: 100%;" frameborder="0" scrolling="no" onload="resizeIframe(this)"> -->
-    <!-- <p>Your browser does not support iframes.</p> -->
-    <!-- </iframe> -->
-
-    <script>
-      function toggle_visibility(id) {
-         var e = document.getElementById(id);
-         if(e.style.display == 'block')
-            e.style.display = 'none';
-         else
-            e.style.display = 'block';
-      }
-    </script>
-
-    <div class="title">
-      <h2>Event Study API Specifications</h2>
-      <hr>
-      <h4>Version: <b>1.0</b></h4>
-
-      <button onclick="toggle_visibility('how-to');" class="spoilb">How to use</button>
-        <br>
-        <div class="tutorial" style="display:none" id="how-to">
-          <p class='greyed'>
-            1. Upload two files using a <span class="label label-primary">POST</span> request. <br>
-            2. The server will then give you an API key, to later use to access or alter your files <br>
-            3. To calculate cumulative returns, send a <span class="label label-primary">GET</span> request
-               to <code>.../cumulative_returns?user_id=YOUR-USER-ID</code> with the neccesary parameters. <br>
-            4. The server will then return a JSON array with your results.<br>
-          </p>
-        </div>
-
-      <h4>All endpoints are relative to <code>http://prove-it-unsw.herokuapp.com/api/v1/event-study</code> </h4>
-      <hr>
-    </div>
-
-    <div class="content">
-      <div class="endpoints">
-        <div class='endpoint'>
-          <div class="name">
-            <span class="label label-primary"><font size=3>POST</font></span><span class="path"> <code>/cumulative_returns</code></span>  
-          </div>
-          <br>
-          <div class="params">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-10 col-md-offset-1">
+        <!-- <iframe src="api_docs/DRF Docs.html" style="width: 100%;" frameborder="0" scrolling="no" onload="resizeIframe(this)"> -->
+        <!-- <p>Your browser does not support iframes.</p> -->
+        <!-- </iframe> -->
 
 
-            <p class="fields-desc"><h4>Description</h4></p>
-            <p class='greyed'>
-              Calculates the cumulative returns (%) to determine whether a certain event has affected the stock price.
-            </p>
+        <section id="docs">
 
+          <div class="title">
+            <h2>Event Study API Specifications</h2>
+            <hr>
+            <h4>Version: <b>1.0</b></h4>
+
+            <button onclick="toggle_visibility('how-to');" class="spoilb">How to use</button>
             <br>
-            <button onclick="toggle_visibility('param-codes');" class="spoilb">Parameter details</button>
-            <div style="display:none" id="param-codes">
-
-            <p class="fields-desc"><h4>Query parameters</h4></p>
-              <ul class="list fields">
-                <li class="field"><code>upper_window</code>
-                  <p class='greyed'>
-                    The upper window of time relative to the event date.
-                  </p>
-                </li>
-              
-                <li class="field"><code>lower_window</code>
-                  <p class='greyed'>
-                    The lower window of time relative to the event date.
-                  </p>
-                </li>
-
-                <li class="field"><code>upper_&lt;var_name&gt;</code>
-                  <p class='greyed'>
-                    The upper threshold value for the event type.
-                  </p>
-                </li>
-
-                <li class="field"><code>lower_&lt;var_name&gt;</code>
-                  <p class='greyed'>
-                    The lower threshold value for the event type.
-                  </p>
-                </li>
-              </ul>
-
-            <p class="fields-desc"><h4>Body parameters</h4></p>
-              <ul class="list fields">
-                <li class="field"><code>stock_price_file</code>
-                  <p class='greyed'>
-                  The .csv file containing the stock prices.
-                  </p>
-                </li>
-
-                <li class="field"><code>stock_characteristic file</code>
-                  <p class='greyed'>
-                    The .csv file containing the stock characteristic.
-                  </p>
-                </li>
-              </ul>
-            </div>
-            <br>
-
-
-            <br>
-            <p class="fields-desc"><h4>Return type</h4></p>
+            <div class="tutorial" style="display:none" id="how-to">
               <p class='greyed'>
-                Returns ordered JSON array of products and their respective display names, as well as their cumulative returns as a percentage
+                1. Upload two files using a <span class="label label-primary">POST</span> request.
+                <br> 2. The server will then give you an API key, to later use to access or alter your files
+                <br> 3. To calculate cumulative returns, send a <span class="label label-primary">GET</span> request to <code>.../cumulative_returns?user_id=YOUR-USER-ID</code> with the neccesary parameters.
+                <br> 4. The server will then return a JSON array with your results.
+                <br>
               </p>
+            </div>
 
-            <br>
-            <p class="fields-desc"><h4>Example Usage</h4></p>
-          
+            <h4>All endpoints are relative to <code>http://prove-it-unsw.herokuapp.com/api/v1/event-study</code> </h4>
+            <hr>
           </div>
 
-          <pre>curl -X POST http://prove-it-unsw.herokuapp.com/api/v1/event-study/cumulative_returns</pre>
-            <p class='greyed'>
-              Example output can be found <a href="example-output.txt">here</a>.
-            </p>
+          <div class="content">
+            <div class="endpoints">
+              <div class='endpoint'>
+                <div class="name">
+                  <span class="label label-primary"><font size=3>POST</font></span><span class="path"> <code>/cumulative_returns</code></span>
+                </div>
+                <br>
+                <div class="params">
 
-          <br>
-          <!-- <p class="fields-desc"><h4>More details</h4></p> -->
 
-          <button onclick="toggle_visibility('resp-codes');" class="spoilb"> Response Codes </button>
-
-          <div style="display:none" id="resp-codes">
-            <br>
-            <ul class="list fields">
-                <li class="field"><code>200</code>
+                  <div class="fields-desc">
+                    <h4>Description</h4></div>
                   <p class='greyed'>
-                    Success, returns a JSON array
+                    Calculates the cumulative returns (%) to determine whether a certain event has affected the stock price.
                   </p>
-                </li>
 
-                <li class="field"><code>404</code>
+                  <br>
+                  <button onclick="toggle_visibility('param-codes');" class="spoilb">Parameter details</button>
+                  <div style="display:none" id="param-codes">
+
+                    <div class="fields-desc">
+                      <h4>Query parameters</h4></div>
+                    <ul class="list fields">
+                      <li class="field"><code>upper_window</code>
+                        <p class='greyed'>
+                          The upper window of time relative to the event date.
+                        </p>
+                      </li>
+
+                      <li class="field"><code>lower_window</code>
+                        <p class='greyed'>
+                          The lower window of time relative to the event date.
+                        </p>
+                      </li>
+
+                      <li class="field"><code>upper_&lt;var_name&gt;</code>
+                        <p class='greyed'>
+                          The upper threshold value for the event type.
+                        </p>
+                      </li>
+
+                      <li class="field"><code>lower_&lt;var_name&gt;</code>
+                        <p class='greyed'>
+                          The lower threshold value for the event type.
+                        </p>
+                      </li>
+                    </ul>
+
+                    <div class="fields-desc">
+                      <h4>Body parameters</h4></div>
+                    <ul class="list fields">
+                      <li class="field"><code>stock_price_file</code>
+                        <p class='greyed'>
+                          The .csv file containing the stock prices.
+                        </p>
+                      </li>
+
+                      <li class="field"><code>stock_characteristic file</code>
+                        <p class='greyed'>
+                          The .csv file containing the stock characteristic.
+                        </p>
+                      </li>
+                    </ul>
+                  </div>
+                  <br>
+
+
+                  <br>
+                  <div class="fields-desc">
+                    <h4>Return type</h4></div>
                   <p class='greyed'>
-                    Incorrect or invalid parameters
+                    Returns ordered JSON array of products and their respective display names, as well as their cumulative returns as a percentage
                   </p>
-                </li>
 
-                <li class="field"><code>422</code>
-                  <p class='greyed'>
-                    One or more of the provided files is not in the <code>.csv</code> format
-                  </p>
-                </li>
-              </ul>
-          </div>
-          <br>
-          <br>
-          <hr>
+                  <br>
+                  <div class="fields-desc">
+                    <h4>Example Usage</h4></div>
+
+                </div>
+
+                <pre>curl -X POST http://prove-it-unsw.herokuapp.com/api/v1/event-study/cumulative_returns</pre>
+                <p class='greyed'>
+                  Example output can be found <a href="example-output.txt">here</a>.
+                </p>
+
+                <br>
+                <!-- <p class="fields-desc"><h4>More details</h4></p> -->
+
+                <button onclick="toggle_visibility('resp-codes');" class="spoilb"> Response Codes </button>
+
+                <div style="display:none" id="resp-codes">
+                  <br>
+                  <ul class="list fields">
+                    <li class="field"><code>200</code>
+                      <p class='greyed'>
+                        Success, returns a JSON array
+                      </p>
+                    </li>
+
+                    <li class="field"><code>404</code>
+                      <p class='greyed'>
+                        Incorrect or invalid parameters
+                      </p>
+                    </li>
+
+                    <li class="field"><code>422</code>
+                      <p class='greyed'>
+                        One or more of the provided files is not in the <code>.csv</code> format
+                      </p>
+                    </li>
+                  </ul>
+                </div>
+                <br>
+                <br>
+                <hr>
 
 
 
+              </div>
+            </div>
         </div>
+
+        </section>
+
+
+        <section id="gui">
+          <h3>API Demonstrations</h3>
+        </section>
       </div>
     </div>
 
@@ -210,10 +225,19 @@
         <center>Build by: Keith Lai, Yan Chi Ku, Mendel Liang, Kelvin Li, Gino Conte</center>
       </div>
     </footer>
-
   </div>
 
 
+
+  <script>
+    function toggle_visibility(id) {
+      var e = document.getElementById(id);
+      if (e.style.display == 'block')
+        e.style.display = 'none';
+      else
+        e.style.display = 'block';
+    }
+  </script>
 
 
   <script language="javascript" type="text/javascript">

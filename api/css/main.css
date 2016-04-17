@@ -21,12 +21,28 @@ body, html {
   background-color: white;
 }
 
-.api_doc_page {
-/*  overflow: auto;*/
-  height:100%;
-  padding:0;
+.section-button {
+  border-width: 0px;
+  border-top-width:1px;
+  border-style: groove;
+  border-color:darkgrey;
 }
 
+footer {
+/*    background-color: orange;*/
+/*    position: fixed;*/
+/*
+    left: 0;
+    bottom: 0;
+*/
+/*    height: 40px;*/
+    width: 100%;
+    overflow:hidden;
+    font-family: Verdana;
+}
+
+
+/*
 div.content {
   margin-left: 200px;
   margin-right: 200px;
@@ -38,6 +54,7 @@ div.title {
   margin-left: 200px;
 
 }
+*/
 
 div.type {
   margin-right: 20px;
