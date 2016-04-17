@@ -1,137 +1,40 @@
-//if (Meteor.isServer) {
-//  var fs = Npm.require("fs"),
-//      os = Npm.require("os"),
-//      path = Npm.require("path");
-//
-//  Router.onBeforeAction(function(req, res, next) {
-//    
-//    console.log("here");
-//    
-//    req.start_time = new Date();
-////    console.log(req);
-//    var files = []; // Store a file and then pass it to the request.
-//    var token = Random.id( 10 );
-////    var fs = require('fs');
-//    var dir = path.join(process.env.PWD, "private",token);
-//    
-//    while (fs.existsSync(dir)) {
-//      token = Random.id( 10 );
-//      dir = path.join(process.env.PWD, "private",token);
-//    }
-//    fs.mkdirSync(dir);
-//
-//    if (req.method === "POST" && parseInt(req.headers['content-length']) > 0) {
-//      var busboy = new Busboy({
-//          headers: req.headers
-//      });
-//      busboy.on("file", function(fieldname, file, filename, encoding, mimetype) {
-//        var saveTo = path.join(process.env.PWD, "private",token,fieldname)
-//        var fileSizeBytes = 0;
-//        var contents = '';
-//
-//        file.pipe(fs.createWriteStream(saveTo));
-//        console.log(saveTo);
-////         var string = Assets.getText(filename);
-//
-//        file.on("data", function(data) {
-//          fileSizeBytes = fileSizeBytes + data.length;
-//          contents += data;
-//        });
-//
-//        file.on('end', function() {
-//          files.push({
-//            fieldname: fieldname,
-//            filename: filename,
-//            contents : contents,
-//            size: fileSizeBytes,
-//          });
-//        });
-//      });
-//      busboy.on("finish", function() {
-//        // Pass the file on to the request
-//        // console.log(files);
-//        req.token = token;
-//        req.files = files;
-//        next();
-//      });
-//      // Pass request to busboy
-//      req.pipe(busboy);
-//    } else {
-//      next();
-//    }
-//  });
-//}
-
-
 if (Meteor.isServer) {
   var fs = Npm.require("fs"),
-      os = Npm.require("os"),
-      path = Npm.require("path");
+    os = Npm.require("os"),
+    path = Npm.require("path");
 
-  Router.onBeforeAction(function(req, res, next) {
+  Router.onBeforeAction(function (req, res, next) {
     req.start_time = new Date();
-//    console.log(req.headers);
+
     var files = []; // Store a file and then pass it to the request.
-    var token = Random.hexString(10);
-    var fs = require('fs');
-    var token_dir = path.join(process.env.PWD, "private",token);
-    
-//    while (fs.existsSync(dir)) {
-//      token = Random.id( 30 );
-//      dir = path.join(process.env.PWD, "private",token);
-//    } 
-//    
-    
-    if (!fs.existsSync(token_dir)){
-        console.log("dir does not exist");
-        console.log(token_dir);
-    }
-//    fs.mkdirSync(token_dir);
-//    
-    
-//    if(fs.mkdirSync(dir)){
-//      console.log("new folder OK");
-//    } else {
-//      console.log(token);
-//      console.log("new folder no");
-//    }
 
     if (req.method === "POST" && parseInt(req.headers['content-length']) > 0) {
       var busboy = new Busboy({
-          headers: req.headers
+        headers: req.headers,
       });
-      busboy.on("file", function(fieldname, file, filename, encoding, mimetype) {
-        // var saveTo = path.join(os.tmpDir(), filename);
-        // var saveTo = path.join(process.cwd()+ "/tmp/", filename);
-        // var token = Random.id( 10 );
-        // req.token = token;
-       var saveTo = path.join(process.env.PWD, "private",token, fieldname);
+      busboy.on("file", function (fieldname, file, filename, encoding, mimetype) {
+//        var name = token + "_" + fieldname;
+//        var saveTo = path.join(process.env.PWD, "private", name);
         var fileSizeBytes = 0;
         var contents = '';
 
-//         file.pipe(fs.createWriteStream(saveTo));
-        // var string = Assets.getText(filename);
-
-        file.on("data", function(data) {
+        file.on("data", function (data) {
           fileSizeBytes = fileSizeBytes + data.length;
           contents += data;
         });
 
-        file.on('end', function() {
-          // console.log(datas);
+        file.on('end', function () {
           files.push({
             fieldname: fieldname,
             filename: filename,
-            contents : contents,
+            contents: contents,
             size: fileSizeBytes,
           });
         });
       });
-      busboy.on("finish", function() {
+      busboy.on("finish", function () {
         // Pass the file on to the request
-        // console.log(files);
         req.files = files;
-        req.token = token;
         next();
       });
       // Pass request to busboy
@@ -144,39 +47,42 @@ if (Meteor.isServer) {
 
 
 
-Router.route( '/api/v1/event-study/submit-files', function() {
-  
-  
-  this.response.setHeader( 'Access-Control-Allow-Origin', '*' );
+Router.route('/api/v1/event-study/submit-files', function () {
 
-  if ( this.request.method === "OPTIONS" ) {
-    this.response.setHeader( 'Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept' );
-    this.response.setHeader( 'Access-Control-Allow-Methods', 'POST, PUT, GET, DELETE, OPTIONS' );
-    this.response.end( 'Set OPTIONS.' );
+
+  this.response.setHeader('Access-Control-Allow-Origin', '*');
+
+  if (this.request.method === "OPTIONS") {
+    this.response.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+    this.response.setHeader('Access-Control-Allow-Methods', 'POST, PUT, GET, DELETE, OPTIONS');
+    this.response.end('Set OPTIONS.');
   } else {
-    Uploader.handleRequest( this, this.request.method);
+    Uploader.handleRequest(this, this.request.method);
   }
-}, { where: 'server' } );
+}, {
+  where: 'server'
+});
 
 
 
-Router.route( '/api/v1/event-study/cumulative-returns', function() {
+Router.route('/api/v1/event-study/cumulative-returns', function () {
 
-  this.response.setHeader( 'Access-Control-Allow-Origin', '*' );
+  this.response.setHeader('Access-Control-Allow-Origin', '*');
 
-  if ( this.request.method === "OPTIONS" ) {
-    this.response.setHeader( 'Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept' );
-    this.response.setHeader( 'Access-Control-Allow-Methods', 'POST, PUT, GET, DELETE, OPTIONS' );
-    this.response.end( 'Set OPTIONS.' );
+  if (this.request.method === "OPTIONS") {
+    this.response.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+    this.response.setHeader('Access-Control-Allow-Methods', 'POST, PUT, GET, DELETE, OPTIONS');
+    this.response.end('Set OPTIONS.');
   } else {
-    API.handleRequest( this, this.request.method);
+    API.handleRequest(this, this.request.method);
   }
-}, { where: 'server' } );
+}, {
+  where: 'server'
+});
 
 
-Router.route("/api/", function() {
+Router.route("/api/", function () {
   this.render('api_index');
-}, { where: 'server' } );
-
-
-
+}, {
+  where: 'server'
+});

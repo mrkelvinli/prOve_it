@@ -1,84 +1,111 @@
 Uploader = {
-  connection: function( request ) {
-    var getRequestContents = API.utility.getRequestContents( request );
-    return { data: getRequestContents };
+  connection: function (request) {
+    var getRequestContents = API.utility.getRequestContents(request);
+    return {
+      data: getRequestContents
+    };
   },
 
-  handleRequest: function( context, method ) {
-    var connection = API.connection( context.request );
-    if ( !connection.error ) {
+  handleRequest: function (context, method) {
+    var connection = API.connection(context.request);
+    if (!connection.error) {
       var params = connection.data;
-      var files  = context.request.files;
-      var token = context.request.token;
-      console.log("handleOK");
-      Uploader.methods[ method ]( context, params, files, token);
+      var files = context.request.files;
+      Uploader.methods[method](context, params, files);
     } else {
-      API.utility.response( context, 401, connection );
+      API.utility.response(context, 401, connection);
     }
   },
 
   methods: {
-    POST: function( context, params, files, token) {
+    POST: function (context, params, files) {
+
+
       // files parsing
       for (var id in files) {
+
         var parseObject = Papa.parse(files[id]['contents']);
-        console.log("papa OK");
         files[id]['json'] = parseObject.data;
         files[id]['errors'] = parseObject.errors;
         if (files[id]['errors'].length > 0) {
-          API.utility.response( context, 422, {
-            log : API.utility.api_log(params, files, context.request.start_time, "CSV file isn't formatted correctly."),
+          API.utility.response(context, 422, {
+            log: API.utility.api_log(params, files, context.request.start_time, "CSV file isn't formatted correctly."),
           });
         }
+
+
       }
-      
+
       // Make sure that our request has data and that the data is valid.
       var requestOK = Uploader.utility.validateRequest(files);
 
-      if ( requestOK ) {
-        API.utility.response( context, 200, {
-          log : API.utility.api_log(params, files, context.request.start_time, "successful"),
+      if (requestOK) {
+        var stock_price_file_json = null;
+        var stock_characteristic_file_json = null;
+        var token = Random.id(20);
+        while (Files.find({token: token}).count() !== 0) {
+          token = Random.id(20);
+        }
+        
+        // 
+        for (var id in files) {
+          if (files[id]['fieldname'] == "stock_price_file") {
+            stock_price_file_json = files[id]['json'];
+          } else if (files[id]['fieldname'] == "stock_characteristic_file") {
+            stock_characteristic_file_json = files[id]['json'];
+          }
+        }
+
+        // Add the two files with the token to the database
+        Files.insert({
+          token: token,
+          stock_price_file: stock_price_file_json,
+          stock_characteristic_file: stock_characteristic_file_json,
+        });
+
+
+        API.utility.response(context, 200, {
+          log: API.utility.api_log(params, files, context.request.start_time, "successful"),
           token: token,
         });
       } else {
-        API.utility.response( context, 404, {
-          log : API.utility.api_log(params, files, context.request.start_time, "Invalid Request."),
+        API.utility.response(context, 404, {
+          log: API.utility.api_log(params, files, context.request.start_time, "Invalid Request."),
         });
       }
-      
-      
+
+
     },
   },
 
   utility: {
-    getRequestContents: function( request ) {
+    getRequestContents: function (request) {
       return request.query;
     },
-    hasData: function( data ) {
-      return Object.keys( data ).length > 0 ? true : false;
+    hasData: function (data) {
+      return Object.keys(data).length > 0 ? true : false;
     },
-    response: function( context, statusCode, data ) {
-      context.response.setHeader( 'Content-Type', 'application/json' );
+    response: function (context, statusCode, data) {
+      context.response.setHeader('Content-Type', 'application/json');
       context.response.statusCode = statusCode;
-      context.response.end( JSON.stringify( data) );
+      context.response.end(JSON.stringify(data));
     },
-    validate: function( data, pattern ) {
-      return Match.test( data, pattern );
+    validate: function (data, pattern) {
+      return Match.test(data, pattern);
     },
-    validateRequest: function (files ) {
+    validateRequest: function (files) {
       var stock_price_file_OK = false;
       var stock_characteristic_file_OK = false
       for (var id in files) {
-        if (files[id]['fieldname'] == "stock_price_file" && !stock_price_file_OK){
+        if (files[id]['fieldname'] == "stock_price_file" && !stock_price_file_OK) {
           stock_price_file_OK = true;
         } else if (files[id]['fieldname'] == "stock_characteristic_file" && !stock_characteristic_file_OK) {
           stock_characteristic_file_OK = true;
         }
       }
-      return true;
-//      return files.length == 2 &&
-//        stock_price_file_OK &&
-//        stock_characteristic_file_OK;
+      return files.length == 2 &&
+        stock_price_file_OK &&
+        stock_characteristic_file_OK;
     },
   },
 };
