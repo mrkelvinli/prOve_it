@@ -87,5 +87,3 @@ Router.route("/api/", function() {
   this.render('api_index');
 }, { where: 'server' } );
 
-
-
