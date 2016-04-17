@@ -46,6 +46,7 @@ API = {
           lower_window = params['lower_window'];
           continue;
         }
+        console.log("param: " + key);
         var upperRegex = /upper_([a-zA-Z\-]+)/g;
         var lowerRegex = /lower_([a-zA-Z\-]+)/g;
         var match = upperRegex.exec(key);
@@ -148,8 +149,14 @@ API = {
         isNumeric(upper_range) &&
         isNumeric(lower_range) &&
         range_name != "" &&
+        tokenOK(token) &&
         parseFloat(upper_window) >= parseFloat(lower_window) &&
         parseFloat(upper_range) >= parseFloat(lower_range);
+    },
+    tokenOK: function (token) {
+      // is there a folder called <token>?
+      // if there is, do the files match?
+      
     },
     match_range_name: function (range_name, matching_range_name) {
       if (range_name == "") {
