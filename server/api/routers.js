@@ -1,3 +1,68 @@
+//if (Meteor.isServer) {
+//  var fs = Npm.require("fs"),
+//      os = Npm.require("os"),
+//      path = Npm.require("path");
+//
+//  Router.onBeforeAction(function(req, res, next) {
+//    
+//    console.log("here");
+//    
+//    req.start_time = new Date();
+////    console.log(req);
+//    var files = []; // Store a file and then pass it to the request.
+//    var token = Random.id( 10 );
+////    var fs = require('fs');
+//    var dir = path.join(process.env.PWD, "private",token);
+//    
+//    while (fs.existsSync(dir)) {
+//      token = Random.id( 10 );
+//      dir = path.join(process.env.PWD, "private",token);
+//    }
+//    fs.mkdirSync(dir);
+//
+//    if (req.method === "POST" && parseInt(req.headers['content-length']) > 0) {
+//      var busboy = new Busboy({
+//          headers: req.headers
+//      });
+//      busboy.on("file", function(fieldname, file, filename, encoding, mimetype) {
+//        var saveTo = path.join(process.env.PWD, "private",token,fieldname)
+//        var fileSizeBytes = 0;
+//        var contents = '';
+//
+//        file.pipe(fs.createWriteStream(saveTo));
+//        console.log(saveTo);
+////         var string = Assets.getText(filename);
+//
+//        file.on("data", function(data) {
+//          fileSizeBytes = fileSizeBytes + data.length;
+//          contents += data;
+//        });
+//
+//        file.on('end', function() {
+//          files.push({
+//            fieldname: fieldname,
+//            filename: filename,
+//            contents : contents,
+//            size: fileSizeBytes,
+//          });
+//        });
+//      });
+//      busboy.on("finish", function() {
+//        // Pass the file on to the request
+//        // console.log(files);
+//        req.token = token;
+//        req.files = files;
+//        next();
+//      });
+//      // Pass request to busboy
+//      req.pipe(busboy);
+//    } else {
+//      next();
+//    }
+//  });
+//}
+
+
 if (Meteor.isServer) {
   var fs = Npm.require("fs"),
       os = Npm.require("os"),
@@ -5,25 +70,47 @@ if (Meteor.isServer) {
 
   Router.onBeforeAction(function(req, res, next) {
     req.start_time = new Date();
-//    console.log(req);
+//    console.log(req.headers);
     var files = []; // Store a file and then pass it to the request.
-    var token = Random.id( 10 );
+    var token = Random.hexString(10);
     var fs = require('fs');
-    var dir = path.join(process.env.PWD, "private",token);
-    fs.mkdirSync(dir);
+    var token_dir = path.join(process.env.PWD, "private",token);
+    
+//    while (fs.existsSync(dir)) {
+//      token = Random.id( 30 );
+//      dir = path.join(process.env.PWD, "private",token);
+//    } 
+//    
+    
+    if (!fs.existsSync(token_dir)){
+        console.log("dir does not exist");
+        console.log(token_dir);
+    }
+//    fs.mkdirSync(token_dir);
+//    
+    
+//    if(fs.mkdirSync(dir)){
+//      console.log("new folder OK");
+//    } else {
+//      console.log(token);
+//      console.log("new folder no");
+//    }
 
     if (req.method === "POST" && parseInt(req.headers['content-length']) > 0) {
       var busboy = new Busboy({
           headers: req.headers
       });
       busboy.on("file", function(fieldname, file, filename, encoding, mimetype) {
-        var saveTo = path.join(process.env.PWD, "private",token,fieldname)
+        // var saveTo = path.join(os.tmpDir(), filename);
+        // var saveTo = path.join(process.cwd()+ "/tmp/", filename);
+        // var token = Random.id( 10 );
+        // req.token = token;
+       var saveTo = path.join(process.env.PWD, "private",token, fieldname);
         var fileSizeBytes = 0;
         var contents = '';
 
-        file.pipe(fs.createWriteStream(saveTo));
-//        console.log(saveTo);
-//         var string = Assets.getText(filename);
+//         file.pipe(fs.createWriteStream(saveTo));
+        // var string = Assets.getText(filename);
 
         file.on("data", function(data) {
           fileSizeBytes = fileSizeBytes + data.length;
@@ -43,8 +130,8 @@ if (Meteor.isServer) {
       busboy.on("finish", function() {
         // Pass the file on to the request
         // console.log(files);
-        req.token = token;
         req.files = files;
+        req.token = token;
         next();
       });
       // Pass request to busboy
@@ -55,7 +142,11 @@ if (Meteor.isServer) {
   });
 }
 
+
+
 Router.route( '/api/v1/event-study/submit-files', function() {
+  
+  
   this.response.setHeader( 'Access-Control-Allow-Origin', '*' );
 
   if ( this.request.method === "OPTIONS" ) {
