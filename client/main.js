@@ -2,6 +2,18 @@ import { Template } from 'meteor/templating';
 import { ReactiveVar } from 'meteor/reactive-var';
 
 import './main.html';
+import './guiPage.html';
+
+Router.route('/initGui', function () {
+  this.render('gui');
+});
+Router.route('/', function(){
+  this.render('Hello');
+});
+
+
+
+
 
 Template.hello.onCreated(function helloOnCreated() {
   // counter starts at 0

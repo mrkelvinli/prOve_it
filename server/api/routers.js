@@ -83,6 +83,4 @@ Router.route('/api/v1/event-study/cumulative-returns', function () {
 
 Router.route("/api/", function () {
   this.render('api_index');
-}, {
-  where: 'server'
-});
+}, { where: 'server' } );
