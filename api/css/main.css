@@ -34,8 +34,8 @@ div.content {
 }
 
 div.title {
-  margin-right: 150px;
-  margin-left: 150px;
+  margin-right: 200px;
+  margin-left: 200px;
 
 }
 
@@ -48,4 +48,9 @@ div.type {
   width: 55px;
   display: inline-block;
   background-color:   #2eb8b8;
+}
+
+div.tutorial {
+  background-color: lightgrey;
+
 }

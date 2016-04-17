@@ -68,10 +68,24 @@
     </script>
 
     <div class="title">
-      <h2>API Specification</h2>
+      <h2>Event Study API Specifications</h2>
+      <hr>
       <h4>Version: <b>1.0</b></h4>
-      <h4>Relative to <code>http://prove-it-unsw.herokuapp.com/api/v1/event-study</code> </h4>
-      <br>
+
+      <button onclick="toggle_visibility('how-to');" class="spoilb">How to use</button>
+        <br>
+        <div class="tutorial" style="display:none" id="how-to">
+          <p class='greyed'>
+            1. Upload two files using a <span class="label label-primary">POST</span> request. <br>
+            2. The server will then give you an API key, to later use to access or alter your files <br>
+            3. To calculate cumulative returns, send a <span class="label label-primary">GET</span> request
+               to <code>.../cumulative_returns?user_id=YOUR-USER-ID</code> with the neccesary parameters. <br>
+            4. The server will then return a JSON array with your results.<br>
+          </p>
+        </div>
+
+      <h4>All endpoints are relative to <code>http://prove-it-unsw.herokuapp.com/api/v1/event-study</code> </h4>
+      <hr>
     </div>
 
     <div class="content">
@@ -183,13 +197,20 @@
           </div>
           <br>
           <br>
-          <br>
+          <hr>
 
 
 
         </div>
       </div>
     </div>
+
+    <footer>
+      <div class="container" style="margin:4px">
+        <center>Build by: Keith Lai, Yan Chi Ku, Mendel Liang, Kelvin Li, Gino Conte</center>
+      </div>
+    </footer>
+
   </div>
 
 
