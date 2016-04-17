@@ -9,20 +9,15 @@ Uploader = {
     if ( !connection.error ) {
       var params = connection.data;
       var files  = context.request.files;
-      Uploader.methods[ method ]( context, params, files );
+      var token = context.request.token;
+      Uploader.methods[ method ]( context, params, files, token);
     } else {
       API.utility.response( context, 401, connection );
     }
   },
 
   methods: {
-    POST: function( context, params, files ) {
-//      if (!API.utility.hasData(params)){
-//        API.utility.response( context, 404, { error: 404, message: "Invalid Request (no parameters found), dude." } );
-//      }
-
-      var status_code = 200;
-
+    POST: function( context, params, files, token) {
       // files parsing
       for (var id in files) {
         var parseObject = Papa.parse(files[id]['contents'])
@@ -39,8 +34,9 @@ Uploader = {
       var requestOK   = Uploader.utility.validateRequest(files);
 
       if ( requestOK ) {
-        API.utility.response( context, status_code, {
-            log : API.utility.api_log(params, files, context.request.start_time, "successful"),
+        API.utility.response( context, 200, {
+          log : API.utility.api_log(params, files, context.request.start_time, "successful"),
+          token: token,
 
         });
       } else {
@@ -84,8 +80,3 @@ Uploader = {
     },
   },
 };
-
-
-function isNumeric(num) {
-    return !isNaN(num)
-}

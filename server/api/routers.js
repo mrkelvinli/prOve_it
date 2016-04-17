@@ -8,13 +8,16 @@ if (Meteor.isServer) {
 //    console.log(req);
     var files = []; // Store a file and then pass it to the request.
     var token = Random.id( 10 );
+    var fs = require('fs');
+    var dir = path.join(process.env.PWD, "private",token);
+    fs.mkdirSync(dir);
 
     if (req.method === "POST" && parseInt(req.headers['content-length']) > 0) {
       var busboy = new Busboy({
           headers: req.headers
       });
       busboy.on("file", function(fieldname, file, filename, encoding, mimetype) {
-        var saveTo = path.join(process.env.PWD, "private",token,filename)
+        var saveTo = path.join(process.env.PWD, "private",token,fieldname)
         var fileSizeBytes = 0;
         var contents = '';
 
