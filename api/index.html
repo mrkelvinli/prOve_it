@@ -11,6 +11,8 @@
   <!-- Bootstrap -->
   <link href="css/bootstrap.min.css" rel="stylesheet">
   <link href="css/main.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/form.css">
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
 
   <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -58,7 +60,7 @@
     </div>
   </nav>
 
-  <div class="container">
+  <div class="container page-content">
     <div class="row">
       <div class="col-md-10 col-md-offset-1">
         <!-- <iframe src="api_docs/DRF Docs.html" style="width: 100%;" frameborder="0" scrolling="no" onload="resizeIframe(this)"> -->
@@ -209,20 +211,162 @@
 
               </div>
             </div>
-        </div>
+          </div>
 
         </section>
 
 
         <section id="gui">
-          <h3>API Demonstrations</h3>
+          <h3> API Demo</h3>
+
+          <form class="form-validation" method="post" action="" id="upload_form" enctype="multipart/form-data">
+
+            <div class="form-title-row">
+              <h1>Submit Files</h1>
+            </div>
+
+            <div class="form-row form-input-name-row">
+
+              <label>
+                <span>Stock Price File</span>
+                <input type="file" class="pull-right" name="stock_price_file">
+              </label>
+
+              <span class="form-valid-data-sign"><i class="fa fa-check"></i></span>
+
+              <span class="form-invalid-data-sign"><i class="fa fa-close"></i></span>
+              <span class="form-invalid-data-info"></span>
+
+            </div>
+
+            <div class="form-row form-input-name-row">
+
+              <label>
+                <span>Stock Characteristic File</span>
+                <input type="file" class="pull-right" name="stock_characteristic_file">
+              </label>
+
+              <span class="form-valid-data-sign"><i class="fa fa-check"></i></span>
+
+              <span class="form-invalid-data-sign"><i class="fa fa-close"></i></span>
+              <span class="form-invalid-data-info"></span>
+
+            </div>
+
+            <div class="form-row">
+
+              <button type="submit" class="submit_btn">Upload</button>
+
+            </div>
+
+            <div class='form-row'>
+              <pre id="upload_response" class="json-response"></pre>
+            </div>
+
+          </form>
+
+          <p></p>
+
+
+          <form class="form-validation " method="post " action="#" id="cumulative-return-form">
+
+            <div class="form-title-row ">
+              <h1>Cumulative Returns</h1>
+            </div>
+
+            <div class="form-row form-input-name-row ">
+
+              <label>
+                <span>Upper Window</span>
+                <input type="text " name="upper_window">
+              </label>
+
+              <span class="form-valid-data-sign "><i class="fa fa-check "></i></span>
+
+              <span class="form-invalid-data-sign "><i class="fa fa-close "></i></span>
+              <span class="form-invalid-data-info "></span>
+
+            </div>
+
+            <div class="form-row form-input-name-row ">
+
+              <label>
+                <span>Lower Window</span>
+                <input type="text " name="lower_window">
+              </label>
+
+              <span class="form-valid-data-sign "><i class="fa fa-check "></i></span>
+
+              <span class="form-invalid-data-sign "><i class="fa fa-close "></i></span>
+              <span class="form-invalid-data-info "></span>
+
+            </div>
+
+            <div class="form-row form-input-name-row ">
+
+              <label>
+                <span>Variable Upper Limit</span>
+                <input type="text " name="upper_range">
+              </label>
+
+              <span class="form-valid-data-sign "><i class="fa fa-check "></i></span>
+
+              <span class="form-invalid-data-sign "><i class="fa fa-close "></i></span>
+              <span class="form-invalid-data-info "></span>
+
+            </div>
+
+            <div class="form-row form-input-name-row ">
+
+              <label>
+                <span>Variable Lower Limit</span>
+                <input type="text " name="lower_range">
+              </label>
+
+              <span class="form-valid-data-sign "><i class="fa fa-check "></i></span>
+
+              <span class="form-invalid-data-sign "><i class="fa fa-close "></i></span>
+              <span class="form-invalid-data-info "></span>
+
+            </div>
+
+            <div class="form-row form-input-name-row ">
+
+              <label>
+                <span>Token</span>
+                <input type="text" name="token">
+              </label>
+
+              <span class="form-valid-data-sign "><i class="fa fa-check "></i></span>
+
+              <span class="form-invalid-data-sign "><i class="fa fa-close "></i></span>
+              <span class="form-invalid-data-info "></span>
+
+            </div>
+
+            <div class="form-row ">
+
+              <button type="submit ">Get Cumulative Return</button>
+
+            </div>
+            
+            <div class='form-row'>
+              <pre id="cumulative_response" class="json-response"></pre>
+            </div>
+
+          </form>
+
+
+
+
+
         </section>
       </div>
     </div>
 
     <footer>
-      <div class="container" style="margin:4px">
-        <center>Build by: Keith Lai, Yan Chi Ku, Mendel Liang, Kelvin Li, Gino Conte</center>
+      <div class="container " style="margin:4px ">
+        <center> Build by: Keith Lai, Yan Chi Ku, Mendel Liang, Kelvin Li, Gino Conte</center>
       </div>
     </footer>
   </div>
@@ -240,7 +384,7 @@
   </script>
 
 
-  <script language="javascript" type="text/javascript">
+  <script language="javascript " type="text/javascript ">
     function resizeIframe(obj) {
       obj.style.height = obj.contentWindow.document.body.scrollHeight + 'px';
     }
@@ -248,9 +392,14 @@
 
 
   <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js "></script>
   <!-- Include all compiled plugins (below), or include individual files as needed -->
-  <script src="../js/bootstrap.min.js"></script>
+  <script src="../js/bootstrap.min.js "></script>
+  <script src="js/demo.js "></script>
+
+
+
+
 </body>
 
 </html>
