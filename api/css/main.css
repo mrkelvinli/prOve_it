@@ -26,3 +26,26 @@ body, html {
   height:100%;
   padding:0;
 }
+
+div.content {
+  margin-left: 200px;
+  margin-right: 200px;
+
+}
+
+div.title {
+  margin-right: 150px;
+  margin-left: 150px;
+
+}
+
+div.type {
+  margin-right: 20px;
+  margin-left: 20px;
+}
+
+.label {
+  width: 55px;
+  display: inline-block;
+  background-color:   #2eb8b8;
+}
