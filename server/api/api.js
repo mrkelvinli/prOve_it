@@ -135,7 +135,7 @@ API = {
       return Match.test( data, pattern );
     },
     validateRequest: function ( upper_window , lower_window, upper_range, lower_range, range_name, token, files ) {
-      var path = Npm.require("path");
+      var path = Npm.require("path"),
           fs = Npm.require("fs");
 
       // 1. Token
