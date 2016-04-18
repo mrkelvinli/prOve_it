@@ -6,7 +6,7 @@ $(document).ready(function () {
 
   // Here is how to show an error message next to a form field
 
-//  var errorField = $('.form-input-name-row');
+  //  var errorField = $('.form-input-name-row');
 
   // Adding the form-invalid-data class will show
   // the error message and the red x for that field
@@ -19,14 +19,14 @@ $(document).ready(function () {
 
   var successField = $('.form-input-name-row');
 
-successField.on('change paste keyup',function() {
-  if($(this).find('input').val() != ''){
-        $(this).addClass('form-valid-data');
-  } else {
-        $(this).removeClass('form-valid-data');
-  
-  }
-});
+  successField.on('change paste keyup', function () {
+    if ($(this).find('input').val() != '') {
+      $(this).addClass('form-valid-data');
+    } else {
+      $(this).removeClass('form-valid-data');
+
+    }
+  });
 
 
   var upper_window = $("input[name=upper_window]");
@@ -45,9 +45,10 @@ successField.on('change paste keyup',function() {
   //  
   $("#upload_form").submit(function (event) {
     event.preventDefault();
-    
+
     upload_response.empty();
-    upload_response.html("Processing");
+    upload_response.show();
+    upload_response.html("Processing ...");
 
     $.ajax({
       url: base_url + "/event-study/submit-files",
@@ -69,9 +70,10 @@ successField.on('change paste keyup',function() {
 
   $("#cumulative-return-form").submit(function (event) {
     event.preventDefault();
-    
+
     cumulative_response.empty();
-    cumulative_response.html("Processing");
+    cumulative_response.show();
+    cumulative_response.html("Processing ...");
 
     var data = {
       upper_window: upper_window.val(),
