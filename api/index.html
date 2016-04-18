@@ -301,6 +301,20 @@
               <span class="form-invalid-data-info "></span>
 
             </div>
+            
+            <div class="form-row form-input-name-row ">
+
+              <label>
+                <span>Variable Name</span>
+                <input type="text " name="var_name">
+              </label>
+
+              <span class="form-valid-data-sign "><i class="fa fa-check "></i></span>
+
+              <span class="form-invalid-data-sign "><i class="fa fa-close "></i></span>
+              <span class="form-invalid-data-info "></span>
+
+            </div>
 
             <div class="form-row form-input-name-row ">
 
@@ -351,7 +365,29 @@
             </div>
             
             <div class='form-row'>
-              <pre id="cumulative_response" class="json-response"></pre>
+              <pre id="cumulative_response" class="json-response">
+<!--
+              {
+  "log": {
+    "team_name": "prOve it",
+    "version": "v1",
+    "input_filename": [],
+    "parameters_passed": {
+      "upper_window": "1234",
+      "lower_window": "3",
+      "token": "sdaf",
+      "upper_kelvin213": "1234",
+      "lower_kelvin213": "234"
+    },
+    "exec_status": "Invalid token.",
+    "start_time": "2016-4-17 23:57:58 PM",
+    "end_time": "2016-4-17 23:57:58 PM",
+    "elapsed_time": "2ms"
+  }
+}
+              
+-->
+              </pre>
             </div>
 
           </form>
@@ -396,9 +432,6 @@
   <!-- Include all compiled plugins (below), or include individual files as needed -->
   <script src="../js/bootstrap.min.js "></script>
   <script src="js/demo.js "></script>
-
-
-
 
 </body>
 

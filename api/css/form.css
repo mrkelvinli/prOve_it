@@ -61,7 +61,7 @@
   height: 23px;
   border-radius: 50%;
   background-color: #a2cf78;
-  left: 440px;
+  left: 520px;
   top: 10px;
   display: none;
 }
@@ -187,7 +187,7 @@
   }
   .form-validation .form-valid-data-sign,
   .form-validation .form-invalid-data-sign {
-    left: 235px;
+    left: 280px;
     top: 40px;
   }
   .form-validation .form-invalid-data {
