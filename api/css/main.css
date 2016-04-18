@@ -39,13 +39,18 @@ footer {
 }
 
 .page-content {
-  margin-bottom:200px;
+  margin-bottom:100px;
 }
 
 
 .json-response {
   text-align: left;
   font-weight: 400
+}
+
+section {
+  padding-top: 90px;
+  margin-top: -90px;
 }
 
 /*

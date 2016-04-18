@@ -13,6 +13,10 @@
   <link href="css/main.css" rel="stylesheet">
   <link rel="stylesheet" href="css/form.css">
   <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
+<!--
+  
+  <link href="css/scrolling-nav.css" rel="stylesheet">
+-->
 
   <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -22,7 +26,7 @@
     <![endif]-->
 </head>
 
-<body>
+<body id="page-top" data-spy="scroll" data-target=".navbar" data-offset='50'>
 
 
   <nav class="navbar navbar-default navbar-fixed-top">
@@ -55,12 +59,12 @@
       </div>
     </div>
     <div class="btn-group btn-group-justified btn-group-sm section-button">
-      <a href="#docs" class="btn btn-default">Latest Docs</a>
-      <a href="#gui" class="btn btn-default">GUI Demo</a>
+      <a href="#docs" class="page-scroll btn btn-default">Latest Docs</a>
+      <a href="#gui" class="page-scroll btn btn-default">API Demo</a>
     </div>
   </nav>
 
-  <div class="container page-content">
+  <div class="container page-content" >
     <div class="row">
       <div class="col-md-10 col-md-offset-1">
         <!-- <iframe src="api_docs/DRF Docs.html" style="width: 100%;" frameborder="0" scrolling="no" onload="resizeIframe(this)"> -->
@@ -430,8 +434,12 @@
   <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js "></script>
   <!-- Include all compiled plugins (below), or include individual files as needed -->
-  <script src="../js/bootstrap.min.js "></script>
+  <script src="js/bootstrap.min.js "></script>
   <script src="js/demo.js "></script>
+  
+      <!-- Scrolling Nav JavaScript -->
+    <script src="js/jquery.easing.min.js"></script>
+    <script src="js/scrolling-nav.js"></script>
 
 </body>
 
