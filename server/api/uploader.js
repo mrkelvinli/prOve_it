@@ -62,7 +62,7 @@ Uploader = {
         }
 
         var stock_price_file_with_cr = calc_cumulative_returns(stock_price_file_json);
-
+        var all_query_company = get_all_query_company(stock_characteristic_file_json);
 
 
         // Add the two files with the token to the database
@@ -70,12 +70,14 @@ Uploader = {
           token: token,
           stock_price_file: stock_price_file_with_cr,
           stock_characteristic_file: stock_characteristic_file_json,
+          all_query_company: all_query_company,
         });
 
 
         API.utility.response(context, 200, {
           log: API.utility.api_log(params, files, context.request.start_time, "successful"),
           token: token,
+          all_query_company : all_query_company,
           //          stock_price_file: stock_price_file_with_cr,
         });
       } else {
@@ -130,6 +132,27 @@ Uploader = {
     },
   },
 };
+
+function get_all_query_company(stock_characteristic_file) {
+  if (stock_characteristic_file == null) {
+    return stock_characteristic_file;
+  }
+
+  var fields = stock_characteristic_file[0];
+  var RIC_id = fields.indexOf('#RIC');
+
+  var all_company = [];
+  
+  for (var i = 1; i < stock_characteristic_file.length; i++) {
+    var c = stock_characteristic_file[i][RIC_id].toString();
+    if (all_company.indexOf(c) == -1){
+      all_company.push(c);
+    }
+  }
+  
+  return all_company;
+
+}
 
 function calc_cumulative_returns(stock_price_file) {
   if (stock_price_file == null) {
@@ -198,6 +221,6 @@ function calc_cumulative_returns(stock_price_file) {
 
     prev_last = current_last;
   }
-  
+
   return stock_price_file;
 }
