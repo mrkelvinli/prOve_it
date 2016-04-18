@@ -43,10 +43,12 @@ Uploader = {
         var stock_price_file_json = null;
         var stock_characteristic_file_json = null;
         var token = Random.id(20);
-        while (Files.find({token: token}).count() !== 0) {
+        while (Files.find({
+            token: token
+          }).count() !== 0) {
           token = Random.id(20);
         }
-        
+
         // 
         for (var id in files) {
           if (files[id]['fieldname'] == "stock_price_file") {
@@ -98,9 +100,20 @@ Uploader = {
       var stock_characteristic_file_OK = false
       for (var id in files) {
         if (files[id]['fieldname'] == "stock_price_file" && !stock_price_file_OK) {
-          stock_price_file_OK = true;
-        } else if (files[id]['fieldname'] == "stock_characteristic_file" && !stock_characteristic_file_OK) {
-          stock_characteristic_file_OK = true;
+          var fields = files[id]['json'][0];
+          if (fields.indexOf('Open') && fields.indexOf('Date[L]') && fields.indexOf('Time[L]') &&
+            fields.indexOf('Type') && fields.indexOf('Qualifiers') && fields.indexOf('High') &&
+            fields.indexOf('Low') && fields.indexOf('Last') && fields.indexOf('Volume') &&
+            fields.indexOf('Open Interest') && fields.indexOf('Settle') &&
+            fields.indexOf('Data Source')) {
+            stock_price_file_OK = true;
+          }
+        } else if (files[id]['fieldname'] == "stock_characteristic_file" &&
+          !stock_characteristic_file_OK) {
+          var fields = files[id]['json'][0];
+          if (fields.indexOf('Event Date')) {
+            stock_characteristic_file_OK = true;
+          }
         }
       }
       return files.length == 2 &&
