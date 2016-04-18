@@ -45,6 +45,9 @@ successField.on('change paste keyup',function() {
   //  
   $("#upload_form").submit(function (event) {
     event.preventDefault();
+    
+    upload_response.empty();
+    upload_response.html("Processing");
 
     $.ajax({
       url: base_url + "/event-study/submit-files",
@@ -66,6 +69,9 @@ successField.on('change paste keyup',function() {
 
   $("#cumulative-return-form").submit(function (event) {
     event.preventDefault();
+    
+    cumulative_response.empty();
+    cumulative_response.html("Processing");
 
     var data = {
       upper_window: upper_window.val(),
