@@ -11,6 +11,12 @@
   <!-- Bootstrap -->
   <link href="css/bootstrap.min.css" rel="stylesheet">
   <link href="css/main.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/form.css">
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
+<!--
+  
+  <link href="css/scrolling-nav.css" rel="stylesheet">
+-->
 
   <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -20,7 +26,7 @@
     <![endif]-->
 </head>
 
-<body>
+<body id="page-top" data-spy="scroll" data-target=".navbar" data-offset='50'>
 
 
   <nav class="navbar navbar-default navbar-fixed-top">
@@ -34,14 +40,16 @@
         </button>
       </div>
 
-      <div class="head-brandname">
-        prOve it
-      </div>
+      <a href="../">
+        <div class="head-brandname">
+          prOve it
+        </div>
+      </a>
 
       <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
         <ul class="nav navbar-nav">
-          <li class=""><a href="/">About us</a></li>
-          <li class="active"><a href="api">Event Study API</a></li>
+          <li class=""><a href="../">About us</a></li>
+          <li class="active"><a href="../api">Event Study API - DOCS</a></li>
 
         </ul>
 
@@ -50,172 +58,405 @@
         </ul>
       </div>
     </div>
+    <div class="btn-group btn-group-justified btn-group-sm section-button">
+      <a href="#docs" class="page-scroll btn btn-default">Latest Docs</a>
+      <a href="#gui" class="page-scroll btn btn-default">API Demo</a>
+    </div>
   </nav>
 
-  <div class="container api_doc_page">
-    <!-- <iframe src="api_docs/DRF Docs.html" style="width: 100%;" frameborder="0" scrolling="no" onload="resizeIframe(this)"> -->
-    <!-- <p>Your browser does not support iframes.</p> -->
-    <!-- </iframe> -->
+  <div class="container page-content" >
+    <div class="row">
+      <div class="col-md-10 col-md-offset-1">
+        <!-- <iframe src="api_docs/DRF Docs.html" style="width: 100%;" frameborder="0" scrolling="no" onload="resizeIframe(this)"> -->
+        <!-- <p>Your browser does not support iframes.</p> -->
+        <!-- </iframe> -->
 
-    <script>
-      function toggle_visibility(id) {
-         var e = document.getElementById(id);
-         if(e.style.display == 'block')
-            e.style.display = 'none';
-         else
-            e.style.display = 'block';
-      }
-    </script>
 
-    <div class="title">
-      <h2>Event Study API Specifications</h2>
-      <hr>
-      <h4>Version: <b>1.0</b></h4>
+        <section id="docs">
 
-      <button onclick="toggle_visibility('how-to');" class="spoilb">How to use</button>
-        <br>
-        <div class="tutorial" style="display:none" id="how-to">
-          <p class='greyed'>
-            1. Upload two files using a <span class="label label-primary">POST</span> request. <br>
-            2. The server will then give you an API key, to later use to access or alter your files <br>
-            3. To calculate cumulative returns, send a <span class="label label-secondary">GET</span> request
-               to <code>.../cumulative_returns?user_id=YOUR-USER-ID</code> with the neccesary parameters. <br>
-            4. The server will then return a JSON array with your results.<br>
-          </p>
-        </div>
+          <div class="title">
+            <h2>Event Study API Specifications</h2>
+            <h4>Version: <b>1.0</b></h4>
 
-      <h4>All endpoints are relative to <code>http://prove-it-unsw.herokuapp.com/api/v1/event-study</code> </h4>
-      <hr>
-    </div>
-
-    <div class="content">
-      <div class="endpoints">
-        <div class='endpoint'>
-          <div class="name">
-            <span class="label label-primary"><font size=3>POST</font></span><span class="path"> <code>/cumulative_returns</code></span>  
+            <h4>All endpoints are relative to <code>http://prove-it-unsw.herokuapp.com/api/v1/event-study</code> </h4>
+            <hr>
           </div>
-          <br>
-          <div class="params">
 
+          <div class="content">
+            <div class="endpoints">
+              <div class='endpoint'>
+                <div class="name">
+                  <span class='label label-post'><font size=3>POST</font></span><span class="path"> <code>/submit-files</code></span>
+                </div>
 
-            <p class="fields-desc"><h4>Description</h4></p>
-            <p class='greyed'>
-              Calculates the cumulative returns (%) to determine whether a certain event has affected the stock price.
-            </p>
-
-            <br>
-            <button onclick="toggle_visibility('param-codes');" class="spoilb">Parameter details</button>
-            <div style="display:none" id="param-codes">
-
-            <p class="fields-desc"><h4>Query parameters</h4></p>
-              <ul class="list fields">
-                <li class="field"><code>upper_window</code>
-                  <p class='greyed'>
-                    The upper window of time relative to the event date.
+                <div class="fields-desc">
+                    <h4>Description</h4></div>
+                  <p class='subtext'>
+                    Uploads your two files and returns a log file with your user <code>token</code>, use this to calculate your cumulative returns.
                   </p>
-                </li>
-              
-                <li class="field"><code>lower_window</code>
-                  <p class='greyed'>
-                    The lower window of time relative to the event date.
-                  </p>
-                </li>
 
-                <li class="field"><code>upper_&lt;var_name&gt;</code>
-                  <p class='greyed'>
-                    The upper threshold value for the event type.
-                  </p>
-                </li>
+                  <h4>Parameters</h4>
+                  <div class="params-list">
+                    <div class="param-type">
+                      <h5><b>Body parameters</b></h5></div>
+                    <ul class="list fields">
+                      <li class="field"><code>stock_price_file</code>
+                        <p class='greyed'>
+                          The .csv file containing the stock prices.
+                        </p>
+                      </li>
 
-                <li class="field"><code>lower_&lt;var_name&gt;</code>
-                  <p class='greyed'>
-                    The lower threshold value for the event type.
-                  </p>
-                </li>
-              </ul>
+                      <li class="field"><code>stock_characteristic_file</code>
+                        <p class='greyed'>
+                          The .csv file containing the stock characteristic.
+                        </p>
+                      </li>
+                    </ul>
+                  </div>
 
-            <p class="fields-desc"><h4>Body parameters</h4></p>
-              <ul class="list fields">
-                <li class="field"><code>stock_price_file</code>
-                  <p class='greyed'>
-                  The .csv file containing the stock prices.
+                  <div class="fields-desc">
+                    <h4>Return type</h4></div>
+                  <p class='subtext'>
+                    Returns a log file which contains your user <code>token</code>
                   </p>
-                </li>
 
-                <li class="field"><code>stock_characteristic file</code>
+
+              </div>
+              <hr>
+
+
+              <div class='endpoint'>
+                <div class="name">
+                  <span class="label label-primary"><font size=3>GET</font></span><span class="path"> <code>/cumulative-returns</code></span>
+                </div>
+                <div class="params">
+
+                  <div class="fields-desc">
+                    <h4>Description</h4></div>
                   <p class='greyed'>
-                    The .csv file containing the stock characteristic.
+                    Calculates the cumulative returns (%) to determine whether a certain event has affected the stock price.
                   </p>
-                </li>
-              </ul>
+
+
+                  <h4>Parameters</h4>
+                  <div class="params-list">
+                    <div class="param-type">
+                      <h5><b>Query parameters</b></h5></div>
+                    <ul class="list fields">
+                      <li class="field"><code>upper_window</code>
+                        <p class='greyed'>
+                          The upper window of time relative to the event date.
+                        </p>
+                      </li>
+
+                      <li class="field"><code>lower_window</code>
+                        <p class='greyed'>
+                          The lower window of time relative to the event date.
+                        </p>
+                      </li>
+
+                      <li class="field"><code>upper_&lt;var_name&gt;</code>
+                        <p class='greyed'>
+                          The upper threshold value for the event type.
+                        </p>
+                      </li>
+
+                      <li class="field"><code>lower_&lt;var_name&gt;</code>
+                        <p class='greyed'>
+                          The lower threshold value for the event type.
+                        </p>
+                      </li>
+                    </ul>
+                  </div>
+
+                  <div class="fields-desc">
+                    <h4>Return type</h4></div>
+                  <p class='greyed'>
+                    Returns ordered JSON array of products and their respective display names, as well as their cumulative returns as a percentage
+                  </p>
+
+                  <h4>Response Codes</h4>
+                <div class="resp-codes">
+                  <ul class="list fields">
+                    <li class="field"><code>200</code>
+                      <p class='greyed'>
+                        Success, returns a JSON array
+                      </p>
+                    </li>
+
+                    <li class="field"><code>404</code>
+                      <p class='greyed'>
+                        Incorrect or invalid parameters
+                      </p>
+                    </li>
+
+                    <li class="field"><code>422</code>
+                      <p class='greyed'>
+                        One or more of the provided files is not in the <code>.csv</code> format
+                      </p>
+                    </li>
+                  </ul>
+                </div>
+
+                  <hr>
+                  <div class="fields-desc">
+                    <h3>Example Usage</h3></div>
+
+                </div>
+
+                <!-- EXAMPLE USAGE -->
+                <p class='greyed'>
+                  1. Submit your two files with a POST request
+                </p>
+                <pre>curl --tr-encoding -X POST -v -# \
+--form "stock_price_file=@event_date.csv" \
+--form "stock_characteristic_file=@FarmingCompanies_6.csv" \
+http://prove-it-unsw.herokuapp.com/api/v1/event-study/submit-files
+</pre>
+                <p class='greyed'>
+                  2. The server will respond with both a log file and a <code>token</code>, use this token to extract cumulative returns in the next step.
+                <pre>
+{"log":{
+  "team_name":"prOve it",
+  "version":"v1",
+  "input_filename":["event_date.csv","FarmingCompanies_6.csv"],
+  "parameters_passed":{},
+  "exec_status":"successful",
+  "start_time":"2016-4-17 14:35:36 PM",
+  "end_time":"2016-4-17 14:35:56 PM",
+  "elapsed_time":"141ms"},
+  "token":"AE7NQyjzTNa3tzDuxTb6"}</pre>
+                <p class='greyed'>
+                  In this example we can see the token is <code>AE7NQyjzTNa3tzDuxTb6</code>
+                </p>
+                <p class='greyed'>
+                  3. To generate cumulative returns, submit a GET request along with your <code>parameters</code> and your user <code>token</code>
+                </p>
+                <pre>
+curl --tr-encoding -X GET -v -G -# \
+-d "upper_window=50" \
+-d "lower_window=5" \
+-d "upper_CEO_Health=40" \
+-d "lower_CEO_Health=4" \
+-d "token=AE7NQyjzTNa3tzDuxTb6" \
+http://prove-it-unsw.herokuapp.com/api/v1/event-study/cumulative-returns</pre>
+
+
+                <p class='greyed'>
+                  Example output can be found <a href="example-output.txt">here</a>.
+                </p>
+              </div>
             </div>
-            <br>
-
-
-            <br>
-            <p class="fields-desc"><h4>Return type</h4></p>
-              <p class='greyed'>
-                Returns ordered JSON array of products and their respective display names, as well as their cumulative returns as a percentage
-              </p>
-
-            <br>
-            <p class="fields-desc"><h4>Example Usage</h4></p>
-          
           </div>
-
-          <pre>curl -X POST http://prove-it-unsw.herokuapp.com/api/v1/event-study/cumulative_returns</pre>
-            <p class='greyed'>
-              Example output can be found <a href="example-output.txt">here</a>.
-            </p>
-
-          <br>
-          <!-- <p class="fields-desc"><h4>More details</h4></p> -->
-
-          <button onclick="toggle_visibility('resp-codes');" class="spoilb"> Response Codes </button>
-
-          <div style="display:none" id="resp-codes">
-            <br>
-            <ul class="list fields">
-                <li class="field"><code>200</code>
-                  <p class='greyed'>
-                    Success, returns a JSON array
-                  </p>
-                </li>
-
-                <li class="field"><code>404</code>
-                  <p class='greyed'>
-                    Incorrect or invalid parameters
-                  </p>
-                </li>
-
-                <li class="field"><code>422</code>
-                  <p class='greyed'>
-                    One or more of the provided files is not in the <code>.csv</code> format
-                  </p>
-                </li>
-              </ul>
-          </div>
-          <br>
           <hr>
+        </section>
+
+
+        <section id="gui">
+          <h3> API Demo</h3>
+
+          <form class="form-validation" method="post" action="" id="upload_form" enctype="multipart/form-data">
+
+            <div class="form-title-row">
+              <h1>Submit Files</h1>
+            </div>
+
+            <div class="form-row form-input-name-row">
+
+              <label>
+                <span>Stock Price File</span>
+                <input type="file" class="pull-right" name="stock_price_file">
+              </label>
+
+              <span class="form-valid-data-sign"><i class="fa fa-check"></i></span>
+
+              <span class="form-invalid-data-sign"><i class="fa fa-close"></i></span>
+              <span class="form-invalid-data-info"></span>
+
+            </div>
+
+            <div class="form-row form-input-name-row">
+
+              <label>
+                <span>Stock Characteristic File</span>
+                <input type="file" class="pull-right" name="stock_characteristic_file">
+              </label>
+
+              <span class="form-valid-data-sign"><i class="fa fa-check"></i></span>
+
+              <span class="form-invalid-data-sign"><i class="fa fa-close"></i></span>
+              <span class="form-invalid-data-info"></span>
+
+            </div>
+
+            <div class="form-row">
+
+              <button type="submit" class="submit_btn">Upload</button>
+
+            </div>
+
+            <div class='form-row'>
+              <pre id="upload_response" class="json-response"></pre>
+            </div>
+
+          </form>
+
+          <p></p>
+
+
+          <form class="form-validation " method="post " action="#" id="cumulative-return-form">
+
+            <div class="form-title-row ">
+              <h1>Cumulative Returns</h1>
+            </div>
+
+            <div class="form-row form-input-name-row ">
+
+              <label>
+                <span>Upper Window</span>
+                <input type="text " name="upper_window">
+              </label>
+
+              <span class="form-valid-data-sign "><i class="fa fa-check "></i></span>
+
+              <span class="form-invalid-data-sign "><i class="fa fa-close "></i></span>
+              <span class="form-invalid-data-info "></span>
+
+            </div>
+
+            <div class="form-row form-input-name-row ">
+
+              <label>
+                <span>Lower Window</span>
+                <input type="text " name="lower_window">
+              </label>
+
+              <span class="form-valid-data-sign "><i class="fa fa-check "></i></span>
+
+              <span class="form-invalid-data-sign "><i class="fa fa-close "></i></span>
+              <span class="form-invalid-data-info "></span>
+
+            </div>
+            
+            <div class="form-row form-input-name-row ">
+
+              <label>
+                <span>Variable Name</span>
+                <input type="text " name="var_name">
+              </label>
+
+              <span class="form-valid-data-sign "><i class="fa fa-check "></i></span>
+
+              <span class="form-invalid-data-sign "><i class="fa fa-close "></i></span>
+              <span class="form-invalid-data-info "></span>
+
+            </div>
+
+            <div class="form-row form-input-name-row ">
+
+              <label>
+                <span>Variable Upper Limit</span>
+                <input type="text " name="upper_range">
+              </label>
+
+              <span class="form-valid-data-sign "><i class="fa fa-check "></i></span>
+
+              <span class="form-invalid-data-sign "><i class="fa fa-close "></i></span>
+              <span class="form-invalid-data-info "></span>
+
+            </div>
+
+            <div class="form-row form-input-name-row ">
+
+              <label>
+                <span>Variable Lower Limit</span>
+                <input type="text " name="lower_range">
+              </label>
+
+              <span class="form-valid-data-sign "><i class="fa fa-check "></i></span>
+
+              <span class="form-invalid-data-sign "><i class="fa fa-close "></i></span>
+              <span class="form-invalid-data-info "></span>
+
+            </div>
+
+            <div class="form-row form-input-name-row ">
+
+              <label>
+                <span>Token</span>
+                <input type="text" name="token">
+              </label>
+
+              <span class="form-valid-data-sign "><i class="fa fa-check "></i></span>
+
+              <span class="form-invalid-data-sign "><i class="fa fa-close "></i></span>
+              <span class="form-invalid-data-info "></span>
+
+            </div>
+
+            <div class="form-row ">
+
+              <button type="submit ">Get Cumulative Return</button>
+
+            </div>
+            
+            <div class='form-row'>
+              <pre id="cumulative_response" class="json-response">
+<!--
+              {
+  "log": {
+    "team_name": "prOve it",
+    "version": "v1",
+    "input_filename": [],
+    "parameters_passed": {
+      "upper_window": "1234",
+      "lower_window": "3",
+      "token": "sdaf",
+      "upper_kelvin213": "1234",
+      "lower_kelvin213": "234"
+    },
+    "exec_status": "Invalid token.",
+    "start_time": "2016-4-17 23:57:58 PM",
+    "end_time": "2016-4-17 23:57:58 PM",
+    "elapsed_time": "2ms"
+  }
+}
+              
+-->
+              </pre>
+            </div>
+
+          </form>
 
 
 
-        </div>
+
+
+        </section>
       </div>
     </div>
 
     <footer>
-      <div class="container" style="margin:4px">
-        <center>Build by: Keith Lai, Yan Chi Ku, Mendel Liang, Kelvin Li, Gino Conte</center>
+      <div class="container " style="margin:4px ">
+        <center> Build by: Keith Lai, Yan Chi Ku, Mendel Liang, Kelvin Li, Gino Conte</center>
       </div>
     </footer>
-
   </div>
 
 
 
+  <script>
+    function toggle_visibility(id) {
+      var e = document.getElementById(id);
+      if (e.style.display == 'block')
+        e.style.display = 'none';
+      else
+        e.style.display = 'block';
+    }
+  </script>
 
-  <script language="javascript" type="text/javascript">
+
+  <script language="javascript " type="text/javascript ">
     function resizeIframe(obj) {
       obj.style.height = obj.contentWindow.document.body.scrollHeight + 'px';
     }
@@ -223,9 +464,15 @@
 
 
   <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js "></script>
   <!-- Include all compiled plugins (below), or include individual files as needed -->
-  <script src="../js/bootstrap.min.js"></script>
+  <script src="js/bootstrap.min.js "></script>
+  <script src="js/demo.js "></script>
+  
+      <!-- Scrolling Nav JavaScript -->
+    <script src="js/jquery.easing.min.js"></script>
+    <script src="js/scrolling-nav.js"></script>
+
 </body>
 
 </html>

@@ -2,7 +2,7 @@
 
 .head-brandname {
   padding-top:9px;
-  color:#F47C3C;
+  color:orange;
   position:fixed;
   left:50%;
   transform: translate(-50%, 0%);
@@ -18,15 +18,42 @@ body, html {
 /*    overflow: hidden;*/
     padding-top: 44px;
     padding-bottom: 25px;
-  background-color: white;
+  background-color: #f3f3f3;
 }
 
-.api_doc_page {
-/*  overflow: auto;*/
-  height:100%;
-  padding:0;
+.section-button {
+  border-width: 0px;
+  border-top-width:1px;
+  border-style: groove;
+  border-color:darkgrey;
 }
 
+footer {
+/*    background-color: orange;*/
+    position: fixed;
+    bottom: 0;
+/*    height: 40px;*/
+    width: 100%;
+/*    overflow:hidden;*/
+    font-family: Verdana;
+}
+
+.page-content {
+  margin-bottom:100px;
+}
+
+
+.json-response {
+  text-align: left;
+  font-weight: 400
+}
+
+section {
+  padding-top: 90px;
+  margin-top: -90px;
+}
+
+/*
 div.content {
   margin-left: 200px;
   margin-right: 200px;
@@ -38,6 +65,7 @@ div.title {
   margin-left: 200px;
 
 }
+*/
 
 div.type {
   margin-right: 20px;
@@ -47,7 +75,7 @@ div.type {
 .label {
   width: 55px;
   display: inline-block;
-  background-color:   #2eb8b8;
+  background-color: #009933;
 }
 
 div.tutorial {
@@ -55,6 +83,25 @@ div.tutorial {
 
 }
 
-.label-secondary {
-  background-color: #00ff00;
+.label-post {
+  background-color:  #0066ff;
+}
+
+.param-type {
+  margin-right: 25px;
+  margin-left: 25px;
+}
+
+hr {
+  border: 0;
+  clear:both;
+  display:block;
+  width: 96%;               
+  background-color: #e67300;
+  height: 1px;
+}
+
+code {
+  color:  #ff8000;
+  background-color: rgba(255,80,0,0.2);
 }

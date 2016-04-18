@@ -1,4 +1,4 @@
-@import url(https://fonts.googleapis.com/css?family=Poiret+One|Slabo+27px);
+@import url(https://fonts.googleapis.com/css?family=Poiret+One|Slabo+27px|Noto+Sans);
 
 
 
@@ -27,9 +27,9 @@
 .about-us {
   text-shadow: 0 0 30px black,0 0 30px black,0 0 30px black,0 0 30px black;
   color:lightgrey;
-  font-size:18px;
+  font-size:17px;
   margin:20px;
-  font-family: 'Slabo 27px', serif;
+  font-family: 'Noto Sans', sans-serif;
 }
 
 
