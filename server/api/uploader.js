@@ -177,6 +177,7 @@ function calc_cumulative_returns(stock_price_file) {
     if (current_last == '') {
       //      console.log("no last");
       if (current_company != stock_price_file[i][RIC_id].toString()) {
+        prev_last = 0;
         //        console.log("different company");
         var same_c = stock_price_file[i][RIC_id].toString();
         var open = stock_price_file[i][open_id];
