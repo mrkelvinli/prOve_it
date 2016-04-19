@@ -60,7 +60,7 @@ $(document).ready(function () {
         console.log(data);
         upload_response.show();
         upload_response.empty();
-        upload_response.text(JSON.stringify(data, undefined, 2));
+        upload_response.text(JSON.stringify(data.responseJSON , undefined, 2));
       },
     });
     return false;
