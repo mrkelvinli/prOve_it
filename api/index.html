@@ -13,7 +13,7 @@
   <link href="css/main.css" rel="stylesheet">
   <link rel="stylesheet" href="css/form.css">
   <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
-<!--
+  <!--
   
   <link href="css/scrolling-nav.css" rel="stylesheet">
 -->
@@ -64,7 +64,7 @@
     </div>
   </nav>
 
-  <div class="container page-content" >
+  <div class="container page-content">
     <div class="row">
       <div class="col-md-10 col-md-offset-1">
         <!-- <iframe src="api_docs/DRF Docs.html" style="width: 100%;" frameborder="0" scrolling="no" onload="resizeIframe(this)"> -->
@@ -90,35 +90,35 @@
                 </div>
 
                 <div class="fields-desc">
-                    <h4>Description</h4></div>
-                  <p class='subtext'>
-                    Uploads your two files and returns a log file with your user <code>token</code>, use this to calculate your cumulative returns.
-                  </p>
+                  <h4>Description</h4></div>
+                <p class='subtext'>
+                  Uploads your two files and returns a log file with your user <code>token</code>, use this to calculate your cumulative returns.
+                </p>
 
-                  <h4>Parameters</h4>
-                  <div class="params-list">
-                    <div class="param-type">
-                      <h5><b>Body parameters</b></h5></div>
-                    <ul class="list fields">
-                      <li class="field"><code>stock_price_file</code>
-                        <p class='greyed'>
-                          The .csv file containing the stock prices.
-                        </p>
-                      </li>
+                <h4>Parameters</h4>
+                <div class="params-list">
+                  <div class="param-type">
+                    <h5><b>Body parameters</b></h5></div>
+                  <ul class="list fields">
+                    <li class="field"><code>stock_price_file</code>
+                      <p class='greyed'>
+                        The .csv file containing the stock prices.
+                      </p>
+                    </li>
 
-                      <li class="field"><code>stock_characteristic_file</code>
-                        <p class='greyed'>
-                          The .csv file containing the stock characteristic.
-                        </p>
-                      </li>
-                    </ul>
-                  </div>
+                    <li class="field"><code>stock_characteristic_file</code>
+                      <p class='greyed'>
+                        The .csv file containing the stock characteristic.
+                      </p>
+                    </li>
+                  </ul>
+                </div>
 
-                  <div class="fields-desc">
-                    <h4>Return type</h4></div>
-                  <p class='subtext'>
-                    Returns a log file which contains your user <code>token</code>
-                  </p>
+                <div class="fields-desc">
+                  <h4>Return type</h4></div>
+                <p class='subtext'>
+                  Returns a log file which contains your user <code>token</code>
+                </p>
 
 
               </div>
@@ -154,7 +154,7 @@
                           The lower window of time relative to the event date.
                         </p>
                       </li>
-                      
+
                       <li class="field"><code>topic_name</code>
                         <p class='greyed'>
                           The name of the event type in the stock characteristic file.
@@ -182,27 +182,27 @@
                   </p>
 
                   <h4>Response Codes</h4>
-                <div class="resp-codes">
-                  <ul class="list fields">
-                    <li class="field"><code>200</code>
-                      <p class='greyed'>
-                        Success, returns a JSON array
-                      </p>
-                    </li>
+                  <div class="resp-codes">
+                    <ul class="list fields">
+                      <li class="field"><code>200</code>
+                        <p class='greyed'>
+                          Success, returns a JSON array
+                        </p>
+                      </li>
 
-                    <li class="field"><code>404</code>
-                      <p class='greyed'>
-                        Incorrect or invalid parameters
-                      </p>
-                    </li>
+                      <li class="field"><code>404</code>
+                        <p class='greyed'>
+                          Incorrect or invalid parameters
+                        </p>
+                      </li>
 
-                    <li class="field"><code>422</code>
-                      <p class='greyed'>
-                        One or more of the provided files is not in the <code>.csv</code> format
-                      </p>
-                    </li>
-                  </ul>
-                </div>
+                      <li class="field"><code>422</code>
+                        <p class='greyed'>
+                          One or more of the provided files is not in the <code>.csv</code> format
+                        </p>
+                      </li>
+                    </ul>
+                  </div>
 
                   <hr>
                   <div class="fields-desc">
@@ -222,8 +222,9 @@ http://prove-it-unsw.herokuapp.com/api/v1/event-study/submit-files
 </pre>
                 <p class='greyed'>
                   2. The server will respond with both a log file and a <code>token</code>, use this token to extract cumulative returns in the next step.
-                <pre>
-{"log":{
+                  <pre>
+{
+"log":{
   "team_name":"prOve it",
   "version":"v1",
   "input_filename":["event_date.csv","FarmingCompanies_6.csv"],
@@ -232,14 +233,16 @@ http://prove-it-unsw.herokuapp.com/api/v1/event-study/submit-files
   "start_time":"2016-4-17 14:35:36 PM",
   "end_time":"2016-4-17 14:35:56 PM",
   "elapsed_time":"141ms"},
-  "token":"AE7NQyjzTNa3tzDuxTb6"}</pre>
-                <p class='greyed'>
-                  In this example we can see the token is <code>AE7NQyjzTNa3tzDuxTb6</code>
-                </p>
-                <p class='greyed'>
-                  3. To generate cumulative returns, submit a GET request along with your <code>parameters</code> and your user <code>token</code>
-                </p>
-                <pre>
+  "token":"AE7NQyjzTNa3tzDuxTb6"
+}
+</pre>
+                  <p class='greyed'>
+                    In this example we can see the token is <code>AE7NQyjzTNa3tzDuxTb6</code>
+                  </p>
+                  <p class='greyed'>
+                    3. To generate cumulative returns, submit a GET request along with your <code>parameters</code> and your user <code>token</code>
+                  </p>
+                  <pre>
 curl --tr-encoding -X GET -v -G -# \
 -d "upper_window=5" \
 -d "lower_window=-5" \
@@ -251,9 +254,9 @@ http://prove-it-unsw.herokuapp.com/api/v1/event-study/cumulative-returns
 </pre>
 
 
-                <p class='greyed'>
-                  Example output can be found <a href="example-output.txt">here</a>.
-                </p>
+                  <p class='greyed'>
+                    Example output can be found <a href="example-output.txt">here</a>.
+                  </p>
               </div>
             </div>
           </div>
@@ -346,7 +349,7 @@ http://prove-it-unsw.herokuapp.com/api/v1/event-study/cumulative-returns
               <span class="form-invalid-data-info "></span>
 
             </div>
-            
+
             <div class="form-row form-input-name-row ">
 
               <label>
@@ -408,7 +411,7 @@ http://prove-it-unsw.herokuapp.com/api/v1/event-study/cumulative-returns
               <button type="submit ">Get Cumulative Return</button>
 
             </div>
-            
+
             <div class='form-row'>
               <pre id="cumulative_response" class="json-response">
 <!--
@@ -477,10 +480,10 @@ http://prove-it-unsw.herokuapp.com/api/v1/event-study/cumulative-returns
   <!-- Include all compiled plugins (below), or include individual files as needed -->
   <script src="js/bootstrap.min.js "></script>
   <script src="js/demo.js "></script>
-  
-      <!-- Scrolling Nav JavaScript -->
-    <script src="js/jquery.easing.min.js"></script>
-    <script src="js/scrolling-nav.js"></script>
+
+  <!-- Scrolling Nav JavaScript -->
+  <script src="js/jquery.easing.min.js"></script>
+  <script src="js/scrolling-nav.js"></script>
 
 </body>
 
