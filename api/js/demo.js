@@ -78,10 +78,11 @@ $(document).ready(function () {
     var data = {
       upper_window: upper_window.val(),
       lower_window: lower_window.val(),
+      topic_upper_range : upper_var.val(),
+      topic_lower_range : lower_var.val(),
+      topic_name : var_name.val(),
       token: token.val(),
     };
-    data["upper_" + var_name.val()] = upper_var.val();
-    data["lower_" + var_name.val()] = lower_var.val();
 
     $.ajax({
       url: base_url + "/event-study/cumulative-returns",
