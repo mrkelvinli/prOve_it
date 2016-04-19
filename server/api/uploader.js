@@ -111,11 +111,11 @@ Uploader = {
       for (var id in files) {
         if (files[id]['fieldname'] == "stock_price_file" && !stock_price_file_OK) {
           var fields = files[id]['json'][0];
-          if (fields.indexOf('Open') && fields.indexOf('Date[L]') && fields.indexOf('Time[L]') &&
-            fields.indexOf('Type') && fields.indexOf('Qualifiers') && fields.indexOf('High') &&
-            fields.indexOf('Low') && fields.indexOf('Last') && fields.indexOf('Volume') &&
-            fields.indexOf('Open Interest') && fields.indexOf('Settle') &&
-            fields.indexOf('Data Source')) {
+          if (fields.indexOf('Open') != -1 && fields.indexOf('Date[L]') != -1 && fields.indexOf('Time[L]') != -1 &&
+            fields.indexOf('Type') != -1 && fields.indexOf('Qualifiers') != -1 && fields.indexOf('High') != -1 &&
+            fields.indexOf('Low') != -1 && fields.indexOf('Last') != -1 && fields.indexOf('Volume') != -1 &&
+            fields.indexOf('Open Interest') != -1 && fields.indexOf('Settle') != -1 &&
+            fields.indexOf('Data Source') != -1) {
             stock_price_file_OK = true;
           }
         } else if (files[id]['fieldname'] == "stock_characteristic_file" &&
