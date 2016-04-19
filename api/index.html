@@ -154,14 +154,20 @@
                           The lower window of time relative to the event date.
                         </p>
                       </li>
+                      
+                      <li class="field"><code>topic_name</code>
+                        <p class='greyed'>
+                          The name of the event type in the stock characteristic file.
+                        </p>
+                      </li>
 
-                      <li class="field"><code>upper_&lt;var_name&gt;</code>
+                      <li class="field"><code>topic_upper_range</code>
                         <p class='greyed'>
                           The upper threshold value for the event type.
                         </p>
                       </li>
 
-                      <li class="field"><code>lower_&lt;var_name&gt;</code>
+                      <li class="field"><code>topic_lower_range</code>
                         <p class='greyed'>
                           The lower threshold value for the event type.
                         </p>
@@ -208,9 +214,10 @@
                 <p class='greyed'>
                   1. Submit your two files with a POST request
                 </p>
-                <pre>curl --tr-encoding -X POST -v -# \
---form "stock_price_file=@event_date.csv" \
---form "stock_characteristic_file=@FarmingCompanies_6.csv" \
+                <pre>
+curl --tr-encoding -X POST -v -# \
+--form "stock_price_file=@FarmingCompanies_6.csv" \
+--form "stock_characteristic_file=@event_date.csv" \
 http://prove-it-unsw.herokuapp.com/api/v1/event-study/submit-files
 </pre>
                 <p class='greyed'>
@@ -234,12 +241,14 @@ http://prove-it-unsw.herokuapp.com/api/v1/event-study/submit-files
                 </p>
                 <pre>
 curl --tr-encoding -X GET -v -G -# \
--d "upper_window=50" \
--d "lower_window=5" \
--d "upper_CEO_Health=40" \
--d "lower_CEO_Health=4" \
--d "token=AE7NQyjzTNa3tzDuxTb6" \
-http://prove-it-unsw.herokuapp.com/api/v1/event-study/cumulative-returns</pre>
+-d "upper_window=5" \
+-d "lower_window=-5" \
+--data-urlencode "topic_name=Cash Rate" \
+-d "topic_upper_range=20" \
+-d "topic_lower_range=0" \
+-d "token=XrAteezhkhzq9cfknBwh" \
+http://prove-it-unsw.herokuapp.com/api/v1/event-study/cumulative-returns
+</pre>
 
 
                 <p class='greyed'>

@@ -1,1 +1,523 @@
-temploot
+{
+  "log": {
+    "team_name": "prOve it",
+    "version": "v1",
+    "input_filename": [],
+    "parameters_passed": {
+      "upper_window": "5",
+      "lower_window": "-5",
+      "topic_upper_range": "10",
+      "topic_lower_range": "1",
+      "topic_name": "Cash Rate",
+      "token": "XrAteezhkhzq9cfknBwh",
+      "raw": "true"
+    },
+    "exec_status": "successful",
+    "start_time": "2016-4-19 13:39:40 PM",
+    "end_time": "2016-4-19 13:39:42 PM",
+    "elapsed_time": "-326ms"
+  },
+  "Event_Cumulative_Return": [
+    {
+      "company_name": "AAC.AX",
+      "event_date": "03-JAN-2010",
+      "cumulative_returns": [
+        null,
+        null,
+        null,
+        0,
+        0,
+        0,
+        0,
+        0.013513513513513526,
+        0.013513513513513526,
+        0.010180180180180264,
+        0.013524661785531363
+      ]
+    },
+    {
+      "company_name": "AAC.AX",
+      "event_date": "02-NOV-2011",
+      "cumulative_returns": [
+        0.02080308043987157,
+        0.02080308043987157,
+        0.02080308043987157,
+        0.024387309830552498,
+        0.013673024116266853,
+        0.010062915813017673,
+        -0.004429837810170586,
+        -0.0007533672219353703,
+        -0.0007533672219353703,
+        -0.0007533672219353703,
+        -0.01906838553695362
+      ]
+    },
+    {
+      "company_name": "BGA.AX",
+      "event_date": "02-NOV-2011",
+      "cumulative_returns": []
+    },
+    {
+      "company_name": "CCL.AX",
+      "event_date": "02-NOV-2011",
+      "cumulative_returns": []
+    },
+    {
+      "company_name": "CGC.AX",
+      "event_date": "02-NOV-2011",
+      "cumulative_returns": []
+    },
+    {
+      "company_name": "ELD.AX",
+      "event_date": "02-NOV-2011",
+      "cumulative_returns": [
+        -1.4410506148684847,
+        -1.4410506148684847,
+        -1.4410506148684847,
+        -1.3430113991822101,
+        -1.3251542563250676,
+        -1.377785835272436,
+        -1.377785835272436,
+        -1.3592673167539173,
+        -1.3592673167539173,
+        -1.3592673167539173,
+        -1.3774491349357356
+      ]
+    },
+    {
+      "company_name": "FGL.AX",
+      "event_date": "02-NOV-2011",
+      "cumulative_returns": []
+    },
+    {
+      "company_name": "FGL.AX",
+      "event_date": "02-NOV-2011",
+      "cumulative_returns": []
+    },
+    {
+      "company_name": "GFF.AX",
+      "event_date": "02-NOV-2011",
+      "cumulative_returns": []
+    },
+    {
+      "company_name": "GNC.AX",
+      "event_date": "02-NOV-2011",
+      "cumulative_returns": [
+        0.3276858520480329,
+        0.3276858520480329,
+        0.3276858520480329,
+        0.31643585204803293,
+        0.2810376219595373,
+        0.2653102300853564,
+        0.2866151568496707,
+        0.312690776145629,
+        0.312690776145629,
+        0.312690776145629,
+        0.312690776145629
+      ]
+    },
+    {
+      "company_name": "SHV.AX",
+      "event_date": "02-NOV-2011",
+      "cumulative_returns": []
+    },
+    {
+      "company_name": "TGR.AX",
+      "event_date": "02-NOV-2011",
+      "cumulative_returns": [
+        -0.05210510773902623,
+        -0.05210510773902623,
+        -0.05210510773902623,
+        -0.04565349483580042,
+        -0.05526887945118511,
+        -0.05203263349649248,
+        -0.05525843994810546,
+        -0.05202219399341283,
+        -0.05202219399341283,
+        -0.05202219399341283,
+        -0.05524800044502581
+      ]
+    },
+    {
+      "company_name": "TWE.AX",
+      "event_date": "02-NOV-2011",
+      "cumulative_returns": []
+    },
+    {
+      "company_name": "RIC.AX",
+      "event_date": "02-NOV-2011",
+      "cumulative_returns": [
+        0.13104844931742096,
+        0.13104844931742096,
+        0.13104844931742096,
+        0.1100400459560765,
+        0.09287266398182756,
+        0.10160628843597604,
+        0.08861927544896295,
+        0.10616313509808577,
+        0.10616313509808577,
+        0.10616313509808577,
+        0.08461141096015481
+      ]
+    },
+    {
+      "company_name": "WBA.AX",
+      "event_date": "02-NOV-2011",
+      "cumulative_returns": []
+    },
+    {
+      "company_name": "AAC.AX",
+      "event_date": "05-DEC-2012",
+      "cumulative_returns": [
+        -0.020714243533290294,
+        -0.020714243533290294,
+        -0.020714243533290294,
+        -0.020714243533290294,
+        -0.020714243533290294,
+        -0.0364622750293533,
+        -0.07646227502935334,
+        -0.08896227502935325,
+        -0.08896227502935325,
+        -0.08896227502935325,
+        -0.046768182202349
+      ]
+    },
+    {
+      "company_name": "BGA.AX",
+      "event_date": "05-DEC-2012",
+      "cumulative_returns": []
+    },
+    {
+      "company_name": "CCL.AX",
+      "event_date": "05-DEC-2012",
+      "cumulative_returns": []
+    },
+    {
+      "company_name": "CGC.AX",
+      "event_date": "05-DEC-2012",
+      "cumulative_returns": []
+    },
+    {
+      "company_name": "ELD.AX",
+      "event_date": "05-DEC-2012",
+      "cumulative_returns": [
+        -1.9567204872754806,
+        -1.9567204872754806,
+        -1.9567204872754806,
+        -1.9567204872754806,
+        -1.9967204872754807,
+        -1.9967204872754807,
+        -1.9967204872754807,
+        -1.9967204872754807,
+        -1.9967204872754807,
+        -1.9967204872754807,
+        -2.038387153942147
+      ]
+    },
+    {
+      "company_name": "FGL.AX",
+      "event_date": "05-DEC-2012",
+      "cumulative_returns": []
+    },
+    {
+      "company_name": "FGL.AX",
+      "event_date": "05-DEC-2012",
+      "cumulative_returns": []
+    },
+    {
+      "company_name": "GFF.AX",
+      "event_date": "05-DEC-2012",
+      "cumulative_returns": []
+    },
+    {
+      "company_name": "GNC.AX",
+      "event_date": "05-DEC-2012",
+      "cumulative_returns": [
+        0.8185887455487186,
+        0.8185887455487186,
+        0.8185887455487186,
+        0.8219500900865336,
+        0.8537758857314248,
+        0.8537758857314248,
+        0.8521525091080482,
+        0.8537785253682108,
+        0.8537785253682108,
+        0.8537785253682108,
+        0.8521551487448341
+      ]
+    },
+    {
+      "company_name": "SHV.AX",
+      "event_date": "05-DEC-2012",
+      "cumulative_returns": []
+    },
+    {
+      "company_name": "TGR.AX",
+      "event_date": "05-DEC-2012",
+      "cumulative_returns": [
+        -0.0859417657617572,
+        -0.0859417657617572,
+        -0.0859417657617572,
+        -0.0859417657617572,
+        -0.12819528688851764,
+        -0.12084234571204705,
+        -0.12449198074854348,
+        -0.10617696243352523,
+        -0.10617696243352523,
+        -0.10617696243352523,
+        -0.09178847322489211
+      ]
+    },
+    {
+      "company_name": "TWE.AX",
+      "event_date": "05-DEC-2012",
+      "cumulative_returns": []
+    },
+    {
+      "company_name": "RIC.AX",
+      "event_date": "05-DEC-2012",
+      "cumulative_returns": [
+        0.10051568787845827,
+        0.10051568787845827,
+        0.10051568787845827,
+        0.06398600751316144,
+        0.10190069945628943,
+        0.13843037982158626,
+        0.16045681153964786,
+        0.15614646671206175,
+        0.15614646671206175,
+        0.15614646671206175,
+        0.13883044939604441
+      ]
+    },
+    {
+      "company_name": "WBA.AX",
+      "event_date": "05-DEC-2012",
+      "cumulative_returns": [
+        0.4288881848753504,
+        0.4288881848753504,
+        0.4288881848753504,
+        0.4288881848753504,
+        0.4371526476852678,
+        0.41256248375084154,
+        0.41256248375084154,
+        0.41256248375084154,
+        0.4209658450953794,
+        0.43763251176204604,
+        0.43763251176204604
+      ]
+    },
+    {
+      "company_name": "AAC.AX",
+      "event_date": "04-FEB-2015",
+      "cumulative_returns": [
+        0.27490977012794304,
+        0.27490977012794304,
+        0.27490977012794304,
+        0.24678477012794295,
+        0.25321563829514554,
+        0.25002075011623187,
+        0.23720023729571904,
+        0.24369374378922554,
+        0.24369374378922554,
+        0.24369374378922554,
+        0.23079051798277392
+      ]
+    },
+    {
+      "company_name": "BGA.AX",
+      "event_date": "04-FEB-2015",
+      "cumulative_returns": []
+    },
+    {
+      "company_name": "CCL.AX",
+      "event_date": "04-FEB-2015",
+      "cumulative_returns": []
+    },
+    {
+      "company_name": "CGC.AX",
+      "event_date": "04-FEB-2015",
+      "cumulative_returns": []
+    },
+    {
+      "company_name": "ELD.AX",
+      "event_date": "04-FEB-2015",
+      "cumulative_returns": [
+        9.78116339318104,
+        9.78116339318104,
+        9.78116339318104,
+        9.741649715369489,
+        9.757472500179615,
+        9.773048824167153,
+        9.766913854842,
+        9.748395336323481,
+        9.748395336323481,
+        9.748395336323481,
+        9.701225525002727
+      ]
+    },
+    {
+      "company_name": "FGL.AX",
+      "event_date": "04-FEB-2015",
+      "cumulative_returns": []
+    },
+    {
+      "company_name": "FGL.AX",
+      "event_date": "04-FEB-2015",
+      "cumulative_returns": []
+    },
+    {
+      "company_name": "GFF.AX",
+      "event_date": "04-FEB-2015",
+      "cumulative_returns": []
+    },
+    {
+      "company_name": "GNC.AX",
+      "event_date": "04-FEB-2015",
+      "cumulative_returns": [
+        0.5878981400576005,
+        0.5878981400576005,
+        0.5878981400576005,
+        0.6238128426389699,
+        0.6205625717830651,
+        0.6227364848265434,
+        0.6075521030478015,
+        0.6163626757350261,
+        0.6163626757350261,
+        0.6163626757350261,
+        0.6261880032459431
+      ]
+    },
+    {
+      "company_name": "SHV.AX",
+      "event_date": "04-FEB-2015",
+      "cumulative_returns": []
+    },
+    {
+      "company_name": "TGR.AX",
+      "event_date": "04-FEB-2015",
+      "cumulative_returns": [
+        0.9948458225315655,
+        0.9948458225315655,
+        0.9948458225315655,
+        1.01341346178886,
+        1.02122596178886,
+        1.0160580031325293,
+        1.0290450161195421,
+        1.0110962981708242,
+        1.0110962981708242,
+        1.0110962981708242,
+        1.0163182302857068
+      ]
+    },
+    {
+      "company_name": "TWE.AX",
+      "event_date": "04-FEB-2015",
+      "cumulative_returns": []
+    },
+    {
+      "company_name": "RIC.AX",
+      "event_date": "04-FEB-2015",
+      "cumulative_returns": [
+        0.029855598167548555,
+        0.029855598167548555,
+        0.029855598167548555,
+        0.07381164212359242,
+        0.08960111580780297,
+        0.10514515725858019,
+        0.12555332052388632,
+        0.14555332052388634,
+        0.14555332052388634,
+        0.14555332052388634,
+        0.1602592028768274
+      ]
+    },
+    {
+      "company_name": "WBA.AX",
+      "event_date": "04-FEB-2015",
+      "cumulative_returns": [
+        1.3809499711078608,
+        1.3809499711078608,
+        1.3809499711078608,
+        1.3772186278242786,
+        1.3809639461763386,
+        1.3772326028927564,
+        1.3622513294845167,
+        1.3812627363286232,
+        1.3812627363286232,
+        1.3812627363286232,
+        1.373800049761459
+      ]
+    },
+    {
+      "company_name": "AAC.AX",
+      "event_date": "2-MAR-16",
+      "cumulative_returns": []
+    },
+    {
+      "company_name": "BGA.AX",
+      "event_date": "2-MAR-16",
+      "cumulative_returns": []
+    },
+    {
+      "company_name": "CCL.AX",
+      "event_date": "2-MAR-16",
+      "cumulative_returns": []
+    },
+    {
+      "company_name": "CGC.AX",
+      "event_date": "2-MAR-16",
+      "cumulative_returns": []
+    },
+    {
+      "company_name": "ELD.AX",
+      "event_date": "2-MAR-16",
+      "cumulative_returns": []
+    },
+    {
+      "company_name": "FGL.AX",
+      "event_date": "2-MAR-16",
+      "cumulative_returns": []
+    },
+    {
+      "company_name": "FGL.AX",
+      "event_date": "2-MAR-16",
+      "cumulative_returns": []
+    },
+    {
+      "company_name": "GFF.AX",
+      "event_date": "2-MAR-16",
+      "cumulative_returns": []
+    },
+    {
+      "company_name": "GNC.AX",
+      "event_date": "2-MAR-16",
+      "cumulative_returns": []
+    },
+    {
+      "company_name": "SHV.AX",
+      "event_date": "2-MAR-16",
+      "cumulative_returns": []
+    },
+    {
+      "company_name": "TGR.AX",
+      "event_date": "2-MAR-16",
+      "cumulative_returns": []
+    },
+    {
+      "company_name": "TWE.AX",
+      "event_date": "2-MAR-16",
+      "cumulative_returns": []
+    },
+    {
+      "company_name": "RIC.AX",
+      "event_date": "2-MAR-16",
+      "cumulative_returns": []
+    },
+    {
+      "company_name": "WBA.AX",
+      "event_date": "2-MAR-16",
+      "cumulative_returns": []
+    }
+  ]
+}
