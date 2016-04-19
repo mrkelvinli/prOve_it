@@ -224,19 +224,23 @@ http://prove-it-unsw.herokuapp.com/api/v1/event-study/submit-files
                   2. The server will respond with both a log file and a <code>token</code>, use this token to extract cumulative returns in the next step.
                   <pre>
 {
-"log":{
-  "team_name":"prOve it",
-  "version":"v1",
-  "input_filename":["event_date.csv","FarmingCompanies_6.csv"],
-  "parameters_passed":{},
-  "exec_status":"successful",
-  "start_time":"2016-4-17 14:35:36 PM",
-  "end_time":"2016-4-17 14:35:56 PM",
-  "elapsed_time":"141ms"},
-  "token":"XrAteezhkhzq9cfknBwh "
+  "log": {
+    "team_name": "prOve it",
+    "version": "v1",
+    "input_filename": [
+      "event_date.csv",
+      "FarmingCompanies_6.csv"
+    ],
+    "parameters_passed": {},
+    "exec_status": "successful",
+    "start_time": "2016-4-19 13:44:48 PM",
+    "end_time": "2016-4-19 13:45:09 PM",
+    "elapsed_time": "896ms"
+  },
+  "token": "oyuGSim7ZWXeonzqq6LK"
 }</pre>
                   <p class='greyed'>
-                    In this example we can see the token is <code>XrAteezhkhzq9cfknBwh </code>
+                    In this example we can see the token is <code>oyuGSim7ZWXeonzqq6LK </code>
                   </p>
                   <p class='greyed'>
                     3. To generate cumulative returns, submit a GET request along with your <code>parameters</code> and your user <code>token</code>
@@ -248,7 +252,7 @@ curl --tr-encoding -X GET -v -G -# \
 --data-urlencode "topic_name=Cash Rate" \
 -d "topic_upper_range=20" \
 -d "topic_lower_range=0" \
--d "token=XrAteezhkhzq9cfknBwh" \
+-d "token=oyuGSim7ZWXeonzqq6LK" \
 http://prove-it-unsw.herokuapp.com/api/v1/event-study/cumulative-returns
 </pre>
 
