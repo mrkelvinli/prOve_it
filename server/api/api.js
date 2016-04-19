@@ -1,5 +1,4 @@
 API = {
-
   connection: function (request) {
     var getRequestContents = API.utility.getRequestContents(request);
     return {
@@ -33,69 +32,85 @@ API = {
 
       var upper_window = "";
       var lower_window = "";
-      var upper_range = "";
-      var lower_range = "";
-      var range_name = "";
+      var topic_upper_range = "";
+      var topic_lower_range = "";
+      var topic_name = "";
       var token = params['token'];
+//      var csv_require = false;
 
-      var status_code = 200;
       var other_vars = {};
 
       for (var key in params) {
         if (key == "upper_window") {
           upper_window = params['upper_window'];
-          continue;
-        }
-        if (key == "lower_window") {
+        } else if (key == "lower_window") {
           lower_window = params['lower_window'];
-          continue;
+        } else if (key == 'topic_upper_range') {
+          topic_upper_range = params['topic_upper_range'];
+        } else if (key == "topic_lower_range") {
+          topic_lower_range = params['topic_lower_range'];
+        } else if (key == "topic_name") {
+          topic_name = params['topic_name'];
+        } else if (key == "raw" && params['raw'] == 'true') {
+          csv_require = true;
+        } else {
+          other_vars[key] = params[key];
         }
-        var upperRegex = /upper_([a-zA-Z\-]+)/g;
-        var lowerRegex = /lower_([a-zA-Z\-]+)/g;
-        var match = upperRegex.exec(key);
-        if (match != null) {
-          upper_range = params[key];
-          var match_value = match[1];
-          //          console.log(match_value);
-          if (API.utility.match_range_name(range_name, match_value)) {
-            range_name = match_value;
-          }
-          continue;
-        }
-        match = lowerRegex.exec(key);
-        if (match != null) {
-          lower_range = params[key];
-          //            lower_range = parseFloat.(params[key]);
-          var match_value = match[1];
-          if (API.utility.match_range_name(range_name, match_value)) {
-            range_name = match_value;
-          }
-          continue;
-        }
-        other_vars[key] = params[key];
       }
 
       // Make sure that our request has data and that the data is valid.
-      var requestOK = API.utility.validateRequest(upper_window, lower_window, upper_range, lower_range, range_name);
+      var rangeOK = API.utility.rangeOK(upper_window, lower_window, topic_upper_range, topic_lower_range);
       var tokenOK = API.utility.tokenOK(token);
 
-      if (requestOK && tokenOK) {
-        upper_window = parseFloat(upper_window);
-        lower_window = parseFloat(lower_window);
-        upper_range = parseFloat(upper_range);
-        lower_range = parseFloat(lower_range);
-        
-        var file = Files.findOne({token:token});
+      if (rangeOK && tokenOK) {
+        // convert all param from string to float
+        upper_window = parseInt(upper_window);
+        lower_window = parseInt(lower_window);
+        topic_upper_range = parseFloat(topic_upper_range);
+        topic_lower_range = parseFloat(topic_lower_range);
+
+        // get the file assiciated to the token
+        var file = Files.findOne({
+          token: token
+        });
         var stock_price_file = file.stock_price_file;
         var stock_characteristic_file = file.stock_characteristic_file;
 
-        // the validation does nothing at the moment
-        // validData = API.utility.validate( connection.data, { "a": String, "b": String });
+        // check if the topic name is in the stock characteristic file
+        var topicNameOK = API.utility.topicNameOK(topic_name, stock_characteristic_file);
+        if (!topicNameOK) {
+          API.utility.response(context, 404, {
+            log: API.utility.api_log(params, files, context.request.start_time, "Invalid topic name."),
+          });
+          return;
+        }
 
-        API.utility.response(context, status_code, {
+        var events = ES.get_events(stock_characteristic_file, topic_name, topic_upper_range, topic_lower_range);
+        var events_and_cum_returns = [];
+        for (var i = 0; i < events.length; i++) {
+          events_and_cum_returns.push(ES.get_cum_return(stock_price_file, events[i], upper_window, lower_window));
+        }
+
+//        var csv_raw_token = '';
+//        if (csv_require) {
+//          var csv_raw = Papa.unparse(events_and_cum_returns);
+//          csv_raw_token = Random.id(30);
+//          while (Raw_CR_CSV.find({
+//              token: csv_raw_token
+//            }).count() !== 0) {
+//            csv_raw_token = Random.id(20);
+//          }
+//          Raw_CR_CSV.insert({
+//            token: csv_raw_token,
+//            csv: csv_raw,
+//          });
+//        }
+
+
+        API.utility.response(context, 200, {
           log: API.utility.api_log(params, files, context.request.start_time, "successful"),
-          stock_price_file: stock_price_file,
-          stock_characteristic_file: stock_characteristic_file,
+                    Event_Cumulative_Return: events_and_cum_returns,
+//          cr_csv_token: csv_raw_token,
         });
       } else if (!tokenOK) {
         API.utility.response(context, 404, {
@@ -124,19 +139,26 @@ API = {
     validate: function (data, pattern) {
       return Match.test(data, pattern);
     },
-    validateRequest: function (upper_window, lower_window, upper_range, lower_range, range_name) {
+    rangeOK: function (upper_window, lower_window, topic_upper_range, topic_lower_range) {
       return isNumeric(upper_window) &&
         isNumeric(lower_window) &&
-        isNumeric(upper_range) &&
-        isNumeric(lower_range) &&
-        range_name != "" &&
-        parseFloat(upper_window) >= parseFloat(lower_window) &&
-        parseFloat(upper_range) >= parseFloat(lower_range);
+        isNumeric(topic_upper_range) &&
+        isNumeric(topic_lower_range) &&
+        parseInt(upper_window) >= parseInt(lower_window) &&
+        parseFloat(topic_upper_range) >= parseFloat(topic_lower_range) &&
+        parseInt(lower_window) <= 0 &&
+        parseInt(upper_window) >= 0;
+    },
+    topicNameOK: function (topic_name, stock_characteristic_file) {
+      var fields = stock_characteristic_file[0];
+      return fields.indexOf(topic_name) != -1 && fields.indexOf(topic_name) != 0;
     },
     tokenOK: function (token) {
       // is there a folder called <token>?
       // if there is, do the files match?
-      return Files.find({token: token}).count() === 1;
+      return Files.find({
+        token: token
+      }).count() === 1;
     },
     match_range_name: function (range_name, matching_range_name) {
       if (range_name == "") {

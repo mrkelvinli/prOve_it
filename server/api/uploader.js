@@ -61,8 +61,8 @@ Uploader = {
           }
         }
 
-        var stock_price_file_with_cr = calc_cumulative_returns(stock_price_file_json);
-        var all_query_company = get_all_query_company(stock_characteristic_file_json);
+        var stock_price_file_with_cr = ES.calc_cumulative_returns(stock_price_file_json);
+        var all_query_company = ES.get_all_query_company(stock_characteristic_file_json);
 
 
         // Add the two files with the token to the database
@@ -77,7 +77,7 @@ Uploader = {
         API.utility.response(context, 200, {
           log: API.utility.api_log(params, files, context.request.start_time, "successful"),
           token: token,
-          all_query_company : all_query_company,
+//          all_query_company: all_query_company,
           //          stock_price_file: stock_price_file_with_cr,
         });
       } else {
@@ -132,96 +132,3 @@ Uploader = {
     },
   },
 };
-
-function get_all_query_company(stock_characteristic_file) {
-  if (stock_characteristic_file == null) {
-    return stock_characteristic_file;
-  }
-
-  var fields = stock_characteristic_file[0];
-  var RIC_id = fields.indexOf('#RIC');
-
-  var all_company = [];
-  
-  for (var i = 1; i < stock_characteristic_file.length; i++) {
-    var c = stock_characteristic_file[i][RIC_id].toString();
-    if (all_company.indexOf(c) == -1){
-      all_company.push(c);
-    }
-  }
-  
-  return all_company;
-
-}
-
-function calc_cumulative_returns(stock_price_file) {
-  if (stock_price_file == null) {
-    return stock_price_file;
-  }
-  var fields = stock_price_file[0];
-  var RIC_id = fields.indexOf('#RIC');
-  var date_id = fields.indexOf('Date[L]');
-  var open_id = fields.indexOf('Open');
-  var last_id = fields.indexOf('Last');
-
-  var return_percent_id = fields.length;
-  var cum_return_id = fields.length + 1;
-
-  var current_company = "";
-  var current_company_open = "";
-  var prev_last = 0;
-
-  for (var i = 1; i < stock_price_file.length; i++) {
-    //    console.log("newline");
-    var current_last = stock_price_file[i][last_id];
-    if (current_last == '') {
-      //      console.log("no last");
-      if (current_company != stock_price_file[i][RIC_id].toString()) {
-        prev_last = 0;
-        //        console.log("different company");
-        var same_c = stock_price_file[i][RIC_id].toString();
-        var open = stock_price_file[i][open_id];
-        for (var j = i; j < stock_price_file.length; j++) {
-          //          console.log("checking" + stock_price_file[j].toString());
-          if (stock_price_file[j][RIC_id].toString() == same_c && stock_price_file[j][open_id] != '') {
-            open = stock_price_file[j][open_id];
-            //            console.log("found a better open: " + open);
-            break;
-          }
-        }
-        current_company = same_c;
-        current_company_open = open;
-        current_last = open;
-      } else {
-        current_last = prev_last;
-      }
-    }
-
-    //    console.log("prev_last" + prev_last);
-    //    console.log("current_last" + current_last);
-
-    // calculate the cumulative return percentage and cum return here
-    if (prev_last == 0) {
-      stock_price_file[i][return_percent_id] = 0;
-    } else {
-      stock_price_file[i][return_percent_id] = (current_last - prev_last) / prev_last;
-    }
-
-    var cum_return = 0;
-    var prev_c = stock_price_file[i - 1][RIC_id].toString();
-    if (stock_price_file[i][RIC_id].toString() != prev_c) {
-      cum_return = stock_price_file[i][return_percent_id];
-    } else {
-      cum_return = stock_price_file[i][return_percent_id] + stock_price_file[i - 1][return_percent_id];
-
-    }
-    stock_price_file[i][cum_return_id] = cum_return;
-
-    //    console.log("cum%: " + stock_price_file[i][return_percent_id]);
-    //    console.log("cum return: " + stock_price_file[i][cum_return_id]);
-
-    prev_last = current_last;
-  }
-
-  return stock_price_file;
-}

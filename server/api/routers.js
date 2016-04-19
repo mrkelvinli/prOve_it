@@ -80,6 +80,41 @@ Router.route('/api/v1/event-study/cumulative-returns', function () {
   where: 'server'
 });
 
+Router.route('/api/testing', function() {
+    this.response.setHeader('Access-Control-Allow-Origin', '*');
+
+  if (this.request.method === "OPTIONS") {
+    this.response.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+    this.response.setHeader('Access-Control-Allow-Methods', 'POST, PUT, GET, DELETE, OPTIONS');
+    this.response.end('Set OPTIONS.');
+  } else {
+    APItesting.handleRequest(this, this.request.method);
+  }
+}, {
+  where: 'server'
+});
+
+//Router.route('/api/cr-csv', {
+//  where: 'server',
+//  action: function () {
+//    var filename = 'events_cumulative_returns.csv';
+//    var token = this.request.query['token'];
+//    
+//    var headers = {
+//      'Content-type': 'text/csv',
+//      'Content-Disposition': "attactment; filename="+filename,
+//    };
+//    
+////    console.log("token: "+token);
+////    console.log(Raw_CR_CSV.find().fetch());
+//    
+//    var csv_record = Raw_CR_CSV.findOne({token:token});
+////    console.log(csv_record);
+//    return this.response.end(csv_record.csv);
+//  
+//  },
+//});
+
 
 Router.route("/api/", function () {
   this.render('api_index');
