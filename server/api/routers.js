@@ -94,26 +94,26 @@ Router.route('/api/testing', function() {
   where: 'server'
 });
 
-//Router.route('/api/cr-csv', {
-//  where: 'server',
-//  action: function () {
-//    var filename = 'events_cumulative_returns.csv';
-//    var token = this.request.query['token'];
-//    
-//    var headers = {
-//      'Content-type': 'text/csv',
-//      'Content-Disposition': "attactment; filename="+filename,
-//    };
-//    
-////    console.log("token: "+token);
-////    console.log(Raw_CR_CSV.find().fetch());
-//    
-//    var csv_record = Raw_CR_CSV.findOne({token:token});
-////    console.log(csv_record);
-//    return this.response.end(csv_record.csv);
-//  
-//  },
-//});
+Router.route('/api/cr-csv', {
+  where: 'server',
+  action: function () {
+    var filename = 'events_cumulative_returns.csv';
+    var token = this.request.query['token'];
+    
+    var headers = {
+      'Content-type': 'text/csv',
+      'Content-Disposition': "attactment; filename="+filename,
+    };
+    
+//    console.log("token: "+token);
+//    console.log(Raw_CR_CSV.find().fetch());
+    
+    var csv_record = Raw_CR_CSV.findOne({token:token});
+//    console.log(csv_record);
+    return this.response.end(csv_record.csv);
+  
+  },
+});
 
 
 Router.route("/api/", function () {

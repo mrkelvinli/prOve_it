@@ -36,7 +36,7 @@ API = {
       var topic_lower_range = "";
       var topic_name = "";
       var token = params['token'];
-//      var csv_require = false;
+      var csv_require = false;
 
       var other_vars = {};
 
@@ -91,26 +91,26 @@ API = {
           events_and_cum_returns.push(ES.get_cum_return(stock_price_file, events[i], upper_window, lower_window));
         }
 
-//        var csv_raw_token = '';
-//        if (csv_require) {
-//          var csv_raw = Papa.unparse(events_and_cum_returns);
-//          csv_raw_token = Random.id(30);
-//          while (Raw_CR_CSV.find({
-//              token: csv_raw_token
-//            }).count() !== 0) {
-//            csv_raw_token = Random.id(20);
-//          }
-//          Raw_CR_CSV.insert({
-//            token: csv_raw_token,
-//            csv: csv_raw,
-//          });
-//        }
+        var csv_raw_token = '';
+        if (csv_require) {
+          var csv_raw = Papa.unparse(events_and_cum_returns);
+          csv_raw_token = Random.id(30);
+          while (Raw_CR_CSV.find({
+              token: csv_raw_token
+            }).count() !== 0) {
+            csv_raw_token = Random.id(20);
+          }
+          Raw_CR_CSV.insert({
+            token: csv_raw_token,
+            csv: csv_raw,
+          });
+        }
 
 
         API.utility.response(context, 200, {
           log: API.utility.api_log(params, files, context.request.start_time, "successful"),
-                    Event_Cumulative_Return: events_and_cum_returns,
 //          cr_csv_token: csv_raw_token,
+          Event_Cumulative_Return: events_and_cum_returns,
         });
       } else if (!tokenOK) {
         API.utility.response(context, 404, {

@@ -74,33 +74,62 @@ ES = {
         for (var j = 1; j <= lower_window; j++) {
 
           if (i - j < 1) {
-            cum_return.unshift(null);
+              var ret = {};
+              ret[-j] = null;
+//              cum_return[-j] = null;
+            cum_return.unshift(ret);
           } else {
 
             var c = stock_price_file[i - j][RIC_id].toString();
             if (c == company_name) {
-              cum_return.unshift(parseFloat(stock_price_file[i - j][cum_return_id].toString()));
+              var ret = {};
+              ret[-j] = parseFloat(stock_price_file[i - j][cum_return_id].toString());
+              cum_return.unshift(ret);
+//              cum_return.unshift(parseFloat(stock_price_file[i - j][cum_return_id].toString()));
             } else {
-              cum_return.unshift(null);
+              var ret = {};
+              ret[-j] = null;
+              cum_return.unshift(ret);
+//              cum_return.unshift(null);
             }
           }
         }
-        cum_return.push(parseFloat(stock_price_file[i][cum_return_id].toString()));
+        var ret = {};
+        ret [0]= parseFloat(stock_price_file[i][cum_return_id].toString());
+              cum_return.push(ret);
+//        cum_return.push(parseFloat(stock_price_file[i][cum_return_id].toString()));
         for (var j = 1; j <= upper_window; j++) {
 
           if (i + j > stock_price_file.length) {
-            cum_return.push(null);
+//            cum_return.push(null);
+            var ret = {};
+            
+              ret[j] = null;
+              cum_return.push(ret);
           } else {
             var c = stock_price_file[i + j][RIC_id].toString();
             if (c == company_name) {
-              cum_return.push(parseFloat(stock_price_file[i + j][cum_return_id].toString()));
+              var ret = {};
+              ret[j] = parseFloat(stock_price_file[i + j][cum_return_id].toString());
+              cum_return.push(ret);
+//              cum_return.push(parseFloat(stock_price_file[i + j][cum_return_id].toString()));
             } else {
-              cum_return.push(null);
+              var ret = {};
+              
+              ret[j] = null;
+              
+              cum_return.push(ret);
+//              cum_return.push(null);
             }
           }
         }
+        break;
       }
     }
+    
+
+    
+//    return ret;
     return {
       company_name: company_name,
       event_date: date,
