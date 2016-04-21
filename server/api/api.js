@@ -26,7 +26,7 @@ API = {
       if (!API.utility.hasData(params)) {
         API.utility.response(context, 404, {
           error: 404,
-          message: "Invalid Request (no parameters found), dude."
+          message: "Invalid Request (no parameters found)."
         });
       }
 
@@ -108,7 +108,7 @@ API = {
 
 
         API.utility.response(context, 200, {
-          log: API.utility.api_log(params, files, context.request.start_time, "successful"),
+          log: API.utility.api_log(params, files, context.request.start_time, "Successful."),
 //          cr_csv_token: csv_raw_token,
           Event_Cumulative_Return: events_and_cum_returns,
         });

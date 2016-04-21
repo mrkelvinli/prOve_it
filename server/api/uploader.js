@@ -19,6 +19,13 @@ Uploader = {
 
   methods: {
     POST: function (context, params, files) {
+      
+      if (!files) {
+        API.utility.response(context, 404, {
+            log: API.utility.api_log(params, files, context.request.start_time, "No CSV file."),
+        });
+        return;
+      }
 
 
       // files parsing
@@ -75,7 +82,7 @@ Uploader = {
 
 
         API.utility.response(context, 200, {
-          log: API.utility.api_log(params, files, context.request.start_time, "successful"),
+          log: API.utility.api_log(params, files, context.request.start_time, "Successful."),
           token: token,
 //          all_query_company: all_query_company,
           //          stock_price_file: stock_price_file_with_cr,
@@ -126,6 +133,8 @@ Uploader = {
           }
         }
       }
+//      console.log("stock_price_OK: " + stock_price_file_OK);
+//      console.log("stock_characteristic_file_OK: " + stock_characteristic_file_OK);
       return files.length == 2 &&
         stock_price_file_OK &&
         stock_characteristic_file_OK;
