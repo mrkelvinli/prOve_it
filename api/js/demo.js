@@ -111,20 +111,27 @@ $(document).ready(function () {
   });
 
 
+  // Our labels and three data series
   var data = {
-        // A labels array that can contain any sort of values
-        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
-        // Our series array that contains series objects or in this case series data arrays
-        series: [
-        [5, 2, 4, 2, 0]
-        ]
-      };
+      // A labels array that can contain any sort of values
+      labels: ['a','b','c','d','e','f','d','e','f','g','h','i'],
+      // Our series array that contains series objects or in this case series data arrays
+      series: [
+        [null, null, null, 0, 0, 0, 0, 0.0135, 0.0135, 0.01018, 0.01352]
+      ]
+  };
 
-      // Create a new line chart object where as first parameter we pass in a selector
-      // that is resolving to our chart container element. The Second parameter
-      // is the actual data object.
-      new Chartist.Line('.ct-chart', data);
+  var options = {
+    // Disable line smoothing
+    lineSmooth: false,
+    width: 900,
+    height: 700
+  };
 
+  // Create a new line chart object where as first parameter we pass in a selector
+  // that is resolving to our chart container element. The Second parameter
+  // is the actual data object.
+  new Chartist.Line('.ct-chart', data, options);
 
 
 
