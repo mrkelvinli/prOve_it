@@ -34,7 +34,9 @@ $(document).ready(function () {
           (input_name == 'upper_range' && $.isNumeric(input_val)) ||
           (input_name == 'lower_range' && $.isNumeric(input_val)) ||
           (input_name == 'var_name' && input_val != '') ||
-          (input_name == 'token' && input_val != '')){
+          (input_name == 'token' && input_val != '') ||
+          (input_name == 'stock_characteristic_file' && input_val != '') ||
+          (input_name == 'stock_price_file' && input_val != '') ){
         $(this).removeClass('form-invalid-data');
         $(this).addClass('form-valid-data');
       } else {
