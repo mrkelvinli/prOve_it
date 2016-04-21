@@ -59,7 +59,7 @@ ES = {
       }
     }
     // HELP!! why does it not work if it's '02-Mar-2016'?
-    if (checkedDate === '02-Mar-2016') {
+    if (checkedDate == '02-Mar-2016') {
       checkedDate = '02-Mar-16';
     }
     console.log(checkedDate);
