@@ -134,3 +134,8 @@ h4 {
 .ct-label {
 /*  font-size: em;*/
 }
+
+.chart_info {
+  margin:20px;
+  font-weight: 100;
+}

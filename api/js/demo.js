@@ -1,7 +1,7 @@
 $(document).ready(function () {
-  
+
   var debug = false;
-  
+
   var upload_response = $("#upload_response");
   var cumulative_response = $('#cumulative_response');
   $(".json-response").hide();
@@ -119,9 +119,9 @@ $(document).ready(function () {
         populate_events(data.Event_Cumulative_Return);
         cumulative_response.hide();
         $('#chart_section_btn').click();
-        //        cumulative_response.empty();
-        //        cumulative_response.show();
-        //        cumulative_response.text(JSON.stringify(data.Event_Cumulative_Return, undefined, 2));
+        //                cumulative_response.empty();
+        //                cumulative_response.show();
+        //                cumulative_response.text(JSON.stringify(data.Event_Cumulative_Return, undefined, 2));
         //        cumulative_response.text("Use the chart below to view the results.");
       },
       error: function (data) {
@@ -148,49 +148,80 @@ $(document).ready(function () {
       labels.push(k);
       series.push(cr[j][k]);
     }
-    var currentChart = new Chartist.Line('.ct-chart', {
-      labels: labels,
-      series: [series],
-    },
-    // options
-    {
-      lineSmooth: false,
-    });
 
-    // Let's put a sequence number aside so we can use it in the event callbacks
-    var seq = 0;
-
-    // Once the chart is fully created we reset the sequence
-    currentChart.on('created', function() {
-      seq = 0;
-    });
-
-    // On each drawn element by Chartist we use the Chartist.Svg API to trigger SMIL animations
-    currentChart.on('draw', function(data) {
-      if(data.type === 'point') {
-        // If the drawn element is a line we do a simple opacity fade in. This could also be achieved using CSS3 animations.
-        data.element.animate({
-          opacity: {
-            // The delay when we like to start the animation
-            begin: seq++ * 80,
-            // Duration of the animation
-            dur: 500,
-            // The value where the animation should start
-            from: 0,
-            // The value where it should end
-            to: 1
-          },
-          x1: {
-            begin: seq++ * 80,
-            dur: 500,
-            from: data.x - 100,
-            to: data.x,
-            // You can specify an easing function name or use easing functions from Chartist.Svg.Easing directly
-            easing: Chartist.Svg.Easing.easeOutQuart
-          }
+    var chart_error_msg = $('#chart_error_msg');
+    if (cr.length == 0) {
+      $('.ct-chart').empty();
+      chart_error_msg.html("no data found");
+    } else {
+      chart_error_msg.empty();
+      var currentChart = new Chartist.Line('.ct-chart', {
+          labels: labels,
+          series: [series],
+        },
+        // options
+        {
+          lineSmooth: false,
+          plugins: [
+            Chartist.plugins.ctAxisTitle({
+              axisX: {
+                axisTitle: 'Relevant Day',
+                axisClass: 'ct-axis-title',
+                offset: {
+                  x: 0,
+                  y: 30
+                },
+                textAnchor: 'middle'
+              },
+              axisY: {
+                axisTitle: 'Cumulative Return ($)',
+                axisClass: 'ct-axis-title',
+                offset: {
+                  x: -2,
+                  y: 10
+                },
+                flipTitle: true
+              }
+            })
+          ]
         });
-      }
-    });
+
+      // Let's put a sequence number aside so we can use it in the event callbacks
+      var seq = 0;
+
+      // Once the chart is fully created we reset the sequence
+      currentChart.on('created', function () {
+        seq = 0;
+      });
+
+      // On each drawn element by Chartist we use the Chartist.Svg API to trigger SMIL animations
+      currentChart.on('draw', function (data) {
+        if (data.type === 'point') {
+          // If the drawn element is a line we do a simple opacity fade in. This could also be achieved using CSS3 animations.
+          data.element.animate({
+            opacity: {
+              // The delay when we like to start the animation
+              begin: seq++ * 80,
+              // Duration of the animation
+              dur: 500,
+              // The value where the animation should start
+              from: 0,
+              // The value where it should end
+              to: 1
+            },
+            x1: {
+              begin: seq++ * 80,
+              dur: 500,
+              from: data.x - 100,
+              to: data.x,
+              // You can specify an easing function name or use easing functions from Chartist.Svg.Easing directly
+              easing: Chartist.Svg.Easing.easeOutQuart
+            }
+          });
+        }
+      });
+    }
+
 
 
   }
@@ -226,6 +257,7 @@ $(document).ready(function () {
       var curr_date = all_cr[i]['event_date'].toString();
       if (company_name == curr_c && date == curr_date) {
         //        console.log("found");
+        $('#chart_title').html(company_name + "</br>" + date);
         render_chart(all_cr[i]);
         break;
       }
