@@ -72,7 +72,7 @@
 /* Styles for Invalid input data */
 
 .form-validation .form-invalid-data {
-  margin-bottom: 55px;
+/*  margin-bottom: 55px;*/
 }
 
 .form-validation .form-invalid-data input {
@@ -91,11 +91,13 @@
   height: 23px;
   border-radius: 50%;
   background-color: #e17c4f;
-/*  left: 440px;*/
-/*  top: 10px;*/
-  margin-left:6px;
+
+    top: 10px;
+  margin-left:10px;
+  display: none;
 }
 
+/*
 .form-validation .form-invalid-data-info {
   display: none;
   position: absolute;
@@ -104,11 +106,18 @@
   bottom: -30px;
   left: 183px;
 }
+*/
 
+.form-invalid-data .form-invalid-data-sign {
+  display: inline;
+}
+
+/*
 .form-invalid-data .form-invalid-data-sign,
 .form-invalid-data .form-invalid-data-info {
-  display: block;
+  display: inline;
 }
+*/
 
 .form-valid-data .form-valid-data-sign {
   display: inline;
@@ -196,7 +205,7 @@
     top: 40px;
   }
   .form-validation .form-invalid-data {
-    margin-bottom: 55px;
+/*    margin-bottom: 55px;*/
   }
   .form-validation .form-invalid-data-info {
     left: 0;
