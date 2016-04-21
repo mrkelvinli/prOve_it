@@ -1,48 +1,46 @@
-@import url(https://fonts.googleapis.com/css?family=Roboto|Montserrat|Titillium+Web|Poiret+One);
-
-
+@import url(https://fonts.googleapis.com/css?family=Roboto|Montserrat|Titillium+Web|Poiret+One|Raleway);
 .head-brandname {
-  padding-top:9px;
-  color:orange;
-  position:fixed;
-  left:50%;
+  padding-top: 9px;
+  color: orange;
+  position: fixed;
+  left: 50%;
   transform: translate(-50%, 0%);
   text-align: center;
-  font-size:30px;
+  font-size: 30px;
   font-family: 'Poiret One', cursive;
   font-weight: 500;
-  top:0px;
+  top: 0px;
 }
 
-body, html {
-    height: 100%;
-/*    overflow: hidden;*/
-    padding-top: 44px;
-    padding-bottom: 25px;
+body,
+html {
+  height: 100%;
+  /*    overflow: hidden;*/
+  padding-top: 44px;
+  padding-bottom: 25px;
   background-color: #f3f3f3;
 }
 
 .section-button {
   border-width: 0px;
-  border-top-width:1px;
+  border-top-width: 1px;
   border-style: groove;
-  border-color:darkgrey;
+  border-color: darkgrey;
 }
 
 footer {
-/*    background-color: orange;*/
-    position: fixed;
-    bottom: 0;
-/*    height: 40px;*/
-    width: 100%;
-/*    overflow:hidden;*/
-    font-family: Verdana;
+  /*    background-color: orange;*/
+  position: fixed;
+  bottom: 0;
+  /*    height: 40px;*/
+  width: 100%;
+  /*    overflow:hidden;*/
+  font-family: Verdana;
 }
 
 .page-content {
-  margin-bottom:100px;
+  margin-bottom: 100px;
 }
-
 
 .json-response {
   text-align: left;
@@ -53,6 +51,7 @@ section {
   padding-top: 90px;
   margin-top: -90px;
 }
+
 
 /*
 div.content {
@@ -81,11 +80,10 @@ div.type {
 
 div.tutorial {
   background-color: lightgrey;
-
 }
 
 .label-post {
-  background-color:  #0066ff;
+  background-color: #0066ff;
 }
 
 .param-type {
@@ -95,23 +93,25 @@ div.tutorial {
 
 hr {
   border: 0;
-  clear:both;
-  display:block;
-  width: 96%;               
+  clear: both;
+  display: block;
+  width: 96%;
   background-color: #e67300;
   height: 1px;
 }
 
 code {
-  color:  #ff8000;
-  background-color: rgba(255,80,0,0.2);
+  color: #ff8000;
+  background-color: rgba(255, 80, 0, 0.2);
 }
 
 h4 {
   color: #000000;
 }
 
+
 /* Use this selector to override the line style on a given series */
+
 .ct-series-a .ct-line {
   /* Set the colour of this series line */
   stroke: #F47C3C;
@@ -121,7 +121,9 @@ h4 {
   /*stroke-dasharray: 10px 20px;*/
 }
 
+
 /* This selector overrides the points style on line charts. Points on line charts are actually just very short strokes. This allows you to customize even the point size in CSS */
+
 .ct-series-a .ct-point {
   /* Colour of your points */
   stroke: #F47C3C;
@@ -132,10 +134,17 @@ h4 {
 }
 
 .ct-label {
-/*  font-size: em;*/
+  /*  font-size: em;*/
 }
 
 .chart_info {
-  margin:20px;
+  margin: 20px;
   font-weight: 100;
+}
+
+.navbar-brand {
+  
+  font-family: 'Raleway', sans-serif;
+  font-weight: 400;
+  font-size: 13px;
 }
