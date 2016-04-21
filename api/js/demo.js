@@ -37,7 +37,9 @@ $(document).ready(function () {
   var token = $("input[name=token]");
 
 
-  var base_url = "http://prove-it-unsw.herokuapp.com/api/v1"
+  // var base_url = "http://prove-it-unsw.herokuapp.com/api/v1";
+  var base_url = "http://localhost:3000/api/v1";
+
 
   //  upper_window.on('change paste keyup',function(){
   //    console.log($(this).val());
@@ -56,11 +58,16 @@ $(document).ready(function () {
       data: new FormData(this),
       processData: false,
       contentType: false,
-      complete: function (data) {
-        console.log(data);
+      success: function (data) {
+        console.log(data.token);
         upload_response.show();
         upload_response.empty();
-        upload_response.text(JSON.stringify(data.responseJSON , undefined, 2));
+        upload_response.html("Your token is: " + data.token);
+      },
+      error: function (data) {
+        upload_response.show();
+        upload_response.empty();
+        upload_response.text(JSON.stringify(data.responseJSON, undefined, 2));
       },
     });
     return false;
@@ -76,12 +83,18 @@ $(document).ready(function () {
     cumulative_response.html("Processing ...");
 
     var data = {
-      upper_window: upper_window.val(),
-      lower_window: lower_window.val(),
-      topic_upper_range : upper_var.val(),
-      topic_lower_range : lower_var.val(),
-      topic_name : var_name.val(),
-      token: token.val(),
+      upper_window: 5,
+      lower_window: -5,
+      topic_upper_range: 1.5,
+      topic_lower_range: 0.5,
+      topic_name: "Cash Rate",
+      token: "ofs9PCBMsKsvByft3NWc",
+      //      upper_window: upper_window.val(),
+      //      lower_window: lower_window.val(),
+      //      topic_upper_range : upper_var.val(),
+      //      topic_lower_range : lower_var.val(),
+      //      topic_name : var_name.val(),
+      //      token: token.val(),
     };
 
     $.ajax({
@@ -89,49 +102,82 @@ $(document).ready(function () {
       type: 'GET',
       data: data,
       processData: true,
-      complete: function (data) {
-        console.log(data.responseText);
+      success: function (data) {
+        all_cr = data.Event_Cumulative_Return;
+        populate_events(data.Event_Cumulative_Return);
+        cumulative_response.empty();
+        cumulative_response.show();
+//        cumulative_response.text(JSON.stringify(data.Event_Cumulative_Return, undefined, 2));
+//        cumulative_response.text("Use the chart below to view the results.");
+      },
+      error: function (data) {
+        console.log(data.responseJSON);
         cumulative_response.empty();
         cumulative_response.show();
         cumulative_response.text(JSON.stringify(data.responseJSON, undefined, 2));
       },
     });
 
-    //    var url = base_url + "/event-study/cumulative-returns";
-    //    url = "https://prove-it-unsw.herokuapp.com/api/v1/event-study/cumulative-returns";
-    //    $.get(url, {
-    //        upper_window: "678",
-    //        lower_window: "9",
-    //      },
-    //      function (data) {
-    //        console.log(data);
-    //      }
-    //    );
     return false;
   });
 
+  var all_cr = null;
 
-  // Our labels and three data series
-  var data = {
-      // A labels array that can contain any sort of values
-      labels: ['a','b','c','d','e','f','d','e','f','g','h','i'],
-      // Our series array that contains series objects or in this case series data arrays
-      series: [
-        [null, null, null, 0, 0, 0, 0, 0.0135, 0.0135, 0.01018, 0.01352]
-      ]
-  };
+  function render_chart(data) {
+    var company_name = data['company_name'].toString();
+    var date = data['event_date'].toString();
+    var cr = data['cumulative_returns'];
+    var labels = [];
+    var series = [];
+    for (var j = 0; j < cr.length; j++) {
+      var k = getHashKey(cr[j]);
+      labels.push(k);
+      series.push(cr[j][k]);
+    }
+    new Chartist.Line('.ct-chart', {
+      labels: labels,
+      series: [series],
+    });
 
-  var options = {
-    // Disable line smoothing
-    lineSmooth: false,
-    width: 900,
-    height: 700
-  };
+  }
 
-  // Create a new line chart object where as first parameter we pass in a selector
-  // that is resolving to our chart container element. The Second parameter
-  // is the actual data object.
-  new Chartist.Line('.ct-chart', data, options);
+  function getHashKey(h) {
+    return Object.keys(h)[0];
+  }
+
+  function populate_events(data) {
+    var dropdown = document.getElementById("chart-dropdown-menu");
+
+    for (var i = 0; i < data.length; i++) {
+      var company_name = data[i]['company_name'].toString();
+      var date = data[i]['event_date'].toString();
+
+      var li = document.createElement("li");
+      var a = document.createElement('a');
+      a.appendChild(document.createTextNode(company_name + " | " + date));
+      li.appendChild(a);
+      dropdown.appendChild(li);
+      $(li).data('company_name', company_name);
+      $(li).data('date', date);
+    }
+  }
+
+  $('#chart-dropdown-menu').on('click', 'li', function () {
+    //    console.log($(this).data());
+    var company_name = $(this).data('company_name');
+    var date = $(this).data('date');
+    for (var i = 0; i < all_cr.length; i++) {
+      var curr_c = all_cr[i]['company_name'].toString();
+      var curr_date = all_cr[i]['event_date'].toString();
+      if (company_name == curr_c && date == curr_date) {
+        //        console.log("found");
+        render_chart(all_cr[i]);
+        break;
+      }
+    }
+  });
+
+
 
 
 
