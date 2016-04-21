@@ -1,7 +1,12 @@
 $(document).ready(function () {
+  
+  var debug = false;
+  
   var upload_response = $("#upload_response");
   var cumulative_response = $('#cumulative_response');
   $(".json-response").hide();
+
+  $('#chart_display').hide();
 
 
   // Here is how to show an error message next to a form field
@@ -37,8 +42,10 @@ $(document).ready(function () {
   var token = $("input[name=token]");
 
 
-  // var base_url = "http://prove-it-unsw.herokuapp.com/api/v1";
-  var base_url = "http://localhost:3000/api/v1";
+  var base_url = "http://prove-it-unsw.herokuapp.com/api/v1";
+  if (debug) {
+    base_url = "http://localhost:3000/api/v1";
+  }
 
 
   //  upper_window.on('change paste keyup',function(){
@@ -83,19 +90,24 @@ $(document).ready(function () {
     cumulative_response.html("Processing ...");
 
     var data = {
-      upper_window: 5,
-      lower_window: -5,
-      topic_upper_range: 1.5,
-      topic_lower_range: 0.5,
-      topic_name: "Cash Rate",
-      token: "ofs9PCBMsKsvByft3NWc",
-      //      upper_window: upper_window.val(),
-      //      lower_window: lower_window.val(),
-      //      topic_upper_range : upper_var.val(),
-      //      topic_lower_range : lower_var.val(),
-      //      topic_name : var_name.val(),
-      //      token: token.val(),
+      upper_window: upper_window.val(),
+      lower_window: lower_window.val(),
+      topic_upper_range: upper_var.val(),
+      topic_lower_range: lower_var.val(),
+      topic_name: var_name.val(),
+      token: token.val(),
     };
+
+    if (debug) {
+      data = {
+        upper_window: 5,
+        lower_window: -5,
+        topic_upper_range: 1.5,
+        topic_lower_range: 0.5,
+        topic_name: "Cash Rate",
+        token: "ofs9PCBMsKsvByft3NWc",
+      };
+    }
 
     $.ajax({
       url: base_url + "/event-study/cumulative-returns",
@@ -103,12 +115,15 @@ $(document).ready(function () {
       data: data,
       processData: true,
       success: function (data) {
+        $('#chart_display').show();
         all_cr = data.Event_Cumulative_Return;
         populate_events(data.Event_Cumulative_Return);
-        cumulative_response.empty();
-//        cumulative_response.show();
-//        cumulative_response.text(JSON.stringify(data.Event_Cumulative_Return, undefined, 2));
-//        cumulative_response.text("Use the chart below to view the results.");
+        cumulative_response.hide();
+        $('#chart_section_btn').click();
+        //        cumulative_response.empty();
+        //        cumulative_response.show();
+        //        cumulative_response.text(JSON.stringify(data.Event_Cumulative_Return, undefined, 2));
+        //        cumulative_response.text("Use the chart below to view the results.");
       },
       error: function (data) {
         console.log(data.responseJSON);
@@ -135,17 +150,17 @@ $(document).ready(function () {
       series.push(cr[j][k]);
     }
     new Chartist.Line('.ct-chart', {
-      labels: labels,
-      series: [series],
-    },
-    // options
-    {
-      lineSmooth: false,
-    });
+        labels: labels,
+        series: [series],
+      },
+      // options
+      {
+        lineSmooth: false,
+      });
 
   }
-  
-  
+
+
   function getHashKey(h) {
     return Object.keys(h)[0];
   }
