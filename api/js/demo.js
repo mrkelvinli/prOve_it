@@ -37,8 +37,8 @@ $(document).ready(function () {
   var token = $("input[name=token]");
 
 
-  // var base_url = "http://prove-it-unsw.herokuapp.com/api/v1";
-  var base_url = "http://localhost:3000/api/v1";
+   var base_url = "http://prove-it-unsw.herokuapp.com/api/v1";
+  //var base_url = "http://localhost:3000/api/v1";
 
 
   //  upper_window.on('change paste keyup',function(){
@@ -83,18 +83,18 @@ $(document).ready(function () {
     cumulative_response.html("Processing ...");
 
     var data = {
-      upper_window: 5,
-      lower_window: -5,
-      topic_upper_range: 1.5,
-      topic_lower_range: 0.5,
-      topic_name: "Cash Rate",
-      token: "ofs9PCBMsKsvByft3NWc",
-      //      upper_window: upper_window.val(),
-      //      lower_window: lower_window.val(),
-      //      topic_upper_range : upper_var.val(),
-      //      topic_lower_range : lower_var.val(),
-      //      topic_name : var_name.val(),
-      //      token: token.val(),
+      //upper_window: 5,
+      //lower_window: -5,
+      //topic_upper_range: 1.5,
+      //topic_lower_range: 0.5,
+      //topic_name: "Cash Rate",
+      //token: "ofs9PCBMsKsvByft3NWc",
+            upper_window: upper_window.val(),
+            lower_window: lower_window.val(),
+            topic_upper_range : upper_var.val(),
+            topic_lower_range : lower_var.val(),
+            topic_name : var_name.val(),
+            token: token.val(),
     };
 
     $.ajax({
@@ -134,7 +134,7 @@ $(document).ready(function () {
       labels.push(k);
       series.push(cr[j][k]);
     }
-    new Chartist.Line('.ct-chart', {
+    var currentChart = new Chartist.Line('.ct-chart', {
       labels: labels,
       series: [series],
     },
@@ -142,6 +142,42 @@ $(document).ready(function () {
     {
       lineSmooth: false,
     });
+
+    // Let's put a sequence number aside so we can use it in the event callbacks
+    var seq = 0;
+
+    // Once the chart is fully created we reset the sequence
+    currentChart.on('created', function() {
+      seq = 0;
+    });
+
+    // On each drawn element by Chartist we use the Chartist.Svg API to trigger SMIL animations
+    currentChart.on('draw', function(data) {
+      if(data.type === 'point') {
+        // If the drawn element is a line we do a simple opacity fade in. This could also be achieved using CSS3 animations.
+        data.element.animate({
+          opacity: {
+            // The delay when we like to start the animation
+            begin: seq++ * 80,
+            // Duration of the animation
+            dur: 500,
+            // The value where the animation should start
+            from: 0,
+            // The value where it should end
+            to: 1
+          },
+          x1: {
+            begin: seq++ * 80,
+            dur: 500,
+            from: data.x - 100,
+            to: data.x,
+            // You can specify an easing function name or use easing functions from Chartist.Svg.Easing directly
+            easing: Chartist.Svg.Easing.easeOutQuart
+          }
+        });
+      }
+    });
+
 
   }
   
