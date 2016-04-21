@@ -29,13 +29,15 @@ html {
 }
 
 footer {
-  /*    background-color: orange;*/
-  position: fixed;
+/*  background-color: light;*/
+/*  position: fixed;*/
   bottom: 0;
   /*    height: 40px;*/
   width: 100%;
-  /*    overflow:hidden;*/
-  font-family: Verdana;
+/*  left:0;*/
+  /*      overflow:hidden;*/
+  font-size:16px;
+  font-family: 'Poiret One', cursive;
 }
 
 .page-content {
@@ -143,7 +145,6 @@ h4 {
 }
 
 .navbar-brand {
-  
   font-family: 'Raleway', sans-serif;
   font-weight: 400;
   font-size: 13px;
