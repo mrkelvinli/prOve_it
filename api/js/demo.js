@@ -11,27 +11,45 @@ $(document).ready(function () {
 
   // Here is how to show an error message next to a form field
 
-  //  var errorField = $('.form-input-name-row');
+//    var errorField = $('.form-input-name-row');
 
   // Adding the form-invalid-data class will show
   // the error message and the red x for that field
 
-  //      errorField.addClass('form-invalid-data');
-  //      errorField.find('.form-invalid-data-info').text('Please enter your name');
+//        errorField.addClass('form-invalid-data');
+//        errorField.find('.form-invalid-data-info').text('Please enter your name');
 
 
   // Here is how to mark a field with a green check mark
 
-  var successField = $('.form-input-name-row');
+  var gui_input = $('.form-input-name-row');
 
-  successField.on('change paste keyup', function () {
-    if ($(this).find('input').val() != '') {
-      $(this).addClass('form-valid-data');
+  gui_input.on('change paste keyup', function () {
+    var input = $(this).find('input');
+    var input_name = input.attr('name');
+    var input_val = input.val();
+    if (input_val != '') {
+      if ((input_name == 'upper_window' && input_val >= 0) || 
+          (input_name == 'lower_window' && input_val <= 0) ||
+          (input_name == 'upper_range' && $.isNumeric(input_val)) ||
+          (input_name == 'lower_range' && $.isNumeric(input_val)) ||
+          (input_name == 'var_name' && input_val != '') ||
+          (input_name == 'token' && input_val != '')){
+        $(this).removeClass('form-invalid-data');
+        $(this).addClass('form-valid-data');
+      } else {
+        $(this).removeClass('form-valid-data');
+        $(this).addClass('form-invalid-data');
+      }
     } else {
       $(this).removeClass('form-valid-data');
-
+      $(this).removeClass('form-invalid-data');
     }
   });
+  
+  
+  
+  
 
 
   var upper_window = $("input[name=upper_window]");
