@@ -112,6 +112,10 @@ API = {
 //          cr_csv_token: csv_raw_token,
           Event_Cumulative_Return: events_and_cum_returns,
         });
+      } else if (!rangeOK) {
+        API.utility.response(context, 404, {
+          log: API.utility.api_log(params, files, context.request.start_time, "Invalid Parameters."),
+        });
       } else if (!tokenOK) {
         API.utility.response(context, 404, {
           log: API.utility.api_log(params, files, context.request.start_time, "Invalid token."),
