@@ -1,0 +1,32 @@
+@import url(https://fonts.googleapis.com/css?family=Roboto|Montserrat|Titillium+Web|Poiret+One|Raleway);
+
+body {
+  color: #bbbbbb;
+  background-color: #333333;
+}
+
+h3 {
+  font-family: 'Poiret One', cursive;
+  text-align: center;
+  color: orange;
+}
+
+div.output {
+  //font-size: 0.7em;
+  font-family: 'Courier New';
+  background-color: #444444;
+}
+
+p.hl {
+  color: orange;
+  font-family: 'Raleway', sans-serif;
+  font-size: 0.75em;
+}
+
+div.mid {
+  text-align: center;
+}
+
+code {
+  color: orange;
+}
