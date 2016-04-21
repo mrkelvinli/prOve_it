@@ -73,7 +73,8 @@ $(document).ready(function () {
       error: function (data) {
         upload_response.show();
         upload_response.empty();
-        upload_response.text(JSON.stringify(data.responseJSON, undefined, 2));
+        upload_response.html(data.responseJSON.log.exec_status);
+//        upload_response.text(JSON.stringify(data.responseJSON, undefined, 2));
       },
     });
     return false;
@@ -87,6 +88,9 @@ $(document).ready(function () {
     cumulative_response.empty();
     cumulative_response.show();
     cumulative_response.html("Processing ...");
+    
+    $('.ct-chart').empty();
+    $('#chart_display').hide();
 
     var data = {
       upper_window: upper_window.val(),
@@ -117,7 +121,8 @@ $(document).ready(function () {
         $('#chart_display').show();
         all_cr = data.Event_Cumulative_Return;
         populate_events(data.Event_Cumulative_Return);
-        cumulative_response.hide();
+//        cumulative_response.hide();
+        cumulative_response.html(data.log.exec_status);
         $('#chart_section_btn').click();
         //                cumulative_response.empty();
         //                cumulative_response.show();
@@ -128,7 +133,8 @@ $(document).ready(function () {
         console.log(data.responseJSON);
         cumulative_response.empty();
         cumulative_response.show();
-        cumulative_response.text(JSON.stringify(data.responseJSON, undefined, 2));
+        cumulative_response.html(data.responseJSON.log.exec_status);
+//        cumulative_response.text(JSON.stringify(data.responseJSON, undefined, 2));
       },
     });
 
