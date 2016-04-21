@@ -12,15 +12,15 @@ h3 {
 }
 
 div.output {
-  //font-size: 0.7em;
   font-family: 'Courier New';
   background-color: #444444;
 }
 
-p.hl {
+span.hl {
   color: orange;
   font-family: 'Raleway', sans-serif;
-  font-size: 0.75em;
+  text-align: right;
+  font-size: 1em;
 }
 
 div.mid {
@@ -29,4 +29,8 @@ div.mid {
 
 code {
   color: orange;
+}
+
+pre {
+  font-family: 'Courier New';
 }

@@ -9,40 +9,41 @@
 </div>
 <div class='output'>
 <pre>
+<span class='hl'>explanations are given in orange</span>
 {
-  "log": {
+  "log": { 
     "team_name": "prOve it",
     "version": "v1",
     "input_filename": [],
-    "parameters_passed": {
+    "parameters_passed": { 
       "upper_window": "5",
       "lower_window": "-5",
       "topic_upper_range": "10",
       "topic_lower_range": "1",
-      "topic_name": "Cash Rate",
-      "token": "oyuGSim7ZWXeonzqq6LK"
+      "topic_name": "Cash Rate", <span class='hl'>(your chosen event type)</span>
+      "token": "oyuGSim7ZWXeonzqq6LK" <span class='hl'>(your token)</span>
     },
     "exec_status": "successful",
     "start_time": "2016-4-20 10:08:20 AM",
     "end_time": "2016-4-20 10:08:20 AM",
     "elapsed_time": "556ms"
   },
-  "Event_Cumulative_Return": [
+  "Event_Cumulative_Return": [ <span class='hl'>(start of cumulative-returns JSON array)</span>
     {
-      "company_name": "AAC.AX",
+      "company_name": "AAC.AX", <span class='hl'>(the first stock name)</span>
       "event_date": "03-JAN-2010",
       "cumulative_returns": [
         {
-          "-5": null
+          "-5": null <span class='hl'>(days from [-5 ... 5] as chosen by your upper/lower window)</span>
         },
         {
-          "-4": null
+          "-4": null <span class='hl'>(null indicates no pricing data for this day)</span>
         },
         {
           "-3": null
         },
         {
-          "-2": 0
+          "-2": 0 <span class='hl'>(0% means zero change to cumulative return)</span>
         },
         {
           "-1": 0
@@ -54,7 +55,7 @@
           "1": 0
         },
         {
-          "2": 0.013513513513513526
+          "2": 0.013513513513513526 <span class='hl'>(here we have a ~1.4% upward shift in cumulative-returns for AAC.AX)</span>
         },
         {
           "3": 0.013513513513513526
@@ -69,7 +70,7 @@
     },
     {
       "company_name": "AAC.AX",
-      "event_date": "02-NOV-2011",
+      "event_date": "02-NOV-2011", <span class='hl'>(the second event date for the first stock)</span>
       "cumulative_returns": [
         {
           "-5": 0.02080308043987157
@@ -90,7 +91,7 @@
           "0": 0.010062915813017673
         },
         {
-          "1": -0.004429837810170586
+          "1": -0.004429837810170586 <span class='hl'>(negative cumulative returns for AAC.AX)</span>
         },
         {
           "2": -0.0007533672219353703
@@ -107,9 +108,9 @@
       ]
     },
     {
-      "company_name": "BGA.AX",
+      "company_name": "BGA.AX", 
       "event_date": "02-NOV-2011",
-      "cumulative_returns": []
+      "cumulative_returns": [] <span class='hl'>(empty list means no pricing data has been given regarding this event)</span>
     },
     {
       "company_name": "CCL.AX",
