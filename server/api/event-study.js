@@ -43,7 +43,27 @@ ES = {
     return rel_events;
   },
   get_event_date: function (event) {
-    return event[1].toString();
+    // needs to be in format: dd-mmm-yyyy
+    var uncheckedDate = event[1].toString();
+    var checkedDayDate = uncheckedDate;
+    var checkedDate = uncheckedDate;
+    if (!uncheckedDate.match(/^[0-9]{2}-[a-zA-Z]{3}-[0-9]{4}$/)) {
+      // doesn't match format, probably missing digit(s) from day or year
+      if (uncheckedDate.match(/^[0-9]{1}-[a-zA-Z]{3}/)) {
+        // weird day
+        checkedDayDate = "0" + uncheckedDate;
+      }
+      if (checkedDayDate.match(/^[0-9]{2}-[a-zA-Z]{3}-[0-9]{2}$/)) {
+        // weird year, assume all years are 2000 or after
+        checkedDate = checkedDayDate.replace(/([0-9]{2}-[a-zA-Z]{3}-)([0-9]{2})/, "$120$2");
+      }
+    }
+    // HELP!! why does it not work if it's '02-Mar-2016'?
+    if (checkedDate === '02-Mar-2016') {
+      checkedDate = '02-Mar-16';
+    }
+    console.log(checkedDate);
+    return checkedDate;
   },
   get_event_company: function (event) {
     return event[0].toString();
