@@ -92,7 +92,7 @@
                 <div class="fields-desc">
                   <h4>Description</h4></div>
                 <p class='subtext'>
-                  Uploads your two files and returns a log file with your user <code>token</code>, use this to calculate your cumulative returns.
+                  Uploads your two files and returns a log file with your user token, use this to calculate your cumulative returns.
                 </p>
 
                 <h4>Parameters</h4>
@@ -120,6 +120,28 @@
                   Returns a log file which contains your user <code>token</code>
                 </p>
 
+                <h4>Response codes</h4>
+                  <div class="resp-codes">
+                    <ul class="list fields">
+                      <li class="field"><b>200</b>
+                        <p class='greyed'>
+                          Success, returns a log file
+                        </p>
+                      </li>
+
+                      <li class="field"><b>404</b>
+                        <p class='greyed'>
+                          Incorrect or invalid parameters
+                        </p>
+                      </li>
+
+                      <li class="field"><b>422</b>
+                        <p class='greyed'>
+                          One or more of the provided files is not in the <code>.csv</code> format
+                        </p>
+                      </li>
+                    </ul>
+                  </div>
 
               </div>
               <hr>
@@ -181,24 +203,24 @@
                     Returns ordered JSON array of products and their respective display names, as well as their cumulative returns as a percentage
                   </p>
 
-                  <h4>Response Codes</h4>
+                  <h4>Response codes</h4>
                   <div class="resp-codes">
                     <ul class="list fields">
-                      <li class="field"><code>200</code>
+                      <li class="field"><b>200</b>
                         <p class='greyed'>
-                          Success, returns a JSON array
+                          Success, returns a JSON array with your cumulative returns
                         </p>
                       </li>
 
-                      <li class="field"><code>404</code>
+                      <li class="field"><b>404</b>
                         <p class='greyed'>
                           Incorrect or invalid parameters
                         </p>
                       </li>
 
-                      <li class="field"><code>422</code>
+                      <li class="field"><b>422</b>
                         <p class='greyed'>
-                          One or more of the provided files is not in the <code>.csv</code> format
+                          File unable to be read
                         </p>
                       </li>
                     </ul>
