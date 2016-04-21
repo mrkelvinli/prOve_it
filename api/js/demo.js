@@ -106,7 +106,7 @@ $(document).ready(function () {
         all_cr = data.Event_Cumulative_Return;
         populate_events(data.Event_Cumulative_Return);
         cumulative_response.empty();
-        cumulative_response.show();
+//        cumulative_response.show();
 //        cumulative_response.text(JSON.stringify(data.Event_Cumulative_Return, undefined, 2));
 //        cumulative_response.text("Use the chart below to view the results.");
       },
@@ -137,10 +137,15 @@ $(document).ready(function () {
     new Chartist.Line('.ct-chart', {
       labels: labels,
       series: [series],
+    },
+    // options
+    {
+      lineSmooth: false,
     });
 
   }
-
+  
+  
   function getHashKey(h) {
     return Object.keys(h)[0];
   }
@@ -176,7 +181,6 @@ $(document).ready(function () {
       }
     }
   });
-
 
 
 
