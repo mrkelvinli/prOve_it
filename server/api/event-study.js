@@ -43,6 +43,7 @@ ES = {
     return rel_events;
   },
   get_event_date: function (event) {
+
     // needs to be in format: dd-mmm-yyyy
     var uncheckedDate = event[1].toString();
     var checkedDayDate = uncheckedDate;
@@ -51,21 +52,19 @@ ES = {
       // doesn't match format, probably missing digit(s) from day or year
       if (uncheckedDate.match(/^[0-9]{1}-[a-zA-Z]{3}/)) {
         // weird day
-//        console.log("weird date");
         checkedDayDate = "0" + uncheckedDate;
       }
       if (checkedDayDate.match(/^[0-9]{2}-[a-zA-Z]{3}-[0-9]{2}$/)) {
-//        console.log('replacing');
         // weird year, assume all years are 2000 or after
         checkedDate = checkedDayDate.replace(/([0-9]{2}-[a-zA-Z]{3}-)([0-9]{2})/, "$120$2");
       }
     }
     // HELP!! why does it not work if it's '02-Mar-2016'?
-//    if (checkedDate === '02-Mar-2016') {
-//      console.log("found");
-//      checkedDate = '02-Mar-16';
-//    }
-//    console.log(checkedDate);
+    //    if (checkedDate === '02-Mar-2016') {
+    //      console.log("found");
+    //      checkedDate = '02-Mar-16';
+    //    }
+    //    console.log(checkedDate);
     return checkedDate;
   },
   get_event_company: function (event) {
@@ -80,10 +79,6 @@ ES = {
     var company_name = ES.get_event_company(event);
     var date = ES.get_event_date(event).toUpperCase();
     
-//    console.log("event_date: "+date);
-
-//    console.log("want this date: " + date);
-
     var fields = stock_price_file[0];
     var RIC_id = fields.indexOf('#RIC');
     var date_id = fields.indexOf('Date[L]');
@@ -96,73 +91,56 @@ ES = {
       var curr_date = stock_price_file[i][date_id].toString().toUpperCase();
 
       if (curr_company_name == company_name && curr_date == date) {
-//        console.log("found record: date: "+curr_date+" c_name: "+curr_company_name);
         for (var j = 1; j <= lower_window; j++) {
 
           if (i - j < 1) {
-              var ret = {};
-              ret[-j] = null;
-//              cum_return[-j] = null;
+            var ret = {};
+            ret[-j] = null;
             cum_return.unshift(ret);
           } else {
-
             var c = stock_price_file[i - j][RIC_id].toString();
             if (c == company_name) {
               var ret = {};
               ret[-j] = parseFloat(stock_price_file[i - j][cum_return_id].toString());
               cum_return.unshift(ret);
-//              cum_return.unshift(parseFloat(stock_price_file[i - j][cum_return_id].toString()));
             } else {
               var ret = {};
               ret[-j] = null;
               cum_return.unshift(ret);
-//              cum_return.unshift(null);
             }
           }
         }
         var ret = {};
-        ret [0]= parseFloat(stock_price_file[i][cum_return_id].toString());
-              cum_return.push(ret);
-//        cum_return.push(parseFloat(stock_price_file[i][cum_return_id].toString()));
+        ret[0] = parseFloat(stock_price_file[i][cum_return_id].toString());
+        cum_return.push(ret);
         for (var j = 1; j <= upper_window; j++) {
-
-          if (i + j > stock_price_file.length) {
-//            cum_return.push(null);
+          if (i + j >= stock_price_file.length) {
             var ret = {};
-            
-              ret[j] = null;
-              cum_return.push(ret);
+            ret[j] = null;
+            cum_return.push(ret);
           } else {
             var c = stock_price_file[i + j][RIC_id].toString();
             if (c == company_name) {
               var ret = {};
               ret[j] = parseFloat(stock_price_file[i + j][cum_return_id].toString());
               cum_return.push(ret);
-//              cum_return.push(parseFloat(stock_price_file[i + j][cum_return_id].toString()));
             } else {
               var ret = {};
-              
               ret[j] = null;
-              
               cum_return.push(ret);
-//              cum_return.push(null);
             }
           }
         }
         break;
       }
     }
-    
-
-    
-//    return ret;
     return {
       company_name: company_name,
       event_date: date,
       cumulative_returns: cum_return,
     }
   },
-  
+
   get_all_query_company: function (file) {
     if (file == null) {
       return file;
