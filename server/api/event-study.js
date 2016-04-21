@@ -51,18 +51,21 @@ ES = {
       // doesn't match format, probably missing digit(s) from day or year
       if (uncheckedDate.match(/^[0-9]{1}-[a-zA-Z]{3}/)) {
         // weird day
+//        console.log("weird date");
         checkedDayDate = "0" + uncheckedDate;
       }
       if (checkedDayDate.match(/^[0-9]{2}-[a-zA-Z]{3}-[0-9]{2}$/)) {
+//        console.log('replacing');
         // weird year, assume all years are 2000 or after
         checkedDate = checkedDayDate.replace(/([0-9]{2}-[a-zA-Z]{3}-)([0-9]{2})/, "$120$2");
       }
     }
     // HELP!! why does it not work if it's '02-Mar-2016'?
-    if (checkedDate === '02-Mar-2016') {
-      checkedDate = '02-Mar-16';
-    }
-    console.log(checkedDate);
+//    if (checkedDate === '02-Mar-2016') {
+//      console.log("found");
+//      checkedDate = '02-Mar-16';
+//    }
+//    console.log(checkedDate);
     return checkedDate;
   },
   get_event_company: function (event) {
@@ -76,6 +79,8 @@ ES = {
 
     var company_name = ES.get_event_company(event);
     var date = ES.get_event_date(event).toUpperCase();
+    
+//    console.log("event_date: "+date);
 
 //    console.log("want this date: " + date);
 
@@ -91,6 +96,7 @@ ES = {
       var curr_date = stock_price_file[i][date_id].toString().toUpperCase();
 
       if (curr_company_name == company_name && curr_date == date) {
+//        console.log("found record: date: "+curr_date+" c_name: "+curr_company_name);
         for (var j = 1; j <= lower_window; j++) {
 
           if (i - j < 1) {
