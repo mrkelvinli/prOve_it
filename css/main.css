@@ -35,6 +35,7 @@
 
 .background-img {
   background: url('../img/0kHZoh41.jpg')no-repeat center center fixed;
+  background-color:black;
 /*   position the background image */
   background-position: center;
   -webkit-background-size: cover;
