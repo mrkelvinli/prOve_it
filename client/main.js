@@ -4,10 +4,11 @@ import { ReactiveVar } from 'meteor/reactive-var';
 import './guiPage.html';
 
 Router.route('/', function(){
-  this.render('api_gui');
+  this.render('gui');
 });
 
 Router.configure({
+	layoutTemplate: 'main',
     loadingTemplate: 'loading',
     notFoundTemplate: 'notFound',
 });
