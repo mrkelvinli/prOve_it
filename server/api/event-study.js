@@ -259,5 +259,69 @@ ES = {
     }
 
     return stock_price_file;
+  },
+
+  calc_avg_cr_for_event: function (stock_price_file, company_name, date, upper_window, lower_window) {
+    lower_window = Math.abs(lower_window);
+    upper_window = Math.abs(upper_window);
+
+    date = date.toUpperCase();
+    
+    var fields = stock_price_file[0];
+    var RIC_id = fields.indexOf('#RIC');
+    var date_id = fields.indexOf('Date[L]');
+    var cum_return_id = fields.length + 1;
+
+    var total_cr = 0;
+    var num_cr = upper_window + lower_window + 1;
+
+    for (var i = 1; i < stock_price_file.length; i++) {
+      var curr_company_name = stock_price_file[i][RIC_id].toString();
+      var curr_date = stock_price_file[i][date_id].toString().toUpperCase();
+
+      if (curr_company_name == company_name && curr_date == date) {
+        for (var j = 1; j <= lower_window; j++) {
+          if (i - j >= 1) {
+            var c = stock_price_file[i - j][RIC_id].toString();
+            if (c == company_name) {
+              total_cr += parseFloat(stock_price_file[i - j][cum_return_id].toString());
+            }
+          }
+        }
+        total_cr += parseFloat(stock_price_file[i][cum_return_id].toString());
+        for (var j = 1; j <= upper_window; j++) {
+          if (i + j < stock_price_file.length) {
+            var c = stock_price_file[i + j][RIC_id].toString();
+            if (c == company_name) {
+              total_cr += parseFloat(stock_price_file[i + j][cum_return_id].toString());
+            }
+          }
+        }
+        break;
+      }
+    }
+    return total_cr/num_cr;
+  },
+
+  store_avg_cr_for_events: function (all_events,file_token) {
+    var upper_window = 5;
+    var lower_window = -5;
+
+    var stock_price_file = null;
+    var company_name = all_events[i]['company_name'];
+    var event_date   = all_events[i]['event_date'];
+
+
+    for (var i = 0; i < all_events.length; i++) {
+      var avg_cr = calc_avg_cr_for_event(stock_price_file, company_name, event_date, upper_window, lower_window);
+
+      Events.insert({
+        company_name : company_name,
+        event_date   : event_date,
+        avg_cr       : avg_cr,
+        file_token   : file_token,
+      });
+    }
   }
+
 };
