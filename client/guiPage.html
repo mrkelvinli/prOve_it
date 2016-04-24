@@ -1,0 +1,58 @@
+<template name="api_gui">
+    <script   src="https://code.jquery.com/jquery-2.2.3.min.js"   integrity="sha256-a23g1Nt4dtEYOj7bR+vTu7+T8VP13humZFBJNIYoEJo="   crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <div class="container">
+        <h3><p> Upload files to server to receive a token</p></h3>
+        <form class="form-horizontal" method="post" id="uploadForm" enctype="multipart/form-data">
+          <div class="form-group">
+            <label for="priceFile" class="col-sm-2 control-label">Price File</label>
+            <div class="col-sm-10">
+              <input type="file" id="stock_price_data_file">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="eventFile" class="col-sm-2 control-label">Event File</label>
+            <div class="col-sm-10">
+              <input type="file" id="stock_characteristic_file">
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+              <button type="submit" class="btn btn-default" name="uploadFiles">Submit</button>
+            </div>
+          </div>
+        </form>
+    </div>
+    <div class="container">
+        <h3><p> Give your auth token and a parameter range to get cumulative return. </p></h3>
+        <form class="form-horizontal" method="get" id="cumRetForm" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="auth-token" class="col-sm-2 control-label">Auth-Token</label>
+                <div class="col-sm-10">
+                    <input type="text" name="auth-token" placeholder="Auth-Token">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="Parameters" class="col-sm-2 control-label">Parameters</label>
+                <div class="col-sm-10">
+                    <input type="number" name="upper_window" placeholder="Upper Window">
+                    <input type="number" name="lower_window" placeholder="Lower Window">
+                </div>
+            </div>
+            <div class="form-group">
+              <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" class="btn btn-default" name="cumuRet">Submit</button>
+              </div>
+            </div>
+        </form>
+    </div>
+    <div class="container">
+        <h3> Returned values from the forms </h3>
+        <div class="form-group">
+            <label for="authRet">Your Auth Key</label>
+            <input type="text" class="form-control" id="auth" readonly>
+            <label for="cumulativeReturn">Cumulative Returns</label>
+            <textarea class="form-control" rows="5" id="cumRet" readonly></textarea>
+        </div>
+    </div>
+</template>
