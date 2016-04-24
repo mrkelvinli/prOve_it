@@ -34,7 +34,7 @@ ES = {
     if (topic_id == -1) return [];
 
     for (var i = 0; i < stock_characteristic_file.length; i++) {
-      var curr_val = stock_characteristic_file[i][topic_id];
+      var curr_val = stock_characteristic_file[i][21];
       //    console.log(curr_val);
       if (curr_val <= upper_range && curr_val >= lower_range) {
         rel_events.push(stock_characteristic_file[i]);
@@ -158,6 +158,30 @@ ES = {
       }
     }
     return all_company;
+  },
+
+  get_all_events: function(stock_characteristic_file) {
+    var title_line = stock_characteristic_file[0];
+    var line_length = title_line.length();
+    var results = [];
+    for (var i=0; i<stock_characteristic_file.length(); i++) {
+      var current_line = stock_characteristic_file[i];
+      for (var j=2; j<line_length; j++) {
+        if (current_line[j] == 1) {
+          var company_name = title_line[0].toString();
+          var date = title_line[1].toString();
+          var event_type = title_line[j].toString();
+          var value = current_line[j];
+          result.push({
+            company_name: company_name,
+            date: date,
+            event_type: event_type,
+            value: value,
+          });
+        }
+      }
+    }
+    return results;
   },
 
   calc_cumulative_returns: function (stock_price_file) {
