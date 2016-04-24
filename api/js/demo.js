@@ -259,6 +259,7 @@ $(document).ready(function () {
 
   function populate_events(data) {
     var dropdown = document.getElementById("chart-dropdown-menu");
+    $('.dropdown-menu').html('');
 
     for (var i = 0; i < data.length; i++) {
       var company_name = data[i]['company_name'].toString();
