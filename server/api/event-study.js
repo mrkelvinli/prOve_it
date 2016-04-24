@@ -162,17 +162,17 @@ ES = {
 
   get_all_events: function(stock_characteristic_file) {
     var title_line = stock_characteristic_file[0];
-    var line_length = title_line.length();
+    var line_length = title_line.length;
     var results = [];
-    for (var i=0; i<stock_characteristic_file.length(); i++) {
+    for (var i=0; i<stock_characteristic_file.length; i++) {
       var current_line = stock_characteristic_file[i];
       for (var j=2; j<line_length; j++) {
         if (current_line[j] == 1) {
-          var company_name = title_line[0].toString();
-          var date = title_line[1].toString();
+          var company_name = current_line[0].toString();
+          var date = current_line[1].toString();
           var event_type = title_line[j].toString();
           var value = current_line[j];
-          result.push({
+          results.push({
             company_name: company_name,
             date: date,
             event_type: event_type,
@@ -327,22 +327,27 @@ ES = {
     return total_cr/num_cr;
   },
 
-  store_avg_cr_for_events: function (all_events,file_token) {
+  store_avg_cr_for_events: function (stock_price_file,all_events,file_token) {
     var upper_window = 5;
     var lower_window = -5;
 
-    var stock_price_file = null;
-    var company_name = all_events[i]['company_name'];
-    var event_date   = all_events[i]['event_date'];
+    // console.log(all_events);
 
 
     for (var i = 0; i < all_events.length; i++) {
-      var avg_cr = calc_avg_cr_for_event(stock_price_file, company_name, event_date, upper_window, lower_window);
+
+      var company_name = all_events[i]['company_name'];
+      var event_date   = all_events[i]['date'];
+      var topic = all_events[i]['event_type'];
+      var topic_val = all_events[i]['value'];
+      var avg_cr = ES.calc_avg_cr_for_event(stock_price_file, company_name, event_date, upper_window, lower_window);
 
       Events.insert({
         company_name : company_name,
         event_date   : event_date,
         avg_cr       : avg_cr,
+        topic        : topic,
+        topic_val    : topic_val,
         file_token   : file_token,
       });
     }
