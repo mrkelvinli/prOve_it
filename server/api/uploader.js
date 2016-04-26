@@ -1,13 +1,13 @@
 Uploader = {
   connection: function (request) {
-    var getRequestContents = API.utility.getRequestContents(request);
+    var getRequestContents = Uploader.utility.getRequestContents(request);
     return {
       data: getRequestContents
     };
   },
 
   handleRequest: function (context, method) {
-    var connection = API.connection(context.request);
+    var connection = Uploader.connection(context.request);
     if (!connection.error) {
       var params = connection.data;
       var files = context.request.files;

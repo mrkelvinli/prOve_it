@@ -342,7 +342,7 @@ ES = {
   },
 
   // store the average cumulative return for each event to the Events Database
-  store_avg_cr_for_events: function (stock_price_file,all_events,file_token) {
+  avg_cr_for_events: function (stock_price_file,all_events,file_token) {
     var upper_window = 5;
     var lower_window = -5;
 
@@ -362,6 +362,58 @@ ES = {
         file_token   : file_token,
       });
     }
+  },
+
+  company_and_avg_cr_for_topic: function (all_company, token) {
+    for (var c in all_company) {
+      var company_name = all_company[c];
+      var all_events = Events.find({company_name: company_name, file_token: token}).fetch();
+      // var distinct_topics = Events.distinct('topic').find({company_name: company_name, file_token: token});
+      var distinct_topics = getDistinctTopic(company_name,token);
+      // console.log("distinct");
+      // console.log(distinct_topics);
+      for (var t in distinct_topics) {
+        var all_topic_events = Events.find({company_name: company_name, topic: distinct_topics[t],file_token:token}).fetch();
+        var sum_cr = 0;
+        for (var e in all_topic_events) {
+          // console.log(all_topic_events[e]);
+          sum_cr += all_topic_events[e]['avg_cr'];
+        }
+        var avg_avg_cr = sum_cr/(all_topic_events).length;
+        // console.log(avg_avg_cr);
+        Topics.insert({
+          company_name : company_name,
+          topic        : distinct_topics[t],
+          avg_cr_topic : avg_avg_cr,
+          file_token   : token,
+        });
+      }
+    }
+
+  },
+
+  company_avg_cr: function (all_company, token) {
+    for (var c in all_company) {
+      var company_name = all_company[c];
+      var topics = Topics.find({company_name: company_name, file_token: token}).fetch();
+      var sum_avg_cr = 0;
+      for (var t in topics) {
+        sum_avg_cr += topics[t]['avg_cr_topic'];
+      }
+      var avg_avg_topic_cr = sum_avg_cr / (topics.length);
+      Companys.insert({
+        company_name : company_name,
+        avg_cr       : avg_avg_topic_cr,
+        file_token   : token,
+      });
+    }
   }
 
 };
+
+function getDistinctTopic(company_name,token) {
+  // console.log(company_name+" "+token);
+  var data = Events.find({company_name: company_name, file_token: token}).fetch();
+  var distinctData = _.uniq(data, false, function(d) {return d.topic});
+  return _.pluck(distinctData, "topic");
+}
