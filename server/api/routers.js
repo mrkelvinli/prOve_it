@@ -94,6 +94,8 @@ Router.route('/api/testing', function() {
   where: 'server'
 });
 
+
+// return the csv file for the csv token
 Router.route('/api/cr-csv', {
   where: 'server',
   action: function () {

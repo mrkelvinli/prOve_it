@@ -1,5 +1,5 @@
 ES = {
-
+  
   get_cum_return_by_date: function (stock_price_file, c_name, date) {
     if (stock_price_file == null) {
       return stock_price_file;
@@ -19,6 +19,7 @@ ES = {
     return null;
   },
 
+  // get all the line that have the type of event with in the upper range and lower range
   get_events: function (stock_characteristic_file, topic_name, upper_range, lower_range) {
     //  
     //  console.log("topic_name: "+topic_name);
@@ -42,6 +43,8 @@ ES = {
     }
     return rel_events;
   },
+
+  // return the correct date format of the event line
   get_event_date: function (event) {
 
     // needs to be in format: dd-mmm-yyyy
@@ -67,11 +70,13 @@ ES = {
     //    console.log(checkedDate);
     return checkedDate;
   },
+
+  // return the company name of the event line
   get_event_company: function (event) {
     return event[0].toString();
   },
 
-
+  // return the cumulative returns with upper window and lower window 
   get_cum_return: function (stock_price_file, event, upper_window, lower_window) {
     lower_window = Math.abs(lower_window);
     upper_window = Math.abs(upper_window);
@@ -141,6 +146,8 @@ ES = {
     }
   },
 
+
+  // return all campany names in files
   get_all_query_company: function (file) {
     if (file == null) {
       return file;
@@ -160,30 +167,8 @@ ES = {
     return all_company;
   },
 
-  get_all_events: function(stock_characteristic_file) {
-    var title_line = stock_characteristic_file[0];
-    var line_length = title_line.length;
-    var results = [];
-    for (var i=0; i<stock_characteristic_file.length; i++) {
-      var current_line = stock_characteristic_file[i];
-      for (var j=2; j<line_length; j++) {
-        if (current_line[j] == 1) {
-          var company_name = current_line[0].toString();
-          var date = current_line[1].toString();
-          var event_type = title_line[j].toString();
-          var value = current_line[j];
-          results.push({
-            company_name: company_name,
-            date: date,
-            event_type: event_type,
-            value: value,
-          });
-        }
-      }
-    }
-    return results;
-  },
 
+  // calculate the cumulative return for each day in the stock price file
   calc_cumulative_returns: function (stock_price_file) {
     if (stock_price_file == null) {
       return stock_price_file;
@@ -285,6 +270,35 @@ ES = {
     return stock_price_file;
   },
 
+
+  // return a JSON of each individual in the stock characteristic file
+  get_all_events: function(stock_characteristic_file) {
+    var title_line = stock_characteristic_file[0];
+    var line_length = title_line.length;
+    var results = [];
+    for (var i=1; i < stock_characteristic_file.length; i++) {
+
+      var current_line = stock_characteristic_file[i];
+      // console.log(current_line);
+      for (var j=2; j<line_length; j++) {
+        if (current_line[j] > 0) {
+          var company_name = current_line[0].toString();
+          var date = current_line[1].toString();
+          var event_type = title_line[j].toString();
+          var value = current_line[j];
+          results.push({
+            company_name: company_name,
+            date: date,
+            event_type: event_type,
+            value: value,
+          });
+        }
+      }
+    }
+    return results;
+  },
+
+  // calculate the average cumulative return for each event
   calc_avg_cr_for_event: function (stock_price_file, company_name, date, upper_window, lower_window) {
     lower_window = Math.abs(lower_window);
     upper_window = Math.abs(upper_window);
@@ -327,15 +341,12 @@ ES = {
     return total_cr/num_cr;
   },
 
+  // store the average cumulative return for each event to the Events Database
   store_avg_cr_for_events: function (stock_price_file,all_events,file_token) {
     var upper_window = 5;
     var lower_window = -5;
 
-    // console.log(all_events);
-
-
     for (var i = 0; i < all_events.length; i++) {
-
       var company_name = all_events[i]['company_name'];
       var event_date   = all_events[i]['date'];
       var topic = all_events[i]['event_type'];

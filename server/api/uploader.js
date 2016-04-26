@@ -81,22 +81,15 @@ Uploader = {
         });
 
 
-
-
-
+        // pre calculate the average cumulative return and store it to the database
+        // if the request param avg is true
         var avg = params['avg'];
         if (avg) {
           Events.remove({});
-          console.log("cal ing");
           var all_events = ES.get_all_events(stock_characteristic_file_json);
           ES.store_avg_cr_for_events(stock_price_file_with_cr,all_events,token);
-          console.log(Events.find({'company_name':'AAC.AX'}).fetch());
+          console.log(Events.find().fetch());
         }
-
-
-
-
-
 
         API.utility.response(context, 200, {
           log: API.utility.api_log(params, files, context.request.start_time, "Successful."),

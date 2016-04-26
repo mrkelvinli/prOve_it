@@ -1,18 +1,6 @@
 import { Template } from 'meteor/templating';
 import { ReactiveVar } from 'meteor/reactive-var';
 
-import './guiPage.html';
-
-Router.route('/', function(){
-  this.render('gui');
-});
-
-Router.configure({
-	layoutTemplate: 'main',
-    loadingTemplate: 'loading',
-    notFoundTemplate: 'notFound',
-});
-
 
 
 //Template.hello.onCreated(function helloOnCreated() {
