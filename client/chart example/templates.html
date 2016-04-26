@@ -1,0 +1,67 @@
+<template name="chart_layout">
+  <div class="jumbotron">
+        <img class="logo" src="/images/logo.png" alt="logo">
+        <h1>amCharts</h1>
+
+  </div>
+
+  <div class="container">
+    <div class="row">
+      <!-- nav tabs heading -->
+      <div class="row">
+        <ul class="nav nav-tabs nav-justified">
+          <li role="presentation" class="{{isActive 'example1'}}"><a href="{{urlFor 'example1'}}"><img class="date" src="images/date.png">Date Based Line</a></li>
+          <li role="presentation" class="{{isActive 'example2'}}"><a href="{{urlFor 'example2'}}"><img class="bar" src="/images/bar.png">Column and Line Mix</a></li>
+          <li role="presentation" class="{{isActive 'example3'}}"><a href="{{urlFor 'example3'}}"><img class="pie" src="/images/pie.png">Pie Chart</a></li>
+        </ul>
+      </div>
+
+      <div class="row">
+        <div class="graphic">
+      {{> yield}}
+        </div>
+      </div>
+
+    </div>
+
+
+
+
+  </div>
+
+  <div class="footer">
+  
+  </div>
+
+</template>
+
+<template name="home">
+</template> 
+
+<template name="example1">
+  <div id="chartdiv"></div>
+</template>
+
+<template name="click_example">
+
+<!--   <a href="{{urlFor 'home'}}">Home</a><br>
+  <a href="{{urlFor 'example2'}}">Date Based Line</a><br>
+  <a href="{{urlFor 'example3'}}">Pie Chart Example</a><br><br><br> -->
+  <div id="chartdiv"></div>
+</template>
+
+<template name="example2">
+
+ <!--  <a href="{{urlFor 'home'}}">Home</a><br>
+  <a href="{{urlFor 'example1'}}">Column and Line Mix</a><br>
+  <a href="{{urlFor 'example3'}}">Pie Chart Example</a><br><br><br> -->
+  <div id="chartdiv"></div>
+</template>
+
+<template name="example3">
+
+  <!-- <a href="{{urlFor 'home'}}">Home</a><br>
+  <a href="{{urlFor 'example1'}}">Column and Line Mix</a><br>
+  <a href="{{urlFor 'example2'}}">Date Based Line</a><br> -->
+  <div id="chartdiv"></div>
+</template>

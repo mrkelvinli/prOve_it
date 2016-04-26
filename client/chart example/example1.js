@@ -1,19 +1,7 @@
-<template name="chart">
-
-  <style type="text/css">
-    #chartdiv {
-      width       : 100%;
-      height      : 500px;
-      font-size   : 11px;
-    }                   
-  </style>
-
-  <div id="chartdiv"></div> 
-
-  <script >
-  var chart = AmCharts.makeChart( "chartdiv", {
+Template.example1.rendered = function() {
+var chart = AmCharts.makeChart( "chartdiv", {
   "type": "serial",
-  "theme": "dark",
+  "theme": "none",
   "dataProvider": [ {
     "country": "USA",
     "visits": 2025
@@ -85,6 +73,10 @@
   }
 
 } );
-  </script>
 
-</template>
+  chart.zoomToIndexes(chart.dataProvider.length - 40, chart.dataProvider.length - 1);
+
+  // store the chart in the data context in case you need it later
+  this.data.chart = chart;
+};
+
