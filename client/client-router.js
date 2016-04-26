@@ -1,3 +1,27 @@
+
+
+
+
+Router.route('/', function () {
+  // this.render('vs_company_chart',{
+  //   data: function () {
+  //     return Companys.find().fetch();
+  //   }
+  // });
+    this.render('vs_company_chart');
+  this.layout('main_layout');
+});
+
+
+
+
+
+
+
+
+
+// ---------- amChart example ----------
+
 Router.route('/chart_click_example', function () {
   this.render('click_example');
   this.layout('chart_layout');
@@ -18,7 +42,7 @@ Router.route('/example3', function () {
   this.layout('chart_layout');
 });
 
-Router.route('/', function () {
-  this.render('home');
-  this.layout('chart_layout');
-});
+// Router.route('/', function () {
+//   this.render('home');
+//   this.layout('chart_layout');
+// });

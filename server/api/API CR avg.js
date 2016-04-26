@@ -44,7 +44,7 @@ apiCalcCrAvg = {
         ES.company_and_avg_cr_for_topic(all_company,token);
 
         ES.company_avg_cr(all_company,token);
-        console.log(Companys.find().fetch());
+        // console.log(Companys.find().fetch());
 
 
 
