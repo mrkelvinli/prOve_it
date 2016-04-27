@@ -25,7 +25,11 @@ Router.route('/c3', function () {
 
 
 
-
+Router.configure({
+    loadingTemplate: 'loading',
+    notFoundTemplate: 'notFound',
+    // layoutTemplate: 'layout'
+});
 
 
 
