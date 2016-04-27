@@ -187,8 +187,8 @@ API = {
       log['input_filename'] = filenames;
       log['parameters_passed'] = params;
       log['exec_status'] = exec_status;
-      log['start_time'] = Meteor.methods.displayTime(start_time);
-      log['end_time'] = Meteor.methods.displayTime(end_time);
+      log['start_time'] = displayTime(start_time);
+      log['end_time'] = displayTime(end_time);
       log['elapsed_time'] = elapsed_time.toString() + "ms";
       return log;
     },
@@ -200,31 +200,58 @@ function isNumeric(num) {
   return !isNaN(num)
 }
 
-Meteor.methods = {
-  displayTime: function (d) {
-    var str = "";
-    var currentTime = d;
-    var hours = currentTime.getHours();
-    var minutes = currentTime.getMinutes();
-    var seconds = currentTime.getSeconds();
-    var years = currentTime.getFullYear();
-    var month = currentTime.getMonth() + 1;
-    var date = currentTime.getDate();
+// Meteor.methods = {
+//   displayTime: function (d) {
+//     var str = "";
+//     var currentTime = d;
+//     var hours = currentTime.getHours();
+//     var minutes = currentTime.getMinutes();
+//     var seconds = currentTime.getSeconds();
+//     var years = currentTime.getFullYear();
+//     var month = currentTime.getMonth() + 1;
+//     var date = currentTime.getDate();
 
-    str = years + "-" + month + "-" + date + " "
+//     str = years + "-" + month + "-" + date + " "
 
-    if (minutes < 10) {
-      minutes = "0" + minutes
-    }
-    if (seconds < 10) {
-      seconds = "0" + seconds
-    }
-    str += hours + ":" + minutes + ":" + seconds + " ";
-    if (hours > 11) {
-      str += "PM"
-    } else {
-      str += "AM"
-    }
-    return str;
+//     if (minutes < 10) {
+//       minutes = "0" + minutes
+//     }
+//     if (seconds < 10) {
+//       seconds = "0" + seconds
+//     }
+//     str += hours + ":" + minutes + ":" + seconds + " ";
+//     if (hours > 11) {
+//       str += "PM"
+//     } else {
+//       str += "AM"
+//     }
+//     return str;
+//   }
+// };
+
+function displayTime (d) {
+  var str = "";
+  var currentTime = d;
+  var hours = currentTime.getHours();
+  var minutes = currentTime.getMinutes();
+  var seconds = currentTime.getSeconds();
+  var years = currentTime.getFullYear();
+  var month = currentTime.getMonth() + 1;
+  var date = currentTime.getDate();
+
+  str = years + "-" + month + "-" + date + " "
+
+  if (minutes < 10) {
+    minutes = "0" + minutes
   }
-};
+  if (seconds < 10) {
+    seconds = "0" + seconds
+  }
+  str += hours + ":" + minutes + ":" + seconds + " ";
+  if (hours > 11) {
+    str += "PM"
+  } else {
+    str += "AM"
+  }
+  return str;
+}
