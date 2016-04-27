@@ -13,6 +13,18 @@ Router.route('/', function () {
 });
 
 
+Router.route('/c2', function () {
+    this.render('company_topics_chart');
+  this.layout('main_layout');
+});
+
+Router.route('/c3', function () {
+    this.render('company_events_highlight');
+  this.layout('main_layout');
+});
+
+
+
 
 
 
