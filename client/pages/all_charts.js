@@ -3,7 +3,7 @@ Template.vs_company_chart.rendered = function() {
   var default_token = "EBvyLKHJBi6sjqBy9Eqv";
 
   Tracker.autorun(function() {
-    var companys = Companys.find({file_token: default_token},{fields: {'company_name':1, avg_cr:1}}).fetch();
+    var companys = Companys.find({file_token: default_token},{fields: {'company_name':1, avg_cr:1}, sort:{avg_cr:1}}).fetch();
     var chartData = [];
 
     companys.forEach(function(c) {
