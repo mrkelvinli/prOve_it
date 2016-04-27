@@ -1,74 +1,48 @@
-.loading {
-  font: 26px/1.5 Monospace;
-  color: #FFE05D;
-  -webkit-perspective: 100px;
-          perspective: 100px;
-}
-.loading > span {
-  -webkit-animation: flip 2s infinite;
-          animation: flip 2s infinite;
-  display: inline-block;
-  -webkit-transform-origin: 50% 50% -10px;
-          transform-origin: 50% 50% -10px;
-  -webkit-transform-style: preserve-3d;
-          transform-style: preserve-3d;
-}
-.loading > span:nth-child(1) {
-  -webkit-animation-delay: 0.1s;
-          animation-delay: 0.1s;
-}
-.loading > span:nth-child(2) {
-  -webkit-animation-delay: 0.2s;
-          animation-delay: 0.2s;
-}
-.loading > span:nth-child(3) {
-  -webkit-animation-delay: 0.3s;
-          animation-delay: 0.3s;
-}
-.loading > span:nth-child(4) {
-  -webkit-animation-delay: 0.4s;
-          animation-delay: 0.4s;
-}
-.loading > span:nth-child(5) {
-  -webkit-animation-delay: 0.5s;
-          animation-delay: 0.5s;
-}
-.loading > span:nth-child(6) {
-  -webkit-animation-delay: 0.6s;
-          animation-delay: 0.6s;
-}
-.loading > span:nth-child(7) {
-  -webkit-animation-delay: 0.7s;
-          animation-delay: 0.7s;
-}
-
-@-webkit-keyframes flip {
-  to {
-    -webkit-transform: rotateX(1turn);
-            transform: rotateX(1turn);
-  }
-}
-
-@keyframes flip {
-  to {
-    -webkit-transform: rotateX(1turn);
-            transform: rotateX(1turn);
-  }
-}
-body {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
+body, html {
   display: flex;
-  height: 100vh;
-  -webkit-box-pack: center;
-  -webkit-justify-content: center;
-      -ms-flex-pack: center;
-          justify-content: center;
-  -webkit-box-align: center;
-  -webkit-align-items: center;
-      -ms-flex-align: center;
-          align-items: center;
-  background-color: #000;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  background-color: #12162B;
+}
+
+.jawn {
+  position: relative;
+  background-color: #F8E71C;
+  width: 10px;
+  height: 10px;
+  margin: 0 auto;
+  border-radius: 50%;
+}
+.jawn:after, .jawn:before {
+  content: "";
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+}
+.jawn:after {
+  left: -10px;
+  top: -5px;
+  background-color: #C7C2A6;
+  transform-origin: 15px 10px;
+  animation: axis 1s linear infinite;
+}
+.jawn:before {
+  left: -25px;
+  top: -15px;
+  background-color: #009bff;
+  transform-origin: 30px 20px;
+  animation: axis 2s linear infinite;
+}
+
+@keyframes axis {
+  0% {
+    transform: rotateZ(0deg) translate3d(0, 0, 0);
+  }
+  100% {
+    transform: rotateZ(360deg) translate3d(0, 0, 0);
+  }
 }
 
