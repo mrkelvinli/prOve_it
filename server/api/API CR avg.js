@@ -53,7 +53,7 @@ apiCalcCrAvg = {
         });
       } else {
         API.utility.response(context, 404, {
-          log: API.utility.api_log(params, files, context.request.start_time, "Invalid Request."),
+          log: API.utility.api_log(params, context.request.start_time, "Invalid Request."),
         });
       }
 
