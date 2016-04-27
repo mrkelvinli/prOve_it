@@ -2,27 +2,34 @@
 
 
 
-Router.route('/', function () {
-  // this.render('vs_company_chart',{
-  //   data: function () {
-  //     return Companys.find().fetch();
-  //   }
-  // });
-    this.render('vs_company_chart');
+Router.route('/:token', function () {
+  this.render('vs_company_chart',{
+    token: function () {
+      return this.params.company_name;
+    },
+  });
   this.layout('main_layout');
 });
 
 
-Router.route('/c2', function () {
-    this.render('company_topics_chart');
+Router.route('/company_topics_chart/:token/:company_name', function () {
+  // console.log("router: "+this.params.company_name);
+  this.render('company_topics_chart',{
+    company_name: function () {
+      return this.params.company_name;
+    },
+    token: function() {
+      return this.params.token;
+    }
+  });
+  // this.render('company_topics_chart');
   this.layout('main_layout');
 });
 
-Router.route('/c3', function () {
-    this.render('company_events_highlight');
+Router.route('/kelvin',function(){
+  this.render('kelvin');
   this.layout('main_layout');
 });
-
 
 
 Router.configure({

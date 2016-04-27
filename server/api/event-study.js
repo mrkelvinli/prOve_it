@@ -397,10 +397,15 @@ ES = {
       var company_name = all_company[c];
       var topics = Topics.find({company_name: company_name, file_token: token}).fetch();
       var sum_avg_cr = 0;
+      if (topics.length == 0) {
+        continue;
+      }
       for (var t in topics) {
         sum_avg_cr += topics[t]['avg_cr_topic'];
       }
       var avg_avg_topic_cr = sum_avg_cr / (topics.length);
+
+
       Companys.insert({
         company_name : company_name,
         avg_cr       : avg_avg_topic_cr,
