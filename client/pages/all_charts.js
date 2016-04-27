@@ -230,9 +230,9 @@
 
 
   Template.chart.rendered = function() {
-    // render_company_chart();
+    render_company_chart();
 
-    render_company_events_chart('AAC.AX','Cash Rate');
+    // render_company_events_chart('AAC.AX','Cash Rate');
 
 
     function render_company_chart (){
@@ -243,13 +243,13 @@
       
         // console.log(companys);
         var companys = Companys.find({},{fields: {'company_name':1, avg_cr:1}, sort:{avg_cr:1},reactive:true}).fetch();
-        // if (companys == null) {
-        //   console.log("asdf");
-        //   Router.go('notFound');
-        //   return;
-        // } else if (companys.length == 0) {
-        //   console.log("aoeu");
-        // }
+        if (companys.length == 0) {
+          // Router.go('noFound');
+          // $('#chartdiv').addClass("jawn");
+        } else {
+          // $('#chartdiv').removeClass("jawn");
+
+        }
 
         console.log("continued");
         var chartData = [];
@@ -394,7 +394,7 @@
         chartData.push(entry);
       });
 
-      console.log(chartData);
+      // console.log(chartData);
       chart = AmCharts.makeChart("chartdiv", {
           "type": "serial",
           "theme": "none",
