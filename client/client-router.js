@@ -1,6 +1,15 @@
 
+Router.configure({
+    loadingTemplate: 'loading',
+    notFoundTemplate: 'loading',
+    // layoutTemplate: 'layout'
+});
 
 
+// fix me
+Router.route('/notFound', function() {
+  this.render('loading');
+})
 
 Router.route('/vs_company_chart/:token', function () {
   this.render('vs_company_chart',{
@@ -52,8 +61,6 @@ Router.configure({
     notFoundTemplate: 'notFound',
     // layoutTemplate: 'layout'
 });
-
-
 
 
 

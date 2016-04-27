@@ -7,7 +7,18 @@ Template.vs_company_chart.rendered = function() {
   var query_token = Router.current().params.token;
 
   Tracker.autorun(function() {
+    // var companys = Meteor.call('get_companies_db', query_token);
+    
+    // console.log(companys);
     var companys = Companys.find({file_token: query_token},{fields: {'company_name':1, avg_cr:1}, sort:{avg_cr:1},reactive:true}).fetch();
+    if (companys == null) {
+      console.log("asdf");
+      Router.go('notFound');
+      return;
+    } else if (companys.length == 0) {
+      console.log("aoeu");
+    }
+    console.log("continued");
     var chartData = [];
 
     companys.forEach(function(c) {
