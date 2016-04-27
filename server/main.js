@@ -23,3 +23,10 @@ import { Meteor } from 'meteor/meteor';
     // });
   }
 
+Meteor.methods = {
+    get_companies_db: function(query_token) {
+        var companies = Companys.find({file_token: query_token},{fields: {'company_name':1, avg_cr:1}, sort:{avg_cr:1},reactive:true}).fetch();
+        console.log(companies);
+        return companies;
+    }
+};

@@ -1,6 +1,15 @@
 
+Router.configure({
+    loadingTemplate: 'loading',
+    notFoundTemplate: 'loading',
+    // layoutTemplate: 'layout'
+});
 
 
+// fix me
+Router.route('/notFound', function() {
+  this.render('loading');
+})
 
 Router.route('/:token', function () {
   this.render('vs_company_chart',{
@@ -26,17 +35,6 @@ Router.route('/company_topics_chart/:token/:company_name', function () {
   this.layout('main_layout');
 });
 
-Router.route('/kelvin',function(){
-  this.render('kelvin');
-  this.layout('main_layout');
-});
-
-
-Router.configure({
-    loadingTemplate: 'loading',
-    notFoundTemplate: 'notFound',
-    // layoutTemplate: 'layout'
-});
 
 
 
