@@ -30,9 +30,13 @@ apiCalcCrAvg = {
         var stock_price_file = file.stock_price_file;
         var stock_characteristic_file = file.stock_characteristic_file;
 
-        Events.remove({file_token: token});
-        Topics.remove({file_token: token});
-        Companys.remove({file_token: token});
+        // Events.remove({file_token: token});
+        // Topics.remove({file_token: token});
+        // Companys.remove({file_token: token});
+
+        Events.remove({});
+        Topics.remove({});
+        Companys.remove({});
 
 
         // pre calculate the average cumulative return and store it to the database

@@ -7,51 +7,57 @@ Router.configure({
 
 
 // fix me
-Router.route('/notFound', function() {
-  this.render('loading');
-})
+// Router.route('/notFound', function() {
+//   this.render('loading');
+// })
 
-Router.route('/vs_company_chart/:token', function () {
-  this.render('vs_company_chart',{
-    token: function () {
-      return this.params.company_name;
-    },
-  });
+
+Router.route('/',function (){
+  this.render('chart');
   this.layout('main_layout');
 });
 
+// Router.route('/vs_company_chart/:token', function () {
+//   this.render('vs_company_chart', {
+//     token: function () {
+//       return this.params.token;
+//     },
+//     onBeforeAction: function (){
+//       Session.set('token',this.params.token);
+//       console.log(Session.get('token'));
+//       this.next();
+//     }
+//   });
+//   this.layout('main_layout');
+// });
 
-Router.route('/company_topics_chart/:token/:company_name', function () {
-  // console.log("router: "+this.params.company_name);
-  this.render('company_topics_chart',{
-    company_name: function () {
-      return this.params.company_name;
-    },
-    token: function() {
-      return this.params.token;
-    }
-  });
-  // this.render('company_topics_chart');
-  this.layout('main_layout');
-});
+// Router.route('/company_topics_chart/:company_name', function () {
+//   Session.set('company_name',this.params.company_name);
+//   this.render('company_topics_chart',{
+//     company_name: function () {
+//       return this.params.company_name;
+//     },
+//     token: function() {
+//       return Session.get('token');
+//     }
+//   });
+//   this.layout('main_layout');
+// });
 
 
-Router.route('/company_events_highlight/:token/:company_name/amcharts/images/:image_name',function(){
-  this.redirect('/amcharts/images/'+this.params.image_name);
-});
+// Router.route('/company_events_highlight/',function(){
 
-Router.route('/company_events_highlight/:token/:company_name',function(){
-  this.render('company_events_highlight',{
-    company_name: function () {
-      return this.params.company_name;
-    },
-    token: function() {
-      return this.params.token;
-    }
-  });
-  // this.render('company_events_highlight');
-  this.layout('main_layout');
-});
+//   this.render('company_events_highlight',{
+//     company_name: function () {
+//       return Session.get('company_name');
+//     },
+//     token: function() {
+//       return Session.get('token');
+//     }
+//   });
+//   // this.render('company_events_highlight');
+//   this.layout('main_layout');
+// });
 
 
 
