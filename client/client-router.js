@@ -1,75 +1,17 @@
 
-Router.configure({
-    loadingTemplate: 'loading',
-    notFoundTemplate: 'loading',
-    // layoutTemplate: 'layout'
-});
-
-
-// fix me
-// Router.route('/notFound', function() {
-//   this.render('loading');
-// })
-
 
 Router.route('/',function (){
   this.render('chart');
   this.layout('main_layout');
 });
 
-// Router.route('/vs_company_chart/:token', function () {
-//   this.render('vs_company_chart', {
-//     token: function () {
-//       return this.params.token;
-//     },
-//     onBeforeAction: function (){
-//       Session.set('token',this.params.token);
-//       console.log(Session.get('token'));
-//       this.next();
-//     }
-//   });
-//   this.layout('main_layout');
-// });
-
-// Router.route('/company_topics_chart/:company_name', function () {
-//   Session.set('company_name',this.params.company_name);
-//   this.render('company_topics_chart',{
-//     company_name: function () {
-//       return this.params.company_name;
-//     },
-//     token: function() {
-//       return Session.get('token');
-//     }
-//   });
-//   this.layout('main_layout');
-// });
-
-
-// Router.route('/company_events_highlight/',function(){
-
-//   this.render('company_events_highlight',{
-//     company_name: function () {
-//       return Session.get('company_name');
-//     },
-//     token: function() {
-//       return Session.get('token');
-//     }
-//   });
-//   // this.render('company_events_highlight');
-//   this.layout('main_layout');
-// });
-
-
 
 
 Router.configure({
     loadingTemplate: 'loading',
-    notFoundTemplate: 'notFound',
-    // layoutTemplate: 'layout'
+    notFoundTemplate: 'loading',
+    layoutTemplate: 'main_layout'
 });
-
-
-
 
 // ---------- amChart example ----------
 
