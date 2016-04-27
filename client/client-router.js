@@ -2,7 +2,7 @@
 
 
 
-Router.route('/:token', function () {
+Router.route('/vs_company_chart/:token', function () {
   this.render('vs_company_chart',{
     token: function () {
       return this.params.company_name;
@@ -26,10 +26,25 @@ Router.route('/company_topics_chart/:token/:company_name', function () {
   this.layout('main_layout');
 });
 
-Router.route('/kelvin',function(){
-  this.render('kelvin');
+
+Router.route('/company_events_highlight/:token/:company_name/amcharts/images/:image_name',function(){
+  this.redirect('/amcharts/images/'+this.params.image_name);
+});
+
+Router.route('/company_events_highlight/:token/:company_name',function(){
+  this.render('company_events_highlight',{
+    company_name: function () {
+      return this.params.company_name;
+    },
+    token: function() {
+      return this.params.token;
+    }
+  });
+  // this.render('company_events_highlight');
   this.layout('main_layout');
 });
+
+
 
 
 Router.configure({
