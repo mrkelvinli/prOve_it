@@ -412,6 +412,26 @@ ES = {
         file_token   : token,
       });
     }
+  },
+
+  populate_stocks_db: function (stock_price_file) {
+    var fields = stock_price_file[0];
+    var RIC_id = fields.indexOf('#RIC');
+    var date_id = fields.indexOf('Date[L]');
+    var open_id = fields.indexOf('Open');
+    var last_id = fields.indexOf('Last');
+    var return_percent_id = fields.length;
+    var cum_return_id = fields.length + 1;
+
+    for (var i = 1; i < stock_price_file.length; i++) {
+      Stocks.insert({
+        company_name : stock_price_file[i][RIC_id].toString(),
+        date         : stock_price_file[i][date_id].toUpperCase(),
+        open_price   : parseFloat(stock_price_file[i][open_id]),
+        last_price   : parseFloat(stock_price_file[i][last_id]),
+        cr           : parseFloat(stock_price_file[i][cum_return_id]),
+      });
+    }
   }
 
 };

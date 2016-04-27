@@ -230,7 +230,10 @@
 
 
   Template.chart.rendered = function() {
-    render_company_chart();
+    // render_company_chart();
+
+    render_company_events_chart('AAC.AX','Cash Rate');
+
 
     function render_company_chart (){
 
@@ -322,7 +325,7 @@
           chartData.push(entry);
         });
 
-        console.log(chartData);
+        // console.log(chartData);
 
 
         drawGraph(chartData);
@@ -334,6 +337,7 @@
         // alert(event.item.category + ": " + event.item.values.value);
         // window.location.href = "/company_events_highlight/"+query_token+"/"+event.item.category;
         render_company_events_chart(company_name,event.item.category);
+
       }
 
       function drawGraph (chartData) {
@@ -375,53 +379,71 @@
     console.log(topic);
 
 
-    var chartData = generateChartData();
-var chart = AmCharts.makeChart("chartdiv", {
-    "type": "serial",
-    "theme": "none",
-    "marginRight": 80,
-    "autoMarginOffset": 20,
-    "marginTop": 7,
-    "dataProvider": chartData,
-    "valueAxes": [{
-        "axisAlpha": 0.2,
-        "dashLength": 1,
-        "position": "left"
-    }],
-    "mouseWheelZoomEnabled": true,
-    "graphs": [{
-        "id": "g1",
-        "balloonText": "[[value]]",
-        "bullet": "round",
-        "bulletBorderAlpha": 1,
-        "bulletColor": "#FFFFFF",
-        "hideBulletsCount": 50,
-        "title": "red line",
-        "valueField": "visits",
-        "useLineColorForBulletBorder": true,
-        "balloon":{
-            "drop":true
-        }
-    }],
-    "chartScrollbar": {
-        "autoGridCount": true,
-        "graph": "g1",
-        "scrollbarHeight": 40
-    },
-    "chartCursor": {
-       "limitToGraph":"g1"
-    },
-    "categoryField": "date",
-    "categoryAxis": {
-        "parseDates": true,
-        "axisColor": "#DADADA",
-        "dashLength": 1,
-        "minorGridEnabled": true
-    },
-    "export": {
-        "enabled": true
-    }
-});
+    var chart ;
+    var chartData = [];
+
+    Tracker.autorun(function() {
+      var stocks = Stocks.find({company_name: company_name},{fields: {'date':1, cr:1}}).fetch();
+
+      chartData = [];
+      stocks.forEach(function(c) {
+        var entry = {
+          date: c.date,
+          cr: c.cr,
+        };
+        chartData.push(entry);
+      });
+
+      console.log(chartData);
+      chart = AmCharts.makeChart("chartdiv", {
+          "type": "serial",
+          "theme": "none",
+          "marginRight": 80,
+          "autoMarginOffset": 20,
+          "marginTop": 7,
+          "dataProvider": chartData,
+          "valueAxes": [{
+              "axisAlpha": 0.2,
+              "dashLength": 1,
+              "position": "left"
+          }],
+          "mouseWheelZoomEnabled": true,
+          "graphs": [{
+              "id": "g1",
+              "balloonText": "[[value]]",
+              "bullet": "round",
+              "bulletBorderAlpha": 1,
+              "bulletColor": "#FFFFFF",
+              "hideBulletsCount": 50,
+              "title": "red line",
+              "valueField": "cr",
+              "useLineColorForBulletBorder": true,
+              "balloon":{
+                  "drop":true
+              }
+          }],
+          "chartScrollbar": {
+              "autoGridCount": true,
+              "graph": "g1",
+              "scrollbarHeight": 40
+          },
+          "chartCursor": {
+             "limitToGraph":"g1"
+          },
+          "categoryField": "date",
+          "categoryAxis": {
+              "parseDates": true,
+              "axisColor": "#DADADA",
+              "dashLength": 1,
+              "minorGridEnabled": true
+          },
+          "export": {
+              "enabled": true
+          }
+      });
+    });
+
+    // var chartData = generateChartData();
 
 chart.addListener("rendered", zoomChart);
 zoomChart();

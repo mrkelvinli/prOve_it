@@ -37,6 +37,7 @@ apiCalcCrAvg = {
         Events.remove({});
         Topics.remove({});
         Companys.remove({});
+        Stocks.remove({});
 
 
         // pre calculate the average cumulative return and store it to the database
@@ -50,6 +51,7 @@ apiCalcCrAvg = {
         ES.company_avg_cr(all_company,token);
         // console.log(Companys.find().fetch());
 
+        ES.populate_stocks_db(stock_price_file);
 
 
         API.utility.response(context, 200, {
