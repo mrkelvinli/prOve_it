@@ -42,6 +42,7 @@ apiCalcCrAvg = {
 
         // pre calculate the average cumulative return and store it to the database
         var all_events = ES.get_all_events(stock_characteristic_file);
+        console.log(all_events);
         ES.avg_cr_for_events(stock_price_file,all_events,token);
         // console.log(Events.find().fetch());
 
@@ -49,7 +50,7 @@ apiCalcCrAvg = {
         ES.company_and_avg_cr_for_topic(all_company,token);
 
         ES.company_avg_cr(all_company,token);
-        // console.log(Companys.find().fetch());
+        console.log(Companys.find().fetch());
 
         ES.populate_stocks_db(stock_price_file);
 
@@ -59,7 +60,8 @@ apiCalcCrAvg = {
         });
       } else {
         API.utility.response(context, 404, {
-          log: API.utility.api_log(params, context.request.start_time, "Invalid Request."),
+          status: "failure"
+          // log: API.utility.api_log(params, context.request.start_time, "Invalid Request."),
         });
       }
 

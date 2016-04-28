@@ -394,7 +394,9 @@
         chartData.push(entry);
       });
 
-      // console.log(chartData);
+
+
+      console.log(chartData);
       chart = AmCharts.makeChart("chartdiv", {
           "type": "serial",
           "theme": "none",
