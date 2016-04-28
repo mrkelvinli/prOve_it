@@ -1,10 +1,28 @@
 
 
-Router.route('/',function (){
-  this.render('chart');
-  this.layout('main_layout');
+// Router.route('/',function (){
+//   this.render('chart');
+//   this.layout('main_layout');
+// });
+
+
+Router.map(function() {
+  this.route('chart', {
+    path: '/',
+    template: 'chart',
+    layout: 'main_layout',
+    waitOn: function() {
+      return Meteor.subscribe('stocks_db');
+    },
+    cache: true,
+  });
 });
 
+// Template.chart.helper({
+//   'subscriptionsReady' : function () {
+//     return Template.chart.subscriptionsReady;
+//   }
+// });
 
 
 Router.configure({

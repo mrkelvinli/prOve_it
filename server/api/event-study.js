@@ -329,7 +329,7 @@ ES = {
             var c = stock_price_file[i - j][RIC_id].toString();
             if (c == company_name) {
               num_cr++;
-              lower_date = stock_price_file[i-j][date_id].toString();
+              lower_date = stock_price_file[i-j][date_id].toUpperCase();
               total_cr += parseFloat(stock_price_file[i - j][cum_return_id].toString());
             }
           }
@@ -341,7 +341,7 @@ ES = {
             var c = stock_price_file[i + j][RIC_id].toString();
             if (c == company_name) {
               num_cr++;
-              upper_date = stock_price_file[i+j][date_id].toString();
+              upper_date = stock_price_file[i+j][date_id].toUpperCase();
               total_cr += parseFloat(stock_price_file[i + j][cum_return_id].toString());
             }
           }
@@ -367,6 +367,7 @@ ES = {
     for (var i = 0; i < all_events.length; i++) {
       var company_name = all_events[i]['company_name'];
       var event_date   = all_events[i]['date'];
+      event_date = event_date.toUpperCase();
       var topic = all_events[i]['event_type'];
       var topic_val = all_events[i]['value'];
       var event_data = ES.calc_avg_cr_for_event_and_get_upper_lower_date(stock_price_file, company_name, event_date, upper_window, lower_window);
@@ -379,9 +380,13 @@ ES = {
       var upper_date = event_data[2];
       var avg_cr = event_data[0];
 
-      // console.log("avg_cr: " +avg_cr);
-      // console.log("lower_date: " +lower_date);
-      // console.log("upper_date: " +upper_date);
+      console.log("avg_cr: " +avg_cr);
+      console.log("lower_date: " +lower_date);
+      console.log("upper_date: " +upper_date);
+
+      if (isNaN(avg_cr)) {
+        continue;
+      }
 
       Events.insert({
         company_name : company_name,

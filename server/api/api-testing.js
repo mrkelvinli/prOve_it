@@ -7,16 +7,16 @@ APItesting = {
   methods: {
     GET: function (context, params) {
 
-      var default_token = "2s4XeTBzRLdbMFDdMrdJ";
+      var returns = [];
 
-      var companys = Meteor.methods.get_companys(default_token);
+      var company_name = "AAC.AX";
+      var topic = "Cash Rate";
+
+      var stocks = Stocks.find({company_name: "TGR.AX"},{fields: {'date':1, cr:1,_id:0}}).fetch();
 
 
 
-      var returns = companys;
-
-
-      API.utility.response(context, 200, returns);
+      API.utility.response(context, 200, stocks);
     }
   },
 };

@@ -21,12 +21,17 @@ import { Meteor } from 'meteor/meteor';
     //     return Companys.find();
     //   });
     // });
-  }
 
-// Meteor.methods = {
-//     get_companies_db: function(query_token) {
-//         var companies = Companys.find({file_token: query_token},{fields: {'company_name':1, avg_cr:1}, sort:{avg_cr:1},reactive:true}).fetch();
-//         console.log(companies);
-//         return companies;
-//     }
-// };
+    Meteor.publish('companys_db', function(){
+        return Companys.find();
+    });
+    Meteor.publish('stocks_db', function(){
+        return Stocks.find();
+    });
+    Meteor.publish('events_db', function(){
+        return Events.find();
+    });
+    Meteor.publish('topics_db', function(){
+        return Topics.find();
+    });
+}
