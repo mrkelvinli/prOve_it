@@ -384,9 +384,17 @@
 
     Tracker.autorun(function() {
       var stocks = Stocks.find({company_name: company_name},{fields: {'date':1, cr:1}}).fetch();
-
       chartData = [];
+      var guides = [];
       stocks.forEach(function(c) {
+        var dateRange = Events.findOne({company_name: company_name, topic: topic, event_date: c.date}, {fields: {'lower_date': 1, 'upper_date': 1}});  
+
+        guides.push({
+          "fillAlpha": 0.10,
+          "date": dataRange['lower_date'],
+          "toDate": dataRange['upper_date']
+        });
+
         var entry = {
           date: c.date,
           cr: c.cr,
@@ -395,8 +403,8 @@
       });
 
       // console.log(chartData);
-      var date1 = new Date(2012,1,1);
-      var date2 = new Date(2013,1,1);
+
+
       chart = AmCharts.makeChart("chartdiv", {
           "type": "serial",
           "theme": "none",
@@ -442,11 +450,7 @@
           "export": {
               "enabled": true
           },
-          "guides": [{
-              "fillAlpha": 0.10,
-              "date": date1,
-              "toDate": date2
-          }]
+          "guides": guides
       });
     });
 
