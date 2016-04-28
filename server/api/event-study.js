@@ -299,7 +299,7 @@ ES = {
   },
 
   // calculate the average cumulative return for each event
-  calc_avg_cr_for_event: function (stock_price_file, company_name, date, upper_window, lower_window) {
+  calc_avg_cr_for_event_and_get_upper_lower_date: function (stock_price_file, company_name, date, upper_window, lower_window) {
     lower_window = Math.abs(lower_window);
     upper_window = Math.abs(upper_window);
 
@@ -311,7 +311,11 @@ ES = {
     var cum_return_id = fields.length + 1;
 
     var total_cr = 0;
-    var num_cr = upper_window + lower_window + 1;
+    // var num_cr = upper_window + lower_window + 1;
+    var num_cr = 0;
+
+    var upper_date;
+    var lower_date;
 
     for (var i = 1; i < stock_price_file.length; i++) {
       var curr_company_name = stock_price_file[i][RIC_id].toString();
@@ -322,15 +326,20 @@ ES = {
           if (i - j >= 1) {
             var c = stock_price_file[i - j][RIC_id].toString();
             if (c == company_name) {
+              num_cr++;
+              lower_date = stock_price_file[i-j][date_id].toString();
               total_cr += parseFloat(stock_price_file[i - j][cum_return_id].toString());
             }
           }
         }
+        num_cr++;
         total_cr += parseFloat(stock_price_file[i][cum_return_id].toString());
         for (var j = 1; j <= upper_window; j++) {
           if (i + j < stock_price_file.length) {
             var c = stock_price_file[i + j][RIC_id].toString();
             if (c == company_name) {
+              num_cr++;
+              upper_date = stock_price_file[i+j][date_id].toString();
               total_cr += parseFloat(stock_price_file[i + j][cum_return_id].toString());
             }
           }
@@ -338,7 +347,7 @@ ES = {
         break;
       }
     }
-    return total_cr/num_cr;
+    return [total_cr/num_cr,lower_date,upper_date];
   },
 
   // store the average cumulative return for each event to the Events Database
@@ -351,14 +360,16 @@ ES = {
       var event_date   = all_events[i]['date'];
       var topic = all_events[i]['event_type'];
       var topic_val = all_events[i]['value'];
-      var avg_cr = ES.calc_avg_cr_for_event(stock_price_file, company_name, event_date, upper_window, lower_window);
+      var event_data = ES.calc_avg_cr_for_event_and_get_upper_lower_date(stock_price_file, company_name, event_date, upper_window, lower_window);
 
       Events.insert({
         company_name : company_name,
         event_date   : event_date,
-        avg_cr       : avg_cr,
+        avg_cr       : event_data[0],
         topic        : topic,
         topic_val    : topic_val,
+        lower_date   : event_data[1],
+        upper_date   : event_data[2],
         file_token   : file_token,
       });
     }
