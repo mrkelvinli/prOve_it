@@ -86,10 +86,15 @@
         var chart = new AmCharts.AmSerialChart();
 
 
+
         chart.dataProvider = chartData;
         chart.categoryField = "company_name";
         chart.startDuration = 1;
-        
+
+        chart.titles = [{
+          "text": "Average Cumulative Returns On Each Events by Companys",
+          "bold": false,
+        }];
         
         // add click listener
         chart.addListener("clickGraphItem", handleClick);
@@ -186,6 +191,10 @@
         // add click listener
         chart.addListener("clickGraphItem", handleClick);
         
+        chart.titles = [{
+          "text": "Average Cumulative Returns For Each Event Types",
+          "bold": false,
+        }];
 
         // AXES
         // category
@@ -287,6 +296,16 @@
             "enabled": true
         },
         "guides": guides,
+        titles: [
+          {
+            text: "Companys Stock Price",
+            bold: false,
+          },
+          {
+            text: "events labeled in grey",
+            bold: false,
+          }
+        ]
       });
     });
 
