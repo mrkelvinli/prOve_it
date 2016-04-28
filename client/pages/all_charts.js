@@ -387,12 +387,12 @@
       chartData = [];
       var guides = [];
       stocks.forEach(function(c) {
-        var dateRange = Events.findOne({company_name: company_name, topic: topic, event_date: c.date}, {fields: {'lower_date': 1, 'upper_date': 1}});  
-
+        var dateRange = Events.findOne({company_name: company_name, event_date: c.date}, {fields: {'lower_date': 1, 'upper_date': 1}});  
+        console.log(dateRange);
         guides.push({
           "fillAlpha": 0.10,
-          "date": dataRange['lower_date'],
-          "toDate": dataRange['upper_date']
+          "date": dateRange.lower_date,
+          "toDate": dateRange.upper_date
         });
 
         var entry = {
@@ -401,9 +401,6 @@
         };
         chartData.push(entry);
       });
-
-      // console.log(chartData);
-
 
       chart = AmCharts.makeChart("chartdiv", {
           "type": "serial",

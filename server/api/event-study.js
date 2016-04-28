@@ -317,6 +317,8 @@ ES = {
     var upper_date;
     var lower_date;
 
+    var OK = false;
+
     for (var i = 1; i < stock_price_file.length; i++) {
       var curr_company_name = stock_price_file[i][RIC_id].toString();
       var curr_date = stock_price_file[i][date_id].toString().toUpperCase();
@@ -345,8 +347,15 @@ ES = {
           }
         }
         break;
+        OK = true;
       }
     }
+
+    if (!OK) {
+      // return null;
+      console.log("cannot match");
+    }
+    // console.log("return : "+total_cr/num_cr+" "+lower_date+" "+upper_date)
     return [total_cr/num_cr,lower_date,upper_date];
   },
 
@@ -362,14 +371,26 @@ ES = {
       var topic_val = all_events[i]['value'];
       var event_data = ES.calc_avg_cr_for_event_and_get_upper_lower_date(stock_price_file, company_name, event_date, upper_window, lower_window);
 
+      // if (event_data == null) {
+      //   continue;
+      // }
+
+      var lower_date = event_data[1];
+      var upper_date = event_data[2];
+      var avg_cr = event_data[0];
+
+      // console.log("avg_cr: " +avg_cr);
+      // console.log("lower_date: " +lower_date);
+      // console.log("upper_date: " +upper_date);
+
       Events.insert({
         company_name : company_name,
         event_date   : event_date,
-        avg_cr       : event_data[0],
+        avg_cr       : avg_cr,
         topic        : topic,
         topic_val    : topic_val,
-        lower_date   : event_data[1],
-        upper_date   : event_data[2],
+        lower_date   : lower_date,
+        upper_date   : upper_date,
         file_token   : file_token,
       });
     }
@@ -388,7 +409,9 @@ ES = {
         var sum_cr = 0;
         for (var e in all_topic_events) {
           // console.log(all_topic_events[e]);
-          sum_cr += all_topic_events[e]['avg_cr'];
+          if (!isNaN(all_topic_events[e]['avg_cr'])) {
+            sum_cr += all_topic_events[e]['avg_cr'];
+          }
         }
         var avg_avg_cr = sum_cr/(all_topic_events).length;
         // console.log(avg_avg_cr);
