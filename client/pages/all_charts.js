@@ -395,6 +395,8 @@
       });
 
       // console.log(chartData);
+      var date1 = new Date(2012,1,1);
+      var date2 = new Date(2013,1,1);
       chart = AmCharts.makeChart("chartdiv", {
           "type": "serial",
           "theme": "none",
@@ -439,7 +441,12 @@
           },
           "export": {
               "enabled": true
-          }
+          },
+          "guides": [{
+              "fillAlpha": 0.10,
+              "date": date1,
+              "toDate": date2
+          }]
       });
     });
 
