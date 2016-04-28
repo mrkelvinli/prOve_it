@@ -396,7 +396,9 @@
 
 
 
+
       console.log(chartData);
+
       chart = AmCharts.makeChart("chartdiv", {
           "type": "serial",
           "theme": "none",
@@ -441,7 +443,12 @@
           },
           "export": {
               "enabled": true
-          }
+          },
+          "guides": [{
+              "fillAlpha": 0.10,
+              "date": date1,
+              "toDate": date2
+          }]
       });
     });
 
