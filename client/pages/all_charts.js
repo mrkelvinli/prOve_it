@@ -224,14 +224,22 @@
 
       stocks.forEach(function(c) {
         // console.log(c.date);
-        var dateRange = Events.findOne({company_name: company_name, topic: topic, event_date: c.date}, {fields: {'lower_date': 1, 'upper_date': 1}});  
+        var dateRange = Events.findOne({company_name: company_name, topic: topic, event_date: c.date}, {fields: {'lower_date': 1, 'upper_date': 1, 'topic': 1}});  
         // console.log(dateRange);
         if (dateRange != null){
           // console.log(dateRange);
           guides.push({
-            "fillAlpha": 0.10,
+            "fillAlpha": 0.30,
+            "fillColor": "#ff9900",
+            "lineColor": "#000000",
+            "lineAlpha": 1,
+            "label": dateRange.topic,
+            "balloonText": "Click for more details",
+            "labelRotation": 90,
+            "above": true,
             "date": dateRange.lower_date,
-            "toDate": dateRange.upper_date
+            "toDate": dateRange.upper_date,
+            "above": true
           });
         }
         var entry = {
