@@ -12,10 +12,13 @@
  -->
 
  <template name="chart">
-   <ul class="breadcrumb" id="page_breadcrumb">
-<!--     <li><a href="#">Home</a></li>
-    <li><a href="#">Library</a></li>
-    <li class="active">Data</li> -->
-  </ul>
+  {{ > chart_breadcrumb }}
   <div id="chartdiv"></div>
+ </template>
+
+
+ <template name="chart_breadcrumb">
+    <ul class="breadcrumb" id="chart_breadcrumb">
+    <li class="active">Companys</li>
+  </ul>
  </template>
