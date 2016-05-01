@@ -460,6 +460,9 @@ ES = {
     var open_id = fields.indexOf('Open');
     var last_id = fields.indexOf('Last');
     var return_percent_id = fields.length;
+    var high = fields.indexOf('High');
+    var low = fields.indexOf('Low');
+
     var cum_return_id = fields.length + 1;
 
     for (var i = 1; i < stock_price_file.length; i++) {
@@ -469,10 +472,12 @@ ES = {
         open_price   : parseFloat(stock_price_file[i][open_id]),
         last_price   : parseFloat(stock_price_file[i][last_id]),
         cr           : parseFloat(stock_price_file[i][cum_return_id]),
+        close        : parseFloat(stock_price_file[i][close]),
+        high         : parseFloat(stock_price_file[i][high]),
+        low          : parseFloat(stock_price_file[i][low]),
       });
     }
   }
-
 };
 
 function getDistinctTopic(company_name,token) {
