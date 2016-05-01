@@ -9,7 +9,7 @@
 Router.map(function() {
   this.route('chart', {
     path: '/',
-    template: 'chart',
+    template: 'app_ui',
     layout: 'main_layout',
     waitOn: function() {
       return Meteor.subscribe('stocks_db');
