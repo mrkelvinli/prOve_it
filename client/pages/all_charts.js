@@ -1,6 +1,6 @@
   Template.chart.rendered = function() {
 
-    var curr_company;
+    var curr_company = "AAC.AX";
     var curr_topic;
 
     render_company_chart();
@@ -116,7 +116,7 @@
 
         chart.titles = [{
           "text": "Average cumulative returns for each company",
-          "bold": false,
+          "bold": true,
         }];
         
         // add click listener
@@ -226,12 +226,11 @@
         
         // add click listener
         chart.addListener("clickGraphItem", handleClick);
-        
+        var company_name = "Average cumulative return for each event-type for: " + curr_company;
         chart.titles = [{
-          "text": "Average cumulative returns for each event-type",
-          "bold": false,
+          "text": company_name,
+          "bold": true,
         }];
-
         // AXES
         // category
         var categoryAxis = chart.categoryAxis;
