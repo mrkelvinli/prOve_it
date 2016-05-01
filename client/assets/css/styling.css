@@ -22,18 +22,38 @@
   padding: 10px;
 /*  box-shadow: 0 2px 10px 0 rgb(0,0,0);
   box-shadow: 0 2px 10px 0 rgba(0,0,0,0.1);
+<<<<<<< HEAD
 */  
-  margin-top:-15px;
-  
+  margin-top:-15px;  
   width   : 100%;
   height    : 500px;
   font-size : 11px;
 } 
 
-.tables, .news  {
+#chartdiv2 {
+  position: relative;
+  background-color: white;
+  border-radius: 10px;
+  padding: 10px;
+  box-shadow: 0 2px 10px 0 rgb(0,0,0);
+  box-shadow: 0 2px 10px 0 rgba(0,0,0,0.1);
+  
+  margin-top: -8px;
+  
+  width   : 100%;
+  height    : 350px;
+  font-size : 11px;
+} 
+
+.news  {
   margin-top:8px;
   background-color:white;
   padding:10px;
+  border-radius: 10px;
+}
+
+.tables {
+  margin-top:17px;
   border-radius: 10px;
 }
 
@@ -51,6 +71,7 @@
 
 .head-brandname {
   padding-top:5px;
+  padding-bottom: 10px;
 /*  background-color: #e9e9e9;*/
   height:50px;
 /*  box-shadow: 0px 3px 9px #888888;*/
@@ -70,5 +91,5 @@ body, html {
   flex-direction: column;
   justify-content: center;
   align-items: center;*/
-    /*background-color: black;*/
+  background-color: #e9e9e9;
 }

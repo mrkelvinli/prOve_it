@@ -1,9 +1,10 @@
   Template.chart.rendered = function() {
 
-    var curr_company;
+    var curr_company = "AAC.AX";
     var curr_topic;
 
     render_company_chart();
+    render_company_topics_chart("AAC.AX");
 
     // render_company_events_chart('TGR.AX','Cash Rate');
 
@@ -88,6 +89,28 @@
       function drawGraph (chartData) {
         // console.log('called');
 
+        /**
+         * AmCharts plugin: automatically color each individual column
+         * -----------------------------------------------------------
+         * Will apply to graphs that have autoColor: true set
+         */
+        AmCharts.addInitHandler(function(chart) {
+          // check if there are graphs with autoColor: true set
+          for(var i = 0; i < chart.graphs.length; i++) {
+            var graph = chart.graphs[i];
+            if (graph.autoColor !== true)
+              continue;
+            var colorKey = "autoColor-"+i;
+            graph.lineColorField = colorKey;
+            graph.fillColorsField = colorKey;
+            for(var x = 0; x < chart.dataProvider.length; x++) {
+              var color = chart.colors[x]
+              chart.dataProvider[x][colorKey] = color;
+            }
+          }
+          
+        }, ["serial"]);
+
         var chart = new AmCharts.AmSerialChart();
 
 
@@ -97,8 +120,8 @@
         chart.startDuration = 1;
 
         chart.titles = [{
-          "text": "Average Cumulative Returns On Each Events by Companys",
-          "bold": false,
+          "text": "Average cumulative returns for each company",
+          "bold": true,
         }];
         
         // add click listener
@@ -121,9 +144,22 @@
         graph.type = "column";
         graph.lineAlpha = 0;
         graph.fillAlphas = 0.8;
+        chart.rotate = true;
+        chart.columnWidth = 1;
+        graph.autoColor = true;
+        
+
+
+
+
         chart.addGraph(graph);
 
-        chart.write("chartdiv");
+        
+        
+  
+
+
+        chart.write("chartdiv2");
       }
     }
 
@@ -195,12 +231,11 @@
         
         // add click listener
         chart.addListener("clickGraphItem", handleClick);
-        
+        var company_name = "Average cumulative return for each event-type for: " + curr_company;
         chart.titles = [{
-          "text": "Average Cumulative Returns For Each Event Types",
-          "bold": false,
+          "text": company_name,
+          "bold": true,
         }];
-
         // AXES
         // category
         var categoryAxis = chart.categoryAxis;
@@ -305,7 +340,6 @@
       drawGraph(chartData);
 
       function drawGraph() {
-        console.log(chartData);
 
         var chart = new AmCharts.AmStockChart();
         // DATASET //////////////////////////////////////////
