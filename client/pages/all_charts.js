@@ -4,6 +4,7 @@
     var curr_topic;
 
     render_company_chart();
+    render_company_topics_chart("AAC.AX");
 
     // render_company_events_chart('TGR.AX','Cash Rate');
 
@@ -83,6 +84,28 @@
       function drawGraph (chartData) {
         // console.log('called');
 
+        /**
+         * AmCharts plugin: automatically color each individual column
+         * -----------------------------------------------------------
+         * Will apply to graphs that have autoColor: true set
+         */
+        AmCharts.addInitHandler(function(chart) {
+          // check if there are graphs with autoColor: true set
+          for(var i = 0; i < chart.graphs.length; i++) {
+            var graph = chart.graphs[i];
+            if (graph.autoColor !== true)
+              continue;
+            var colorKey = "autoColor-"+i;
+            graph.lineColorField = colorKey;
+            graph.fillColorsField = colorKey;
+            for(var x = 0; x < chart.dataProvider.length; x++) {
+              var color = chart.colors[x]
+              chart.dataProvider[x][colorKey] = color;
+            }
+          }
+          
+        }, ["serial"]);
+
         var chart = new AmCharts.AmSerialChart();
 
 
@@ -92,7 +115,7 @@
         chart.startDuration = 1;
 
         chart.titles = [{
-          "text": "Average Cumulative Returns On Each Events by Companys",
+          "text": "Average cumulative returns for each company",
           "bold": false,
         }];
         
@@ -116,9 +139,22 @@
         graph.type = "column";
         graph.lineAlpha = 0;
         graph.fillAlphas = 0.8;
+        chart.rotate = true;
+        chart.columnWidth = 1;
+        graph.autoColor = true;
+        
+
+
+
+
         chart.addGraph(graph);
 
-        chart.write("chartdiv");
+        
+        
+  
+
+
+        chart.write("chartdiv2");
       }
     }
 
@@ -192,7 +228,7 @@
         chart.addListener("clickGraphItem", handleClick);
         
         chart.titles = [{
-          "text": "Average Cumulative Returns For Each Event Types",
+          "text": "Average cumulative returns for each event-type",
           "bold": false,
         }];
 
@@ -310,7 +346,7 @@
             bold: false,
           },
           {
-            text: "events labeled in grey",
+            text: "events labeled in yellow",
             bold: false,
           }
         ]
