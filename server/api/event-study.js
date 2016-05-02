@@ -472,7 +472,7 @@ ES = {
         open_price   : parseFloat(stock_price_file[i][open_id]),
         last_price   : parseFloat(stock_price_file[i][last_id]),
         cr           : parseFloat(stock_price_file[i][cum_return_id]),
-        close        : parseFloat(stock_price_file[i][close]),
+        // close        : parseFloat(stock_price_file[i][close]),
         high         : parseFloat(stock_price_file[i][high]),
         low          : parseFloat(stock_price_file[i][low]),
       });
