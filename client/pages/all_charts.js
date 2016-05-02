@@ -267,74 +267,74 @@
     var chartData = [];
 
     Tracker.autorun(function() {
-      // var stocks = Stocks.find({company_name: company_name},{fields: {'date': 1, 'open_price':1, 'last_price':1, 'high':1, 'low':1, 'cr':1}}).fetch();
-      // chartData = [];
-      // var guides = [];
+      var stocks = Stocks.find({company_name: company_name},{fields: {'date': 1, 'open_price':1, 'last_price':1, 'high':1, 'low':1, 'cr':1}}).fetch();
+      chartData = [];
+      var guides = [];
 
 
-      // var lastKnownOpen = null;
-      // var lastKnownHigh = null;
-      // var lastKnownClose = null;
-      // var lastKnownLow = null;
-      // stocks.forEach(function(c) {
-      //   // console.log(c.date);
-      //   var dateRange = Events.findOne({company_name: company_name, topic: topic, event_date: c.date}, {fields: {'lower_date': 1, 'upper_date': 1, 'topic': 1}});  
-      //   // console.log(dateRange);
-      //   if (dateRange != null){
-      //     // console.log(dateRange);
-      //     guides.push({
-      //       "fillAlpha": 0.30,
-      //       "fillColor": "#ff9900",
-      //       "lineColor": "#000000",
-      //       "lineAlpha": 1,
-      //       "label": dateRange.topic,
-      //       "balloonText": "Click for more details",
-      //       "labelRotation": 90,
-      //       "above": true,
-      //       "date": dateRange.lower_date,
-      //       "toDate": dateRange.upper_date,
-      //       "above": true
-      //     });
-      //   }
-      //   // var entry = {
-      //   //   date: c.date,
-      //   //   // cr: parseFloat(c.cr),
-      //   //   open: c.open,
-      //   //   close: c.close,
-      //   //   high: c.high,
-      //   //   low: c.low,
-      //   //   value: parseFloat(c.cr),
-      //   //   volume: parseFloat(c.cr)
-      //   // };
-      //   var entry = {};
+      var lastKnownOpen = null;
+      var lastKnownHigh = null;
+      var lastKnownClose = null;
+      var lastKnownLow = null;
+      stocks.forEach(function(c) {
+        // console.log(c.date);
+        var dateRange = Events.findOne({company_name: company_name, topic: topic, event_date: c.date}, {fields: {'lower_date': 1, 'upper_date': 1, 'topic': 1}});  
+        // console.log(dateRange);
+        if (dateRange != null){
+          // console.log(dateRange);
+          guides.push({
+            "fillAlpha": 0.30,
+            "fillColor": "#ff9900",
+            "lineColor": "#000000",
+            "lineAlpha": 1,
+            "label": dateRange.topic,
+            "balloonText": "Click for more details",
+            "labelRotation": 90,
+            "above": true,
+            "date": dateRange.lower_date,
+            "toDate": dateRange.upper_date,
+            "above": true
+          });
+        }
+        // var entry = {
+        //   date: c.date,
+        //   // cr: parseFloat(c.cr),
+        //   open: c.open,
+        //   close: c.close,
+        //   high: c.high,
+        //   low: c.low,
+        //   value: parseFloat(c.cr),
+        //   volume: parseFloat(c.cr)
+        // };
+        var entry = {};
 
-      //   entry.date = c.date;
-      //   if (!isNaN(c.open_price)) {
-      //     lastKnownOpen = c.open_price;
-      //   }
+        entry.date = c.date;
+        if (!isNaN(c.open_price)) {
+          lastKnownOpen = c.open_price;
+        }
 
-      //   if (!isNaN(c.high)) {
-      //     lastKnownHigh = c.high;
-      //   }
+        if (!isNaN(c.high)) {
+          lastKnownHigh = c.high;
+        }
 
-      //   if (!isNaN(c.last_price)) {
-      //     lastKnownClose = c.last_price;
-      //   }
+        if (!isNaN(c.last_price)) {
+          lastKnownClose = c.last_price;
+        }
 
-      //   if (!isNaN(c.low)) {
-      //     lastKnownLow = c.low;
-      //   }
+        if (!isNaN(c.low)) {
+          lastKnownLow = c.low;
+        }
 
-      //   entry.open = lastKnownOpen;
-      //   entry.close = lastKnownClose;
-      //   entry.high = lastKnownHigh;
-      //   entry.low = lastKnownLow;
+        entry.open = lastKnownOpen;
+        entry.close = lastKnownClose;
+        entry.high = lastKnownHigh;
+        entry.low = lastKnownLow;
 
 
-      //   entry.value = parseFloat(c.cr);
-      //   entry.volume = parseFloat(c.cr);
+        entry.value = parseFloat(c.cr);
+        entry.volume = parseFloat(c.cr);
 
-      //   chartData.push(entry);
+        chartData.push(entry);
       });
 
       drawGraph(chartData);
