@@ -3,6 +3,7 @@
 var frisby = require('frisby');
 
 var URL = 'http://prove-it-unsw.herokuapp.com/';
+//var URL = 'http://localhost:3000/';
 var URL_AUTH = 'http://username:password@localhost:3000/';
 
 //frisby.globalSetup({ // globalSetup is for ALL requests
@@ -24,7 +25,7 @@ frisby.create('POST upload files with valid input')
 */
 
 frisby.create('POST upload files with no input')
-.post('http://prove-it-unsw.herokuapp.com/api/v1/event-study/submit-files',  {
+.post(URL + 'api/v1/event-study/submit-files',  {
 
   })
 .timeout(100000) // 10 second timeout
@@ -45,21 +46,21 @@ frisby.create('POST upload files with no input')
 // ---- TESTING CUMULATIVE RETURN ENDPOINT ----
 
 frisby.create('Send request with valid input')
-  .get('http://prove-it-unsw.herokuapp.com/api/v1/event-study/cumulative-returns?upper_window=5&lower_window=-5&topic_name=Cash Rate&topic_upper_range=1.5&topic_lower_range=-1.5&token=diwvTsq7xBGGxGqtFJkT')
+  .get(URL + 'api/v1/event-study/cumulative-returns?upper_window=5&lower_window=-5&topic_name=Cash Rate&topic_upper_range=1.5&topic_lower_range=-1.5&token=diwvTsq7xBGGxGqtFJkT')
   .timeout(100000) // 10 second timeout
   .expectStatus(200)
   .expectHeaderContains('content-type', 'application/json')
 .toss();
 
 frisby.create('Send request with no input')
-  .get('http://prove-it-unsw.herokuapp.com/api/v1/event-study/cumulative-returns')
+  .get(URL + 'api/v1/event-study/cumulative-returns')
   .timeout(100000) // 10 second timeout
   .expectStatus(404)
   .expectHeaderContains('content-type', 'application/json')
 .toss();
 
 frisby.create('Send request with no token')
-  .get('http://prove-it-unsw.herokuapp.com/api/v1/event-study/cumulative-returns?upper_window=5&lower_window=-5&topic_name=Cash Rate&topic_upper_range=1.5&topic_lower_range=-1.5')
+  .get(URL + 'api/v1/event-study/cumulative-returns?upper_window=5&lower_window=-5&topic_name=Cash Rate&topic_upper_range=1.5&topic_lower_range=-1.5')
   .timeout(100000) // 10 second timeout
   .expectStatus(404)
   .expectHeaderContains('content-type', 'application/json')
@@ -81,7 +82,7 @@ frisby.create('Send request with no token')
 .toss();
 
 frisby.create('Send request with invalid token')
-  .get('http://prove-it-unsw.herokuapp.com/api/v1/event-study/cumulative-returns?upper_window=5&lower_window=-5&topic_name=Cash Rate&topic_upper_range=1.5&topic_lower_range=-1.5&token=ABCDEFG')
+  .get(URL + 'api/v1/event-study/cumulative-returns?upper_window=5&lower_window=-5&topic_name=Cash Rate&topic_upper_range=1.5&topic_lower_range=-1.5&token=ABCDEFG')
   .timeout(100000) // 10 second timeout
   .expectStatus(404)
   .expectHeaderContains('content-type', 'application/json')
@@ -103,7 +104,7 @@ frisby.create('Send request with invalid token')
 .toss();
 
 frisby.create('Send request with invalid variable name')
-  .get('http://prove-it-unsw.herokuapp.com/api/v1/event-study/cumulative-returns?upper_window=5&lower_window=-5&topic_name=DERP&topic_upper_range=1.5&topic_lower_range=-1.5&token=diwvTsq7xBGGxGqtFJkT')
+  .get(URL + 'api/v1/event-study/cumulative-returns?upper_window=5&lower_window=-5&topic_name=DERP&topic_upper_range=1.5&topic_lower_range=-1.5&token=diwvTsq7xBGGxGqtFJkT')
   .timeout(100000) // 10 second timeout
   .expectStatus(404)
   .expectHeaderContains('content-type', 'application/json')
@@ -125,7 +126,7 @@ frisby.create('Send request with invalid variable name')
 .toss();
 
 frisby.create('Send request where upper_window < lower_window')
-  .get('http://prove-it-unsw.herokuapp.com/api/v1/event-study/cumulative-returns?upper_window=-5&lower_window=5&topic_name=Cash Rate&topic_upper_range=1.5&topic_lower_range=-1.5&token=diwvTsq7xBGGxGqtFJkT')
+  .get(URL + 'api/v1/event-study/cumulative-returns?upper_window=-5&lower_window=5&topic_name=Cash Rate&topic_upper_range=1.5&topic_lower_range=-1.5&token=diwvTsq7xBGGxGqtFJkT')
   .timeout(100000) // 10 second timeout
   .expectStatus(404)
   .expectHeaderContains('content-type', 'application/json')
@@ -147,7 +148,7 @@ frisby.create('Send request where upper_window < lower_window')
 .toss();
 
 frisby.create('Send request where topic_upper_range < topic_lower_range')
-  .get('http://prove-it-unsw.herokuapp.com/api/v1/event-study/cumulative-returns?upper_window=5&lower_window=-5&topic_name=Cash Rate&topic_upper_range=-1.5&topic_lower_range=1.5&token=diwvTsq7xBGGxGqtFJkT')
+  .get(URL + 'api/v1/event-study/cumulative-returns?upper_window=5&lower_window=-5&topic_name=Cash Rate&topic_upper_range=-1.5&topic_lower_range=1.5&token=diwvTsq7xBGGxGqtFJkT')
   .timeout(100000) // 10 second timeout
   .expectStatus(404)
   .expectHeaderContains('content-type', 'application/json')
@@ -169,7 +170,7 @@ frisby.create('Send request where topic_upper_range < topic_lower_range')
 .toss();
 
 frisby.create('Send request where topic_upper_range < topic_lower_range')
-  .get('http://prove-it-unsw.herokuapp.com/api/v1/event-study/cumulative-returns?upper_window=5&lower_window=-5&topic_name=Cash Rate&topic_upper_range=0.2&topic_lower_range=0.1&token=diwvTsq7xBGGxGqtFJkT')
+  .get(URL + 'api/v1/event-study/cumulative-returns?upper_window=5&lower_window=-5&topic_name=Cash Rate&topic_upper_range=0.2&topic_lower_range=0.1&token=diwvTsq7xBGGxGqtFJkT')
   .timeout(100000) // 100 second timeout
   .expectStatus(200)
   .expectHeaderContains('content-type', 'application/json')
