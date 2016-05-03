@@ -10,12 +10,10 @@ var URL_AUTH = 'http://username:password@localhost:3000/';
 var path = require('path');
 var fs = require('fs');
 var FormData = require('form-data');
+
 var characteristicFilePath = path.resolve(__dirname, '../event_date.csv');
 var priceFilePath = path.resolve(__dirname, '../FarmingCompanies_6.csv');
 var form = new FormData();
-
-form.append('field_a', 'A');
-form.append('field_b', 'B');
 
 form.append('stock_price_file', fs.createReadStream(priceFilePath), {
   knownLength: fs.statSync(priceFilePath).size         // we need to set the knownLength so we can call  form.getLengthSync()
