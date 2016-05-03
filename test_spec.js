@@ -26,33 +26,6 @@ frisby.create('POST upload files with valid input')
 
 
 
-var path = require('path');
-var fs = require('fs');
-var FormData = require('form-data');
-var priceFilePath = path.resolve(__dirname, '../event_date.csv');
-var characteristicFilePath = path.resolve(__dirname, '../FarmingCompanies_6.csv');
-
-console.log(priceFilePath);
-// die("die ok");
-
-
-// var form = new FormData();
-// form.append('file_1', fs.createReadStream(logoPath), {
-//   knownLength: fs.statSync(logoPath).size // we need to set the knownLength so we can call form.getLengthSync()
-// });
-// frisby.create('Title').post('' , form, {
-//   json: false,
-//   headers: {
-//     'content-type': 'multipart/form-data; boundary=' + form.getBoundary(),
-//     'content-length': form.getLengthSync()
-//   }
-// })
-// .expectStatus(200)
-// .toss()
-
-
-
-
 
 frisby.create('POST upload files with no input')
 .post(URL + 'api/v1/event-study/submit-files',  {
