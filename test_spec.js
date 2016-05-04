@@ -3,48 +3,96 @@
 var frisby = require('frisby');
 
 var URL = 'http://prove-it-unsw.herokuapp.com/';
-//var URL = 'http://localhost:3000/';
-var URL_AUTH = 'http://username:password@localhost:3000/';
-
-//frisby.globalSetup({ // globalSetup is for ALL requests
-//  request: {
-//    headers: { 'X-Auth-Token': 'fa8426a0-8eaf-4d22-8e13-7c1b16a9370c' }
-//  }
-//});
+var path = require('path');
+var fs = require('fs');
+var FormData = require('form-data');
 /*
-//Doesn't work yet
-frisby.create('POST upload files with valid input')
-.post('http://prove-it-unsw.herokuapp.com/api/v1/event-study/submit-files',  {
-    stock_price_file: "stock_price.csv",
-    stock_characteristic_file: "event_char.csv"
-  })//, {json: true})
-//.timeout(10000) // 10 second timeout
-.inspectJSON()
-.inspectBody()
-.toss()
-*/
+-- so we don't generate too many tokens --
+var priceFilePath = path.resolve(__dirname, 'input_files/stock_price.csv');
+var characteristicFilePath = path.resolve(__dirname, 'input_files/event_char.csv');
+var form = new FormData();
+form.append('stock_price_file', fs.createReadStream(priceFilePath), {
+  knownLength: fs.statSync(priceFilePath).size  // we need to set the knownLength so we can call  form.getLengthSync()
+});
+
+form.append('stock_characteristic_file', fs.createReadStream(characteristicFilePath), {
+  knownLength: fs.statSync(characteristicFilePath).size
+});
 
 
-
-
-frisby.create('POST upload files with no input')
-.post(URL + 'api/v1/event-study/submit-files',  {
-
+frisby.create('Upload normally')
+  .post(URL+'api/v1/event-study/submit-files',
+  form,
+  {
+    json: false,
+    headers: {
+      'content-type': 'multipart/form-data; boundary=' + form.getBoundary(),
+      'content-length': form.getLengthSync()
+    }
   })
-.timeout(100000) // 10 second timeout
-.expectStatus(404)
-.expectHeaderContains('content-type', 'application/json')
-.expectJSON({
-  log: {
-    team_name: 'prOve it',
-    version: 'v1',
-    exec_status: 'No CSV file.'
-  }
-})
- 
-//.inspectJSON()
-//.inspectBody()
-.toss()
+  .timeout(100000)
+  .inspectJSON()
+  .expectStatus(200)
+  .expectHeaderContains('content-type', 'application/json')
+  .toss();
+*/ 
+
+// -------------------------------------
+
+var form = new FormData();
+form.append('stock_price_file', '');
+
+form.append('stock_characteristic_file', '');
+
+
+frisby.create('Uploading incorrectly formatted files')
+  .post(URL+'api/v1/event-study/submit-files',
+  form,
+  {
+    json: false,
+    headers: {
+      'content-type': 'multipart/form-data; boundary=' + form.getBoundary(),
+      'content-length': form.getLengthSync()
+    }
+  })
+  .timeout(100000)
+//  .inspectJSON()
+  .expectStatus(404)
+  .expectHeaderContains('content-type', 'application/json')
+  .toss();
+
+
+// -------------------------------------
+var priceFilePath = path.resolve(__dirname, 'input_files/random1.csv');
+var characteristicFilePath = path.resolve(__dirname, 'input_files/random2.csv');
+var form = new FormData();
+form.append('stock_price_file', fs.createReadStream(priceFilePath), {
+  knownLength: fs.statSync(priceFilePath).size  // we need to set the knownLength so we can call  form.getLengthSync()
+});
+
+form.append('stock_characteristic_file', fs.createReadStream(characteristicFilePath), {
+  knownLength: fs.statSync(characteristicFilePath).size 
+});
+
+
+frisby.create('Uploading incorrectly formatted files')
+  .post(URL+'api/v1/event-study/submit-files',
+  form,
+  {
+    json: false,
+    headers: {
+      'content-type': 'multipart/form-data; boundary=' + form.getBoundary(),
+      'content-length': form.getLengthSync()
+    }
+  })
+  .timeout(100000)
+ .inspectJSON()
+  .expectStatus(422)
+  .expectHeaderContains('content-type', 'application/json')
+  .toss();
+
+return;
+
 
 // ---- TESTING CUMULATIVE RETURN ENDPOINT ----
 
