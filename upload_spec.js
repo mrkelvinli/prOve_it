@@ -7,7 +7,7 @@ var path = require('path');
 var fs = require('fs');
 var FormData = require('form-data');
 /*
--- so we don't generate too many tokens --
+//-- so we don't generate too many tokens --
 var priceFilePath = path.resolve(__dirname, 'input_files/stock_price.csv');
 var characteristicFilePath = path.resolve(__dirname, 'input_files/event_char.csv');
 var form = new FormData();
@@ -30,13 +30,12 @@ frisby.create('Upload normally')
       'content-length': form.getLengthSync()
     }
   })
-  .timeout(100000)
-  .inspectJSON()
+  .timeout(10000000)
+  //.inspectJSON()
   .expectStatus(200)
   .expectHeaderContains('content-type', 'application/json')
   .toss();
-*/ 
-
+*/
 // -------------------------------------
 
 var form = new FormData();
