@@ -6,8 +6,7 @@ var URL = 'http://prove-it-unsw.herokuapp.com/';
 var path = require('path');
 var fs = require('fs');
 var FormData = require('form-data');
-/*
-//-- so we don't generate too many tokens --
+
 var priceFilePath = path.resolve(__dirname, 'input_files/stock_price.csv');
 var characteristicFilePath = path.resolve(__dirname, 'input_files/event_char.csv');
 var form = new FormData();
@@ -31,12 +30,22 @@ frisby.create('Upload normally')
     }
   })
   .timeout(100000)
-  .inspectJSON()
+  // .inspectJSON()
+  .expectJSON(
+    { 
+      log: {
+        team_name: 'prOve it',
+        version: 'v1',
+        input_filename: [ 'stock_price.csv', 'event_char.csv' ],
+        parameters_passed: {},
+        exec_status: 'Successful.',
+      },
+    }
+  )
   .expectStatus(200)
   .expectHeaderContains('content-type', 'application/json')
   .toss();
-return;
-*/
+
 // -------------------------------------
 
 var form = new FormData();
@@ -56,10 +65,21 @@ frisby.create('Uploading incorrectly formatted files')
     }
   })
   .timeout(100000)
-//  .inspectJSON()
+  .expectJSON(
+    {
+      log:{
+        team_name: 'prOve it',
+        version: 'v1',
+        input_filename: [],
+        parameters_passed: {},
+        exec_status: 'Invalid Request.',
+      }
+    }
+  )
   .expectStatus(404)
   .expectHeaderContains('content-type', 'application/json')
   .toss();
+
 
 
 // -------------------------------------
@@ -86,10 +106,22 @@ frisby.create('Uploading incorrectly formatted files')
     }
   })
   .timeout(100000)
- //.inspectJSON()
+ // .inspectJSON()
   .expectStatus(422)
   .expectHeaderContains('content-type', 'application/json')
+  .expectJSON(
+    {
+      log: {
+        team_name: 'prOve it',
+        version: 'v1',
+        input_filename: [ 'random1.csv', 'random2.csv' ],
+        parameters_passed: {},
+        exec_status: 'CSV file isn\'t formatted correctly.',
+      }
+    }
+  )
   .toss();
+
 
 // -------------------------------------
 var priceFilePath = path.resolve(__dirname, 'input_files/event_char.csv');
@@ -109,10 +141,20 @@ frisby.create('Uploading incorrectly formatted files')
     }
   })
   .timeout(100000)
- //.inspectJSON()
+ // .inspectJSON()
   .expectStatus(404)
+  .expectJSON({
+    log: {
+      team_name: 'prOve it',
+      version: 'v1',
+      input_filename: [ 'event_char.csv' ],
+      parameters_passed: {},
+      exec_status: 'Invalid Request.',
+    } 
+   })
   .expectHeaderContains('content-type', 'application/json')
   .toss();
+
 
 // -------------------------------------
 var priceFilePath = path.resolve(__dirname, 'input_files/broken_event_char.csv');
@@ -138,10 +180,20 @@ frisby.create('Uploading incorrectly formatted files')
     }
   })
   .timeout(100000)
- //.inspectJSON()
+ // .inspectJSON()
   .expectStatus(404)
   .expectHeaderContains('content-type', 'application/json')
+  .expectJSON(
+    { log: 
+   { team_name: 'prOve it',
+     version: 'v1',
+     input_filename: [ 'broken_event_char.csv', 'broken_stock_price.csv' ],
+     parameters_passed: {},
+     exec_status: 'Invalid Request.',
+    } 
+  })
   .toss();
+
 
 // -------------------------------------
 var priceFilePath = path.resolve(__dirname, 'input_files/empty1.csv');
@@ -168,10 +220,19 @@ frisby.create('Uploading incorrectly formatted files')
     }
   })
   .timeout(100000)
- //.inspectJSON()
+  .expectJSON({
+    log: {
+      team_name: 'prOve it',
+      version: 'v1',
+      input_filename: [ 'empty1.csv', 'empty2.csv' ],
+      parameters_passed: {},
+      exec_status: 'CSV file isn\'t formatted correctly.',
+    }
+  })
   .expectStatus(422)
   .expectHeaderContains('content-type', 'application/json')
   .toss();
+
 
 // -------------------------------------
 var priceFilePath = path.resolve(__dirname, 'input_files/edited_event_char.csv');
@@ -197,8 +258,16 @@ frisby.create('Uploading incorrectly formatted files')
     }
   })
   .timeout(100000)
- //.inspectJSON()
+ // .inspectJSON()
+  .expectJSON({
+    log: {
+      team_name: 'prOve it',
+      version: 'v1',
+      input_filename: [ 'edited_event_char.csv', 'edited_stock_price.csv' ],
+      parameters_passed: {},
+      exec_status: 'Invalid Request.',
+    }
+  })
   .expectStatus(404)
   .expectHeaderContains('content-type', 'application/json')
   .toss();
-
