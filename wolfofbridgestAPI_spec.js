@@ -31,6 +31,7 @@ frisby.create('Upload normally')
     }
   })
   .timeout(100000)
+<<<<<<< HEAD
   //.inspectJSON()
   .expectStatus(200)
   .expectHeaderContains('content-type', 'application/json')
@@ -205,15 +206,5 @@ frisby.create('Send request for cumulative return for China_Growth_Rate_Change a
     }
   )
 .toss();
-
-frisby.create('Send reqest')
-  .get(URL + 'api/v4.0/cumulative_returns/?token='+token+'&lower_win=-5&upper_win=5&event_type=Cash Rate&Cash Rate_lower=0&Cash Rate_upper=1.5/')
-  .timeout(100000) // 10 second timeout
-  .expectStatus(200)
-  .expectHeaderContains('content-type', 'application/json')
-.toss();
-
-
-
 
 return;
