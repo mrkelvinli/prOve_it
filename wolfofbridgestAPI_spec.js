@@ -31,7 +31,6 @@ frisby.create('Upload normally')
     }
   })
   .timeout(100000)
-<<<<<<< HEAD
   //.inspectJSON()
   .expectStatus(200)
   .expectHeaderContains('content-type', 'application/json')
