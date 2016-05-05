@@ -39,23 +39,6 @@ frisby.create('Upload normally')
   .toss();
 */
 // -------------------------------------
-=======
-  .expectJSON(
-    {
-      "log": {
-        "developerTeam": "Wolf Of Bridge St",
-        "input": [
-          "stock_price.csv",
-          "event_char.csv"
-        ],
-        "moduleName": "Event Study",
-        "moduleVersion": "v4.0",
-        "parameters": [],
-        "response": "Success",
-      },
-    }
-  )
-.toss();
 
 frisby.create('Send request for cumulative return for China_Growth_Rate_Change and all companies')
   .get(URL + 'api/v4.0/cumulative_returns/?token='+token+'&lower_win=-5&upper_win=5&event_type=China_Growth_Rate_Change&China_Growth_Rate_Change_lower=0&China_Growth_Rate_Change_upper=2')
@@ -211,7 +194,6 @@ frisby.create('Send request for cumulative return for China_Growth_Rate_Change a
     }
   )
 .toss();
->>>>>>> 36ec634ac763a1c687a53a5cda093e8ebf7e4e7e
 
 var form = new FormData();
 form.append('stock_price_file', '');
