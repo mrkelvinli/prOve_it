@@ -9,4 +9,4 @@ npm install frisby --save-dev
 Usage:
 
 cd this/direcetory
-jasmine-node test_spec.js
+jasmine-node .
