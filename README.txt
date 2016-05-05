@@ -5,6 +5,8 @@ $ sudo npm install -g jasmine-node
 
 Install Frisby
 $ sudo npm install -g frisby
+or
+$ sudo npm install frisby --save-dev
 
 
 Run the test files with jasmine-node that end with _spec.js
