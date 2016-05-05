@@ -258,10 +258,10 @@ http://prove-it-unsw.herokuapp.com/api/v1/event-study/submit-files
     "end_time": "2016-4-19 13:45:09 PM",
     "elapsed_time": "896ms"
   },
-  "token": "oyuGSim7ZWXeonzqq6LK"
+  "token": "yeGvtH5ni3xqREfStXPc"
 }</pre>
                   <p class='greyed'>
-                    In this example we can see the token is <code>oyuGSim7ZWXeonzqq6LK </code>
+                    In this example we can see the token is <code>yeGvtH5ni3xqREfStXPc </code>
                   </p>
                   <p class='greyed'>
                     3. To generate cumulative returns, submit a GET request along with your <code>parameters</code> and your user <code>token</code>
@@ -273,7 +273,7 @@ curl --tr-encoding -X GET -v -G -# \
 --data-urlencode "topic_name=Cash Rate" \
 -d "topic_upper_range=20" \
 -d "topic_lower_range=0" \
--d "token=oyuGSim7ZWXeonzqq6LK" \
+-d "token=yeGvtH5ni3xqREfStXPc" \
 http://prove-it-unsw.herokuapp.com/api/v1/event-study/cumulative-returns
 </pre>
 
@@ -376,8 +376,8 @@ http://prove-it-unsw.herokuapp.com/api/v1/event-study/cumulative-returns
             <div class="form-row form-input-name-row ">
 
               <label>
-                <span>Variable Name</span>
-                <input type="text " name="var_name">
+                <span>Topic Name</span>
+                <input type="text " name="topic_name">
               </label>
 
               <span class="form-valid-data-sign "><i class="fa fa-check "></i></span>
@@ -390,7 +390,7 @@ http://prove-it-unsw.herokuapp.com/api/v1/event-study/cumulative-returns
             <div class="form-row form-input-name-row ">
 
               <label>
-                <span>Variable Upper Limit</span>
+                <span>Topic Upper Range</span>
                 <input type="text " name="upper_range">
               </label>
 
@@ -404,7 +404,7 @@ http://prove-it-unsw.herokuapp.com/api/v1/event-study/cumulative-returns
             <div class="form-row form-input-name-row ">
 
               <label>
-                <span>Variable Lower Limit</span>
+                <span>Topic Lower Range</span>
                 <input type="text " name="lower_range">
               </label>
 
