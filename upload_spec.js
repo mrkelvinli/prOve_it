@@ -30,11 +30,12 @@ frisby.create('Upload normally')
       'content-length': form.getLengthSync()
     }
   })
-  .timeout(10000000)
-  //.inspectJSON()
+  .timeout(100000)
+  .inspectJSON()
   .expectStatus(200)
   .expectHeaderContains('content-type', 'application/json')
   .toss();
+return;
 */
 // -------------------------------------
 
