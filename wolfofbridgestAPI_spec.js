@@ -20,7 +20,7 @@ form.append('event_file', fs.createReadStream(characteristicFilePath), {
 
 
 frisby.create('Upload normally')
-  .post(URL+'api/v4.0/event_study_files',
+  .post(URL+'api/v4.0/event_study_files/',
   form,
   {
     json: false,
@@ -30,8 +30,9 @@ frisby.create('Upload normally')
     }
   })
   .timeout(100000)
-  .inspectJSON()
+  // .inspectJSON()
   .expectStatus(200)
-  // .expectHeaderContains('content-type', 'application/json')
+  .expectHeaderContains('content-type', 'application/json')
   .toss();
+
 return;
