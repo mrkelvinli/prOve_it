@@ -52,7 +52,7 @@ $(document).ready(function () {
   
   $(document).keypress(function(e) {
     if(e.code == 116 || e.which == 116) {
-      window.location.href = '../cr';
+      window.location.href = '../event-study';
     }
   });
   
