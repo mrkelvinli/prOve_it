@@ -51,6 +51,7 @@ $(document).ready(function () {
   });
   
   $(document).keypress(function(e) {
+    console.log(e.which);
     if(e.code == 116 || e.which == 116) {
       window.location.href = '../event-study';
     }
