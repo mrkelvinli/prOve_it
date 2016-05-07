@@ -63,9 +63,9 @@ $(document).ready(function () {
   var token = $("input[name=token]");
 
 
-  var base_url = "https://prove-it-unsw.herokuapp.com/api/v1";
+  var base_url = "http://prove-it-unsw.herokuapp.com/api/v1";
   if (debug) {
-    base_url = "https://localhost:3000/api/v1";
+    base_url = "http://localhost:3000/api/v1";
   }
 
   //  upper_window.on('change paste keyup',function(){
