@@ -151,3 +151,14 @@ h4 {
   font-weight: 400;
   font-size: 15px;
 }
+
+ul#chart-dropdown-menu.dropdown-menu {
+  height: auto;
+  max-height: 300px;
+  overflow-x: hidden;
+}
+
+div.form-validation.content {
+  padding-top: 30px;
+  text-align: left;
+}

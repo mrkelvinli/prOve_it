@@ -80,17 +80,18 @@
         <section id="docs">
 
           <div class="title">
-            <h2>Event Study API Specifications</h2>
-            <h4>Version: <b>1.0</b></h4>
-
-            <h4>All endpoints are relative to <code>http://prove-it-unsw.herokuapp.com/api/v1/event-study</code> </h4>
-            <hr>
           </div>
 
-          <div class="content">
+          <div class="content form-validation">
             <div class="endpoints">
               <div class='endpoint'>
                 <div class="name">
+                  <section id='title' style='display: block; margin-bottom: 30px'>
+                    <h3>Event Study API Specifications</h3>
+                    <h5 class='text-muted' style='display:inline'>All endpoints are relative to  </h5><code>http://prove-it-unsw.herokuapp.com/api/v1/event-study</code>
+                    <h5 class='text-muted'>Version: <b>1.0</b></h5>
+                  </section>
+
                   <span class='label label-post'><font size=3>POST</font></span><span class="path"> <code>/submit-files</code></span>
                 </div>
 
@@ -284,12 +285,9 @@ http://prove-it-unsw.herokuapp.com/api/v1/event-study/cumulative-returns
               </div>
             </div>
           </div>
-          <hr>
         </section>
-
+        <p></p>
         <section id="gui">
-          <h3> API Graphical User Interface</h3>
-
           <form class="form-validation" method="post" action="" id="upload_form" enctype="multipart/form-data">
 
             <div class="form-title-row">
@@ -475,8 +473,8 @@ http://prove-it-unsw.herokuapp.com/api/v1/event-study/cumulative-returns
     </div>
 
     <footer>
-      <div class="container " style="margin:4px ">
-        <center> Build by: Keith Lai, Yan Chi Ku, Mendel Liang, Kelvin Li, Gino Conte</center>
+      <div class="container text-muted" style="margin:4px ">
+        <center><small>Build by: Keith Lai, Yan Chi Ku, Mendel Liang, Kelvin Li, Gino Conte</small></center>
       </div>
     </footer>
   </div>
