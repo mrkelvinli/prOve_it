@@ -85,6 +85,7 @@ $(document).ready(function () {
       data: new FormData(this),
       processData: false,
       contentType: false,
+      dataType: "jsonp";
       success: function (data) {
         console.log(data.token);
         upload_response.show();
