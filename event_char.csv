@@ -1,9 +1,22 @@
 #RIC,Event Date,Cash Rate,China Growth Rate Change,CEO Health issue,Earning announcements,Macroevent,Government Policy changes
 AAC.AX,30-Jul-12,0,1,0,0,0,0
+AAC.AX,30-Jul-11,1,0,0,0,0,0
+AAC.AX,30-Jul-10,0,0,0,1,0,0
+AAC.AX,15-Jun-11,0,0,1,0,0,0
 BGA.AX,26-Oct-15,0,0,1,0,0,0
+BGA.AX,26-Jan-14,0,0,0,1,0,0
+BGA.AX,26-Mar-13,0,0,0,0,1,0
 CCL.AX,6-Oct-14,0,1,0,0,0,0
+CCL.AX,6-Oct-11,0,0,0,0,1,0
+CCL.AX,6-Oct-12,0,0,1,0,0,0
+CCL.AX,6-Oct-13,0,0,0,0,0,1
 CGC.AX,18-Dec-15,0,0,0,1,0,0
+CGC.AX,18-Mar-14,0,0,0,0,1,0
+CGC.AX,18-Dec-13,0,0,1,0,0,0
+CGC.AX,18-Jan-12,0,0,0,1,0,0
 ELD.AX,29-Oct-12,0,0,0,1,0,0
+ELD.AX,29-Oct-12,0,0,1,0,0,0
+ELD.AX,29-Oct-12,0,0,0,0,0,1
 FGL.AX,12-May-14,0,0,0,0,1,0
 FGL.AX,19-Oct-15,0,0,0,1,0,0
 GFF.AX,6-Oct-14,0,1,0,0,0,0
