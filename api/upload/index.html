@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+  <title>prOve_it</title>
+
+  <!-- Bootstrap -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link href="css/main.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/form.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
+  <!--
+  
+  <link href="css/scrolling-nav.css" rel="stylesheet">
+-->
+
+  <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+  <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+      <![endif]-->
+</head>
+
+<body id="page-top" data-spy="scroll" data-target=".navbar" data-offset='50'>
+
+
+  <nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <div class="navbar-brand" href="#">Event Study API</div>
+      </div>
+
+      <a href="../">
+        <div class="head-brandname">
+          prOve_it
+        </div>
+      </a>
+
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav">
+
+        </ul>
+
+        <ul class="nav navbar-nav navbar-right">
+          <li class="active"><a href="#docs" class="page-scroll">Latest API Docs</a></li>
+          <li class=""><a href="#gui" class="page-scroll">API GUI</a></li>
+          <!--        <li><a href="#">Link</a></li>-->
+        </ul>
+      </div>
+    </div>
+    <div class="btn-group btn-group-justified btn-group-sm section-button">
+<!--
+      <a href="#docs" class="page-scroll btn btn-default">Latest Docs</a>
+      <a href="#gui" class="page-scroll btn btn-default">API Demo</a>
+-->
+      <a href="#chart_section" id="chart_section_btn" class="page-scroll btn btn-default" style="display:none">chart</a>
+    </div>
+  </nav>
+
+  <div class="container page-content">
+    <div class="row">
+      <div class="col-md-10 col-md-offset-1">
+        <!-- <iframe src="api_docs/DRF Docs.html" style="width: 100%;" frameborder="0" scrolling="no" onload="resizeIframe(this)"> -->
+        <!-- <p>Your browser does not support iframes.</p> -->
+        <!-- </iframe> -->
+
+        <section id="gui">
+          <form class="form-validation" method="post" action="" id="upload_form" enctype="multipart/form-data">
+
+            <div class="form-title-row">
+              <h1>Submit Files</h1>
+            </div>
+
+            <div class="form-row form-input-name-row">
+
+              <label>
+                <span>Stock Price File</span>
+                <input type="file" class="pull-right" name="stock_price_file">
+              </label>
+
+              <span class="form-valid-data-sign"><i class="fa fa-check"></i></span>
+
+              <span class="form-invalid-data-sign"><i class="fa fa-close"></i></span>
+              <span class="form-invalid-data-info"></span>
+
+            </div>
+
+            <div class="form-row form-input-name-row">
+
+              <label>
+                <span>Stock Characteristic File</span>
+                <input type="file" class="pull-right" name="stock_characteristic_file">
+              </label>
+
+              <span class="form-valid-data-sign"><i class="fa fa-check"></i></span>
+
+              <span class="form-invalid-data-sign"><i class="fa fa-close"></i></span>
+              <span class="form-invalid-data-info"></span>
+
+            </div>
+
+            <div class="form-row">
+
+              <button type="submit" class="submit_btn">Upload</button>
+
+            </div>
+
+            <div class='form-row'>
+              <p id="upload_response" class="json-response"></p>
+            </div>
+
+          </form>
+        </section>
+        
+      </div>
+    </div>
+
+    <footer>
+      <div class="container text-muted" style="margin:4px ">
+        <center><small>Build by: Keith Lai, Yan Chi Ku, Mendel Liang, Kelvin Li, Gino Conte</small></center>
+      </div>
+    </footer>
+  </div>
+
+
+
+  <script>
+    function toggle_visibility(id) {
+      var e = document.getElementById(id);
+      if (e.style.display == 'block')
+        e.style.display = 'none';
+      else
+        e.style.display = 'block';
+    }
+  </script>
+
+
+  <script language="javascript " type="text/javascript ">
+    function resizeIframe(obj) {
+      obj.style.height = obj.contentWindow.document.body.scrollHeight + 'px';
+    }
+  </script>
+
+  <script src="http://cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
+  <script src="js/chartist-plugin-axistitle.min.js"></script>
+  
+
+
+  <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js "></script>
+  <!-- Include all compiled plugins (below), or include individual files as needed -->
+  <script src="js/bootstrap.min.js "></script>
+  <script src="js/demo.js "></script>
+
+  <!-- Scrolling Nav JavaScript -->
+  <script src="js/jquery.easing.min.js"></script>
+  <script src="js/scrolling-nav.js"></script>
+
+</body>
+
+</html>
