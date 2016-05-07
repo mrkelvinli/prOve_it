@@ -50,7 +50,11 @@ $(document).ready(function () {
     }
   });
   
-  
+  $(document).keypress(function(e) {
+    if(e.code == 116 || e.which == 116) {
+      window.location.href = '../cr';
+    }
+  });
   
   
 
@@ -78,27 +82,6 @@ $(document).ready(function () {
     upload_response.empty();
     upload_response.show();
     upload_response.html("Processing ...");
-
-    $.ajax({
-      url: base_url + "/event-study/submit-files",
-      type: 'POST',
-      data: new FormData(this),
-      processData: false,
-      contentType: false,
-      dataType: "jsonp",
-      success: function (data) {
-        console.log(data.token);
-        upload_response.show();
-        upload_response.empty();
-        upload_response.html("Your token is: " + data.token);
-      },
-      error: function (data) {
-        upload_response.show();
-        upload_response.empty();
-        upload_response.html(data.responseJSON.log.exec_status);
-//        upload_response.text(JSON.stringify(data.responseJSON, undefined, 2));
-      },
-    });
     return false;
   });
 
