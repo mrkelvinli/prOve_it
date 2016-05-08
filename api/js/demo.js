@@ -85,12 +85,12 @@ $(document).ready(function () {
       data: new FormData(this),
       processData: false,
       contentType: false,
-      dataType: "jsonp",
       success: function (data) {
         console.log(data.token);
         upload_response.show();
         upload_response.empty();
         upload_response.html("Your token is: " + data.token);
+        token.val(data.token);
       },
       error: function (data) {
         upload_response.show();
