@@ -9,35 +9,23 @@ $(document).ready(function () {
   $('#chart_display').hide();
 
 
-  // Here is how to show an error message next to a form field
-
-//    var errorField = $('.form-input-name-row');
-
-  // Adding the form-invalid-data class will show
-  // the error message and the red x for that field
-
-//        errorField.addClass('form-invalid-data');
-//        errorField.find('.form-invalid-data-info').text('Please enter your name');
-
-
-  // Here is how to mark a field with a green check mark
+  // form validation
 
   var gui_input = $('.form-input-name-row');
-
   gui_input.on('change paste keyup', function () {
     var input = $(this).find('input');
     var input_name = input.attr('name');
     var input_val = input.val();
-    
+
     if (input_val != '') {
-      if ((input_name == 'upper_window' && input_val >= 0) || 
-          (input_name == 'lower_window' && input_val <= 0) ||
-          (input_name == 'upper_range' && $.isNumeric(input_val)) ||
-          (input_name == 'lower_range' && $.isNumeric(input_val)) ||
-          (input_name == 'var_name' && input_val != '') ||
-          (input_name == 'token' && input_val != '') ||
-          (input_name == 'stock_characteristic_file' && input_val != '') ||
-          (input_name == 'stock_price_file' && input_val != '') ){
+      if ((input_name == 'upper_window' && input_val >= 0) ||
+        (input_name == 'lower_window' && input_val <= 0) ||
+        (input_name == 'upper_range' && $.isNumeric(input_val)) ||
+        (input_name == 'lower_range' && $.isNumeric(input_val)) ||
+        (input_name == 'var_name' && input_val != '') ||
+        (input_name == 'token' && input_val != '') ||
+        (input_name == 'stock_characteristic_file' && input_val != '') ||
+        (input_name == 'stock_price_file' && input_val != '')) {
         $(this).removeClass('form-invalid-data');
         $(this).addClass('form-valid-data');
       } else {
@@ -49,10 +37,10 @@ $(document).ready(function () {
       $(this).removeClass('form-invalid-data');
     }
   });
-  
-  
-  
-  
+
+
+
+
 
 
   var upper_window = $("input[name=upper_window]");
@@ -68,10 +56,6 @@ $(document).ready(function () {
     base_url = "http://localhost:3000/api/v1";
   }
 
-  //  upper_window.on('change paste keyup',function(){
-  //    console.log($(this).val());
-  //  });
-  //  
   $("#upload_form").submit(function (event) {
     event.preventDefault();
 
@@ -96,7 +80,7 @@ $(document).ready(function () {
         upload_response.show();
         upload_response.empty();
         upload_response.html(data.responseJSON.log.exec_status);
-//        upload_response.text(JSON.stringify(data.responseJSON, undefined, 2));
+        //        upload_response.text(JSON.stringify(data.responseJSON, undefined, 2));
       },
     });
     return false;
@@ -110,7 +94,7 @@ $(document).ready(function () {
     cumulative_response.empty();
     cumulative_response.show();
     cumulative_response.html("Processing ...");
-    
+
     $('.ct-chart').empty();
     $('#chart_display').hide();
 
@@ -143,20 +127,15 @@ $(document).ready(function () {
         $('#chart_display').show();
         all_cr = data.Event_Cumulative_Return;
         populate_events(data.Event_Cumulative_Return);
-//        cumulative_response.hide();
         cumulative_response.html(data.log.exec_status);
         $('#chart_section_btn').click();
-        //                cumulative_response.empty();
-        //                cumulative_response.show();
-        //                cumulative_response.text(JSON.stringify(data.Event_Cumulative_Return, undefined, 2));
-        //        cumulative_response.text("Use the chart below to view the results.");
       },
       error: function (data) {
         console.log(data.responseJSON);
         cumulative_response.empty();
         cumulative_response.show();
         cumulative_response.html(data.responseJSON.log.exec_status);
-//        cumulative_response.text(JSON.stringify(data.responseJSON, undefined, 2));
+
       },
     });
 
@@ -278,14 +257,12 @@ $(document).ready(function () {
   }
 
   $('#chart-dropdown-menu').on('click', 'li', function () {
-    //    console.log($(this).data());
     var company_name = $(this).data('company_name');
     var date = $(this).data('date');
     for (var i = 0; i < all_cr.length; i++) {
       var curr_c = all_cr[i]['company_name'].toString();
       var curr_date = all_cr[i]['event_date'].toString();
       if (company_name == curr_c && date == curr_date) {
-        //        console.log("found");
         $('#chart_title').html(company_name + "</br>" + date);
         render_chart(all_cr[i]);
         break;
@@ -294,6 +271,25 @@ $(document).ready(function () {
   });
 
 
+  $(document).keypress(function (e) {
+    console.log(e.which);
+    if (e.code == 116 || e.which == 116) {
+      window.location.href = 'event-study';
+    }
+  });
+
+
+  $.fn.resizeiframe = function () {
+    $(this).load(function () {
+      $(this).height($(this).contents().find("body").height());
+    });
+    $(this).click(function () {
+      $(this).height($(this).contents().find("body").height());
+    });
+
+  }
+  
+  $('iframe').resizeiframe();
 
 
 
