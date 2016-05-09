@@ -6,28 +6,52 @@ $(document).ready(function () {
       "last_cr": 0.021840230944098486
     },
     {
-      "company_name": "ELD.AX",
-      "last_cr": 10.04455174174549
+      "company_name": "CCL.AX",
+      "last_cr": -0.11292033167157076
     },
     {
       "company_name": "ELDDA.AX",
       "last_cr": 0.5263604899666249
     },
     {
+      "company_name": "ELD.AX",
+      "last_cr": 10.04455174174549
+    },
+    {
+      "company_name": "FGL.AX",
+      "last_cr": 0.03346100353809641
+    },
+    {
+      "company_name": "GFF.AX",
+      "last_cr": -0.4838346107644088
+    },
+    {
       "company_name": "GNC.AX",
       "last_cr": 0.4221910802101115
     },
     {
-      "company_name": "RIC.AX",
-      "last_cr": 0.4831955359576602
+      "company_name": "VTA.AX",
+      "last_cr": 0.5655315938769755
+    },
+    {
+      "company_name": "TWE.AX",
+      "last_cr": 1.293122159730927
+    },
+    {
+      "company_name": "BGA.AX",
+      "last_cr": 1.411309309297288
     },
     {
       "company_name": "TGR.AX",
       "last_cr": 1.0889181951749327
     },
     {
-      "company_name": "WBA.AX",
-      "last_cr": 1.347701002822227
+      "company_name": "SHV.AX",
+      "last_cr": 0.5971410621045565
+    },
+    {
+      "company_name": "CGC.AX",
+      "last_cr": 0.296375538386656
     }
   ];
 
