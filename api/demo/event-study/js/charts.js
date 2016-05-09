@@ -148,7 +148,7 @@ $(document).ready(function () {
       "avg_cr_topic": -0.1982155939012659
     }
   ];
-  
+
   var types = [
     "Cash Rate",
     "China Growth Rate Change",
@@ -158,12 +158,50 @@ $(document).ready(function () {
     "Government Policy changes"
   ];
 
+  var all_company = [
+    "AAC.AX",
+    "CCL.AX",
+    "ELDDA.AX",
+    "ELD.AX",
+    "FGL.AX",
+    "GFF.AX",
+    "GNC.AX",
+    "VTA.AX",
+    "TWE.AX",
+    "BGA.AX",
+    "TGR.AX",
+    "SHV.AX",
+    "CGC.AX"
+  ];
 
 
 
+  function populate_companys(all_company) {
+    var dropdown = document.getElementById("chart-dropdown-menu");
+    $('.dropdown-menu').html('');
+
+    for (var i = 0; i < all_company.length; i++) {
+      var company_name = all_company[i];
+
+      var li = document.createElement("li");
+      var a = document.createElement('a');
+      a.appendChild(document.createTextNode(company_name));
+      li.appendChild(a);
+      dropdown.appendChild(li);
+      $(li).data('company_name', company_name);
+    }
+  }
+
+  $('#chart-dropdown-menu').on('click', 'li', function () {
+    //    console.log($(this).data());
+    var company_name = $(this).data('company_name');
+    render_company_topics_chart(company_name);
+
+  });
 
 
 
+  populate_companys(all_company);
 
   render_company_chart();
 
@@ -205,11 +243,11 @@ $(document).ready(function () {
       var chart = new AmCharts.AmSerialChart();
       chart.dataProvider = chartData;
       chart.categoryField = "company_name";
-//      chart.startDuration = 1;
-      chart. startEffect = "elastic ";
+      //      chart.startDuration = 1;
+      chart.startEffect = "elastic ";
 
       chart.titles = [{
-        "text": "Cumulative returns for each company",
+        "text": "Cumulative returns for each stock",
         "bold": true,
         }];
 
@@ -247,7 +285,7 @@ $(document).ready(function () {
   function render_company_topics_chart(company_name) {
 
     var chartDataTopics = [];
-    types.forEach(function(t) {
+    types.forEach(function (t) {
       var found = false;
       topics.forEach(function (c) {
         if (company_name == c.company_name && c.topic == t) {
@@ -268,7 +306,7 @@ $(document).ready(function () {
     });
 
 
-    drawGraph(chartDataTopics,company_name);
+    drawGraph(chartDataTopics, company_name);
 
 
     function handleClick(event) {
@@ -277,7 +315,7 @@ $(document).ready(function () {
 
     }
 
-    function drawGraph(chartData,company_name) {
+    function drawGraph(chartData, company_name) {
       var chart = new AmCharts.AmSerialChart();
       chart.dataProvider = chartData;
       chart.categoryField = "topic";
