@@ -57,76 +57,105 @@ $(document).ready(function () {
 
 
   var topics = [
-  {
-      "_id": "yBZzwXApY2hzMGpDG",
+    {
+      "_id": "Ksuar4DeX9f254bs5",
       "company_name": "AAC.AX",
       "topic": "Cash Rate",
-      "avg_cr_topic": 0.07055896504909921,
-      "file_token": "kRM3mx5HdG8TcQkXGJHb"
+      "avg_cr_topic": 0.05450459469284749
     },
     {
-      "_id": "QJfPaX5ngnv73nf73",
+      "_id": "MNhJ85RRxYfhFxRj9",
+      "company_name": "AAC.AX",
+      "topic": "China Growth Rate Change",
+      "avg_cr_topic": 0.006341483624092334
+    },
+    {
+      "_id": "R3ZDzfSKcXf4GpH3i",
+      "company_name": "AAC.AX",
+      "topic": "CEO Health issue",
+      "avg_cr_topic": -0.06558246662221824
+    },
+    {
+      "_id": "oH9jNTQzS5B6MAisr",
+      "company_name": "AAC.AX",
+      "topic": "Earning announcements",
+      "avg_cr_topic": -0.044359141885683746
+    },
+    {
+      "_id": "MZhuib7EL5Jd3Z7ED",
+      "company_name": "AAC.AX",
+      "topic": "Macroevent",
+      "avg_cr_topic": 0.1045209840917354
+    },
+    {
+      "_id": "L6EjyF2KJE8tv8KuE",
+      "company_name": "AAC.AX",
+      "topic": "Government Policy changes",
+      "avg_cr_topic": 0.01685723171455052
+    },
+    {
+      "_id": "NCDkT73B2QF4YmAej",
       "company_name": "CCL.AX",
       "topic": "Cash Rate",
-      "avg_cr_topic": 0.08989156236282843,
-      "file_token": "kRM3mx5HdG8TcQkXGJHb"
+      "avg_cr_topic": 0.08989156236282843
     },
     {
-      "_id": "epfWh9CauhKJwDzSz",
+      "_id": "urKdwgMkXEjdcCa9L",
       "company_name": "ELD.AX",
       "topic": "Cash Rate",
-      "avg_cr_topic": 2.129734979561288,
-      "file_token": "kRM3mx5HdG8TcQkXGJHb"
+      "avg_cr_topic": 2.129734979561288
     },
     {
-      "_id": "R5nN54PZnTYqyJAah",
+      "_id": "7odMX3mJWXxQbgTPL",
       "company_name": "FGL.AX",
       "topic": "Cash Rate",
-      "avg_cr_topic": 0.024430827631048237,
-      "file_token": "kRM3mx5HdG8TcQkXGJHb"
+      "avg_cr_topic": 0.024430827631048237
     },
     {
-      "_id": "X527LNk6rpcwjjmCD",
+      "_id": "C9bpjhsQzE9KWRq43",
       "company_name": "GFF.AX",
       "topic": "Cash Rate",
-      "avg_cr_topic": -0.7041217898316381,
-      "file_token": "kRM3mx5HdG8TcQkXGJHb"
+      "avg_cr_topic": -0.7041217898316381
     },
     {
-      "_id": "EtgavyJpJEmXTpAft",
+      "_id": "q7PqWeq3AbNTWJ8ct",
       "company_name": "GNC.AX",
       "topic": "Cash Rate",
-      "avg_cr_topic": 0.5862959183861354,
-      "file_token": "kRM3mx5HdG8TcQkXGJHb"
+      "avg_cr_topic": 0.5862959183861354
     },
     {
-      "_id": "ZGbB8Sg5gYmcTFsxr",
+      "_id": "KDoLeS35oXwgdfbxo",
       "company_name": "TWE.AX",
       "topic": "Cash Rate",
-      "avg_cr_topic": 0.4085601596733481,
-      "file_token": "kRM3mx5HdG8TcQkXGJHb"
+      "avg_cr_topic": 0.4085601596733481
     },
     {
-      "_id": "GkTGzvsxvmrtKHY9A",
+      "_id": "z5ozX8SAgrYFc49qF",
       "company_name": "BGA.AX",
       "topic": "Cash Rate",
-      "avg_cr_topic": 0.3820141666571291,
-      "file_token": "kRM3mx5HdG8TcQkXGJHb"
+      "avg_cr_topic": 0.3820141666571291
     },
     {
-      "_id": "wahLhXgi5Bsx3MBy9",
+      "_id": "p8SdY5LFwYTBX625o",
       "company_name": "TGR.AX",
       "topic": "Cash Rate",
-      "avg_cr_topic": 0.28516447408870105,
-      "file_token": "kRM3mx5HdG8TcQkXGJHb"
+      "avg_cr_topic": 0.28516447408870105
     },
     {
-      "_id": "ahbKaTdkQuJjPo2BK",
+      "_id": "8DhF6f7AeywwiFgAZ",
       "company_name": "SHV.AX",
       "topic": "Cash Rate",
-      "avg_cr_topic": -0.1982155939012659,
-      "file_token": "kRM3mx5HdG8TcQkXGJHb"
+      "avg_cr_topic": -0.1982155939012659
     }
+  ];
+  
+  var types = [
+    "Cash Rate",
+    "China Growth Rate Change",
+    "CEO Health issue",
+    "Earning announcements",
+    "Macroevent",
+    "Government Policy changes"
   ];
 
 
@@ -180,7 +209,7 @@ $(document).ready(function () {
       chart. startEffect = "elastic ";
 
       chart.titles = [{
-        "text": "Average cumulative returns for each company",
+        "text": "Cumulative returns for each company",
         "bold": true,
         }];
 
@@ -218,13 +247,23 @@ $(document).ready(function () {
   function render_company_topics_chart(company_name) {
 
     var chartDataTopics = [];
-    topics.forEach(function (c) {
-      if (company_name == c.company_name) {
-        var entry = {
-          topic: c.topic,
-          avg_cr: c.avg_cr_topic,
-        };
-        chartDataTopics.push(entry);
+    types.forEach(function(t) {
+      var found = false;
+      topics.forEach(function (c) {
+        if (company_name == c.company_name && c.topic == t) {
+          found = true;
+          var entry = {
+            topic: c.topic,
+            avg_cr: c.avg_cr_topic,
+          };
+          chartDataTopics.push(entry);
+        }
+      });
+      if (!found) {
+        chartDataTopics.push({
+          topic: t,
+          avg_cr: 0,
+        });
       }
     });
 
