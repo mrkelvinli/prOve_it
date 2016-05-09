@@ -1,45 +1,33 @@
 $(document).ready(function () {
 
   var chartDataCompany = [
-       {
-      "company_name": "GFF.AX",
-      "avg_cr": -0.7041217898316381
-    },
-    {
-      "company_name": "SHV.AX",
-      "avg_cr": -0.1982155939012659
-    },
-    {
-      "company_name": "FGL.AX",
-      "avg_cr": 0.024430827631048237
-    },
     {
       "company_name": "AAC.AX",
-      "avg_cr": 0.07055896504909921
-    },
-    {
-      "company_name": "CCL.AX",
-      "avg_cr": 0.08989156236282843
-    },
-    {
-      "company_name": "TGR.AX",
-      "avg_cr": 0.28516447408870105
-    },
-    {
-      "company_name": "BGA.AX",
-      "avg_cr": 0.3820141666571291
-    },
-    {
-      "company_name": "TWE.AX",
-      "avg_cr": 0.4085601596733481
-    },
-    {
-      "company_name": "GNC.AX",
-      "avg_cr": 0.5862959183861354
+      "last_cr": 0.021840230944098486
     },
     {
       "company_name": "ELD.AX",
-      "avg_cr": 2.129734979561288
+      "last_cr": 10.04455174174549
+    },
+    {
+      "company_name": "ELDDA.AX",
+      "last_cr": 0.5263604899666249
+    },
+    {
+      "company_name": "GNC.AX",
+      "last_cr": 0.4221910802101115
+    },
+    {
+      "company_name": "RIC.AX",
+      "last_cr": 0.4831955359576602
+    },
+    {
+      "company_name": "TGR.AX",
+      "last_cr": 1.0889181951749327
+    },
+    {
+      "company_name": "WBA.AX",
+      "last_cr": 1.347701002822227
     }
   ];
 
@@ -187,7 +175,7 @@ $(document).ready(function () {
       // you don't need to create it, as one value axis is created automatically.
       // GRAPH
       var graph = new AmCharts.AmGraph();
-      graph.valueField = "avg_cr";
+      graph.valueField = "last_cr";
       graph.balloonText = "[[category]]: [[value]]";
       graph.type = "column";
       graph.lineAlpha = 0;
