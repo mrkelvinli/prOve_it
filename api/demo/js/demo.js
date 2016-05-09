@@ -245,16 +245,18 @@ $(document).ready(function () {
     $('.dropdown-menu').html('');
 
     for (var i = 0; i < data.length; i++) {
-      var company_name = data[i]['company_name'].toString();
-      var date = data[i]['event_date'].toString();
+      if (data[i].cumulative_returns.length > 0) {
+        var company_name = data[i]['company_name'].toString();
+        var date = data[i]['event_date'].toString();
 
-      var li = document.createElement("li");
-      var a = document.createElement('a');
-      a.appendChild(document.createTextNode(company_name + " | " + date));
-      li.appendChild(a);
-      dropdown.appendChild(li);
-      $(li).data('company_name', company_name);
-      $(li).data('date', date);
+        var li = document.createElement("li");
+        var a = document.createElement('a');
+        a.appendChild(document.createTextNode(company_name + " | " + date));
+        li.appendChild(a);
+        dropdown.appendChild(li);
+        $(li).data('company_name', company_name);
+        $(li).data('date', date);
+      }
     }
   }
 
