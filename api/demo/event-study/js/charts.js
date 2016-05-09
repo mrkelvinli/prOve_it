@@ -260,10 +260,15 @@ $(document).ready(function () {
       var categoryAxis = chart.categoryAxis;
       categoryAxis.labelRotation = 90;
       categoryAxis.gridPosition = "start";
+      categoryAxis.title = "Companies";
 
       // value
       // in case you don't want to change default settings of value axis,
       // you don't need to create it, as one value axis is created automatically.
+      var valueAxis = new AmCharts.ValueAxis();
+      valueAxis.title = "Last Cumulative Return";
+      chart.addValueAxis(valueAxis);
+      
       // GRAPH
       var graph = new AmCharts.AmGraph();
       graph.valueField = "last_cr";
@@ -334,10 +339,16 @@ $(document).ready(function () {
       var categoryAxis = chart.categoryAxis;
       categoryAxis.labelRotation = 90;
       categoryAxis.gridPosition = "start";
+      categoryAxis.title = "Event Type";
+      
 
       // value
       // in case you don't want to change default settings of value axis,
       // you don't need to create it, as one value axis is created automatically.
+      var valueAxis = new AmCharts.ValueAxis();
+      valueAxis.title = "Average Cumulative Return of Event Type";
+      chart.addValueAxis(valueAxis);
+      
       // GRAPH
       var graph = new AmCharts.AmGraph();
       graph.valueField = "avg_cr";
