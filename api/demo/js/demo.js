@@ -39,7 +39,9 @@ $(document).ready(function () {
   });
 
 
-
+  $('#compare_stocks_btn').click(function(){
+    window.location.href = 'event-study';
+  });
 
 
 
