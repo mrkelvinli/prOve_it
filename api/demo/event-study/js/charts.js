@@ -5,7 +5,7 @@ $(document).ready(function () {
   var chartDataCompany = [
     {
       "company_name": "AAC.AX",
-      "last_cr": 0.021840230944098486
+      "last_cr": 0.218402309440984860
     },
     {
       "company_name": "CCL.AX",
@@ -21,7 +21,7 @@ $(document).ready(function () {
     },
     {
       "company_name": "FGL.AX",
-      "last_cr": 0.03346100353809641
+      "last_cr": 0.33461003538096410
     },
     {
       "company_name": "GFF.AX",
@@ -235,7 +235,8 @@ $(document).ready(function () {
           graph.lineColorField = colorKey;
           graph.fillColorsField = colorKey;
           for (var x = 0; x < chart.dataProvider.length; x++) {
-            var color = chart.colors[x]
+            var color = ['#ff0000', '#ff8000', '#ffff00', '#40ff00', '#33cccc', '#339933', '#ff33cc', '#00bfff', '#ffcc66', '#00cc00', '#0066ff', '#ffcc00', '#ff6666'][x];
+            
             chart.dataProvider[x][colorKey] = color;
           }
         }
@@ -247,6 +248,7 @@ $(document).ready(function () {
       chart.categoryField = "company_name";
       //      chart.startDuration = 1;
       chart.startEffect = "elastic ";
+      chart.theme = 'light';
 
       chart.titles = [{
         "text": "Cumulative returns for each stock",
