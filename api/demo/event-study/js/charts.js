@@ -17,7 +17,7 @@ $(document).ready(function () {
     },
     {
       "company_name": "ELD.AX",
-      "last_cr": 10.04455174174549
+      "last_cr": 1.4455174174549
     },
     {
       "company_name": "FGL.AX",
