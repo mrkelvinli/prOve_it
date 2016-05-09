@@ -1,5 +1,7 @@
 $(document).ready(function () {
 
+  $('#chartdivtopics').hide();
+  
   var chartDataCompany = [
     {
       "company_name": "AAC.AX",
@@ -261,13 +263,16 @@ $(document).ready(function () {
       categoryAxis.labelRotation = 90;
       categoryAxis.gridPosition = "start";
       categoryAxis.title = "Companies";
+      categoryAxis.titleColor = 'grey';
 
       // value
       // in case you don't want to change default settings of value axis,
       // you don't need to create it, as one value axis is created automatically.
       var valueAxis = new AmCharts.ValueAxis();
-      valueAxis.title = "Last Cumulative Return";
+      valueAxis.title = "Cumulative Return (%)";
+      valueAxis.titleColor = 'grey';
       chart.addValueAxis(valueAxis);
+      
       
       // GRAPH
       var graph = new AmCharts.AmGraph();
@@ -288,6 +293,8 @@ $(document).ready(function () {
 
 
   function render_company_topics_chart(company_name) {
+    $('#chartdivtopics').show();
+    console.log("SHOWING");
 
     var chartDataTopics = [];
     types.forEach(function (t) {
@@ -340,13 +347,16 @@ $(document).ready(function () {
       categoryAxis.labelRotation = 90;
       categoryAxis.gridPosition = "start";
       categoryAxis.title = "Event Type";
+      categoryAxis.titleColor = 'grey';
+      
       
 
       // value
       // in case you don't want to change default settings of value axis,
       // you don't need to create it, as one value axis is created automatically.
       var valueAxis = new AmCharts.ValueAxis();
-      valueAxis.title = "Average CR of Event Type";
+      valueAxis.title = "Average C.R. of Event Type";
+      valueAxis.titleColor = 'grey';
       chart.addValueAxis(valueAxis);
       
       // GRAPH

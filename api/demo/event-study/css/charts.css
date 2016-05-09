@@ -1,20 +1,28 @@
 @import url(https://fonts.googleapis.com/css?family=Roboto|Montserrat|Titillium+Web|Poiret+One|Raleway);
 
+body {
+  background-color: #eee;
+}
+
 .chartdiv {
   width: 100%;
   height: 400px;
   font-size: 11px;
+  border: 0;
+  background-color: white;
 }
 
 
+
 .container{
-  margin-top:50px;
+  margin-top: 50px;
 }
 
 .head-brandname {
   padding-top: 9px;
   color: orange;
-  position: fixed;
+/*  position: fixed;*/
+  position: absolute;
   left: 50%;
   transform: translate(-50%, 0%);
   text-align: center;
@@ -22,4 +30,15 @@
   font-family: 'Poiret One', cursive;
   font-weight: 500;
   top: 0px;
+}
+
+.chartdiv#chartdivcompany {
+  position: relative;
+  top: 10px;
+}
+
+.chartdiv#chartdivtopics {
+  position: relative;
+  top: 10px;
+  margin-bottom: 50px;
 }
