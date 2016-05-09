@@ -17,6 +17,14 @@ $(document).ready(function () {
     var input_name = input.attr('name');
     var input_val = input.val();
 
+    console.log(input_name);
+    if (input_name == null) {
+      input_name = 'var_name';
+      var e = $('select#topic-name').val();
+      console.log(e);
+      input_val = e;
+    }
+    
     if (input_val != '') {
       if ((input_name == 'upper_window' && input_val >= 0) ||
         (input_name == 'lower_window' && input_val <= 0) ||
