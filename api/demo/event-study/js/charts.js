@@ -346,7 +346,7 @@ $(document).ready(function () {
       // in case you don't want to change default settings of value axis,
       // you don't need to create it, as one value axis is created automatically.
       var valueAxis = new AmCharts.ValueAxis();
-      valueAxis.title = "Average Cumulative Return of Event Type";
+      valueAxis.title = "Average CR of Event Type";
       chart.addValueAxis(valueAxis);
       
       // GRAPH
