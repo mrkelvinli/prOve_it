@@ -32,6 +32,6 @@ random
 ostrio:meteor-root
 mrt:moment
 session
+meteorhacks:fast-render
 em0ney:amcharts
 paddydub:amstock
-meteorhacks:fast-render

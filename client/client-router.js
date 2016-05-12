@@ -14,12 +14,12 @@ Router.map(function() {
     waitOn: function() {
       return Meteor.subscribe('stockPrices_db');
     },
-    action: function() {
-      if (this.ready()) {
-        console.log('ready');
-        this.render();
-      }
-    },
+    // action: function() {
+    //   if (this.ready()) {
+    //     console.log('ready');
+    //     this.render();
+    //   }
+    // },
     fastRender: true,
     cache: true,
   });

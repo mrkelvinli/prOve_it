@@ -35,9 +35,8 @@ Template.chart.rendered = function() {
       var chart = AmCharts.makeChart( "chartdiv", {
         "type": "stock",
         "theme": "light",
-        "pathToImages": "https://cdn.amcharts.com/lib/3/images/",
-        "dragIcon": "dragIconRoundBig",
-        "dataSets": [ {
+        "pathToImages": "/amcharts/images/",
+        "dataSets": [{
           "fieldMappings": [ {
             "fromField": "open",
             "toField": "open"
@@ -146,6 +145,7 @@ Template.chart.rendered = function() {
           "graph": "g1",
           "graphType": "line",
           "usePeriod": "WW"
+
         },
 
         "chartCursorSettings": {
