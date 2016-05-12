@@ -482,8 +482,8 @@ ES = {
       var date = parseDate(line[date_id]);
       for (var j = 0; j < n_topics; j++){
         var topic_idx = j + 2;
-        var topic_name = topics[topic_idx];
-        console.log(topic_name);
+        var topic_name = topics[j].toString();
+        // console.log(topic_name);
         var value = line[topic_idx];
         StockEvents.insert({
           company_name: company_name,
