@@ -1,4 +1,6 @@
   Template.chart.rendered = function() {
+    var token = Router.current().params.token;
+
 
     var curr_company = "AAC.AX";
     var curr_topic;

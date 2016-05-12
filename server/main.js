@@ -34,4 +34,15 @@ import { Meteor } from 'meteor/meteor';
     Meteor.publish('topics_db', function(){
         return Topics.find();
     });
+
+
+
+
+    Meteor.publish('stockPrices_db', function(){
+        return StockPrices.find();
+    });
+
+    Meteor.publish('stockEvents_db', function(){
+        return StockEvents.find();
+    });
 }
