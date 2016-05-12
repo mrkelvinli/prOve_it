@@ -38,11 +38,11 @@ import { Meteor } from 'meteor/meteor';
 
 
 
-    Meteor.publish('stockPrices_db', function(){
-        return StockPrices.find();
+    Meteor.publish('stockPrices_db', function(token){
+        return StockPrices.find({token:token});
     });
 
-    Meteor.publish('stockEvents_db', function(){
-        return StockEvents.find();
+    Meteor.publish('stockEvents_db', function(token){
+        return StockEvents.find({token: token});
     });
 }
