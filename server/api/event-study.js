@@ -1,80 +1,6 @@
 ES = {
   
-  get_cum_return_by_date: function (stock_price_file, c_name, date) {
-    if (stock_price_file == null) {
-      return stock_price_file;
-    }
-    var fields = stock_price_file[0];
-    var RIC_id = fields.indexOf('#RIC');
-    var date_id = fields.indexOf('Date[L]');
-    var open_id = fields.indexOf('Open');
-    var last_id = fields.indexOf('Last');
-    var return_percent_id = fields.length;
-    var cum_return_id = fields.length + 1;
-    for (var i = 1; i < stock_price_file.length; i++) {
-      if (stock_price_file[i][RIC_id].toString() == c_name && stock_price_file[i][date_id].toString() == date) {
-        return stock_price_file[i];
-      }
-    }
-    return null;
-  },
 
-  // get all the line that have the type of event with in the upper range and lower range
-  get_events: function (stock_characteristic_file, topic_name, upper_range, lower_range) {
-    //  
-    //  console.log("topic_name: "+topic_name);
-    //  console.log("upper_range: "+upper_range);
-    //  console.log("lower_range: "+lower_range);
-    //  
-    var fields = stock_characteristic_file[0];
-    var topic_id = fields.indexOf(topic_name);
-    var rel_events = [];
-
-    //  console.log("topic id: "+topic_id);
-
-    if (topic_id == -1) return [];
-
-    for (var i = 0; i < stock_characteristic_file.length; i++) {
-      var curr_val = stock_characteristic_file[i][topic_id];
-      //    console.log(curr_val);
-      if (curr_val <= upper_range && curr_val >= lower_range) {
-        rel_events.push(stock_characteristic_file[i]);
-      }
-    }
-    return rel_events;
-  },
-
-  // return the correct date format of the event line
-  get_event_date: function (event) {
-
-    // needs to be in format: dd-mmm-yyyy
-    var uncheckedDate = event[1].toString();
-    var checkedDayDate = uncheckedDate;
-    var checkedDate = uncheckedDate;
-    if (!uncheckedDate.match(/^[0-9]{2}-[a-zA-Z]{3}-[0-9]{4}$/)) {
-      // doesn't match format, probably missing digit(s) from day or year
-      if (uncheckedDate.match(/^[0-9]{1}-[a-zA-Z]{3}/)) {
-        // weird day
-        checkedDayDate = "0" + uncheckedDate;
-      }
-      if (checkedDayDate.match(/^[0-9]{2}-[a-zA-Z]{3}-[0-9]{2}$/)) {
-        // weird year, assume all years are 2000 or after
-        checkedDate = checkedDayDate.replace(/([0-9]{2}-[a-zA-Z]{3}-)([0-9]{2})/, "$120$2");
-      }
-    }
-    // HELP!! why does it not work if it's '02-Mar-2016'?
-    //    if (checkedDate === '02-Mar-2016') {
-    //      console.log("found");
-    //      checkedDate = '02-Mar-16';
-    //    }
-    //    console.log(checkedDate);
-    return checkedDate;
-  },
-
-  // return the company name of the event line
-  get_event_company: function (event) {
-    return event[0].toString();
-  },
 
   // return the cumulative returns with upper window and lower window 
   get_cum_return: function (stock_price_file, event, upper_window, lower_window) {
@@ -146,26 +72,6 @@ ES = {
     }
   },
 
-
-  // return all campany names in files
-  get_all_query_company: function (file) {
-    if (file == null) {
-      return file;
-    }
-
-    var fields = file[0];
-    var RIC_id = fields.indexOf('#RIC');
-
-    var all_company = [];
-
-    for (var i = 1; i < file.length; i++) {
-      var c = file[i][RIC_id].toString();
-      if (all_company.indexOf(c) == -1) {
-        all_company.push(c);
-      }
-    }
-    return all_company;
-  },
 
 
   // calculate the cumulative return for each day in the stock price file
@@ -271,32 +177,19 @@ ES = {
   },
 
 
-  // return a JSON of each individual in the stock characteristic file
-  get_all_events: function(stock_characteristic_file) {
-    var title_line = stock_characteristic_file[0];
-    var line_length = title_line.length;
-    var results = [];
-    for (var i=1; i < stock_characteristic_file.length; i++) {
 
-      var current_line = stock_characteristic_file[i];
-      // console.log(current_line);
-      for (var j=2; j<line_length; j++) {
-        if (current_line[j] > 0) {
-          var company_name = current_line[0].toString();
-          var date = current_line[1].toString();
-          var event_type = title_line[j].toString();
-          var value = current_line[j];
-          results.push({
-            company_name: company_name,
-            date: date,
-            event_type: event_type,
-            value: value,
-          });
-        }
-      }
-    }
-    return results;
-  },
+
+
+
+
+
+// ------------------------------------------------------------
+
+
+
+
+
+
 
   // calculate the average cumulative return for each event
   calc_avg_cr_for_event_and_get_upper_lower_date: function (stock_price_file, company_name, date, upper_window, lower_window) {
@@ -477,7 +370,274 @@ ES = {
         low          : parseFloat(stock_price_file[i][low]),
       });
     }
-  }
+  },
+
+  //--------------- new function --------------
+
+  process_stock_price_file: function (stock_price_file, token) {
+    // if (stock_price_file == null) {
+    //   return stock_price_file;
+    // }
+    var fields = stock_price_file[0];
+    var RIC_id = fields.indexOf('#RIC');
+    var date_id = fields.indexOf('Date[L]');
+    var open_id = fields.indexOf('Open');
+    var last_id = fields.indexOf('Last');
+    var high_id =  fields.indexOf('High');
+    var low_id  = fields.indexOf('Low');
+    var volume_id = fields.indexOf('Volume');
+    var return_percent_id = fields.length;
+    var cum_return_id = fields.length + 1;
+
+
+    var prev_company = "";
+    var prev_last = 0;
+    // for (var i = 1; i < 2; i++) {
+    for (var i = 1; i < stock_price_file.length; i++) {
+      // start to calcualte CR
+      var current_last = stock_price_file[i][last_id];
+      if (current_last == '') {
+        if (prev_company != stock_price_file[i][RIC_id].toString()) {
+          prev_last = 0;
+          var same_c = stock_price_file[i][RIC_id].toString();
+          var open = stock_price_file[i][open_id];
+          for (var j = i; j < stock_price_file.length; j++) {
+            if (stock_price_file[j][RIC_id].toString() == same_c && stock_price_file[j][open_id] != '') {
+              open = stock_price_file[j][open_id];
+              break;
+            }
+          }
+          current_last = open;
+        } else {
+          current_last = prev_last;
+        }
+      } else if (prev_company != stock_price_file[i][RIC_id].toString()) {
+        prev_last = 0;
+      }
+      // calculate the cumulative return percentage and cum return here
+      if (prev_last == 0) {
+        stock_price_file[i][return_percent_id] = 0;
+      } else {
+        stock_price_file[i][return_percent_id] = (current_last - prev_last) / prev_last;
+      }
+      var cum_return = 0;
+      var prev_c = stock_price_file[i - 1][RIC_id].toString();
+      if (stock_price_file[i][RIC_id].toString() != prev_c) {
+        cum_return = stock_price_file[i][return_percent_id];
+      } else {
+        cum_return = stock_price_file[i][return_percent_id] + stock_price_file[i - 1][cum_return_id];
+
+      }
+      stock_price_file[i][cum_return_id] = cum_return;
+      prev_last = current_last;
+      prev_company = stock_price_file[i][RIC_id].toString();
+
+      // end calculating CR
+
+      var company_name = stock_price_file[i][RIC_id].toString();
+      var date = new Date(stock_price_file[i][date_id])
+      var open = stock_price_file[i][open_id];
+      open = open == '' ? null : parseFloat(open);
+      var last = stock_price_file[i][last_id];
+      last = last == '' ? null : parseFloat(last);
+      var high = stock_price_file[i][high_id];
+      high = high == '' ? null : parseFloat(high);
+      var low = stock_price_file[i][low_id];
+      low = low == '' ? null : parseFloat(low);
+      var volume = stock_price_file[i][volume_id];
+      volume = volume == '' ? null : parseFloat(volume);
+      var flat_value = null;
+      if (open != null && last != null) {
+        flat_value = (open + last) / 2;
+      }
+
+      StockPrices.insert({
+        company_name:   company_name,
+        date:           date,
+        open:           open,
+        last:           last,
+        high:           high,
+        low:            low,
+        volume:         volume,
+        return_percent: parseFloat(stock_price_file[i][return_percent_id]),
+        cum_return:     parseFloat(stock_price_file[i][cum_return_id]),
+        flat_value:     flat_value,
+        token:          token,
+      });
+
+    }
+    // return stock_price_file;
+  },
+
+
+  process_stock_characteristic_file: function (stock_characteristic_file, token){
+    var fields = stock_characteristic_file[0];
+    var RIC_id = fields.indexOf('#RIC');
+    var date_id = fields.indexOf('Event Date');
+    var topics = get_all_topics(stock_characteristic_file);
+    var n_topics = topics.length;
+    for (var i = 1; i < stock_characteristic_file.length; i++){
+      var line = stock_characteristic_file[i];
+      var company_name = line[RIC_id].toString();;
+      var date = parseDate(line[date_id]);
+      for (var j = 0; j < n_topics; j++){
+        var topic_idx = j + 2;
+        var topic_name = topics[topic_idx];
+        console.log(topic_name);
+        var value = line[topic_idx];
+        StockEvents.insert({
+          company_name: company_name,
+          date:         date,
+          topic:        topic_name,
+          value:        value,
+          token:        token,
+        });
+      }
+    }
+  },
+
+
+
+
+
+
+
+
+  // -------- old getter function
+    get_cum_return_by_date: function (stock_price_file, c_name, date) {
+    if (stock_price_file == null) {
+      return stock_price_file;
+    }
+    var fields = stock_price_file[0];
+    var RIC_id = fields.indexOf('#RIC');
+    var date_id = fields.indexOf('Date[L]');
+    var open_id = fields.indexOf('Open');
+    var last_id = fields.indexOf('Last');
+    var return_percent_id = fields.length;
+    var cum_return_id = fields.length + 1;
+    for (var i = 1; i < stock_price_file.length; i++) {
+      if (stock_price_file[i][RIC_id].toString() == c_name && stock_price_file[i][date_id].toString() == date) {
+        return stock_price_file[i];
+      }
+    }
+    return null;
+  },
+
+  // get all the line that have the type of event with in the upper range and lower range
+  get_events: function (stock_characteristic_file, topic_name, upper_range, lower_range) {
+    //  
+    //  console.log("topic_name: "+topic_name);
+    //  console.log("upper_range: "+upper_range);
+    //  console.log("lower_range: "+lower_range);
+    //  
+    var fields = stock_characteristic_file[0];
+    var topic_id = fields.indexOf(topic_name);
+    var rel_events = [];
+
+    //  console.log("topic id: "+topic_id);
+
+    if (topic_id == -1) return [];
+
+    for (var i = 0; i < stock_characteristic_file.length; i++) {
+      var curr_val = stock_characteristic_file[i][topic_id];
+      //    console.log(curr_val);
+      if (curr_val <= upper_range && curr_val >= lower_range) {
+        rel_events.push(stock_characteristic_file[i]);
+      }
+    }
+    return rel_events;
+  },
+
+  // return the correct date format of the event line
+  get_event_date: function (event) {
+
+    // needs to be in format: dd-mmm-yyyy
+    var uncheckedDate = event[1].toString();
+    var checkedDayDate = uncheckedDate;
+    var checkedDate = uncheckedDate;
+    if (!uncheckedDate.match(/^[0-9]{2}-[a-zA-Z]{3}-[0-9]{4}$/)) {
+      // doesn't match format, probably missing digit(s) from day or year
+      if (uncheckedDate.match(/^[0-9]{1}-[a-zA-Z]{3}/)) {
+        // weird day
+        checkedDayDate = "0" + uncheckedDate;
+      }
+      if (checkedDayDate.match(/^[0-9]{2}-[a-zA-Z]{3}-[0-9]{2}$/)) {
+        // weird year, assume all years are 2000 or after
+        checkedDate = checkedDayDate.replace(/([0-9]{2}-[a-zA-Z]{3}-)([0-9]{2})/, "$120$2");
+      }
+    }
+    // HELP!! why does it not work if it's '02-Mar-2016'?
+    //    if (checkedDate === '02-Mar-2016') {
+    //      console.log("found");
+    //      checkedDate = '02-Mar-16';
+    //    }
+    //    console.log(checkedDate);
+    return checkedDate;
+  },
+
+  // return the company name of the event line
+  get_event_company: function (event) {
+    return event[0].toString();
+  },
+
+
+  // return a JSON of each individual in the stock characteristic file
+  get_all_events: function(stock_characteristic_file) {
+    var title_line = stock_characteristic_file[0];
+    var line_length = title_line.length;
+    var results = [];
+    for (var i=1; i < stock_characteristic_file.length; i++) {
+
+      var current_line = stock_characteristic_file[i];
+      // console.log(current_line);
+      for (var j=2; j<line_length; j++) {
+        if (current_line[j] > 0) {
+          var company_name = current_line[0].toString();
+          var date = current_line[1].toString();
+          var event_type = title_line[j].toString();
+          var value = current_line[j];
+          results.push({
+            company_name: company_name,
+            date: date,
+            event_type: event_type,
+            value: value,
+          });
+        }
+      }
+    }
+    return results;
+  },
+
+  get_all_event_type: function(stock_characteristic_file){
+    var fields = stock_characteristic_file[0];
+    var topics = fields.slice(2, fields.length);
+    return topics;
+  },
+
+
+  // return all campany names in files
+  get_all_query_company: function (file) {
+    if (file == null) {
+      return file;
+    }
+
+    var fields = file[0];
+    var RIC_id = fields.indexOf('#RIC');
+
+    var all_company = [];
+
+    for (var i = 1; i < file.length; i++) {
+      var c = file[i][RIC_id].toString();
+      if (all_company.indexOf(c) == -1) {
+        all_company.push(c);
+      }
+    }
+    return all_company;
+  },
+
+
+
+
 };
 
 function getDistinctTopic(company_name,token) {
@@ -486,3 +646,49 @@ function getDistinctTopic(company_name,token) {
   var distinctData = _.uniq(data, false, function(d) {return d.topic});
   return _.pluck(distinctData, "topic");
 }
+
+// return the correct date format of the event line
+function parseDate (d) {
+
+  // needs to be in format: dd-mmm-yyyy
+  var uncheckedDate = d;
+  var checkedDayDate = uncheckedDate;
+  var checkedDate = uncheckedDate;
+  if (!uncheckedDate.match(/^[0-9]{2}-[a-zA-Z]{3}-[0-9]{4}$/)) {
+    // doesn't match format, probably missing digit(s) from day or year
+    if (uncheckedDate.match(/^[0-9]{1}-[a-zA-Z]{3}/)) {
+      // weird day
+      checkedDayDate = "0" + uncheckedDate;
+    }
+    if (checkedDayDate.match(/^[0-9]{2}-[a-zA-Z]{3}-[0-9]{2}$/)) {
+      // weird year, assume all years are 2000 or after
+      checkedDate = checkedDayDate.replace(/([0-9]{2}-[a-zA-Z]{3}-)([0-9]{2})/, "$120$2");
+    }
+  }
+  // HELP!! why does it not work if it's '02-Mar-2016'?
+  //    if (checkedDate === '02-Mar-2016') {
+  //      console.log("found");
+  //      checkedDate = '02-Mar-16';
+  //    }
+  //    console.log(checkedDate);
+  return new Date(checkedDate);
+}
+
+function get_all_topics (stock_characteristic_file){
+  var fields = stock_characteristic_file[0];
+  var topics = fields.slice(2, fields.length);
+  return topics;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
