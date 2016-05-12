@@ -435,7 +435,7 @@ ES = {
       // end calculating CR
 
       var company_name = stock_price_file[i][RIC_id].toString();
-      var date = new Date(stock_price_file[i][date_id])
+      var date = parseDate(stock_price_file[i][date_id])
       var open = stock_price_file[i][open_id];
       open = open == '' ? null : parseFloat(open);
       var last = stock_price_file[i][last_id];
@@ -649,7 +649,6 @@ function getDistinctTopic(company_name,token) {
 
 // return the correct date format of the event line
 function parseDate (d) {
-  console.log("    date: " + d);
 
   // needs to be in format: dd-mmm-yyyy
   var uncheckedDate = d;
@@ -666,9 +665,12 @@ function parseDate (d) {
       checkedDate = checkedDayDate.replace(/([0-9]{2}-[a-zA-Z]{3}-)([0-9]{2})/, "$120$2");
     }
   }
-  var wantedDate = new Date(checkedDate);
-
-  console.log(wantedDate);
+  var onlyForParsing = new Date(checkedDate);
+  var year = onlyForParsing.getFullYear();
+  var month = onlyForParsing.getMonth();
+  var date = onlyForParsing.getDate();
+  
+  var wantedDate = new Date(Date.UTC(year, month, date, 6));
   return wantedDate;
 }
 
