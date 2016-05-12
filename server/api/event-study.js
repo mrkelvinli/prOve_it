@@ -649,6 +649,7 @@ function getDistinctTopic(company_name,token) {
 
 // return the correct date format of the event line
 function parseDate (d) {
+  console.log("    date: " + d);
 
   // needs to be in format: dd-mmm-yyyy
   var uncheckedDate = d;
@@ -665,13 +666,10 @@ function parseDate (d) {
       checkedDate = checkedDayDate.replace(/([0-9]{2}-[a-zA-Z]{3}-)([0-9]{2})/, "$120$2");
     }
   }
-  // HELP!! why does it not work if it's '02-Mar-2016'?
-  //    if (checkedDate === '02-Mar-2016') {
-  //      console.log("found");
-  //      checkedDate = '02-Mar-16';
-  //    }
-  //    console.log(checkedDate);
-  return new Date(checkedDate);
+  var wantedDate = new Date(checkedDate);
+
+  console.log(wantedDate);
+  return wantedDate;
 }
 
 function get_all_topics (stock_characteristic_file){
