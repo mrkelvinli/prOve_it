@@ -12,7 +12,13 @@ Router.map(function() {
     template: 'app_ui',
     layout: 'main_layout',
     waitOn: function() {
-      return Meteor.subscribe('stocks_db');
+      return Meteor.subscribe('stockPrices_db');
+    },
+    action: function() {
+      if (this.ready()) {
+        console.log('ready');
+        this.render();
+      }
     },
     cache: true,
   });
