@@ -7,6 +7,12 @@ Template.chart.rendered = function() {
   var curr_topic;
 
 
+  function render_company_topics_graph (company_name, topic) {
+    
+
+  }
+
+
 
 
 
