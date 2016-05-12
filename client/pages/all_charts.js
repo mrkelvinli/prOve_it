@@ -11,8 +11,10 @@ Template.chart.rendered = function() {
   function render_candlestick_graph (company_name) {
     var chartData = [];
     Tracker.autorun(function() {
-      var stockPrices = StockPrices.find({company_name: company_name, token: token}, {fields: {'date':1, 'open':1, 'last':1, 'high':1, 'low':1, 'volume':1, 'flat_value':1}}).fetch();
+      var stockPrices = StockPrices.find({company_name: company_name, token: token, 'open': {$ne : null}}, {fields: {'date':1, 'open':1, 'last':1, 'high':1, 'low':1, 'volume':1, 'flat_value':1}}).fetch();
       // stockPrices.forEach(function (c) {
+        // console.log("open: " + c.open " close: " + c.close + " high: " + c.high + " low: " + c.low);
+        // console.log(c.open + ' ' + c.last);
       //   chartData.push({
       //     "date": c.date,
       //     "open": c.open,
@@ -28,10 +30,13 @@ Template.chart.rendered = function() {
     });
 
     function drawGraph(chartData) {
+
+
       var chart = AmCharts.makeChart( "chartdiv", {
         "type": "stock",
-        "theme": "dark",
-
+        "theme": "light",
+        "pathToImages": "https://cdn.amcharts.com/lib/3/images/",
+        "dragIcon": "dragIconRoundBig",
         "dataSets": [ {
           "fieldMappings": [ {
             "fromField": "open",
@@ -54,17 +59,17 @@ Template.chart.rendered = function() {
           } ],
           "color": "#7f8da9",
           "dataProvider": chartData,
-          "title": "West Stock",
+          "title": "Candlestick",
           "categoryField": "date"
         }, {
           "fieldMappings": [ {
-            "fromField": "value",
+            "fromField": "flat_value",
             "toField": "value"
           } ],
           "color": "#fac314",
           "dataProvider": chartData,
           "compared": true,
-          "title": "East Stock",
+          "title": "Line",
           "categoryField": "date"
         } ],
 
@@ -104,7 +109,7 @@ Template.chart.rendered = function() {
 
           "stockLegend": {
             "valueTextRegular": undefined,
-            "periodValueTextComparing": "[[percents.value.close]]%"
+            "periodValueTextComparing": "[[value.close]]%"
           }
         },
 

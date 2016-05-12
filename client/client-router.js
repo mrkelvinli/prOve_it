@@ -20,6 +20,7 @@ Router.map(function() {
         this.render();
       }
     },
+    fastRender: true,
     cache: true,
   });
 });
