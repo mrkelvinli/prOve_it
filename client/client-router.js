@@ -8,7 +8,7 @@
 
 Router.map(function() {
   this.route('chart', {
-    path: '/',
+    path: '/chart/:token',
     template: 'app_ui',
     layout: 'main_layout',
     waitOn: function() {
