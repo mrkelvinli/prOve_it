@@ -435,7 +435,7 @@ ES = {
       // end calculating CR
 
       var company_name = stock_price_file[i][RIC_id].toString();
-      var date = new Date(stock_price_file[i][date_id])
+      var date = parseDate(stock_price_file[i][date_id])
       var open = stock_price_file[i][open_id];
       open = open == '' ? null : parseFloat(open);
       var last = stock_price_file[i][last_id];
@@ -665,13 +665,13 @@ function parseDate (d) {
       checkedDate = checkedDayDate.replace(/([0-9]{2}-[a-zA-Z]{3}-)([0-9]{2})/, "$120$2");
     }
   }
-  // HELP!! why does it not work if it's '02-Mar-2016'?
-  //    if (checkedDate === '02-Mar-2016') {
-  //      console.log("found");
-  //      checkedDate = '02-Mar-16';
-  //    }
-  //    console.log(checkedDate);
-  return new Date(checkedDate);
+  var onlyForParsing = new Date(checkedDate);
+  var year = onlyForParsing.getFullYear();
+  var month = onlyForParsing.getMonth();
+  var date = onlyForParsing.getDate();
+  
+  var wantedDate = new Date(Date.UTC(year, month, date, 6));
+  return wantedDate;
 }
 
 function get_all_topics (stock_characteristic_file){
