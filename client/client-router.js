@@ -11,8 +11,12 @@ Router.map(function() {
     path: '/chart/:token',
     template: 'app_ui',
     layout: 'main_layout',
-    waitOn: function() {
-      return Meteor.subscribe('stockPrices_db');
+    waitOn: function(){
+      return [
+        IRLibLoader.load('/amcharts/amcharts.js'),
+        IRLibLoader.load('/amcharts/amstock.js'),
+        IRLibLoader.load('/amcharts/serial.js')
+      ];
     },
     // action: function() {
     //   if (this.ready()) {
@@ -21,7 +25,7 @@ Router.map(function() {
     //   }
     // },
     fastRender: true,
-    cache: true,
+    // cache: true,
   });
 });
 

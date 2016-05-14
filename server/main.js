@@ -1,8 +1,8 @@
 import { Meteor } from 'meteor/meteor';
 
 
- if(Meteor.isServer) {
- 	fs = Npm.require('fs');
+if(Meteor.isServer) {
+  fs = Npm.require('fs');
 
     // Meteor.startup(function () {
     //   Companys.allow({
@@ -22,27 +22,34 @@ import { Meteor } from 'meteor/meteor';
     //   });
     // });
 
-    Meteor.publish('companys_db', function(){
-        return Companys.find();
-    });
-    Meteor.publish('stocks_db', function(){
-        return Stocks.find();
-    });
-    Meteor.publish('events_db', function(){
-        return Events.find();
-    });
-    Meteor.publish('topics_db', function(){
-        return Topics.find();
-    });
+  Meteor.publish('companys_db', function(){
+    return Companys.find();
+  });
+  Meteor.publish('stocks_db', function(){
+    return Stocks.find();
+  });
+  Meteor.publish('events_db', function(){
+    return Events.find();
+  });
+  Meteor.publish('topics_db', function(){
+    return Topics.find();
+  });
 
 
 
 
-    Meteor.publish('stockPrices_db', function(token){
-        return StockPrices.find({token:token});
-    });
+  Meteor.publish('stockPrices_db', function(token){
+    return StockPrices.find({token:token});
+  });
 
-    Meteor.publish('stockEvents_db', function(token){
-        return StockEvents.find({token: token});
-    });
+  Meteor.publish('stockEvents_db', function(token){
+    return StockEvents.find({token: token});
+  });
+
+  Meteor.methods({
+    checkToken: function (token) {
+      console.log('checking: '+token);
+      return StockPrices.find({token:token}).count() > 0;
+    }
+  });
 }
