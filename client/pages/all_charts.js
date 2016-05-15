@@ -101,46 +101,65 @@ Template.chart.rendered = function() {
     "dataProvider": sma,
     "valueAxes": [ {
       "gridColor": "#000000",
-      "gridAlpha": 0.25,
-      "dashLength": 0
+      "gridAlpha": 0.2,
+      "dashLength": 10,
+      "title": "Stock Price ($)"
     } ],
     "gridAboveGraphs": true,
     "startDuration": 0,
     "graphs": [ {
-      "balloonText": "Price: <b>[[value]]</b>",
+      "id": "priceGraph",
+      "balloonText": "Price: <b>[[price]]</b><br>Upper Band: <b>[[sdUpper]]</b><br>SMA(30): <b>[[mAvg]]</b><br>Lower Band: <b>[[sdLower]]</b>",
       "fillAlphas": 0,
       "lineAlpha": 1,
       "type": "line",
       //"color": "$ffffff",
       "lineThickness": 2,
-      "valueField": "price"
+      "valueField": "price",
+      "labelPosition": "right",
+      "labelFunction": labelFunction,
+      "labelText": "Stock Price"
     },
     {
-      "balloonText": "SMA(30): <b>[[value]]</b>",
+      "id": "smaGraph",
+      //"balloonText": "SMA(30): <b>[[value]]</b>",
+      "showBalloon": false,
       "fillAlphas": 0,
       "lineAlpha": 0.8,
       "lineThickness": 2,
       "type": "line",
       "dashLength": 4,
       "lineColor": "#0077aa",
-      "valueField": "mAvg"
+      "valueField": "mAvg",
+      "labelPosition": "right",
+      "labelFunction": labelFunction,
+      "labelText": "SMA(30)"
     },
     {
-      "balloonText": "Lower Band: <b>[[value]]</b>",
+      "id": "sdUpperGraph",
+      //"balloonText": "Upper Band: <b>[[value]]</b>",
+      "showBalloon": false,
       "fillAlphas": 0.3,
       "fillColors": ["#ffff00"],
       "lineAlpha": 0,
       "type": "line",
       "fillToGraph": "sdLowerGraph",
-      "valueField": "sdUpper"
+      "valueField": "sdUpper",
+      "labelPosition": "right",
+      "labelFunction": labelFunction,
+      "labelText": "Upper Band"
     },
     {
       "id": "sdLowerGraph",
-      "balloonText": "Upper Band: <b>[[value]]</b>",
+      //"balloonText": "Lower Band: <b>[[value]]</b>",
+      "showBalloon": false,
       "fillAlphas": 0,
       "lineAlpha": 0,
       "type": "line",
-      "valueField": "sdLower"
+      "valueField": "sdLower",
+      "labelPosition": "right",
+      "labelFunction": labelFunction,
+      "labelText": "Lower Band"
     }],
     "chartCursor": {
       "categoryBalloonEnabled": false,
@@ -150,7 +169,9 @@ Template.chart.rendered = function() {
     "categoryField": "time",
     "categoryAxis": {
       "gridPosition": "start",
-      "gridAlpha": 0.25,
+      "gridAlpha": 0,
+      "dashLength": 10,
+      "title": "Time (Days)"
       //"tickPosition": "start",
       //"tickLength": 20
     },
@@ -158,6 +179,13 @@ Template.chart.rendered = function() {
       "enabled": true
     }
   });
+
+function labelFunction(item, label) {
+  if (item.index === item.graph.chart.dataProvider.length - 1)
+    return label;
+  else
+    return "";
+}
 
 
 
