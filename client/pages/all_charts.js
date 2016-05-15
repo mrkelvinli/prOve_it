@@ -12,84 +12,156 @@ Template.chart.rendered = function() {
     console.log(response);
   });
 
-  var chart = AmCharts.makeChart( "chartdiv", {
-  "type": "serial",
-  "theme": "light",
-  "dataProvider": [ {
-    "country": "USA",
-    "visits": 2025
-  }, {
-    "country": "China",
-    "visits": 1882
-  }, {
-    "country": "Japan",
-    "visits": 1809
-  }, {
-    "country": "Germany",
-    "visits": 1322
-  }, {
-    "country": "UK",
-    "visits": 1122
-  }, {
-    "country": "France",
-    "visits": 1114
-  }, {
-    "country": "India",
-    "visits": 984
-  }, {
-    "country": "Spain",
-    "visits": 711
-  }, {
-    "country": "Netherlands",
-    "visits": 665
-  }, {
-    "country": "Russia",
-    "visits": 580
-  }, {
-    "country": "South Korea",
-    "visits": 443
-  }, {
-    "country": "Canada",
-    "visits": 441
-  }, {
-    "country": "Brazil",
-    "visits": 395
-  } ],
-  "valueAxes": [ {
-    "gridColor": "#FFFFFF",
-    "gridAlpha": 0.2,
-    "dashLength": 0
-  } ],
-  "gridAboveGraphs": true,
-  "startDuration": 1,
-  "graphs": [ {
-    "balloonText": "[[category]]: <b>[[value]]</b>",
-    "fillAlphas": 0.8,
-    "lineAlpha": 0.2,
-    "type": "column",
-    "valueField": "visits"
-  } ],
-  "chartCursor": {
-    "categoryBalloonEnabled": false,
-    "cursorAlpha": 0,
-    "zoomable": false
-  },
-  "categoryField": "country",
-  "categoryAxis": {
-    "gridPosition": "start",
-    "gridAlpha": 0,
-    "tickPosition": "start",
-    "tickLength": 20
-  },
-  "export": {
-    "enabled": true
+  var stock_prices = [
+    {time: 0, price: 5},
+    {time: 1, price: 5.1},
+    {time: 2, price: 5.3},
+    {time: 3, price: 5.2},
+    {time: 4, price: 4.9},
+    {time: 5, price: 5.5},
+    {time: 6, price: 5.6},
+    {time: 7, price: 5.8},
+    {time: 8, price: 5.5},
+    {time: 9, price: 5.7},
+    {time: 10, price: 6.1}
+  ];
+
+  var sma = [];
+  var avg = 0;
+  var currPrice = 0;
+  var prevPrice = 0;
+  // stock_prices.forEach(function (day) {
+  //   prevPrice = currPrice;
+  //   currPrice = day.price;
+
+  // //   //calculate moving average for 2 days
+  // //   avg = (prevPrice + currPrice)/2;
+  // //   var entry = {
+  // //     time: day.time,
+  // //     price: day.price,
+  // //     mAvg: avg
+  // //   }
+  // //   sma.push(entry);
+  // // });
+
+  //calculate standard deviation
+  var toDoList = []; //array of arrays of values [[1,2],[2,3],[9,10]]
+  currPrice = prevPrice = 0;
+
+  for(var i = 0; i<(stock_prices.length); i++) {
+    var currArray = [];
+    if (i == 0) {
+      currArray.push(stock_prices[i].price);
+    } 
+    for(var x = 0; x<2; x++) {
+        if (i>0) {
+                  currArray.push(stock_prices[i-x].price);
+        }
+    }
+    toDoList.push({"currArray": currArray, "time": stock_prices[i].time, "price": stock_prices[i].price});
+  }
+  console.log(toDoList);
+
+  toDoList.forEach(function (c){
+    var result = standardDeviation(c.currArray);
+    var entry = {"time": c.time, "price": c.price, "mAvg": result[1], "sdUpper": ((result[0]*2)+result[1]), "sdLower": (result[1]-(result[0]*2))};
+    console.log(entry);
+    sma.push(entry);
+  });
+
+  function standardDeviation(values){
+    var avg = average(values);
+    
+    var squareDiffs = values.map(function(value){
+      var diff = value - avg;
+      var sqrDiff = diff * diff;
+      return sqrDiff;
+    });
+    
+    var avgSquareDiff = average(squareDiffs);
+
+    var stdDev = Math.sqrt(avgSquareDiff);
+    var result = [stdDev, avg];
+    return result;
   }
 
-} );
+  function average(data){
+    var sum = 0;
+    for(var i = 0; i<data.length; i++) {
+      sum = sum + data[i];
+    }
+
+    var avg = sum / data.length;
+    return avg;
+  }
+
+  var chart = AmCharts.makeChart("chartdiv", {
+    "type": "serial",
+    "theme": "light",
+    "dataProvider": sma,
+    "valueAxes": [ {
+      "gridColor": "#000000",
+      "gridAlpha": 0.25,
+      "dashLength": 0
+    } ],
+    "gridAboveGraphs": true,
+    "startDuration": 0,
+    "graphs": [ {
+      "balloonText": "Price: <b>[[value]]</b>",
+      "fillAlphas": 0,
+      "lineAlpha": 1,
+      "type": "line",
+      //"color": "$ffffff",
+      "lineThickness": 2,
+      "valueField": "price"
+    },
+    {
+      "balloonText": "SMA(30): <b>[[value]]</b>",
+      "fillAlphas": 0,
+      "lineAlpha": 0.8,
+      "lineThickness": 2,
+      "type": "line",
+      "dashLength": 4,
+      "lineColor": "#0077aa",
+      "valueField": "mAvg"
+    },
+    {
+      "balloonText": "Lower Band: <b>[[value]]</b>",
+      "fillAlphas": 0.3,
+      "fillColors": ["#ffff00"],
+      "lineAlpha": 0,
+      "type": "line",
+      "fillToGraph": "sdLowerGraph",
+      "valueField": "sdUpper"
+    },
+    {
+      "id": "sdLowerGraph",
+      "balloonText": "Upper Band: <b>[[value]]</b>",
+      "fillAlphas": 0,
+      "lineAlpha": 0,
+      "type": "line",
+      "valueField": "sdLower"
+    }],
+    "chartCursor": {
+      "categoryBalloonEnabled": false,
+      "cursorAlpha": 0,
+      "zoomable": false
+    },
+    "categoryField": "time",
+    "categoryAxis": {
+      "gridPosition": "start",
+      "gridAlpha": 0.25,
+      //"tickPosition": "start",
+      //"tickLength": 20
+    },
+    "export": {
+      "enabled": true
+    }
+  });
 
 
 
-  // render_candlestick_graph(curr_company);
+  //render_candlestick_graph(curr_company);
 
   function render_candlestick_graph (company_name) {
     var chartData = [];
