@@ -14,7 +14,8 @@ APItesting = {
       // var stock_event = StockEvents.find({token: token}).fetch();
 
       // return all the topics in event files
-      var ret = _.uniq(StockPrices.find({}, {fields:{company_name:1, _id:0}},{sort:{company_name: 1}}).fetch().map(function(x){return x.company_name}),true);
+      // var ret = _.uniq(StockPrices.find({}, {fields:{company_name:1, _id:0}},{sort:{company_name: 1}}).fetch().map(function(x){return x.company_name}),true);
+      var ret = StockEvents.find({company_name: 'AAC.AX', topic: 'Cash Rate'}, {fields: {'date':1}}).fetch(); 
 
       // var topic = "Cash Rate";
       // var company = "AAC.AX";

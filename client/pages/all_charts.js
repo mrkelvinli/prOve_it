@@ -17,8 +17,9 @@ Template.chart.rendered = function() {
   var curr_company = "AAC.AX";
   var curr_topic;
 
-  render_candlestick_graph(curr_company);
+  // render_candlestick_graph(curr_company);
   render_company_chart();
+  render_events_chart('AAC.AX', 'Cash Rate', -5, 5); // change this when connecting graphs
 
 
   function render_stock_vs_topic_graph (company_name, topic_name) {
@@ -451,6 +452,118 @@ Template.chart.rendered = function() {
       chart.addGraph(graph);
 
       chart.write("chartdiv2");
+    }
+  }
+
+  function render_events_chart(company_name, topic, upper_range, lower_range) {
+    var chart ;
+    var chartData = [];
+
+    Tracker.autorun(function() {
+      var stocks = StockPrices.find({company_name: company_name, token:token}, {fields: {'date':1, 'cum_return':1}}).fetch();
+      chartData = [];
+      var guides = [];
+
+      // events
+      var events = StockEvents.find({company_name: company_name, topic: topic}, {fields: {'date':1}}).fetch(); 
+      console.log(events);
+
+      events.forEach(function(c) {
+        var dateLower = new Date(c.date);
+        dateLower.setDate(dateLower.getDate() + lower_range);
+        var dateUpper = new Date(c.date);
+        dateUpper.setDate(dateUpper.getDate() + upper_range);
+
+        console.log(c.date);
+        console.log(dateLower);
+        console.log(dateUpper);
+
+        guides.push({
+          "fillAlpha": 0.30,
+          "fillColor": "#ff9900",
+          "lineColor": "#000000",
+          "lineAlpha": 1,
+          "label": topic,
+          "balloonText": "Click for more details",
+          "labelRotation": 90,
+          "above": true,
+          "date": dateLower,
+          "toDate": dateUpper,
+          "above": true
+        });
+      });
+
+      // every day
+      stocks.forEach(function(c) {
+
+        var entry = {
+          date: c.date,
+          cr: parseFloat(c.cum_return),
+        };
+        chartData.push(entry);
+      });
+      drawGraph(chartData, guides);
+    });
+
+    function drawGraph(chartData, guides) {
+      console.log(guides);
+      chart = AmCharts.makeChart("chartdiv", {
+        "type": "serial",
+        "theme": "light",
+        "marginRight": 80,
+        "autoMarginOffset": 20,
+        "marginTop": 7,
+        "dataProvider": chartData,
+        "valueAxes": [{
+            "axisAlpha": 0.2,
+            "dashLength": 1,
+            "position": "left"
+        }],
+        "mouseWheelZoomEnabled": true,
+        "graphs": [{
+            "id": "g1",
+            "balloonText": "[[value]]",
+            "bullet": "round",
+            "bulletBorderAlpha": 1,
+            "bulletColor": "#FFFFFF",
+            "hideBulletsCount": 50,
+            "title": "red line",
+            "valueField": "cr",
+            "useLineColorForBulletBorder": true,
+            "balloon":{
+                "drop":true
+            }
+        }],
+        "chartScrollbar": {
+            "autoGridCount": true,
+            "graph": "g1",
+            "scrollbarHeight": 40
+        },
+        "chartCursor": {
+           "limitToGraph":"g1"
+        },
+        "categoryField": "date",
+        "categoryAxis": {
+            "parseDates": true,
+            "axisColor": "#DADADA",
+            "dashLength": 1,
+            "minorGridEnabled": true
+        },
+        "export": {
+            "enabled": true
+        },
+        "guides": guides,
+        titles: [
+          {
+            text: "Companys Stock Price",
+            bold: false,
+          },
+          {
+            text: "events labeled in grey",
+            bold: false,
+          }
+        ]
+      });
     }
   }
 };
