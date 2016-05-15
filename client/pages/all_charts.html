@@ -127,3 +127,75 @@
     </div>
   </div>
 </template>
+
+<template name="homePage">
+  <form class="form-validation" method="post" action="" id="upload_form" enctype="multipart/form-data" style='margin-top: 0;'>
+    <div class="form-title-row">
+      <h1>Submit Files</h1>
+    </div>
+    <div class="form-row form-input-name-row">
+      <label>
+        <span>Stock Price File</span>
+        <input type="file" class="pull-right" name="stock_price_file">
+      </label>
+
+      <span class="form-valid-data-sign"><i class="fa fa-check"></i></span>
+
+      <span class="form-invalid-data-sign"><i class="fa fa-close"></i></span>
+      <span class="form-invalid-data-info"></span>
+
+    </div>
+
+    <div class="form-row form-input-name-row">
+
+      <label>
+        <span>Stock Characteristic File</span>
+        <input type="file" class="pull-right" name="stock_characteristic_file">
+      </label>
+
+      <span class="form-valid-data-sign"><i class="fa fa-check"></i></span>
+
+      <span class="form-invalid-data-sign"><i class="fa fa-close"></i></span>
+      <span class="form-invalid-data-info"></span>
+
+    </div>
+
+    <div class="form-row">
+
+      <button type="submit" class="submit_btn">Upload</button>
+
+     </div>
+
+     <div class='form-row'>
+       <p id="upload_response" class="json-response"></p>
+     </div>
+
+  </form>
+  
+  <div>
+    <span class="text-center"><h2> ---- OR ---- </h2></span>
+  </div>
+  <form class="form-validation " method="post " action="#" id="cumulative-return-form">
+    <div class="form-title-row">
+      <h1>Use an Existing File Key</h1>
+    </div>
+    <div class="form-row form-input-name-row ">
+      <label>
+        <span>Token</span>
+        <input type="text" name="token">
+      </label>
+      <span class="form-valid-data-sign "><i class="fa fa-check "></i></span>
+
+      <span class="form-invalid-data-sign "><i class="fa fa-close "></i></span>
+    </div>
+    <div class="form-row ">
+      <button type="submit ">Submit</button>
+    </div>
+    <div class='form-row'>
+      <p id="cumulative_response" class="json-response"></p>
+    </div>
+  
+  </form>
+  
+  
+</template>
