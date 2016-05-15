@@ -484,7 +484,7 @@ ES = {
         var topic_idx = j + 2;
         var topic_name = topics[j].toString();
         // console.log(topic_name);
-        var value = line[topic_idx];
+        var value = parseFloat(line[topic_idx]);
         StockEvents.insert({
           company_name: company_name,
           date:         date,
