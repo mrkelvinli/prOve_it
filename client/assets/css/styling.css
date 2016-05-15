@@ -21,8 +21,8 @@
 
 #chartdiv {
   width   : 100%;
-  height    : 600px;
-  /*font-size : 11px;*/
+  height    : 500px;
+  font-size : 11px;
 } 
 
 #chartdiv2 {
