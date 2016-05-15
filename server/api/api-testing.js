@@ -8,16 +8,46 @@ APItesting = {
     GET: function (context, params) {
 
 
-      var token = params['token'];
+      // var token = params['token'];
 
-      var stock_price = StockPrices.find({token: token}).fetch();
-      var stock_event = StockEvents.find({token: token}).fetch();
+      // var stock_price = StockPrices.find({token: token}).fetch();
+      // var stock_event = StockEvents.find({token: token}).fetch();
+
+      // return all the topics in event files
+      var ret = _.uniq(StockPrices.find({}, {fields:{company_name:1, _id:0}},{sort:{company_name: 1}}).fetch().map(function(x){return x.company_name}),true);
+
+      // var topic = "Cash Rate";
+      // var company = "AAC.AX";
+      // var window_range = 5;
+
+      // var date = _.uniq(StockEvents.find({token:token,company_name: company, topic: topic, value: {$gt: 0}},{sort:{date:1},fields: {date: true, _id:false}}).fetch().map(function(x){return x.date}),true);
+
+      // var d = date[0];
+
+      // // date.forEach(function(d) {
+      //   var dateLower = new Date(d.getTime());
+      //   dateLower.setDate(d.getDate() - window_range);
+      //   var dateUpper = new Date(d.getTime());
+      //   dateUpper.setDate(d.getDate() + window_range);
+
+
+      //   console.log(dateLower);
+      //   console.log(d);
+      //   console.log(dateUpper);
+
+      //   var ret = StockPrices.find({token: token, company_name: company, date: {$gte: dateLower, $lte: dateUpper}},{sort:{date:1},fields:{cum_return:true, _id:false}}).fetch();
+
+
+      // });
 
 
       API.utility.response(context, 200, {
         status: "Successful.",
-        stock_price: stock_price,
-        stock_event: stock_event,
+        // all_topics: all_topics,
+        // date: date,
+        ret : ret,
+        // stock_price: stock_price,
+        // stock_event: stock_event,
       });
 
 
