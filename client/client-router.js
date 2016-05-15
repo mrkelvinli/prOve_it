@@ -1,10 +1,8 @@
 
 
-// Router.route('/',function (){
-//   this.render('chart');
-//   this.layout('main_layout');
-// });
-
+ Router.route('/',function (){
+   this.render('homePage');
+ });
 
 ReadyList = {};
 Router.map(function() {
@@ -77,3 +75,4 @@ Router.route('/example3', function () {
 //   this.render('home');
 //   this.layout('chart_layout');
 // });
+
