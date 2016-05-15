@@ -17,9 +17,9 @@ Template.chart.rendered = function() {
   var curr_company = "AAC.AX";
   var curr_topic;
 
-  // render_candlestick_graph(curr_company);
+  render_candlestick_graph(curr_company);
   render_company_chart();
-  render_events_chart('AAC.AX', 'Cash Rate', -5, 5);
+  // render_events_chart('AAC.AX', 'Cash Rate', -5, 5);
 
 
   function render_stock_vs_topic_graph (company_name, topic_name) {
