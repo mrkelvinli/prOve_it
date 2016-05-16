@@ -27,8 +27,8 @@ Router.map(function() {
       ReadyList.subPrices = Meteor.subscribe('stockPrices_db',this.params.token);
       ReadyList.subEvents = Meteor.subscribe('stockEvents_db',this.params.token);
       return [
-        // ReadyList.subPrices,
-        // ReadyList.subEvents,
+        ReadyList.subPrices,
+        ReadyList.subEvents,
       ];
     },
     fastRender: true,

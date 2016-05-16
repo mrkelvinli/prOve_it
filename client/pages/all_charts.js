@@ -9,10 +9,10 @@ Template.chart.rendered = function() {
     validToken = response;
     // console.log(response);
     if (validToken) {
-      // render_company_chart();
+      render_company_chart();
 
-      render_volatility_chart(curr_company);
-      // render_candlestick_graph(curr_company);
+      // render_volatility_chart(curr_company);
+      render_candlestick_graph(curr_company);
       // render_stock_vs_topic_graph(curr_company, curr_topic, 5, -5);
       // render_events_chart(curr_company,curr_topic,5,-5);
     } else {
