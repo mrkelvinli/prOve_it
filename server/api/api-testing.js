@@ -8,47 +8,49 @@ APItesting = {
     GET: function (context, params) {
 
 
+
       var token = params['token'];
+            var chartData = [];
+      
 
-      // var stock_price = StockPrices.find({token: token}).fetch();
-      // var stock_event = StockEvents.find({token: token}).fetch();
 
-      // return all the topics in event files
-      var all_topics = _.uniq(StockEvents.find({token:token},{sort:{topic:1},fields:{topic:true, _id:false}}).fetch().map(function(x){return x.topic}),true);
+      // var all_topics = _.uniq(StockEvents.find({token:token},{sort:{topic:1},fields:{topic:true}}).fetch().map(function(x){return x.topic}),true);
 
       var topic = "Cash Rate";
       var company = "AAC.AX";
-      var window_range = 5;
+      var upper_range = 5;
+      var lower_range = -5;
 
-      var date = _.uniq(StockEvents.find({token:token,company_name: company, topic: topic, value: {$gt: 0}},{sort:{date:1},fields: {date: true, _id:false}}).fetch().map(function(x){return x.date}),true);
+      var dates = _.uniq(StockEvents.find({token:token,company_name: company, topic: topic, value: {$gt: 0}},{sort:{date:1},fields: {date: true}}).fetch().map(function(x){return x.date}),true);
 
-      var d = date[0];
-
-      // date.forEach(function(d) {
-        var dateLower = new Date(d.getTime());
-        dateLower.setDate(d.getDate() - window_range);
-        var dateUpper = new Date(d.getTime());
-        dateUpper.setDate(d.getDate() + window_range);
+      // var d = dates[1];
 
 
-        console.log(dateLower);
-        console.log(d);
-        console.log(dateUpper);
+      // var crs = [];
 
-        var ret = StockPrices.find({token: token, company_name: company, date: {$gte: dateLower, $lte: dateUpper}},{sort:{date:1},fields:{cum_return:true, _id:false}}).fetch();
+      for (var date = lower_range; date <= upper_range; date++) {
+        var entry = {
+          year: date,
+        }
+        dates.forEach(function (d) {
+          var currDate = new Date(d.getTime());
+          currDate.setDate(d.getDate()+date);
+          var cr = StockPrices.findOne({token: token, company_name: company, date: currDate},{fields:{cum_return:true}});
+          if (cr === undefined)
+            cr = null;
+          else
+            cr = cr.cum_return;
+          entry[d.toDateString()] = cr;
+        });
+
+        chartData.push(entry);
+      }
+
+      // console.log(chartData);
 
 
-      // });
 
-
-      API.utility.response(context, 200, {
-        status: "Successful.",
-        // all_topics: all_topics,
-        // date: date,
-        ret : ret,
-        // stock_price: stock_price,
-        // stock_event: stock_event,
-      });
+      API.utility.response(context, 200, dates);
 
 
 
