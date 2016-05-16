@@ -15,8 +15,7 @@
   background-color: white;
   border-radius: 10px;
   padding: 10px;
-  position: relative;
-  
+  position: relative;  
 }
 
 #chartdiv {
@@ -57,6 +56,10 @@
 /*  border: 1px solid black;*/
 }
 
+ul#tabs {
+  margin-left: 20px;
+  border-radius: 10px;
+}
 
 .card {
   margin-top:8px;

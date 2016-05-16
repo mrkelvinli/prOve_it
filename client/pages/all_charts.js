@@ -2,6 +2,7 @@ Template.chart.rendered = function() {
   var token = Router.current().params.token;
   var validToken = false;
 
+  var curr_graph = 'candlesticks';
   var curr_company = "AAC.AX";
   var curr_topic = "Cash Rate";
 
@@ -12,15 +13,32 @@ Template.chart.rendered = function() {
       render_company_chart();
 
       // render_volatility_chart(curr_company);
-      render_candlestick_graph(curr_company);
-      // render_stock_vs_topic_graph(curr_company, curr_topic, 5, -5);
+      // render_candlestick_graph(curr_company);
+      render_stock_vs_topic_graph(curr_company, curr_topic, 5, -5);
       // render_events_chart(curr_company,curr_topic,5,-5);
     } else {
       alert("invalid token");
     }
   });
 
-
+  $('ul.nav-tabs li a').on('click', function() {
+    var currentTab = $(this);
+    console.log(currentTab.attr('id'));
+    var tabId = currentTab.attr('id');
+    if (tabId == 'candlesticks') {
+      curr_graph = 'candlesticks';
+      render_candlestick_graph(curr_company);
+    } else if (tabId == 'volatility') {
+      curr_graph = 'volatility';
+      render_volatility_chart(curr_company);
+    } else if (tabId == 'event-study') {
+      curr_graph = 'event-study';
+      render_events_chart(curr_company, curr_topic, 5, -5);
+    } else if (tabId == 'stock-topic') {
+      curr_graph = 'stock-topic';
+      render_stock_vs_topic_graph(curr_company, curr_topic, 5, -5);
+    }
+  });
 
   function render_volatility_chart (company) {
     var stock_prices = [
@@ -540,7 +558,7 @@ Template.chart.rendered = function() {
     drawGraph(c_cr);
 
     function handleClick(event) {
-      render_company_topics_chart(event.item.category);
+      render_volatility_chart(event.item.category);
     }
 
     function drawGraph(chartData) {
@@ -671,6 +689,8 @@ Template.chart.rendered = function() {
 
     function drawGraph(chartData, guides) {
       console.log(guides);
+      var titleBig = "Stock Price of " + company_name;
+      var titleSmall = topic + " events highlighted";
       chart = AmCharts.makeChart("chartdiv", {
         "type": "serial",
         "theme": "light",
@@ -720,11 +740,11 @@ Template.chart.rendered = function() {
         "guides": guides,
         titles: [
           {
-            text: "Companys Stock Price",
-            bold: false,
+            text: titleBig,
+            bold: true,
           },
           {
-            text: "events labeled in grey",
+            text: titleSmall,
             bold: false,
           }
         ]
