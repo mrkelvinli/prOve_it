@@ -84,12 +84,12 @@ Template.chart.rendered = function() {
         }
         toDoList.push({"currArray": currArray, "time": stock_prices[i].time, "price": stock_prices[i].price});
       }
-      console.log(toDoList);
+      // console.log(toDoList);
 
       toDoList.forEach(function (c){
         var result = standardDeviation(c.currArray);
         var entry = {"time": c.time, "price": c.price, "mAvg": result[1], "sdUpper": ((result[0]*2)+result[1]), "sdLower": (result[1]-(result[0]*2)), "sd": result};
-        console.log(entry);
+        // console.log(entry);
         sma.push(entry);
       });
 
@@ -192,7 +192,7 @@ Template.chart.rendered = function() {
           }
           return result;
         },
-        "bullet": "round",
+        // "bullet": "round",
         "fillAlphas": 0,
         "lineAlpha": 1,
         "type": "line",
@@ -276,7 +276,29 @@ Template.chart.rendered = function() {
         "enabled": true
       }
     });
+
+    chart.addListener("zoomed", function(event) {
+      
+      var zoomPercent = (event.endIndex - event.startIndex) / event.endIndex;
+
+      console.log("zoom: "+zoomPercent);
+
+
+      var graph = event.chart.getGraphById("priceGraph");
+      if (zoomPercent > 0.2){
+        graph.bullet = "none";
+      } else {
+        graph.bullet = "round";
+
+      }
+        // event.chart.chartScrollbar.enabled = enabled;
+      event.chart.validateNow(false, true);
+    });
+        
+
   }
+
+
     function handleLegendClick( graph ) {
       var chart = graph.chart;
       var hidden = graph.hidden;
@@ -706,7 +728,7 @@ Template.chart.rendered = function() {
 
       // events
       var events = StockEvents.find({company_name: company_name, topic: topic}, {fields: {'date':1}}).fetch(); 
-      console.log(events);
+      // console.log(events);
 
       events.forEach(function(c) {
         var dateLower = new Date(c.date);
@@ -714,9 +736,9 @@ Template.chart.rendered = function() {
         var dateUpper = new Date(c.date);
         dateUpper.setDate(dateUpper.getDate() + upper_range);
 
-        console.log(c.date);
-        console.log(dateLower);
-        console.log(dateUpper);
+        // console.log(c.date);
+        // console.log(dateLower);
+        // console.log(dateUpper);
 
         guides.push({
           "fillAlpha": 0.30,
@@ -746,7 +768,7 @@ Template.chart.rendered = function() {
     });
 
     function drawGraph(chartData, guides) {
-      console.log(guides);
+      // console.log(guides);
       chart = AmCharts.makeChart("chartdiv", {
         "type": "serial",
         "theme": "light",
