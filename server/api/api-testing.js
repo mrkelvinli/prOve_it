@@ -9,12 +9,24 @@ APItesting = {
 
 
       var token = params['token'];
-            var chartData = [];
+      var company = "AAC.AX";
+
+
+      var prices = StockPrices.find({token:token, company_name: company},{fields:{date:true, flat_value:true}}).fetch();
+
+      var stock_prices = [];
+
+      prices.forEach(function(p){
+        stock_prices.push({
+          time: p.date.toDateString(),
+          price: p.flat_value,
+        });
+      });
       
 
 
 
-      API.utility.response(context, 200, {});
+      API.utility.response(context, 200,stock_prices);
 
 
 

@@ -9,8 +9,9 @@ Template.chart.rendered = function() {
     validToken = response;
     // console.log(response);
     if (validToken) {
-      render_company_chart();
-  render_volatility_chart();
+      // render_company_chart();
+
+      render_volatility_chart(curr_company);
       // render_candlestick_graph(curr_company);
       // render_stock_vs_topic_graph(curr_company, curr_topic, 5, -5);
       // render_events_chart(curr_company,curr_topic,5,-5);
@@ -21,7 +22,7 @@ Template.chart.rendered = function() {
 
 
 
-  function render_volatility_chart () {
+  function render_volatility_chart (company) {
     var stock_prices = [
       {time: 0, price: 5},
       {time: 1, price: 5.1},
@@ -36,48 +37,65 @@ Template.chart.rendered = function() {
       {time: 10, price: 6.1}
     ];
 
-    var sma = [];
-    var avg = 0;
-    var currPrice = 0;
-    var prevPrice = 0;
-    // stock_prices.forEach(function (day) {
-    //   prevPrice = currPrice;
-    //   currPrice = day.price;
+     Tracker.autorun(function() {
 
-    // //   //calculate moving average for 2 days
-    // //   avg = (prevPrice + currPrice)/2;
-    // //   var entry = {
-    // //     time: day.time,
-    // //     price: day.price,
-    // //     mAvg: avg
-    // //   }
-    // //   sma.push(entry);
-    // // });
+      var prices = StockPrices.find({token:token, company_name: company},{fields:{date:true, flat_value:true}}).fetch();
 
-    //calculate standard deviation
-    var toDoList = []; //array of arrays of values [[1,2],[2,3],[9,10]]
-    currPrice = prevPrice = 0;
+      var stock_prices = [];
+      prices.forEach(function(p){
+        stock_prices.push({
+          time: p.date.toDateString(),
+          price: p.flat_value,
+        });
+      });
 
-    for(var i = 0; i<(stock_prices.length); i++) {
-      var currArray = [];
-      if (i == 0) {
-        currArray.push(stock_prices[i].price);
-      } 
-      for(var x = 0; x<2; x++) {
-          if (i>0) {
-                    currArray.push(stock_prices[i-x].price);
-          }
+      var sma = [];
+      var avg = 0;
+      var currPrice = 0;
+      var prevPrice = 0;
+      // stock_prices.forEach(function (day) {
+      //   prevPrice = currPrice;
+      //   currPrice = day.price;
+
+      // //   //calculate moving average for 2 days
+      // //   avg = (prevPrice + currPrice)/2;
+      // //   var entry = {
+      // //     time: day.time,
+      // //     price: day.price,
+      // //     mAvg: avg
+      // //   }
+      // //   sma.push(entry);
+      // // });
+
+      //calculate standard deviation
+      var toDoList = []; //array of arrays of values [[1,2],[2,3],[9,10]]
+      currPrice = prevPrice = 0;
+
+      for(var i = 0; i<(stock_prices.length); i++) {
+        var currArray = [];
+        if (i == 0) {
+          currArray.push(stock_prices[i].price);
+        } 
+        for(var x = 0; x<2; x++) {
+            if (i>0) {
+                      currArray.push(stock_prices[i-x].price);
+            }
+        }
+        toDoList.push({"currArray": currArray, "time": stock_prices[i].time, "price": stock_prices[i].price});
       }
-      toDoList.push({"currArray": currArray, "time": stock_prices[i].time, "price": stock_prices[i].price});
-    }
-    console.log(toDoList);
+      console.log(toDoList);
 
-    toDoList.forEach(function (c){
-      var result = standardDeviation(c.currArray);
-      var entry = {"time": c.time, "price": c.price, "mAvg": result[1], "sdUpper": ((result[0]*2)+result[1]), "sdLower": (result[1]-(result[0]*2))};
-      console.log(entry);
-      sma.push(entry);
-    });
+      toDoList.forEach(function (c){
+        var result = standardDeviation(c.currArray);
+        var entry = {"time": c.time, "price": c.price, "mAvg": result[1], "sdUpper": ((result[0]*2)+result[1]), "sdLower": (result[1]-(result[0]*2))};
+        console.log(entry);
+        sma.push(entry);
+      });
+
+      drawGraph(sma,company);
+
+     });
+
 
     function standardDeviation(values){
       var avg = average(values);
@@ -105,98 +123,117 @@ Template.chart.rendered = function() {
       return avg;
     }
 
-    var chart = AmCharts.makeChart("chartdiv", {
-      "type": "serial",
-      "theme": "light",
-      "dataProvider": sma,
-      "valueAxes": [ {
-        "gridColor": "#000000",
-        "gridAlpha": 0.2,
-        "dashLength": 10,
-        "title": "Stock Price ($)"
-      } ],
-      "gridAboveGraphs": true,
-      "startDuration": 0,
-      "graphs": [ {
-        "id": "priceGraph",
-        "balloonText": "Price: <b>[[price]]</b><br>Upper Band: <b>[[sdUpper]]</b><br>SMA(30): <b>[[mAvg]]</b><br>Lower Band: <b>[[sdLower]]</b>",
-        "fillAlphas": 0,
-        "lineAlpha": 1,
-        "type": "line",
-        "lineColor": "#ff6600",
-        "lineThickness": 2,
-        "valueField": "price",
-        "labelPosition": "right",
-        "labelFunction": labelFunction,
-        "labelText": "Stock Price"
-      },
-      {
-        "id": "smaGraph",
-        //"balloonText": "SMA(30): <b>[[value]]</b>",
-        "showBalloon": false,
-        "fillAlphas": 0,
-        "lineAlpha": 0.8,
-        "lineThickness": 2,
-        "type": "line",
-        "dashLength": 4,
-        "lineColor": "#0077aa",
-        "valueField": "mAvg",
-        "labelPosition": "right",
-        "labelFunction": labelFunction,
-        "labelText": "SMA(30)"
-      },
-      {
-        "id": "sdUpperGraph",
-        //"balloonText": "Upper Band: <b>[[value]]</b>",
-        "showBalloon": false,
-        "fillAlphas": 0.3,
-        "fillColors": ["#ffff00"],
-        "lineAlpha": 0,
-        "type": "line",
-        "fillToGraph": "sdLowerGraph",
-        "valueField": "sdUpper",
-        "labelPosition": "right",
-        "labelFunction": labelFunction,
-        "labelText": "Upper Band"
-      },
-      {
-        "id": "sdLowerGraph",
-        //"balloonText": "Lower Band: <b>[[value]]</b>",
-        "showBalloon": false,
-        "fillAlphas": 0,
-        "lineAlpha": 0,
-        "type": "line",
-        "valueField": "sdLower",
-        "labelPosition": "right",
-        "labelFunction": labelFunction,
-        "labelText": "Lower Band"
-      }],
-      "chartCursor": {
-        "categoryBalloonEnabled": false,
-        "cursorAlpha": 0,
-        "zoomable": false
-      },
-      "categoryField": "time",
-      "categoryAxis": {
-        "gridPosition": "start",
-        "gridAlpha": 0,
-        "title": "Time (Days)"
-        //"tickPosition": "start",
-        //"tickLength": 20
-      },
-      "export": {
-        "enabled": true
-      }
-    });
+    function drawGraph(sma,company) {
 
-  function labelFunction(item, label) {
-    if (item.index === item.graph.chart.dataProvider.length - 1)
-      return label;
-    else
-      return "";
+      var chart = AmCharts.makeChart("chartdiv", {
+        "type": "serial",
+        "theme": "light",
+        "pathToImages": "/amcharts/images/",
+        "dataProvider": sma,
+        "valueAxes": [ {
+          "gridColor": "#000000",
+          "gridAlpha": 0.2,
+          "dashLength": 10,
+          "title": "Stock Price ($)"
+        } ],
+        "titles":[{
+          "text": "Volatility for "+ company,
+          "size": 15
+        }],
+        "gridAboveGraphs": true,
+        "startDuration": 0,
+        "graphs": [ {
+          "id": "priceGraph",
+          "balloonText": "Price: <b>[[price]]</b><br>Upper Band: <b>[[sdUpper]]</b><br>SMA(30): <b>[[mAvg]]</b><br>Lower Band: <b>[[sdLower]]</b>",
+          "fillAlphas": 0,
+          "lineAlpha": 1,
+          "type": "line",
+          "lineColor": "#ff6600",
+          "lineThickness": 2,
+          "valueField": "price",
+          "labelOffset": -2,
+          "labelPosition": "right",
+          "labelFunction": labelFunction,
+          "labelText": "Stock Price"
+        },
+        {
+          "id": "smaGraph",
+          //"balloonText": "SMA(30): <b>[[value]]</b>",
+          "showBalloon": false,
+          "fillAlphas": 0,
+          "lineAlpha": 0.8,
+          "lineThickness": 2,
+          "type": "line",
+          "dashLength": 4,
+          "lineColor": "#0077aa",
+          "valueField": "mAvg",
+          "labelPosition": "right",
+          "labelFunction": labelFunction,
+          "labelText": "SMA(30)"
+        },
+        {
+          "id": "sdUpperGraph",
+          //"balloonText": "Upper Band: <b>[[value]]</b>",
+          "showBalloon": false,
+          "fillAlphas": 0.3,
+          "fillColors": ["#ffff00"],
+          "lineAlpha": 0,
+          "type": "line",
+          "fillToGraph": "sdLowerGraph",
+          "valueField": "sdUpper",
+          "labelPosition": "right",
+          "labelFunction": labelFunction,
+          "labelOffset": -5,
+          "labelText": "Upper Band"
+        },
+        {
+          "id": "sdLowerGraph",
+          //"balloonText": "Lower Band: <b>[[value]]</b>",
+          "showBalloon": false,
+          "fillAlphas": 0,
+          "lineAlpha": 0,
+          "type": "line",
+          "valueField": "sdLower",
+          "labelPosition": "right",
+          "labelFunction": labelFunction,
+          "labelOffset": -5,
+          "labelText": "Lower Band"
+        }],
+        "chartCursor": {
+          "categoryBalloonEnabled": false,
+          "cursorAlpha": 0,
+          "zoomable": false
+        },
+        "chartScrollbar": {
+          "autoGridCount": true,
+          "graph": "priceGraph",
+          "scrollbarHeight": 40
+        },
+        "chartCursor": {
+          "limitToGraph":"g1"
+        },
+        "categoryField": "time",
+        "categoryAxis": {
+          "gridPosition": "start",
+          "gridAlpha": 0,
+          "title": "Time (Days)"
+          //"tickPosition": "start",
+          //"tickLength": 20
+        },
+        "export": {
+          "enabled": true
+        }
+      });
+    }
+
+    function labelFunction(item, label) {
+      if (item.index === item.graph.chart.dataProvider.length - 1)
+        return label;
+      else
+        return "";
+    }
+
   }
-
-}
 
 
   function render_stock_vs_topic_graph (company, topic, upper_range, lower_range) {
@@ -227,14 +264,14 @@ Template.chart.rendered = function() {
         chartData.push(entry);
       }
 
-      drawGraph(chartData,dates);
+      drawGraph(chartData,dates,company,topic);
     });
 
 
 
 
 
-    function drawGraph (chartData,dates) {
+    function drawGraph (chartData,dates,company, topic) {
 
 
       var chartOptions = {
@@ -244,6 +281,10 @@ Template.chart.rendered = function() {
               "useGraphSettings": true,
               "valueText": '',
           },
+          "titles":[{
+            "text": "Events of "+topic+" for "+company,
+            "size": 15
+          }],
           "dataProvider": chartData,
           
           "valueAxes": [{
@@ -255,7 +296,7 @@ Template.chart.rendered = function() {
               "dashLength": 5,
               "gridCount": 10,
               "position": "left",
-              // "title": "Place taken"
+              "title": "Cumulative Return (%)"
           }],
           "startDuration": 0.5,
 
@@ -270,7 +311,8 @@ Template.chart.rendered = function() {
               "fillAlpha": 0.05,
               "fillColor": "#000000",
               "gridAlpha": 0,
-              "position": "bottom"
+              "position": "bottom",
+              "title": "Relative event day",
           },
           "export": {
             "enabled": true,
@@ -303,16 +345,20 @@ Template.chart.rendered = function() {
     Tracker.autorun(function() {
       var stockPrices = StockPrices.find({company_name: company_name, token: token, 'open': {$ne : null}}, {fields: {'date':1, 'open':1, 'last':1, 'high':1, 'low':1, 'volume':1, 'flat_value':1}}).fetch();
 
-      drawGraph(stockPrices);
+      drawGraph(stockPrices,company_name);
     });
 
-    function drawGraph(chartData) {
+    function drawGraph(chartData,company) {
 
 
       var chart = AmCharts.makeChart( "chartdiv", {
         "type": "stock",
         "theme": "light",
         "pathToImages": "/amcharts/images/",
+        "titles":[{
+          "text": "Candlestick graph for "+company,
+          "size": 15
+        }],
         "dataSets": [{
           "fieldMappings": [ {
             "fromField": "open",
@@ -356,11 +402,13 @@ Template.chart.rendered = function() {
           "percentHeight": 70,
           "valueAxes": [ {
             "id": "v1",
-            "dashLength": 5
+            "dashLength": 5,
+            "title": "Stock Price ($)",
           } ],
 
           "categoryAxis": {
-            "dashLength": 5
+            "dashLength": 5,
+            "title": "Day"
           },
 
           "stockGraphs": [ {
