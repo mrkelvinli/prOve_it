@@ -7,7 +7,7 @@ Template.chart.rendered = function() {
 
   Meteor.call('checkToken',token, function(err, response) {
     validToken = response;
-    console.log(response);
+    // console.log(response);
     if (validToken) {
 
       // render_candlestick_graph(curr_company);

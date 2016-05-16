@@ -48,7 +48,7 @@ if(Meteor.isServer) {
 
   Meteor.methods({
     checkToken: function (token) {
-      console.log('checking: '+token);
+      // console.log('checking: '+token);
       return StockPrices.find({token:token}).count() > 0;
     }
   });
