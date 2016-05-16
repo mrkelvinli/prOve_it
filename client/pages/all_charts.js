@@ -10,7 +10,7 @@ Template.chart.rendered = function() {
     // console.log(response);
     if (validToken) {
 
-      render_company_chart();
+      //render_company_chart();
 
       render_volatility_chart(curr_company);
       //render_candlestick_graph(curr_company);
@@ -79,10 +79,10 @@ Template.chart.rendered = function() {
         } 
         for(var x = 0; x<2; x++) {
             if (i>0) {
-                      currArray.push(stock_prices[i-x].price);
+              currArray.push(stock_prices[i-x].price);
             }
         }
-        toDoList.push({"currArray": currArray, "time": stock_prices[i].time, "price": stock_prices[i].price});
+          toDoList.push({"currArray": currArray, "time": stock_prices[i].time, "price": stock_prices[i].price});
       }
       // console.log(toDoList);
 
@@ -203,7 +203,7 @@ Template.chart.rendered = function() {
         "labelPosition": "right",
         //"visibleInLegend": false,
         "labelFunction": labelFunction,
-        "labelText": "Stock Price"
+        //"labelText": "Stock Price"
       },
       {
         "id": "smaGraph",
@@ -235,7 +235,7 @@ Template.chart.rendered = function() {
         "visibleInLegend": false,
         "labelPosition": "right",
         "labelFunction": labelFunction,
-        "labelText": "Upper Band"
+        //"labelText": "Upper Band"
       },
       {
         "id": "sdLowerGraph",
@@ -249,7 +249,7 @@ Template.chart.rendered = function() {
         "labelPosition": "right",
         "visibleInLegend": false,
         "labelFunction": labelFunction,
-        "labelText": "Lower Band"
+        //"labelText": "Lower Band"
       }],
       "chartCursor": {
         "categoryBalloonEnabled": false,
@@ -259,7 +259,8 @@ Template.chart.rendered = function() {
       "chartScrollbar": {
         "autoGridCount": true,
         "graph": "priceGraph",
-        "scrollbarHeight": 40
+        "scrollbarHeight": 30,
+        "updateOnReleaseOnly": true,
       },
       "categoryField": "time",
       "categoryAxis": {
@@ -272,10 +273,22 @@ Template.chart.rendered = function() {
         //"tickPosition": "start",
         //"tickLength": 20
       },
+      "listeners": [{
+        "event": "init",
+        "method": function(event) {
+          //var end = new Date(); // today
+          //var start = new Date(end);
+          //start.setDate(end.getDate() - 10);
+          event.chart.zoomToIndexes(event.chart.dataProvider.length - 80, event.chart.dataProvider.length - 1);
+          var graph = event.chart.getGraphById("priceGraph");
+          graph.bullet = "round";
+        }
+      }],
       "export": {
         "enabled": true
       }
     });
+
 
     chart.addListener("zoomed", function(event) {
       
@@ -285,11 +298,20 @@ Template.chart.rendered = function() {
 
 
       var graph = event.chart.getGraphById("priceGraph");
+      var chart = event.chart;
       if (zoomPercent > 0.2){
         graph.bullet = "none";
       } else {
         graph.bullet = "round";
-
+      }
+      if (zoomPercent > 0.4){
+        chart.hideGraph(chart.graphs[1]);
+        chart.hideGraph(chart.graphs[2]);
+        chart.hideGraph(chart.graphs[3]);
+      } else {
+        chart.showGraph(chart.graphs[1]);
+        chart.showGraph(chart.graphs[2]);
+        chart.showGraph(chart.graphs[3]);
       }
         // event.chart.chartScrollbar.enabled = enabled;
       event.chart.validateNow(false, true);
@@ -297,7 +319,6 @@ Template.chart.rendered = function() {
         
 
   }
-
 
     function handleLegendClick( graph ) {
       var chart = graph.chart;
