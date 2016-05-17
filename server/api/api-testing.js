@@ -10,23 +10,46 @@ APItesting = {
 
       var token = params['token'];
       var company = "AAC.AX";
+      var topic = "Cash Rate";
+
+      var lower_range = -5;
+      var upper_range = 5;
 
 
-      var prices = StockPrices.find({token:token, company_name: company},{fields:{date:true, flat_value:true}}).fetch();
+      var chartData = [];
+      var graphs = [];
+      var dates = _.uniq(StockEvents.find({token:token,company_name: company, topic: topic, value: {$gt: 0}},{sort:{date:1},fields: {date: true}}).fetch().map(function(x){return x.date}),true);
 
-      var stock_prices = [];
-
-      prices.forEach(function(p){
-        stock_prices.push({
-          time: p.date.toDateString(),
-          price: p.flat_value,
+      for (var date = lower_range; date <= upper_range; date++) {
+        var entry = {
+          year: date,
+        }
+        dates.forEach(function (d) {
+          var currDate = new Date(d.getTime());
+          currDate.setDate(d.getDate()+date);
+          var cr = StockPrices.findOne({token: token, company_name: company, date: currDate},{fields:{cum_return:true}});
+          if (cr === undefined)
+            cr = null;
+          else
+            cr = cr.cum_return;
+          entry[d.toDateString()] = cr;
         });
+
+        chartData.push(entry);
+      }
+
+      dates.forEach(function(d){
+        graphs.push({
+          "balloonText": "cumulative return  is [[value]] at [[category]] day relative to "+d.toDateString(),
+          "bullet": "round",
+          "hidden": false,
+          "title": d.toDateString(),
+          "valueField": d.toDateString(),
+          "fillAlphas": 0,
+        });  
       });
-      
 
-
-
-      API.utility.response(context, 200,stock_prices);
+      API.utility.response(context, 200, chartData);
 
 
 

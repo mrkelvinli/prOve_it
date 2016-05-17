@@ -4,12 +4,20 @@ import './companies.css';
 
 
 Template.chart.rendered = function() {
+  $('.selectpicker').selectpicker();
+  $('#chart-options').hide();
+
+
+
   var token = Router.current().params.token;
   var validToken = false;
-
+  
   var curr_graph = 'candlesticks';
   var curr_company = "AAC.AX";
+  var second_company = "AAC.AX";
   var curr_topic = "Cash Rate";
+  var curr_upper = 5;
+  var curr_lower = -5;
 
   Meteor.call('checkToken',token, function(err, response) {
     validToken = response;
@@ -25,6 +33,7 @@ Template.chart.rendered = function() {
     }
   });
 
+  // control the tabs
   $('ul.nav-tabs li a').on('click', function() {
     var currentTab = $(this);
     var tabId = currentTab.attr('id');
@@ -37,13 +46,87 @@ Template.chart.rendered = function() {
       render_volatility_chart(curr_company);
     } else if (tabId == 'event-study') {
       curr_graph = 'event-study';
-      render_events_chart(curr_company, curr_topic, 5, -5);
+      render_events_chart(curr_company, curr_topic, curr_upper, curr_lower);
     } else if (tabId == 'stock-topic') {
       curr_graph = 'stock-topic';
-      render_stock_vs_topic_graph(curr_company, curr_topic, 5, -5);
+      render_stock_vs_topic_graph(curr_company, curr_topic, curr_upper, curr_lower);
     }
     currentTab.parent().addClass('active');
+    // console.log(currentTab.parent());
   });
+
+  // control the navbar to switch between the main stock
+  var choose_main_stock = $('#choose-main-stock');
+  var choose_second_stock = $('#choose-second-stock');
+  var choose_topic = $('#choose-topic');
+  // console.log(choose_main_stock);
+  Tracker.autorun(function() {
+    var all_company = _.uniq(StockPrices.find({}, {fields:{company_name:1}},{sort:{company_name: 1}}).fetch().map(function(x){return x.company_name}),true);
+    choose_main_stock.empty();
+    choose_second_stock.empty();
+    all_company.forEach(function(c){
+      // console.log(c);
+      choose_main_stock.append("<option>"+c+"</option>");
+      choose_second_stock.append("<option>"+c+"</option>");
+    });
+    choose_main_stock.selectpicker('refresh');
+    choose_second_stock.selectpicker('refresh');
+  });
+
+  Tracker.autorun(function() {
+    var all_topics = _.uniq(StockEvents.find({token:token},{sort:{topic:1},fields:{topic:true}}).fetch().map(function(x){return x.topic}),true);
+    choose_topic.empty();
+    all_topics.forEach(function(c){
+      choose_topic.append("<option>"+c+"</option>");
+    });
+    choose_topic.selectpicker('refresh');
+  });
+
+  $('#choose-upper-window').on('change',function(){
+    curr_upper = $(this).val();
+    console.log("upper: "+curr_upper);
+    renderMainGraph();
+  });
+
+  $('#choose-lower-window').on('change',function(){
+    curr_lower = $(this).val();
+    console.log("lower: "+curr_lower);
+    renderMainGraph();
+  });
+
+  function renderMainGraph() {
+    $('#chart-options').hide();
+    $('#second-stock-selection').show();
+    if (curr_graph == "candlesticks"){
+      render_candlestick_graph(curr_company);
+    } else if (curr_graph == 'volatility'){
+      render_volatility_chart(curr_company);
+    } else if (curr_graph == 'event-study'){
+      render_events_chart(curr_company, curr_topic, curr_upper, curr_lower);
+    } else if (curr_graph == 'stock-topic'){
+      render_stock_vs_topic_graph(curr_company, curr_topic, curr_upper, curr_lower);
+    }
+  }
+
+
+  choose_main_stock.on('change',function(){
+    var c = $(this).val();
+    curr_company = c;
+    renderMainGraph();
+  });
+
+  choose_second_stock.on('change',function(){
+    var c = $(this).val();
+    second_company = c;
+    console.log("second_company: "+second_company);
+  });
+
+  choose_topic.on('change', function(){
+    var t = $(this).val();
+    curr_topic = t;
+    renderMainGraph();
+  });
+
 
   function render_volatility_chart (company) {
     var stock_prices = [
@@ -96,18 +179,19 @@ Template.chart.rendered = function() {
 
       for(var i = 0; i<(stock_prices.length); i++) {
         var currArray = [];
-        if (i == 0) {
-          currArray.push(stock_prices[i].price);
+        if (i < 29) {
+          //currArray.push(stock_prices[i].price);
         } 
-        for(var x = 0; x<2; x++) {
-            if (i>0) {
+        for(var x = 0; x<30; x++) {
+            if (i>=29) {
               currArray.push(stock_prices[i-x].price);
             }
         }
-          toDoList.push({"currArray": currArray, "time": stock_prices[i].time, "price": stock_prices[i].price});
-      }
+        if (i > 29) {
+          toDoList.push({"currArray": currArray, "time": stock_prices[i-30].time, "price": stock_prices[i].price});
+        }
       // console.log(toDoList);
-
+    }
       toDoList.forEach(function (c){
         var result = standardDeviation(c.currArray);
         var entry = {"time": c.time, "price": c.price, "mAvg": result[1], "sdUpper": ((result[0]*2)+result[1]), "sdLower": (result[1]-(result[0]*2)), "sd": result};
@@ -283,6 +367,9 @@ Template.chart.rendered = function() {
         "graph": "priceGraph",
         "scrollbarHeight": 30,
         "updateOnReleaseOnly": true,
+        //"graphFillColor": "orange",
+        "selectedGraphFillColor": "orange",
+        "selectedGraphFillAlpha": 0.8,
       },
       "categoryField": "time",
       "categoryAxis": {
@@ -304,41 +391,23 @@ Template.chart.rendered = function() {
           event.chart.zoomToIndexes(event.chart.dataProvider.length - 80, event.chart.dataProvider.length - 1);
           var graph = event.chart.getGraphById("priceGraph");
           graph.bullet = "round";
-        }
-      }],
+        }},{
+        "event": "zoomed",
+        "method": function(event) {
+          var zoomPercent = (event.endIndex - event.startIndex) / event.endIndex;
+          console.log("zoom: "+zoomPercent);
+          var graph = event.chart.getGraphById("priceGraph");
+          var chart = event.chart;
+          if (zoomPercent > 0.4){
+            graph.bullet = "none";
+          } else {
+            graph.bullet = "round";
+          }
+        }}],
       "export": {
         "enabled": true
       }
-    });
-
-
-    chart.addListener("zoomed", function(event) {
-      
-      var zoomPercent = (event.endIndex - event.startIndex) / event.endIndex;
-
-      console.log("zoom: "+zoomPercent);
-
-
-      var graph = event.chart.getGraphById("priceGraph");
-      var chart = event.chart;
-      if (zoomPercent > 0.2){
-        graph.bullet = "none";
-      } else {
-        graph.bullet = "round";
-      }
-      if (zoomPercent > 0.4){
-        chart.hideGraph(chart.graphs[1]);
-        chart.hideGraph(chart.graphs[2]);
-        chart.hideGraph(chart.graphs[3]);
-      } else {
-        chart.showGraph(chart.graphs[1]);
-        chart.showGraph(chart.graphs[2]);
-        chart.showGraph(chart.graphs[3]);
-      }
-        // event.chart.chartScrollbar.enabled = enabled;
-      event.chart.validateNow(false, true);
-    });
-        
+    }); 
 
   }
 
@@ -378,12 +447,13 @@ Template.chart.rendered = function() {
 
 
   function render_stock_vs_topic_graph (company, topic, upper_range, lower_range) {
+    $('#chart-options').show();
+    $('#second-stock-selection').hide();
+
     Tracker.autorun(function() {
       var chartData = [];
 
       // var all_topics = _.uniq(StockEvents.find({token:token},{sort:{topic:1},fields:{topic:true}}).fetch().map(function(x){return x.topic}),true);
-      var upper_range = 5;
-      var lower_range = -5;
 
       var dates = _.uniq(StockEvents.find({token:token,company_name: company, topic: topic, value: {$gt: 0}},{sort:{date:1},fields: {date: true}}).fetch().map(function(x){return x.date}),true);
 
@@ -413,6 +483,7 @@ Template.chart.rendered = function() {
 
 
     function drawGraph (chartData,dates,company, topic) {
+
 
 
       var chartOptions = {
@@ -475,7 +546,7 @@ Template.chart.rendered = function() {
       });
       chartOptions['graphs'] = graphs;
 
-      console.log(chartOptions);
+      // console.log(chartOptions);
       var chart = AmCharts.makeChart("chartdiv", chartOptions);
     }
   }
@@ -538,7 +609,7 @@ Template.chart.rendered = function() {
 
 
         "panels": [ {
-          "title": "Value",
+          "title": "Stock Price",
           "showCategoryAxis": false,
           "percentHeight": 70,
           "valueAxes": [ {
@@ -561,7 +632,7 @@ Template.chart.rendered = function() {
             "closeField": "close",
             "highField": "high",
             "lowField": "low",
-            // "valueField": "close",
+            "valueField": "close",
             "lineColor": "#7f8da9",
             "fillColors": "#7f8da9",
             "negativeLineColor": "#db4c3c",
@@ -593,7 +664,7 @@ Template.chart.rendered = function() {
             // "compareField": "value",
             // "showBalloon": false,
             // "proCandlesticks": true,
-            "title": "Stock Price",
+            "title": "Average Price",
           }],
 
           "stockLegend": {
@@ -636,7 +707,7 @@ Template.chart.rendered = function() {
         },
 
         "chartScrollbarSettings": {
-          "graph": "g1",
+          "graph": "g2",
           "graphType": "line",
           "usePeriod": "WW"
 
@@ -655,7 +726,6 @@ Template.chart.rendered = function() {
             "label": "10 days"
           }, {
             "period": "MM",
-            selected: true,
             "count": 1,
             "label": "1 month"
           }, {
@@ -667,7 +737,8 @@ Template.chart.rendered = function() {
             "label": "YTD"
           }, {
             "period": "MAX",
-            "label": "MAX"
+            "label": "MAX",
+            selected: true,
           } ]
         },
         "export": {
@@ -734,8 +805,9 @@ Template.chart.rendered = function() {
           graph.lineColorField = colorKey;
           graph.fillColorsField = colorKey;
           for (var x = 0; x < chart.dataProvider.length; x++) {
-            var color = ['#ff0000', '#ff8000', '#ffff00', '#40ff00', '#33cccc', '#339933', '#ff33cc', '#00bfff', '#ffcc66', '#00cc00', '#0066ff', '#ffcc00', '#ff6666'][x];
-            
+            //var color = ['#d64608', '#1d7865', '#ff9e1c', '#ff831e', '#ff6400', '#d64608', '#1d7865', '#ff9e1c', '#ff831e', '#ff6400'][x];
+            var color = ["#334D5C", "#45B29D", "#EFC94C", "#E27A3F", "#DF5A49", "#334D5C", "#45B29D", "#EFC94C", "#E27A3F", "#DF5A49"][x];
+
             chart.dataProvider[x][colorKey] = color;
           }
         }
@@ -793,7 +865,7 @@ Template.chart.rendered = function() {
   }
 
   function render_events_chart(company_name, topic, upper_range, lower_range) {
-    var chart ;
+    $('#chart-options').show();
 
     Tracker.autorun(function() {
       var stocks = StockPrices.find({company_name: company_name, token:token}, {fields: {'date':1, 'cum_return':1}}).fetch();
@@ -801,7 +873,7 @@ Template.chart.rendered = function() {
       var guides = [];
 
       // events
-      var events = StockEvents.find({token: token, company_name: company_name, topic: topic, value:{$gt:0}}, {fields: {'date':1}}).fetch(); 
+      var events = StockEvents.find({token: token, company_name: company_name, topic: topic, value: {$gt : 0}}, {fields: {'date':1}}).fetch(); 
       // console.log(events);
 
       events.forEach(function(c) {
@@ -832,8 +904,8 @@ Template.chart.rendered = function() {
       stocks.forEach(function(c) {
 
         var entry = {
-          date: c.date,
-          cr: parseFloat(c.cum_return),
+          "date": c.date,
+          "cr": parseFloat(c.cum_return),
         };
         chartData.push(entry);
       });
@@ -844,7 +916,7 @@ Template.chart.rendered = function() {
       // console.log(guides);
       var titleBig = "Stock Price of " + company_name;
       var titleSmall = topic + " events highlighted";
-      chart = AmCharts.makeChart("chartdiv", {
+      var chart = AmCharts.makeChart("chartdiv", {
         "type": "serial",
         "theme": "light",
         "pathToImages": "/amcharts/images/",
@@ -857,10 +929,24 @@ Template.chart.rendered = function() {
             "dashLength": 1,
             "position": "left"
         }],
-        "mouseWheelZoomEnabled": true,
+        "mouseWheelZoomEnabled": false,
         "graphs": [{
             "id": "g1",
-            "balloonText": "[[value]]",
+            "balloonText": "CR: [[cr]]",
+            "balloonFunction": function(item, graph) {
+              var result = graph.balloonText;
+              for (var key in item.dataContext) {
+                if (item.dataContext.hasOwnProperty(key) && !isNaN(item.dataContext[key])) {
+                  var formatted = AmCharts.formatNumber(item.dataContext[key], {
+                    precision: chart.precision,
+                    decimalSeparator: chart.decimalSeparator,
+                    thousandsSeparator: chart.thousandsSeparator
+                  }, 2);
+                  result = result.replace("[[" + key + "]]", formatted);
+                }
+              }
+              return result;
+            },
             "bullet": "round",
             "bulletBorderAlpha": 1,
             "bulletColor": "#FFFFFF",
@@ -868,9 +954,7 @@ Template.chart.rendered = function() {
             "title": "red line",
             "valueField": "cr",
             "useLineColorForBulletBorder": true,
-            "balloon":{
-                "drop":true
-            }
+
         }],
         "chartScrollbar": {
             "autoGridCount": true,
