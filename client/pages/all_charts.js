@@ -37,7 +37,6 @@ Template.chart.rendered = function() {
       render_stock_vs_topic_graph(curr_company, curr_topic, 5, -5);
     }
     currentTab.parent().addClass('active');
-    console.log(currentTab.parent());
   });
 
   function render_volatility_chart (company) {
