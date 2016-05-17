@@ -112,6 +112,7 @@ Template.chart.rendered = function() {
   choose_main_stock.on('change',function(){
     var c = $(this).val();
     curr_company = c;
+    render_company_details();
     renderMainGraph();
   });
 
@@ -991,7 +992,7 @@ Template.chart.rendered = function() {
 
   // predefined list of companies
   function render_company_details() {
-    Session.set("company_details", true);
+    $('#chartdiv2').html('');
     var dom = document.getElementById('chartdiv2');
 
     // is there a better way to code this?
