@@ -90,18 +90,19 @@ Template.chart.rendered = function() {
 
       for(var i = 0; i<(stock_prices.length); i++) {
         var currArray = [];
-        if (i == 0) {
-          currArray.push(stock_prices[i].price);
+        if (i < 29) {
+          //currArray.push(stock_prices[i].price);
         } 
-        for(var x = 0; x<2; x++) {
-            if (i>0) {
+        for(var x = 0; x<30; x++) {
+            if (i>=29) {
               currArray.push(stock_prices[i-x].price);
             }
         }
-          toDoList.push({"currArray": currArray, "time": stock_prices[i].time, "price": stock_prices[i].price});
-      }
+        if (i > 29) {
+          toDoList.push({"currArray": currArray, "time": stock_prices[i-30].time, "price": stock_prices[i].price});
+        }
       // console.log(toDoList);
-
+    }
       toDoList.forEach(function (c){
         var result = standardDeviation(c.currArray);
         var entry = {"time": c.time, "price": c.price, "mAvg": result[1], "sdUpper": ((result[0]*2)+result[1]), "sdLower": (result[1]-(result[0]*2)), "sd": result};
@@ -277,6 +278,9 @@ Template.chart.rendered = function() {
         "graph": "priceGraph",
         "scrollbarHeight": 30,
         "updateOnReleaseOnly": true,
+        //"graphFillColor": "orange",
+        "selectedGraphFillColor": "orange",
+        "selectedGraphFillAlpha": 0.8,
       },
       "categoryField": "time",
       "categoryAxis": {
@@ -298,41 +302,23 @@ Template.chart.rendered = function() {
           event.chart.zoomToIndexes(event.chart.dataProvider.length - 80, event.chart.dataProvider.length - 1);
           var graph = event.chart.getGraphById("priceGraph");
           graph.bullet = "round";
-        }
-      }],
+        }},{
+        "event": "zoomed",
+        "method": function(event) {
+          var zoomPercent = (event.endIndex - event.startIndex) / event.endIndex;
+          console.log("zoom: "+zoomPercent);
+          var graph = event.chart.getGraphById("priceGraph");
+          var chart = event.chart;
+          if (zoomPercent > 0.4){
+            graph.bullet = "none";
+          } else {
+            graph.bullet = "round";
+          }
+        }}],
       "export": {
         "enabled": true
       }
-    });
-
-
-    chart.addListener("zoomed", function(event) {
-      
-      var zoomPercent = (event.endIndex - event.startIndex) / event.endIndex;
-
-      console.log("zoom: "+zoomPercent);
-
-
-      var graph = event.chart.getGraphById("priceGraph");
-      var chart = event.chart;
-      if (zoomPercent > 0.2){
-        graph.bullet = "none";
-      } else {
-        graph.bullet = "round";
-      }
-      if (zoomPercent > 0.4){
-        chart.hideGraph(chart.graphs[1]);
-        chart.hideGraph(chart.graphs[2]);
-        chart.hideGraph(chart.graphs[3]);
-      } else {
-        chart.showGraph(chart.graphs[1]);
-        chart.showGraph(chart.graphs[2]);
-        chart.showGraph(chart.graphs[3]);
-      }
-        // event.chart.chartScrollbar.enabled = enabled;
-      event.chart.validateNow(false, true);
-    });
-        
+    }); 
 
   }
 
@@ -728,8 +714,9 @@ Template.chart.rendered = function() {
           graph.lineColorField = colorKey;
           graph.fillColorsField = colorKey;
           for (var x = 0; x < chart.dataProvider.length; x++) {
-            var color = ['#ff0000', '#ff8000', '#ffff00', '#40ff00', '#33cccc', '#339933', '#ff33cc', '#00bfff', '#ffcc66', '#00cc00', '#0066ff', '#ffcc00', '#ff6666'][x];
-            
+            //var color = ['#d64608', '#1d7865', '#ff9e1c', '#ff831e', '#ff6400', '#d64608', '#1d7865', '#ff9e1c', '#ff831e', '#ff6400'][x];
+            var color = ["#334D5C", "#45B29D", "#EFC94C", "#E27A3F", "#DF5A49", "#334D5C", "#45B29D", "#EFC94C", "#E27A3F", "#DF5A49"][x];
+
             chart.dataProvider[x][colorKey] = color;
           }
         }
@@ -826,8 +813,8 @@ Template.chart.rendered = function() {
       stocks.forEach(function(c) {
 
         var entry = {
-          date: c.date,
-          cr: parseFloat(c.cum_return),
+          "date": c.date,
+          "cr": parseFloat(c.cum_return),
         };
         chartData.push(entry);
       });
@@ -854,7 +841,21 @@ Template.chart.rendered = function() {
         "mouseWheelZoomEnabled": true,
         "graphs": [{
             "id": "g1",
-            "balloonText": "[[value]]",
+            "balloonText": "CR: [[cr]]",
+            "balloonFunction": function(item, graph) {
+              var result = graph.balloonText;
+              for (var key in item.dataContext) {
+                if (item.dataContext.hasOwnProperty(key) && !isNaN(item.dataContext[key])) {
+                  var formatted = AmCharts.formatNumber(item.dataContext[key], {
+                    precision: chart.precision,
+                    decimalSeparator: chart.decimalSeparator,
+                    thousandsSeparator: chart.thousandsSeparator
+                  }, 2);
+                  result = result.replace("[[" + key + "]]", formatted);
+                }
+              }
+              return result;
+            },
             "bullet": "round",
             "bulletBorderAlpha": 1,
             "bulletColor": "#FFFFFF",
@@ -862,9 +863,7 @@ Template.chart.rendered = function() {
             "title": "red line",
             "valueField": "cr",
             "useLineColorForBulletBorder": true,
-            "balloon":{
-                "drop":true
-            }
+
         }],
         "chartScrollbar": {
             "autoGridCount": true,
