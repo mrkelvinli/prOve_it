@@ -796,7 +796,7 @@ Template.chart.rendered = function() {
       var guides = [];
 
       // events
-      var events = StockEvents.find({token: token, company_name: company_name, topic: topic}, {fields: {'date':1}}).fetch(); 
+      var events = StockEvents.find({token: token, company_name: company_name, topic: topic, value:{$gt:0}}, {fields: {'date':1}}).fetch(); 
       // console.log(events);
 
       events.forEach(function(c) {
