@@ -1,7 +1,7 @@
 Template.chart.rendered = function() {
   var token = Router.current().params.token;
   var validToken = false;
-
+  
   var curr_graph = 'candlesticks';
   var curr_company = "AAC.AX";
   var curr_topic = "Cash Rate";
@@ -19,6 +19,7 @@ Template.chart.rendered = function() {
     }
   });
 
+  // control the tabs
   $('ul.nav-tabs li a').on('click', function() {
     var currentTab = $(this);
     var tabId = currentTab.attr('id');
@@ -37,8 +38,47 @@ Template.chart.rendered = function() {
       render_stock_vs_topic_graph(curr_company, curr_topic, 5, -5);
     }
     currentTab.parent().addClass('active');
-    console.log(currentTab.parent());
+    // console.log(currentTab.parent());
   });
+
+  // control the navbar to switch between the main stock
+  var choose_main_stock = $('#choose-main-stock');
+  // console.log(choose_main_stock);
+  Tracker.autorun(function() {
+    var all_company = _.uniq(StockPrices.find({}, {fields:{company_name:1}},{sort:{company_name: 1}}).fetch().map(function(x){return x.company_name}),true);
+    choose_main_stock.empty();
+    all_company.forEach(function(c){
+      // console.log(c);
+      choose_main_stock.append("<option>"+c+"</option>");
+    });
+  });
+
+
+  function renderMainGraph() {
+    if (curr_graph == "candlesticks"){
+      render_candlestick_graph(curr_company);
+    } else if (curr_graph == 'volatility'){
+      render_volatility_chart(curr_company);
+    } else if (curr_graph == 'event-study'){
+      render_events_chart(curr_company, curr_topic, 5, -5);
+    } else if (curr_graph == 'stock-topic'){
+      render_stock_vs_topic_graph(curr_company, curr_topic, 5, -5);
+    }
+  }
+
+
+  choose_main_stock.on('change',function(){
+    var c = $(this).val();
+    // console.log(c);
+    curr_company = c;
+
+    renderMainGraph();
+  });
+  
+
+
+
+
 
   function render_volatility_chart (company) {
     var stock_prices = [
@@ -796,7 +836,7 @@ Template.chart.rendered = function() {
       var guides = [];
 
       // events
-      var events = StockEvents.find({token: token, company_name: company_name, topic: topic}, {fields: {'date':1}}).fetch(); 
+      var events = StockEvents.find({token: token, company_name: company_name, topic: topic, value: {$gt : 0}}, {fields: {'date':1}}).fetch(); 
       // console.log(events);
 
       events.forEach(function(c) {

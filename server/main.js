@@ -50,6 +50,6 @@ if(Meteor.isServer) {
     checkToken: function (token) {
       // console.log('checking: '+token);
       return StockPrices.find({token:token}).count() > 0;
-    }
+    },
   });
 }

@@ -13,6 +13,7 @@ Router.map(function() {
     template: 'app_ui',
     layout: 'main_layout',
     onBeforeAction: function(){
+      IRLibLoader.load('/bootstrap/bootstrap.min.js');
       ReadyList.js1 = IRLibLoader.load('/amcharts/amcharts.js');
       if(!ReadyList.js1.ready()){ return }
       ReadyList.js2 = IRLibLoader.load('/amcharts/serial.js');
@@ -21,14 +22,15 @@ Router.map(function() {
       if(!ReadyList.js3.ready()){ return }
       ReadyList.js4 = IRLibLoader.load('/amcharts/themes/light.js');
       if(!ReadyList.js4.ready()){ return }
+
       this.next();
     },
     waitOn: function(){
-      ReadyList.subPrices = Meteor.subscribe('stockPrices_db',this.params.token);
-      ReadyList.subEvents = Meteor.subscribe('stockEvents_db',this.params.token);
+      // ReadyList.subPrices = Meteor.subscribe('stockPrices_db',this.params.token);
+      // ReadyList.subEvents = Meteor.subscribe('stockEvents_db',this.params.token);
       return [
-        ReadyList.subPrices,
-        ReadyList.subEvents,
+        // ReadyList.subPrices,
+        // ReadyList.subEvents,
       ];
     },
     fastRender: true,
