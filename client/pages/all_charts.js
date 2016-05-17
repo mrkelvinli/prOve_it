@@ -1,3 +1,8 @@
+import { Meteor } from 'meteor/meteor';
+import './companies.html';
+import './companies.css';
+
+
 Template.chart.rendered = function() {
   var token = Router.current().params.token;
   var validToken = false;
@@ -13,7 +18,8 @@ Template.chart.rendered = function() {
       curr_graph = 'volatility';
       $('ul.nav-tabs li a#volatility').parent().addClass('active');
       render_volatility_chart(curr_company);
-      render_company_chart();
+      // render_company_chart();
+      render_company_details();
     } else {
       alert("invalid token");
     }
@@ -898,8 +904,28 @@ Template.chart.rendered = function() {
       });
     }
   }
-};
 
+  // predefined list of companies
+  function render_company_details() {
+    Session.set("company_details", true);
+    var dom = document.getElementById('chartdiv2');
+
+    // is there a better way to code this?
+    if (curr_company == 'AAC.AX') {
+      Blaze.render(Template.aac, dom);
+    } else if (curr_company == 'ELD.AX') {
+      Blaze.render(Template.eld, dom);
+    } else if (curr_company == 'GNC.AX') {
+      Blaze.render(Template.gnc, dom);
+    }  else if (curr_company == 'RIC.AX') {
+      Blaze.render(Template.ric, dom);
+    }  else if (curr_company == 'TRG.AX') {
+      Blaze.render(Template.trg, dom);
+    }  else if (curr_company == 'WBA.AX') {
+      Blaze.render(Template.wba, dom);
+    } 
+  }
+};
 
 Template.homePage.rendered = function() {
   var debug = false;
@@ -972,7 +998,4 @@ Template.homePage.rendered = function() {
     $(location).attr('href', base_url + "chart/" + $(token).val());
     return false;
   });
-
-
-}
-
+};
