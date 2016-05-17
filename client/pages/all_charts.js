@@ -37,7 +37,6 @@ Template.chart.rendered = function() {
       render_stock_vs_topic_graph(curr_company, curr_topic, 5, -5);
     }
     currentTab.parent().addClass('active');
-    console.log(currentTab.parent());
   });
 
   function render_volatility_chart (company) {
@@ -783,7 +782,7 @@ Template.chart.rendered = function() {
       var guides = [];
 
       // events
-      var events = StockEvents.find({token: token, company_name: company_name, topic: topic}, {fields: {'date':1}}).fetch(); 
+      var events = StockEvents.find({token: token, company_name: company_name, topic: topic, value:{$gt:0}}, {fields: {'date':1}}).fetch(); 
       // console.log(events);
 
       events.forEach(function(c) {
