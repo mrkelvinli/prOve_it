@@ -676,7 +676,15 @@ Template.chart.rendered = function() {
     drawGraph(c_cr);
 
     function handleClick(event) {
-      render_volatility_chart(event.item.category);
+      if (curr_graph == 'candlesticks') {
+        render_candlestick_graph(event.item.category);
+      } else if (curr_graph == 'volatility') {
+        render_volatility_chart(event.item.category);
+      } else if (curr_graph == 'event-study') {
+        render_events_chart(event.item.category, curr_topic, 5, -5);
+      } else if (curr_graph == 'stock-topic') {
+        render_stock_vs_topic_graph(event.item.category, curr_topic, 5, -5);
+      }
     }
 
     function drawGraph(chartData) {
