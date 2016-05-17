@@ -279,6 +279,9 @@ Template.chart.rendered = function() {
         "graph": "priceGraph",
         "scrollbarHeight": 30,
         "updateOnReleaseOnly": true,
+        //"graphFillColor": "orange",
+        "selectedGraphFillColor": "orange",
+        "selectedGraphFillAlpha": 0.8,
       },
       "categoryField": "time",
       "categoryAxis": {
@@ -300,41 +303,23 @@ Template.chart.rendered = function() {
           event.chart.zoomToIndexes(event.chart.dataProvider.length - 80, event.chart.dataProvider.length - 1);
           var graph = event.chart.getGraphById("priceGraph");
           graph.bullet = "round";
-        }
-      }],
+        }},{
+        "event": "zoomed",
+        "method": function(event) {
+          var zoomPercent = (event.endIndex - event.startIndex) / event.endIndex;
+          console.log("zoom: "+zoomPercent);
+          var graph = event.chart.getGraphById("priceGraph");
+          var chart = event.chart;
+          if (zoomPercent > 0.4){
+            graph.bullet = "none";
+          } else {
+            graph.bullet = "round";
+          }
+        }}],
       "export": {
         "enabled": true
       }
-    });
-
-
-    chart.addListener("zoomed", function(event) {
-      
-      var zoomPercent = (event.endIndex - event.startIndex) / event.endIndex;
-
-      console.log("zoom: "+zoomPercent);
-
-
-      var graph = event.chart.getGraphById("priceGraph");
-      var chart = event.chart;
-      if (zoomPercent > 0.2){
-        graph.bullet = "none";
-      } else {
-        graph.bullet = "round";
-      }
-      if (zoomPercent > 0.4){
-        chart.hideGraph(chart.graphs[1]);
-        chart.hideGraph(chart.graphs[2]);
-        chart.hideGraph(chart.graphs[3]);
-      } else {
-        chart.showGraph(chart.graphs[1]);
-        chart.showGraph(chart.graphs[2]);
-        chart.showGraph(chart.graphs[3]);
-      }
-        // event.chart.chartScrollbar.enabled = enabled;
-      event.chart.validateNow(false, true);
-    });
-        
+    }); 
 
   }
 
@@ -730,8 +715,9 @@ Template.chart.rendered = function() {
           graph.lineColorField = colorKey;
           graph.fillColorsField = colorKey;
           for (var x = 0; x < chart.dataProvider.length; x++) {
-            var color = ['#d64608', '#1d7865', '#ff9e1c', '#ff831e', '#ff6400', '#d64608', '#1d7865', '#ff9e1c', '#ff831e', '#ff6400'][x];
-            
+            //var color = ['#d64608', '#1d7865', '#ff9e1c', '#ff831e', '#ff6400', '#d64608', '#1d7865', '#ff9e1c', '#ff831e', '#ff6400'][x];
+            var color = ["#334D5C", "#45B29D", "#EFC94C", "#E27A3F", "#DF5A49", "#334D5C", "#45B29D", "#EFC94C", "#E27A3F", "#DF5A49"][x];
+
             chart.dataProvider[x][colorKey] = color;
           }
         }
@@ -828,8 +814,8 @@ Template.chart.rendered = function() {
       stocks.forEach(function(c) {
 
         var entry = {
-          date: c.date,
-          cr: parseFloat(c.cum_return),
+          "date": c.date,
+          "cr": parseFloat(c.cum_return),
         };
         chartData.push(entry);
       });
@@ -863,6 +849,8 @@ Template.chart.rendered = function() {
                 if (item.dataContext.hasOwnProperty(key) && !isNaN(item.dataContext[key])) {
                   var formatted = AmCharts.formatNumber(item.dataContext[key], {
                     precision: chart.precision,
+                    decimalSeparator: chart.decimalSeparator,
+                    thousandsSeparator: chart.thousandsSeparator
                   }, 2);
                   result = result.replace("[[" + key + "]]", formatted);
                 }
