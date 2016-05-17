@@ -10,14 +10,14 @@ APItesting = {
 
       var token = params['token'];
       var company = "AAC.AX";
+      var topic = "Cash Rate";
+
+      var lower_range = -5;
+      var upper_range = 5;
 
 
       var chartData = [];
-
-      // var all_topics = _.uniq(StockEvents.find({token:token},{sort:{topic:1},fields:{topic:true}}).fetch().map(function(x){return x.topic}),true);
-      var upper_range = 5;
-      var lower_range = -5;
-
+      var graphs = [];
       var dates = _.uniq(StockEvents.find({token:token,company_name: company, topic: topic, value: {$gt: 0}},{sort:{date:1},fields: {date: true}}).fetch().map(function(x){return x.date}),true);
 
       for (var date = lower_range; date <= upper_range; date++) {
@@ -38,7 +38,18 @@ APItesting = {
         chartData.push(entry);
       }
 
-      API.utility.response(context, 200,chartData);
+      dates.forEach(function(d){
+        graphs.push({
+          "balloonText": "cumulative return  is [[value]] at [[category]] day relative to "+d.toDateString(),
+          "bullet": "round",
+          "hidden": false,
+          "title": d.toDateString(),
+          "valueField": d.toDateString(),
+          "fillAlphas": 0,
+        });  
+      });
+
+      API.utility.response(context, 200, chartData);
 
 
 

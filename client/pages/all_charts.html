@@ -19,6 +19,30 @@
     <li role="presentation"><a id='stock-topic'>Stock vs Topic</a></li>
   </ul>
   <div class="chart-frame">
+    <!-- chart setting section -->
+    <div class="row" id="chart-options">
+      <div class="col-sm-3" id="second-stock-selection">
+        <div>Compare to:</div>
+        <select class="form-control selectpicker" title="Choose one of the stock..." id="choose-second-stock" data-live-search="true">
+        </select>
+      </div>
+      <div class="col-sm-3">
+        <div>Topics:</div>
+        <select class="form-control selectpicker" title="Choose one of the topic..." id="choose-topic" data-live-search="true">
+        </select>
+
+      </div>
+       <div class="col-sm-3">
+        <div>Upper Window</div>
+        <input type="number" class="form-control" min="0" id='choose-upper-window' value="5">
+
+      </div>
+      <div class="col-sm-3">
+        <div>Lower Window:</div>
+        <input type="number"  class="form-control" max="0" id='choose-lower-window' value="-5">
+
+      </div>
+    </div>
     <div id="chartdiv"></div>
   </div>
     
@@ -131,13 +155,16 @@
         </div>
 
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-          <p class="navbar-text" style="font-weight: 700; margin-left:15px">Stock:</p>
-          <form class="navbar-form" role="search">
+          <p class="navbar-text" style="font-weight: 700; margin-right:-5px">Stock:</p>
+          <div class="navbar-form navbar-left">
             <div class="form-group">
-              <select class="form-control" title="Choose one of the stock..." id="choose-main-stock">
+              <select class="form-control selectpicker" title="Choose one of the stock..." id="choose-main-stock" data-live-search="true">
               </select>
             </div>
-          </form>
+          </div>
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="/">Setting</a></li>
+          </ul>
         </div>
       </div>
     </nav>
