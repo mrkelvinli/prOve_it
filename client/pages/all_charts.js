@@ -112,6 +112,7 @@ Template.chart.rendered = function() {
   choose_main_stock.on('change',function(){
     var c = $(this).val();
     curr_company = c;
+    console.log(c);
     render_company_details();
     renderMainGraph();
   });
@@ -1004,8 +1005,8 @@ Template.chart.rendered = function() {
       Blaze.render(Template.gnc, dom);
     }  else if (curr_company == 'RIC.AX') {
       Blaze.render(Template.ric, dom);
-    }  else if (curr_company == 'TRG.AX') {
-      Blaze.render(Template.trg, dom);
+    }  else if (curr_company == 'TGR.AX') {
+      Blaze.render(Template.tgr, dom);
     }  else if (curr_company == 'WBA.AX') {
       Blaze.render(Template.wba, dom);
     } 
