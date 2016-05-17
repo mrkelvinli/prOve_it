@@ -541,6 +541,8 @@ Template.chart.rendered = function() {
             "id": "v1",
             "dashLength": 5,
             "title": "Stock Price ($)",
+            "unit": "$",
+            'unitPosition' : "left",
           } ],
 
           "categoryAxis": {
@@ -555,22 +557,44 @@ Template.chart.rendered = function() {
             "closeField": "close",
             "highField": "high",
             "lowField": "low",
-            "valueField": "close",
+            // "valueField": "close",
             "lineColor": "#7f8da9",
             "fillColors": "#7f8da9",
             "negativeLineColor": "#db4c3c",
             "negativeFillColors": "#db4c3c",
             "fillAlphas": 1,
             "useDataSetColors": false,
-            "comparable": true,
-            "compareField": "value",
-            "showBalloon": false,
-            "proCandlesticks": true
-          } ],
+            // "comparable": true,
+            // "compareField": "value",
+            "showBalloon": true,
+            "proCandlesticks": true,
+            "title": "Candle Stick",
+            "balloonText": "Open:<b>[[open]]</b><br>Low:<b>[[low]]</b><br>High:<b>[[high]]</b><br>Close:<b>[[close]]</b><br>Value:<b>[[value]]</b>",
+          },
+          {
+            "type": "line",
+            "id": "g2",
+            // "openField": "open",
+            // "closeField": "close",
+            // "highField": "high",
+            // "lowField": "low",
+            "valueField": "value",
+            "lineColor": "orange",
+            "fillColors": "#7f8da9",
+            "negativeLineColor": "#db4c3c",
+            "negativeFillColors": "#db4c3c",
+            "fillAlphas": 0,
+            "useDataSetColors": false,
+            // "comparable": true,
+            // "compareField": "value",
+            // "showBalloon": false,
+            // "proCandlesticks": true,
+            "title": "Stock Price",
+          }],
 
           "stockLegend": {
-            "valueTextRegular": undefined,
-            "periodValueTextComparing": "[[value.close]]%"
+            // "valueTextRegular": undefined,
+            // "periodValueTextComparing": "[[value.close]]%"
           }
         },
 
@@ -766,15 +790,14 @@ Template.chart.rendered = function() {
 
   function render_events_chart(company_name, topic, upper_range, lower_range) {
     var chart ;
-    var chartData = [];
 
     Tracker.autorun(function() {
       var stocks = StockPrices.find({company_name: company_name, token:token}, {fields: {'date':1, 'cum_return':1}}).fetch();
-      chartData = [];
+      var chartData = [];
       var guides = [];
 
       // events
-      var events = StockEvents.find({company_name: company_name, topic: topic}, {fields: {'date':1}}).fetch(); 
+      var events = StockEvents.find({token: token, company_name: company_name, topic: topic}, {fields: {'date':1}}).fetch(); 
       // console.log(events);
 
       events.forEach(function(c) {
@@ -798,7 +821,6 @@ Template.chart.rendered = function() {
           "above": true,
           "date": dateLower,
           "toDate": dateUpper,
-          "above": true
         });
       });
 
@@ -815,7 +837,7 @@ Template.chart.rendered = function() {
     });
 
     function drawGraph(chartData, guides) {
-      console.log(guides);
+      // console.log(guides);
       var titleBig = "Stock Price of " + company_name;
       var titleSmall = topic + " events highlighted";
       chart = AmCharts.makeChart("chartdiv", {
