@@ -4,7 +4,7 @@ Template.chart.rendered = function() {
 
   var curr_graph = 'candlesticks';
   var curr_company = "AAC.AX";
-  var curr_topic = "Macroevent";
+  var curr_topic = "Cash Rate";
 
   Meteor.call('checkToken',token, function(err, response) {
     validToken = response;
