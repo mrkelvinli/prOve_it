@@ -45,19 +45,17 @@
     </div>
     <div id="chartdiv"></div>
   </div>
-    
-
 </template>
 
 
-<template name="chart_breadcrumb">
-  <!-- <ul class="breadcrumb" id="chart_breadcrumb"> -->
-    <!-- <li class="active">Companys</li> -->
-  <!-- </ul> -->
-</template>
+<!-- <template name="chart_breadcrumb">
+  <ul class="breadcrumb" id="chart_breadcrumb">
+    <li class="active">Companys</li>
+  </ul>
+</template> -->
 
 <template name="table">
-  <div id="chartdiv2"></div>
+  <div id="chartdiv2">wip</div>
   <!--
   <table class="table table-striped table-hover ">
     <thead>
@@ -109,7 +107,8 @@
 </template>
 
 <template name="news">
-  <div class="card">
+  <div id='chartdiv3'>wip</div>
+<!--   <div class="card">
     <div class="card-block">
       <h4 class="card-title">News 1</h4>
       <h6 class="card-subtitle text-muted">Support card subtitle</h6>
@@ -137,7 +136,7 @@
     <div class="card-block">
       <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
     </div>
-  </div>
+  </div> -->
 </template>
 
 <template name="navbar">
@@ -174,12 +173,12 @@
   {{ > chart }}
   <p></p>
   <div class="row">
-    <div class="col-md-8">
+    <div class="col-md-6">
       <div class="tables">
         {{ > table }}
       </div>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-6">
       <div class="news">
         {{ > news }}
       </div>
