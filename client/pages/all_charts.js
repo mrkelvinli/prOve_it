@@ -7,7 +7,7 @@ Template.chart.rendered = function() {
   $('.selectpicker').selectpicker();
   $('#chart-options').hide();
 
-
+  $('a[href="http://www.amcharts.com/javascript-charts/"').hide();
 
   var token = Router.current().params.token;
   var validToken = false;
