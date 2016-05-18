@@ -35,9 +35,6 @@ if(Meteor.isServer) {
     return Topics.find();
   });
 
-
-
-
   Meteor.publish('stockPrices_db', function(token){
     return StockPrices.find({token:token});
   });
@@ -46,10 +43,27 @@ if(Meteor.isServer) {
     return StockEvents.find({token: token});
   });
 
+  var connectHandler = WebApp.connectHandlers;
+
+  Meteor.startup(function () {
+    connectHandler.use(function (req, res, next) {
+      res.setHeader('Strict-Transport-Security', 'max-age=2592000; includeSubDomains'); // 2592000s / 30 days
+      return next();
+    });
+  });
+
   Meteor.methods({
     checkToken: function (token) {
       // console.log('checking: '+token);
       return StockPrices.find({token:token}).count() > 0;
     },
+    // google: function(company) {
+    //   // from https://themeteorchef.com/snippets/synchronous-methods/
+    //   var url = "https://www.google.com.au/?gfe_rd=cr&ei=hA87V6LWFcHN8geG06SQAQ#q=" + company;
+    //   console.log(url);
+    //   var convertAsyncToSync  = Meteor.wrapAsync(HTTP.get),
+    //     resultOfAsyncToSync = convertAsyncToSync(url, {});
+    //   return resultOfAsyncToSync;
+    // }
   });
 }

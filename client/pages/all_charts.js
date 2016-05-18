@@ -1,3 +1,8 @@
+import { Meteor } from 'meteor/meteor';
+import './companies.html';
+import './companies.css';
+
+
 Template.chart.rendered = function() {
   $('.selectpicker').selectpicker();
   $('#chart-options').hide();
@@ -21,7 +26,8 @@ Template.chart.rendered = function() {
       curr_graph = 'volatility';
       $('ul.nav-tabs li a#volatility').parent().addClass('active');
       render_volatility_chart(curr_company);
-      render_company_chart();
+      // render_company_chart();
+      render_company_details();
     } else {
       alert("invalid token");
     }
@@ -107,6 +113,8 @@ Template.chart.rendered = function() {
   choose_main_stock.on('change',function(){
     var c = $(this).val();
     curr_company = c;
+    console.log(c);
+    render_company_details();
     renderMainGraph();
   });
 
@@ -985,8 +993,28 @@ Template.chart.rendered = function() {
       });
     }
   }
-};
 
+  // predefined list of companies
+  function render_company_details() {
+    $('#chartdiv2').html('');
+    var dom = document.getElementById('chartdiv2');
+
+    // is there a better way to code this?
+    if (curr_company == 'AAC.AX') {
+      Blaze.render(Template.aac, dom);
+    } else if (curr_company == 'ELD.AX') {
+      Blaze.render(Template.eld, dom);
+    } else if (curr_company == 'GNC.AX') {
+      Blaze.render(Template.gnc, dom);
+    }  else if (curr_company == 'RIC.AX') {
+      Blaze.render(Template.ric, dom);
+    }  else if (curr_company == 'TGR.AX') {
+      Blaze.render(Template.tgr, dom);
+    }  else if (curr_company == 'WBA.AX') {
+      Blaze.render(Template.wba, dom);
+    } 
+  }
+};
 
 Template.homePage.rendered = function() {
   var debug = false;
@@ -1059,7 +1087,4 @@ Template.homePage.rendered = function() {
     $(location).attr('href', base_url + "chart/" + $(token).val());
     return false;
   });
-
-
-}
-
+};
