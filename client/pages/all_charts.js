@@ -34,17 +34,18 @@ Template.chart.rendered = function() {
     $('ul.nav-tabs li').removeClass('active');
     if (tabId == 'candlesticks') {
       curr_graph = 'candlesticks';
-      render_candlestick_graph(curr_company);
+      // render_candlestick_graph(curr_company);
     } else if (tabId == 'volatility') {
       curr_graph = 'volatility';
-      render_volatility_chart(curr_company);
+      // render_volatility_chart(curr_company);
     } else if (tabId == 'event-study') {
       curr_graph = 'event-study';
-      render_events_chart(curr_company, curr_topic, curr_upper, curr_lower);
+      // render_events_chart(curr_company, curr_topic, curr_upper, curr_lower);
     } else if (tabId == 'stock-topic') {
       curr_graph = 'stock-topic';
-      render_stock_vs_topic_graph(curr_company, curr_topic, curr_upper, curr_lower);
+      // render_stock_vs_topic_graph(curr_company, curr_topic, curr_upper, curr_lower);
     }
+    renderMainGraph();
     currentTab.parent().addClass('active');
     // console.log(currentTab.parent());
   });
@@ -90,7 +91,7 @@ Template.chart.rendered = function() {
 
   function renderMainGraph() {
     $('#chart-options').hide();
-    $('#second-stock-selection').show();
+
     if (curr_graph == "candlesticks"){
       render_candlestick_graph(curr_company);
     } else if (curr_graph == 'volatility'){
@@ -860,6 +861,8 @@ Template.chart.rendered = function() {
 
   function render_events_chart(company_name, topic, upper_range, lower_range) {
     $('#chart-options').show();
+    $('#second-stock-selection').show();
+
 
     Tracker.autorun(function() {
       var stocks = StockPrices.find({company_name: company_name, token:token}, {fields: {'date':1, 'cum_return':1}}).fetch();
