@@ -2,6 +2,7 @@
 
  Router.route('/',function (){
    this.render('homePage');
+   this.layout('directLayout');
  });
 
 ReadyList = {};
