@@ -498,7 +498,7 @@ Template.chart.rendered = function() {
               "valueText": '',
           },
           "titles":[{
-            "text": "Events of "+topic+" for "+company,
+            "text": "Individual "+topic+" events for "+company,
             "size": 15
           }],
           "dataProvider": chartData,
@@ -514,8 +514,7 @@ Template.chart.rendered = function() {
               "position": "left",
               "title": "Cumulative Return (%)"
           }],
-          "startDuration": 0.5,
-
+          "startDuration": 0,
           "chartCursor": {
               "cursorAlpha": 0,
               "zoomable": false
@@ -595,7 +594,7 @@ Template.chart.rendered = function() {
             "fromField": "flat_value",
             "toField": "value"
           } ],
-          "color": "#7f8da9",
+          "color": "#ff6600",
           "dataProvider": chartData,
           "title": "Candlestick",
           "categoryField": "date"
@@ -604,7 +603,8 @@ Template.chart.rendered = function() {
             "fromField": "flat_value",
             "toField": "value"
           } ],
-          "color": "#fac314",
+          "color": "#0077aa",
+          "lineColor": "#0077aa",
           "dataProvider": chartData,
           "compared": true,
           "title": "Line",
@@ -639,8 +639,8 @@ Template.chart.rendered = function() {
             "valueField": "close",
             "lineColor": "#7f8da9",
             "fillColors": "#7f8da9",
-            "negativeLineColor": "#db4c3c",
-            "negativeFillColors": "#db4c3c",
+            "negativeLineColor": "#ff6600",
+            "negativeFillColors": "#ff6600",
             "fillAlphas": 1,
             "useDataSetColors": false,
             // "comparable": true,
@@ -658,11 +658,10 @@ Template.chart.rendered = function() {
             // "highField": "high",
             // "lowField": "low",
             "valueField": "value",
-            "lineColor": "orange",
-            "fillColors": "#7f8da9",
-            "negativeLineColor": "#db4c3c",
-            "negativeFillColors": "#db4c3c",
+            "lineColor": "#0077aa",
             "fillAlphas": 0,
+            "lineThickness": 1.5,
+            "dashLength": 4,
             "useDataSetColors": false,
             // "comparable": true,
             // "compareField": "value",
