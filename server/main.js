@@ -65,9 +65,7 @@ if(Meteor.isServer) {
       // (from https://themeteorchef.com/snippets/synchronous-methods/)
       // var withoutAX = company.replace(/\.[Aa][Xx]/, '');
       var withoutAX = company.substring(0,3);
-      // var url = "http://theaustralian.com.au/shares/" + withoutAX;
-      var url = "http://theaustralian.com.au/shares/tgr";
-
+      var url = "http://theaustralian.com.au/shares/" + withoutAX;
       console.log(url);
 
       if (withoutAX.length != 3) {

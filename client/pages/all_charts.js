@@ -1246,37 +1246,65 @@ Template.chart.rendered = function() {
     $('#chartdiv3').html('');
     var dom = document.getElementById('chartdiv3');
 
-    // Meteor.call('scrapeSearch', curr_company, function(err, response) {
-    //   // console.log(response);
-    //   console.log(err);
-    //   if (response != null) {
-    //     // market.theaustralian.com.au
-    //     // key stats
-    //     var regex = /KEY STATS.*DETAILS\<\/h2\>/;
-    //     var rawResults1 = response.match(regex);
-    //     console.log("results: " + rawResults1);
+    Meteor.call('scrapeSearch', curr_company, function(err, response) {
+      // console.log(response);
+      console.log(err);
+      if (response != null) {
+        // market.theaustralian.com.au
+        // key stats
+        var regexKeyStats = /KEY STATS.*DETAILS\<\/h2\>/;
+        var keyStats = response.match(regexKeyStats);
+        // console.log("keyStats: " + keyStats);
 
-    //     // key details
-    //   }
-    // });
+        // details
+        var regexDetails = /DETAILS\<\/h2\>.*OWNERS\<\/h2\>/;
+        var details = response.match(regexDetails);
+        // console.log("details: " + details);
 
-    // is there a better way to code this?
-    if (curr_company == 'AAC.AX') {
-      Blaze.render(Template.aac, dom);
-    } else if (curr_company == 'ELD.AX') {
-      Blaze.render(Template.eld, dom);
-    } else if (curr_company == 'ELDDA.AX') {
-      Blaze.render(Template.eld, dom);
-    } else if (curr_company == 'GNC.AX') {
-      Blaze.render(Template.gnc, dom);
-    }  else if (curr_company == 'RIC.AX') {
-      Blaze.render(Template.ric, dom);
-    }  else if (curr_company == 'TGR.AX') {
-      Blaze.render(Template.tgr, dom);
-    }  else if (curr_company == 'WBA.AX') {
-      Blaze.render(Template.wba, dom);
-    } else {
-      $('#chartdiv2').html('We have no additional information about ' + curr_company + '.');
-    }
+        // grab what we want
+        // description & company website
+        var regexDescription = /\<div id="company\-description"\>.*\<div id="company\-website/;
+        var descriptionRaw = String(details).match(regexDescription);
+        var description = String(descriptionRaw).replace(/\<div id="company\-description"\>/, "").replace(/\<\/div\>\<div id="company\-website/, "");
+        console.log("description: " + description);
+
+        var regexWebsite = /\<div id="company\-website.*\<\/section/;
+        var websiteRaw = String(details).match(regexWebsite);
+        var website = String(websiteRaw).replace(/\<div id="company\-website.*"\>/, "").replace(/\<\/a>.*/, "");
+        console.log("website: " + website);
+
+        // tbody
+        var regexTbody = /\<tbody\>.*\<\/tbody\>/;
+        var tbodyRaw = String(keyStats).match(regexTbody);
+        var tbody = String(tbodyRaw).replace(/\\n/g, "");
+        console.log(tbody);
+
+        Blaze.render(Template.companyDetails, dom);
+        $('#website').html(website);
+        $('#description').html(description);
+        $('#table').html('<table>' + tbody + '</table>');
+      } else {
+        $('#chartdiv3').html('We have no additional information about ' + curr_company + '.');
+      }
+    });
+
+    // // is there a better way to code this?
+    // if (curr_company == 'AAC.AX') {
+    //   Blaze.render(Template.aac, dom);
+    // } else if (curr_company == 'ELD.AX') {
+    //   Blaze.render(Template.eld, dom);
+    // } else if (curr_company == 'ELDDA.AX') {
+    //   Blaze.render(Template.eld, dom);
+    // } else if (curr_company == 'GNC.AX') {
+    //   Blaze.render(Template.gnc, dom);
+    // }  else if (curr_company == 'RIC.AX') {
+    //   Blaze.render(Template.ric, dom);
+    // }  else if (curr_company == 'TGR.AX') {
+    //   Blaze.render(Template.tgr, dom);
+    // }  else if (curr_company == 'WBA.AX') {
+    //   Blaze.render(Template.wba, dom);
+    // } else {
+    //   $('#chartdiv2').html('We have no additional information about ' + curr_company + '.');
+    // }
   }
 };
