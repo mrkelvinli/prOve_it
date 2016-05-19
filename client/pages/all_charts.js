@@ -12,7 +12,7 @@ Template.chart.rendered = function() {
   var token = Router.current().params.token;
   var validToken = false;
   
-  var curr_graph = 'volatility';
+  var curr_graph = 'event-study';
   var curr_company = "AAC.AX";
   var second_company = "AAC.AX";
   var curr_topic = "Cash Rate";
@@ -98,6 +98,8 @@ Template.chart.rendered = function() {
     $('#chartdiv3').html('');
     if (curr_graph == "candlesticks"){
       render_candlestick_graph(curr_company);
+      render_company_details();
+      render_company_chart();
     } else if (curr_graph == 'volatility'){
       $('#chartdiv2').hide();
       $('#chartdiv3').hide();
