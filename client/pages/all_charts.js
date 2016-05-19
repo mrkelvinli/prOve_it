@@ -13,7 +13,7 @@ Template.chart.rendered = function() {
   var validToken = false;
   
   var curr_graph = 'event-study';
-  var curr_company = "AAC.AX";
+  var curr_company = "AAC.AX"; // dummy initialisation
   var second_company = "AAC.AX";
   var curr_topic = "Cash Rate";
   var curr_upper = 5;
@@ -24,6 +24,14 @@ Template.chart.rendered = function() {
     // console.log(response);
     if (validToken) {
       $('ul.nav-tabs li a#'+curr_graph).parent().addClass('active');
+
+      // initialise the correct first company
+      Tracker.autorun(function() {
+        var all_company = _.uniq(StockPrices.find({}, {fields:{company_name:1}},{sort:{company_name: 1}}).fetch().map(function(x){return x.company_name}),true);
+        curr_company = all_company[0];
+      });
+
+
       renderMainGraph();
       // render_company_chart();
       // render_company_details();
@@ -1313,6 +1321,11 @@ Template.chart.rendered = function() {
     $('#chartdiv2').html('');
     var dom = document.getElementById('chartdiv2');
 
+    Meteor.call('scrapeSearch', curr_company, function(err, response) {
+      console.log(response);
+      console.log(err);
+    });
+
     // is there a better way to code this?
     if (curr_company == 'AAC.AX') {
       Blaze.render(Template.aac, dom);
@@ -1328,7 +1341,9 @@ Template.chart.rendered = function() {
       Blaze.render(Template.tgr, dom);
     }  else if (curr_company == 'WBA.AX') {
       Blaze.render(Template.wba, dom);
-    } 
+    } else {
+      $('#chartdiv2').html('We have no additional information about ' + curr_company + '.');
+    }
   }
 };
 

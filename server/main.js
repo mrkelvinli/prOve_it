@@ -57,13 +57,20 @@ if(Meteor.isServer) {
       // console.log('checking: '+token);
       return StockPrices.find({token:token}).count() > 0;
     },
-    // google: function(company) {
-    //   // from https://themeteorchef.com/snippets/synchronous-methods/
-    //   var url = "https://www.google.com.au/?gfe_rd=cr&ei=hA87V6LWFcHN8geG06SQAQ#q=" + company;
-    //   console.log(url);
-    //   var convertAsyncToSync  = Meteor.wrapAsync(HTTP.get),
-    //     resultOfAsyncToSync = convertAsyncToSync(url, {});
-    //   return resultOfAsyncToSync;
-    // }
+    scrapeSearch: function(company) {
+      // from https://themeteorchef.com/snippets/synchronous-methods/
+      var withoutAX = company.replace(/\.[Aa][Xx]/, '');
+      var url = "http://www.investogain.com.au/company/company_search_by_code?keywords_code=" + withoutAX;
+      console.log(url);
+
+      if (withoutAX.length != 3) {
+        throw new Error('company invalid');
+      } else {
+        var convertAsyncToSync  = Meteor.wrapAsync(HTTP.get),
+          resultOfAsyncToSync = convertAsyncToSync(url, {});
+          console.log(resultOfAsyncToSync);
+        return resultOfAsyncToSync;
+      }
+    }
   });
 }
