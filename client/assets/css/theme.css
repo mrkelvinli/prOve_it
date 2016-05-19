@@ -236,7 +236,7 @@ button#alabaster:hover {
 }
 
 .main-section{
-    padding:90px 0 110px;
+    padding:90px 0 40px;
 }
 
 
@@ -757,14 +757,15 @@ border: 2px solid #fff;
     padding:35px 0 35px;
 }
 .footer-logo{
-    margin:15px auto 35px;
-    width: 76px;
+    margin:20px auto 20px;
+    width: 31px;
 }
 .copyright{
     /*color:#cccccc;*/
     color: white;
     display:block;
     text-align:center !important;
+    width: 1200px;
 }
 .copyright a{
     color:#F47C3C;
