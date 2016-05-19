@@ -163,19 +163,6 @@ Template.chart.rendered = function() {
       var avg = 0;
       var currPrice = 0;
       var prevPrice = 0;
-      // stock_prices.forEach(function (day) {
-      //   prevPrice = currPrice;
-      //   currPrice = day.price;
-
-      // //   //calculate moving average for 2 days
-      // //   avg = (prevPrice + currPrice)/2;
-      // //   var entry = {
-      // //     time: day.time,
-      // //     price: day.price,
-      // //     mAvg: avg
-      // //   }
-      // //   sma.push(entry);
-      // // });
 
       //calculate standard deviation
       var toDoList = []; //array of arrays of values [[1,2],[2,3],[9,10]]
@@ -195,10 +182,10 @@ Template.chart.rendered = function() {
           toDoList.push({"currArray": currArray, "time": stock_prices[i-30].time, "price": stock_prices[i].price});
         }
       // console.log(toDoList);
-    }
+      }
       toDoList.forEach(function (c){
         var result = standardDeviation(c.currArray);
-        var entry = {"time": c.time, "price": c.price, "mAvg": result[1], "sdUpper": ((result[0]*2)+result[1]), "sdLower": (result[1]-(result[0]*2)), "sd": result};
+        var entry = {"time": c.time, "price": c.price, "mAvg": result[1], "sdUpper": ((result[0]*2)+result[1]), "sdLower": (result[1]-(result[0]*2)), "sd": result[0]};
         // console.log(entry);
         sma.push(entry);
       });
@@ -236,157 +223,271 @@ Template.chart.rendered = function() {
 
     function drawGraph(sma,company) {
 
-      var chart = AmCharts.makeChart("chartdiv", {
-      "type": "serial",
-      "theme": "light",
-      "pathToImages": "/amcharts/images/",
-      "autoMarginOffset": 20,
-      "marginRight": 80,
-      "titles": [{
-        "text": "Volatility for "+ company,
-      }],
-      "legend": {
-        "equalWidths": false,
-        //"periodValueText": "total: [[value.sum]]",
-        "position": "top",
-        "valueAlign": "left",
-        "valueWidth": 100,
-        "clickMarker": handleLegendClick,
-        "clickLabel": handleLegendClick
-      },
-      "dataProvider": sma,
-      "panels": [ 
-        {
+      var chart = AmCharts.makeChart( "chartdiv", {
+        "type": "stock",
+        "theme": "light",
+        "pathToImages": "/amcharts/images/",
+        "autoMarginOffset": 20,
+        "marginRight": 80,
+        "titles": [{
+          "text": "Volatility for "+ company,
+        }],
+        
+
+        "dataSets": [ {
+          "fieldMappings": [ {
+            "fromField": "price",
+            "toField": "price"
+          }, {
+            "fromField": "mAvg",
+            "toField": "mAvg"
+          }, {
+            "fromField": "sdUpper",
+            "toField": "sdUpper"
+          }, {
+            "fromField": "sdLower",
+            "toField": "sdLower"
+          },{
+            "fromField": "sd",
+            "toField": "sd"
+          }],
+          "color": "orange",
+          "dataProvider": sma,
+          // "title": "West Stock",
+          "categoryField": "time"
+        }, 
+        // {
+        //   "fieldMappings": [ {
+        //     "fromField": "sd",
+        //     "toField": "sd"
+        //   } ],
+        //   // "color": "blue",
+        //   "dataProvider": sma,
+        //   "compared": true,
+        //   // "title": "East Stock",
+        //   "categoryField": "time"
+        // } 
+        ],
+
+
+        "panels": [ {
           "title": "Volatility",
           "percentHeight": 30,
           "marginTop": 1,
           "showCategoryAxis": true,
+          "percentHeight": 70,
           "valueAxes": [ {
-            "dashLength": 5
-          } ],
+            "id": "v1",
+            // "dashLength": 5
 
-          "categoryAxis": {
-            "dashLength": 5
+            "gridColor": "#000000",
+            "gridAlpha": 0.2,
+            "dashLength": 10,
+            "title": "Stock Price ($)",
+          } ],
+          "categoryField": "time",
+            "categoryAxis": {
+              "parseDates": true,
+              "position":"top",
+              // "axisAlpha": 0,
+              // "minHorizontalGap": 25,
+              // "gridAlpha": 0,
+              // "tickLength": 0,
+              // "dateFormats": [{
+              //     "period": 'fff',
+              //     "format": 'JJ:NN:SS'
+              // }, {
+              //     "period": 'ss',
+              //     "format": 'JJ:NN:SS'
+              // }, {
+              //     "period": 'mm',
+              //     "format": 'JJ:NN'
+              // }, {
+              //     "period": 'hh',
+              //     "format": 'JJ:NN'
+              // }, {
+              //     "period": 'DD',
+              //     "format": 'DD'
+              // }, {
+              //     "period": 'WW',
+              //     "format": 'DD'
+              // }, {
+              //     "period": 'MM',
+              //     "format": 'MMM'
+              // }, {
+              //     "period": 'YYYY',
+              //     "format": 'YYYY'
+              // }],
+              "gridPosition": "middle",
+
+              "gridAlpha": 0.2,
+              "dashLength": 10,
+              "title": "Time (Days)"
+            },
+
+            "stockGraphs": [{
+              "id": "priceGraph",
+              "balloonText": "Price: <b>[[price]]</b><br>Upper Band: <b>[[sdUpper]]</b><br>SMA(30): <b>[[mAvg]]</b><br>Lower Band: <b>[[sdLower]]</b>",
+              "balloonFunction": function(item, graph) {
+                var result = graph.balloonText;
+                for (var key in item.dataContext) {
+                  if (item.dataContext.hasOwnProperty(key) && !isNaN(item.dataContext[key])) {
+                    var formatted = AmCharts.formatNumber(item.dataContext[key], {
+                      precision: chart.precision,
+                      decimalSeparator: chart.decimalSeparator,
+                      thousandsSeparator: chart.thousandsSeparator
+                    }, 2);
+                    result = result.replace("[[" + key + "]]", formatted);
+                  }
+                }
+                return result;
+              },
+              // "bullet": "round",
+              "fillAlphas": 0,
+              "lineAlpha": 1,
+              "type": "line",
+              "lineColor": "#ff6600",
+              "lineThickness": 2,
+              "valueField": "price",
+              "title": "Stock Price",
+              "labelPosition": "right",
+              //"visibleInLegend": false,
+              "labelFunction": labelFunction,
+              //"labelText": "Stock Price"
+              "useDataSetColors":false,
+            }, {
+              "id": "smaGraph",
+              //"balloonText": "SMA(30): <b>[[value]]</b>",
+              "showBalloon": false,
+              "fillAlphas": 0,
+              "lineAlpha": 0.8,
+              "lineThickness": 2,
+              "type": "line",
+              "dashLength": 4,
+              "lineColor": "#0077aa",
+              "valueField": "mAvg",
+              "title": "Bollinger Bands",
+              "labelPosition": "right",
+              "labelFunction": labelFunction,
+              "labelText": "SMA(30)",
+              "useDataSetColors":false,
+            }, {
+              "id": "sdUpperGraph",
+              //"balloonText": "Upper Band: <b>[[value]]</b>",
+              "showBalloon": false,
+              "fillAlphas": 0.3,
+              "fillColors": ["#ffa31a"],
+              "lineAlpha": 0,
+              "type": "line",
+              "fillToGraph": "sdLowerGraph",
+              "valueField": "sdUpper",
+              "title": "UpperBand",
+              "visibleInLegend": false,
+              "labelPosition": "right",
+              "labelFunction": labelFunction,
+              "useDataSetColors":false,
+              //"labelText": "Upper Band"
+            }, {
+              "id": "sdLowerGraph",
+              //"balloonText": "Lower Band: <b>[[value]]</b>",
+              "showBalloon": false,
+              "fillAlphas": 0,
+              "lineAlpha": 0,
+              "type": "line",
+              "valueField": "sdLower",
+              "title": "LowerBand",
+              "labelPosition": "right",
+              "visibleInLegend": false,
+              "labelFunction": labelFunction,
+              "useDataSetColors":false,
+              //"labelText": "Lower Band"
+            }, {
+
+            }],
+
+            "stockLegend": {
+              // "valueTextRegular": undefined,
+              // "periodValueTextComparing": "[[percents.value.close]]%"
+              "equalWidths": false,
+              //"periodValueText": "total: [[value.sum]]",
+              "position": "top",
+              "valueAlign": "left",
+              "valueWidth": 100,
+              "clickMarker": handleLegendClick,
+              "clickLabel": handleLegendClick
+
+            }
           },
 
-          "stockGraphs": [{
-            "valueField": "sd",
-            "type": "line",
-            "showBalloon": false,
-            "fillAlphas": 1
-          }],
-        }
-      ],
-      "valueAxes": [ {
-        "gridColor": "#000000",
-        "gridAlpha": 0.2,
-        "dashLength": 10,
-        "title": "Stock Price ($)"
-      } ],
-      "gridAboveGraphs": true,
-      "startDuration": 0,
-      "graphs": [ {
-        "id": "priceGraph",
-        "balloonText": "Price: <b>[[price]]</b><br>Upper Band: <b>[[sdUpper]]</b><br>SMA(30): <b>[[mAvg]]</b><br>Lower Band: <b>[[sdLower]]</b>",
-        "balloonFunction": function(item, graph) {
-          var result = graph.balloonText;
-          for (var key in item.dataContext) {
-            if (item.dataContext.hasOwnProperty(key) && !isNaN(item.dataContext[key])) {
-              var formatted = AmCharts.formatNumber(item.dataContext[key], {
-                precision: chart.precision,
-                decimalSeparator: chart.decimalSeparator,
-                thousandsSeparator: chart.thousandsSeparator
-              }, 2);
-              result = result.replace("[[" + key + "]]", formatted);
+          {
+            "title": "Standard Deviation",
+            "percentHeight": 30,
+            "marginTop": 1,
+            "showCategoryAxis": true,
+            "valueAxes": [ {
+              "dashLength": 5
+            } ],
+
+            "categoryAxis": {
+              "dashLength": 5
+            },
+
+            "stockGraphs": [ {
+              "valueField": "sd",
+              "type": "line",
+              "showBalloon": false,
+              "fillAlphas": 0,
+              "lineColor": "#ff6600",
+              "useDataSetColors":false,
+            } ],
+
+            "stockLegend": {
+              "markerType": "none",
+              "markerSize": 0,
+              "labelText": "",
+              "periodValueTextRegular": "[[sd]]"
             }
           }
-          return result;
-        },
-        // "bullet": "round",
-        "fillAlphas": 0,
-        "lineAlpha": 1,
-        "type": "line",
-        "lineColor": "#ff6600",
-        "lineThickness": 2,
-        "valueField": "price",
-        "title": "Stock Price",
-        "labelPosition": "right",
-        //"visibleInLegend": false,
-        "labelFunction": labelFunction,
-        //"labelText": "Stock Price"
-      },
-      {
-        "id": "smaGraph",
-        //"balloonText": "SMA(30): <b>[[value]]</b>",
-        "showBalloon": false,
-        "fillAlphas": 0,
-        "lineAlpha": 0.8,
-        "lineThickness": 2,
-        "type": "line",
-        "dashLength": 4,
-        "lineColor": "#0077aa",
-        "valueField": "mAvg",
-        "title": "Bollinger Bands",
-        "labelPosition": "right",
-        "labelFunction": labelFunction,
-        "labelText": "SMA(30)"
-      },
-      {
-        "id": "sdUpperGraph",
-        //"balloonText": "Upper Band: <b>[[value]]</b>",
-        "showBalloon": false,
-        "fillAlphas": 0.3,
-        "fillColors": ["#ffa31a"],
-        "lineAlpha": 0,
-        "type": "line",
-        "fillToGraph": "sdLowerGraph",
-        "valueField": "sdUpper",
-        "title": "UpperBand",
-        "visibleInLegend": false,
-        "labelPosition": "right",
-        "labelFunction": labelFunction,
-        //"labelText": "Upper Band"
-      },
-      {
-        "id": "sdLowerGraph",
-        //"balloonText": "Lower Band: <b>[[value]]</b>",
-        "showBalloon": false,
-        "fillAlphas": 0,
-        "lineAlpha": 0,
-        "type": "line",
-        "valueField": "sdLower",
-        "title": "LowerBand",
-        "labelPosition": "right",
-        "visibleInLegend": false,
-        "labelFunction": labelFunction,
-        //"labelText": "Lower Band"
-      }],
-      "chartCursor": {
-        "categoryBalloonEnabled": false,
-        "cursorAlpha": 0,
-        "zoomable": true
-      },
-      "chartScrollbar": {
-        "autoGridCount": true,
-        "graph": "priceGraph",
-        "scrollbarHeight": 30,
-        "updateOnReleaseOnly": true,
-        //"graphFillColor": "orange",
-        "selectedGraphFillColor": "orange",
-        "selectedGraphFillAlpha": 0.8,
-      },
-      "categoryField": "time",
-      "categoryAxis": {
-        "gridPosition": "middle",
-        "parseDates": true,
+        ],
 
-        "gridAlpha": 0.2,
-        "dashLength": 10,
-        "title": "Time (Days)"
-        //"tickPosition": "start",
-        //"tickLength": 20
-      },
-      "listeners": [{
+        "chartScrollbarSettings": {
+          "graph": "priceGraph",
+          "graphType": "line",
+          "usePeriod": "WW"
+        },
+
+        "chartCursorSettings": {
+          "valueLineBalloonEnabled": true,
+          "valueLineEnabled": true
+        },
+
+        "periodSelector": {
+          "position": "bottom",
+          "periods": [ {
+            "period": "DD",
+            "count": 10,
+            "label": "10 days"
+          }, {
+            "period": "MM",
+            selected: true,
+            "count": 1,
+            "label": "1 month"
+          }, {
+            "period": "YYYY",
+            "count": 1,
+            "label": "1 year"
+          }, {
+            "period": "YTD",
+            "label": "YTD"
+          }, {
+            "period": "MAX",
+            "label": "MAX"
+          } ]
+        },
+        "export": {
+          "enabled": true
+        },
+        "listeners": [{
         "event": "init",
         "method": function(event) {
           //var end = new Date(); // today
@@ -398,6 +499,7 @@ Template.chart.rendered = function() {
         }},{
         "event": "zoomed",
         "method": function(event) {
+          console.log(event.chart.panels[0].stockGraphs.getGraphById("priceGraph"));
           var zoomPercent = (event.endIndex - event.startIndex) / event.endIndex;
           console.log("zoom: "+zoomPercent);
           var graph = event.chart.getGraphById("priceGraph");
@@ -408,10 +510,184 @@ Template.chart.rendered = function() {
             graph.bullet = "round";
           }
         }}],
-      "export": {
-        "enabled": true
-      }
-    }); 
+      });
+
+    //   var chart = AmCharts.makeChart("chartdiv", {
+    //   "type": "serial",
+    //   "theme": "light",
+    //   "pathToImages": "/amcharts/images/",
+    //   "autoMarginOffset": 20,
+    //   "marginRight": 80,
+    //   "titles": [{
+    //     "text": "Volatility for "+ company,
+    //   }],
+    //   "legend": {
+    //     "equalWidths": false,
+    //     //"periodValueText": "total: [[value.sum]]",
+    //     "position": "top",
+    //     "valueAlign": "left",
+    //     "valueWidth": 100,
+    //     "clickMarker": handleLegendClick,
+    //     "clickLabel": handleLegendClick
+    //   },
+    //   "dataProvider": sma,
+    //   "panels": [ 
+    //     {
+    //       "title": "Volatility",
+    //       "percentHeight": 30,
+    //       "marginTop": 1,
+    //       "showCategoryAxis": true,
+    //       "valueAxes": [ {
+    //         "dashLength": 5
+    //       } ],
+
+    //       "categoryAxis": {
+    //         "dashLength": 5
+    //       },
+
+    //       "stockGraphs": [{
+    //         "valueField": "sd",
+    //         "type": "line",
+    //         "showBalloon": false,
+    //         "fillAlphas": 1
+    //       }],
+    //     }
+    //   ],
+    //   "valueAxes": [ {
+    //     "gridColor": "#000000",
+    //     "gridAlpha": 0.2,
+    //     "dashLength": 10,
+    //     "title": "Stock Price ($)"
+    //   } ],
+    //   "gridAboveGraphs": true,
+    //   "startDuration": 0,
+    //   "graphs": [ {
+    //     "id": "priceGraph",
+    //     "balloonText": "Price: <b>[[price]]</b><br>Upper Band: <b>[[sdUpper]]</b><br>SMA(30): <b>[[mAvg]]</b><br>Lower Band: <b>[[sdLower]]</b>",
+    //     "balloonFunction": function(item, graph) {
+    //       var result = graph.balloonText;
+    //       for (var key in item.dataContext) {
+    //         if (item.dataContext.hasOwnProperty(key) && !isNaN(item.dataContext[key])) {
+    //           var formatted = AmCharts.formatNumber(item.dataContext[key], {
+    //             precision: chart.precision,
+    //             decimalSeparator: chart.decimalSeparator,
+    //             thousandsSeparator: chart.thousandsSeparator
+    //           }, 2);
+    //           result = result.replace("[[" + key + "]]", formatted);
+    //         }
+    //       }
+    //       return result;
+    //     },
+    //     // "bullet": "round",
+    //     "fillAlphas": 0,
+    //     "lineAlpha": 1,
+    //     "type": "line",
+    //     "lineColor": "#ff6600",
+    //     "lineThickness": 2,
+    //     "valueField": "price",
+    //     "title": "Stock Price",
+    //     "labelPosition": "right",
+    //     //"visibleInLegend": false,
+    //     "labelFunction": labelFunction,
+    //     //"labelText": "Stock Price"
+    //   },
+    //   {
+    //     "id": "smaGraph",
+    //     //"balloonText": "SMA(30): <b>[[value]]</b>",
+    //     "showBalloon": false,
+    //     "fillAlphas": 0,
+    //     "lineAlpha": 0.8,
+    //     "lineThickness": 2,
+    //     "type": "line",
+    //     "dashLength": 4,
+    //     "lineColor": "#0077aa",
+    //     "valueField": "mAvg",
+    //     "title": "Bollinger Bands",
+    //     "labelPosition": "right",
+    //     "labelFunction": labelFunction,
+    //     "labelText": "SMA(30)"
+    //   },
+    //   {
+    //     "id": "sdUpperGraph",
+    //     //"balloonText": "Upper Band: <b>[[value]]</b>",
+    //     "showBalloon": false,
+    //     "fillAlphas": 0.3,
+    //     "fillColors": ["#ffa31a"],
+    //     "lineAlpha": 0,
+    //     "type": "line",
+    //     "fillToGraph": "sdLowerGraph",
+    //     "valueField": "sdUpper",
+    //     "title": "UpperBand",
+    //     "visibleInLegend": false,
+    //     "labelPosition": "right",
+    //     "labelFunction": labelFunction,
+    //     //"labelText": "Upper Band"
+    //   },
+    //   {
+    //     "id": "sdLowerGraph",
+    //     //"balloonText": "Lower Band: <b>[[value]]</b>",
+    //     "showBalloon": false,
+    //     "fillAlphas": 0,
+    //     "lineAlpha": 0,
+    //     "type": "line",
+    //     "valueField": "sdLower",
+    //     "title": "LowerBand",
+    //     "labelPosition": "right",
+    //     "visibleInLegend": false,
+    //     "labelFunction": labelFunction,
+    //     //"labelText": "Lower Band"
+    //   }],
+    //   "chartCursor": {
+    //     "categoryBalloonEnabled": false,
+    //     "cursorAlpha": 0,
+    //     "zoomable": true
+    //   },
+    //   "chartScrollbar": {
+    //     "autoGridCount": true,
+    //     "graph": "priceGraph",
+    //     "scrollbarHeight": 30,
+    //     "updateOnReleaseOnly": true,
+    //     //"graphFillColor": "orange",
+    //     "selectedGraphFillColor": "orange",
+    //     "selectedGraphFillAlpha": 0.8,
+    //   },
+    //   "categoryField": "time",
+    //   "categoryAxis": {
+    //     "gridPosition": "middle",
+    //     "parseDates": true,
+
+    //     "gridAlpha": 0.2,
+    //     "dashLength": 10,
+    //     "title": "Time (Days)"
+    //     //"tickPosition": "start",
+    //     //"tickLength": 20
+    //   },
+    //   "listeners": [{
+    //     "event": "init",
+    //     "method": function(event) {
+    //       //var end = new Date(); // today
+    //       //var start = new Date(end);
+    //       //start.setDate(end.getDate() - 10);
+    //       event.chart.zoomToIndexes(event.chart.dataProvider.length - 80, event.chart.dataProvider.length - 1);
+    //       var graph = event.chart.getGraphById("priceGraph");
+    //       graph.bullet = "round";
+    //     }},{
+    //     "event": "zoomed",
+    //     "method": function(event) {
+    //       var zoomPercent = (event.endIndex - event.startIndex) / event.endIndex;
+    //       console.log("zoom: "+zoomPercent);
+    //       var graph = event.chart.getGraphById("priceGraph");
+    //       var chart = event.chart;
+    //       if (zoomPercent > 0.4){
+    //         graph.bullet = "none";
+    //       } else {
+    //         graph.bullet = "round";
+    //       }
+    //     }}],
+    //   "export": {
+    //     "enabled": true
+    //   }
+    // }); 
 
   }
 
