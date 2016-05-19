@@ -26,7 +26,7 @@ Template.chart.rendered = function() {
       $('ul.nav-tabs li a#'+curr_graph).parent().addClass('active');
       renderMainGraph();
       // render_company_chart();
-      render_company_details();
+      // render_company_details();
     } else {
       alert("invalid token");
     }
@@ -105,9 +105,9 @@ Template.chart.rendered = function() {
       $('#chartdiv3').hide();
       render_volatility_chart(curr_company);
     } else if (curr_graph == 'event-study'){
-      render_company_details();
-      render_company_chart();
       render_events_chart(curr_company, curr_topic, curr_upper, curr_lower);
+      // render_company_details();
+      // render_company_chart();
     } else if (curr_graph == 'stock-topic'){
       render_stock_vs_topic_graph(curr_company, curr_topic, curr_upper, curr_lower);
     }
@@ -499,28 +499,30 @@ Template.chart.rendered = function() {
           "enabled": true
         },
         "listeners": [{
-        "event": "init",
-        "method": function(event) {
-          //var end = new Date(); // today
-          //var start = new Date(end);
-          //start.setDate(end.getDate() - 10);
-          event.chart.zoomToIndexes(event.chart.dataProvider.length - 80, event.chart.dataProvider.length - 1);
-          var graph = event.chart.getGraphById("priceGraph");
-          graph.bullet = "round";
-        }},{
-        "event": "zoomed",
-        "method": function(event) {
-          console.log(event.chart.panels[0].stockGraphs.getGraphById("priceGraph"));
-          var zoomPercent = (event.endIndex - event.startIndex) / event.endIndex;
-          console.log("zoom: "+zoomPercent);
-          var graph = event.chart.getGraphById("priceGraph");
-          var chart = event.chart;
-          if (zoomPercent > 0.4){
-            graph.bullet = "none";
-          } else {
-            graph.bullet = "round";
+          "event": "init",
+          "method": function(event) {
+            //var end = new Date(); // today
+            //var start = new Date(end);
+            //start.setDate(end.getDate() - 10);
+            // event.chart.zoomToIndexes(event.chart.dataProvider.length - 80, event.chart.dataProvider.length - 1);
+            // var graph = event.chart.getGraphById("priceGraph");
+            // graph.bullet = "round";
           }
-        }}],
+        },{
+          "event": "zoomed",
+          "method": function(event) {
+            // console.log(event.chart.panels[0].stockGraphs.getGraphById("priceGraph"));
+            // var zoomPercent = (event.endIndex - event.startIndex) / event.endIndex;
+            // console.log("zoom: "+zoomPercent);
+            // var graph = event.chart.getGraphById("priceGraph");
+            // var chart = event.chart;
+            // if (zoomPercent > 0.4){
+            //   graph.bullet = "none";
+            // } else {
+            //   graph.bullet = "round";
+            // }
+          }
+        }],
       });
 
     //   var chart = AmCharts.makeChart("chartdiv", {
