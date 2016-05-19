@@ -79,7 +79,7 @@ if(Meteor.isServer) {
 
         // so going to use a python scraper
         // (from https://stackoverflow.com/questions/23011443/best-way-to-get-python-and-meteor-talking)
-        var command = 'python3 scrape.py ' + url; // current directory: prOve_it/.meteor/local/build/programs/server
+        var command = 'python3 ../../../../../.name/scrape.py ' + url; // current directory: prOve_it/.meteor/local/build/programs/server
         var convertAsyncToSync  = Meteor.wrapAsync(exec),
           resultOfAsyncToSync = convertAsyncToSync(command);
         // console.log(resultOfAsyncToSync);
