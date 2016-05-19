@@ -1320,15 +1320,15 @@ Template.chart.rendered = function() {
     $('#chartdiv2').html('');
     var dom = document.getElementById('chartdiv2');
 
-    Meteor.call('scrapeSearch', curr_company, function(err, response) {
-      console.log(response);
-      console.log(err);
-      // if (response != null) {
-      //   var regex = /\<table class="[a-z]*tablesorter.*\<\/tbody\>/;
-      //   var rawResults1 = response.match(regex);
-      //   console.log("results: " + rawResults1);
-      // }
-    });
+    // Meteor.call('scrapeSearch', curr_company, function(err, response) {
+    //   console.log(response);
+    //   console.log(err);
+    //   if (response != null) {
+    //     var regex = /\<table class="[a-z]*tablesorter.*\<\/tbody\>/;
+    //     var rawResults1 = response.match(regex);
+    //     console.log("results: " + rawResults1);
+    //   }
+    // });
 
     // is there a better way to code this?
     if (curr_company == 'AAC.AX') {
