@@ -31,7 +31,6 @@ Template.chart.rendered = function() {
         curr_company = all_company[0];
       });
 
-
       renderMainGraph();
       // render_company_chart();
       // render_company_details();
@@ -1324,6 +1323,11 @@ Template.chart.rendered = function() {
     Meteor.call('scrapeSearch', curr_company, function(err, response) {
       console.log(response);
       console.log(err);
+      // if (response != null) {
+      //   var regex = /\<table class="[a-z]*tablesorter.*\<\/tbody\>/;
+      //   var rawResults1 = response.match(regex);
+      //   console.log("results: " + rawResults1);
+      // }
     });
 
     // is there a better way to code this?

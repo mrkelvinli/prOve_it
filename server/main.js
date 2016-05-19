@@ -52,23 +52,37 @@ if(Meteor.isServer) {
     });
   });
 
+  var exec = Npm.require('child_process').exec;
+  var Fiber = Npm.require('fibers');
+  var Future = Npm.require('fibers/future');
+
   Meteor.methods({
     checkToken: function (token) {
       // console.log('checking: '+token);
       return StockPrices.find({token:token}).count() > 0;
     },
     scrapeSearch: function(company) {
-      // from https://themeteorchef.com/snippets/synchronous-methods/
+      // (from https://themeteorchef.com/snippets/synchronous-methods/)
       var withoutAX = company.replace(/\.[Aa][Xx]/, '');
-      var url = "http://www.investogain.com.au/company/company_search_by_code?keywords_code=" + withoutAX;
+      var url = "http://www.delisted.com.au/company/company_search_by_code/?keywords_code=" + withoutAX;
+      // var url = "http://www.asx.com.au/asx/research/company.do#!/AAC/details";
       console.log(url);
 
       if (withoutAX.length != 3) {
         throw new Error('company invalid');
       } else {
-        var convertAsyncToSync  = Meteor.wrapAsync(HTTP.get),
-          resultOfAsyncToSync = convertAsyncToSync(url, {});
-          console.log(resultOfAsyncToSync);
+        // HTTP.get never seems to return the page I want (always either 'not permitted', or the site's homepage):
+        // var convertAsyncToSync  = Meteor.wrapAsync(HTTP.get),
+        //   resultOfAsyncToSync = convertAsyncToSync(url, {});
+        // console.log(resultOfAsyncToSync);
+        // return resultOfAsyncToSync;
+
+        // so going to use a python scraper
+        // (from https://stackoverflow.com/questions/23011443/best-way-to-get-python-and-meteor-talking)
+        var command = 'python3 ../../../../../.name/scrape.py ' + url; // current directory: prOve_it/.meteor/local/build/programs/server
+        var convertAsyncToSync  = Meteor.wrapAsync(exec),
+          resultOfAsyncToSync = convertAsyncToSync(command);
+        // console.log(resultOfAsyncToSync);
         return resultOfAsyncToSync;
       }
     }
