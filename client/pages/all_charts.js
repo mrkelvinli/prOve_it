@@ -23,6 +23,13 @@ Template.chart.rendered = function() {
     validToken = response;
     if (validToken) {
       $('ul.nav-tabs li a#'+curr_graph).parent().addClass('active');
+
+      // initialise the correct first company
+      Tracker.autorun(function() {
+        var all_company = _.uniq(StockPrices.find({}, {fields:{company_name:1}},{sort:{company_name: 1}}).fetch().map(function(x){return x.company_name}),true);
+        curr_company = all_company[0];
+      });
+
       renderMainGraph();
     } else {
       alert("invalid token");
@@ -1239,10 +1246,22 @@ Template.chart.rendered = function() {
     $('#chartdiv3').html('');
     var dom = document.getElementById('chartdiv3');
 
+    // Meteor.call('scrapeSearch', curr_company, function(err, response) {
+    //   console.log(response);
+    //   console.log(err);
+    //   if (response != null) {
+    //     var regex = /\<table class="[a-z]*tablesorter.*\<\/tbody\>/;
+    //     var rawResults1 = response.match(regex);
+    //     console.log("results: " + rawResults1);
+    //   }
+    // });
+
     // is there a better way to code this?
     if (curr_company == 'AAC.AX') {
       Blaze.render(Template.aac, dom);
     } else if (curr_company == 'ELD.AX') {
+      Blaze.render(Template.eld, dom);
+    } else if (curr_company == 'ELDDA.AX') {
       Blaze.render(Template.eld, dom);
     } else if (curr_company == 'GNC.AX') {
       Blaze.render(Template.gnc, dom);
@@ -1252,6 +1271,8 @@ Template.chart.rendered = function() {
       Blaze.render(Template.tgr, dom);
     }  else if (curr_company == 'WBA.AX') {
       Blaze.render(Template.wba, dom);
-    } 
+    } else {
+      $('#chartdiv2').html('We have no additional information about ' + curr_company + '.');
+    }
   }
 };
