@@ -25,8 +25,7 @@ Template.chart.rendered = function() {
       $('ul.nav-tabs li a#'+curr_graph).parent().addClass('active');
 
       // initialise the correct first company
-      var all_company = StockPrices.findOne({token: token}, {fields:{company_name:1}, sort:{company_name: 1}}).fetch().map(function(x){return x.company_name});
-      curr_company = all_company[0];
+      var curr_company = StockPrices.find({token: token}, {fields:{company_name:1}, sort:{company_name: 1}});
 
       renderMainGraph();
     } else {
