@@ -1318,6 +1318,8 @@ Template.chart.rendered = function() {
       Blaze.render(Template.aac, dom);
     } else if (curr_company == 'ELD.AX') {
       Blaze.render(Template.eld, dom);
+    } else if (curr_company == 'ELDDA.AX') {
+      Blaze.render(Template.eld, dom);
     } else if (curr_company == 'GNC.AX') {
       Blaze.render(Template.gnc, dom);
     }  else if (curr_company == 'RIC.AX') {
