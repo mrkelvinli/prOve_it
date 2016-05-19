@@ -12,7 +12,7 @@ Template.chart.rendered = function() {
   var token = Router.current().params.token;
   var validToken = false;
   
-  var curr_graph = 'candlesticks';
+  var curr_graph = 'volatility';
   var curr_company = "AAC.AX";
   var second_company = "AAC.AX";
   var curr_topic = "Cash Rate";
@@ -23,9 +23,8 @@ Template.chart.rendered = function() {
     validToken = response;
     // console.log(response);
     if (validToken) {
-      curr_graph = 'volatility';
-      $('ul.nav-tabs li a#volatility').parent().addClass('active');
-      render_volatility_chart(curr_company);
+      $('ul.nav-tabs li a#'+curr_graph).parent().addClass('active');
+      renderMainGraph();
       // render_company_chart();
       render_company_details();
     } else {
