@@ -249,6 +249,7 @@ Template.chart.rendered = function() {
         "position": "top",
         "valueAlign": "left",
         "valueWidth": 100,
+        "verticalGap": 5,
         "clickMarker": handleLegendClick,
         "clickLabel": handleLegendClick
       },
@@ -940,7 +941,7 @@ Template.chart.rendered = function() {
               for (var key in item.dataContext) {
                 if (item.dataContext.hasOwnProperty(key) && !isNaN(item.dataContext[key])) {
                   var formatted = AmCharts.formatNumber(item.dataContext[key], {
-                    precision: chart.precision,
+                    precision: 5,
                     decimalSeparator: chart.decimalSeparator,
                     thousandsSeparator: chart.thousandsSeparator
                   }, 2);
