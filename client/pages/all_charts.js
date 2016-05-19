@@ -12,8 +12,8 @@ Template.chart.rendered = function() {
   var token = Router.current().params.token;
   var validToken = false;
   
-  var curr_graph = 'event-study';
-  var curr_company = "AAC.AX"; // dummy initialisation
+  var curr_graph = 'stock-topic';
+  var curr_company = "AAC.AX";
   var second_company = "AAC.AX";
   var curr_topic = "Cash Rate";
   var curr_upper = 5;
@@ -21,7 +21,6 @@ Template.chart.rendered = function() {
 
   Meteor.call('checkToken',token, function(err, response) {
     validToken = response;
-    // console.log(response);
     if (validToken) {
       $('ul.nav-tabs li a#'+curr_graph).parent().addClass('active');
 
@@ -32,8 +31,6 @@ Template.chart.rendered = function() {
       });
 
       renderMainGraph();
-      // render_company_chart();
-      // render_company_details();
     } else {
       alert("invalid token");
     }
@@ -55,71 +52,77 @@ Template.chart.rendered = function() {
     }
     renderMainGraph();
     currentTab.parent().addClass('active');
-    // console.log(currentTab.parent());
   });
 
-  // control the navbar to switch between the main stock
+  // selector to switch between the stocks and topics
   var choose_main_stock = $('#choose-main-stock');
   var choose_second_stock = $('#choose-second-stock');
   var choose_topic = $('#choose-topic');
-  // console.log(choose_main_stock);
-  Tracker.autorun(function() {
-    var all_company = _.uniq(StockPrices.find({}, {fields:{company_name:1}},{sort:{company_name: 1}}).fetch().map(function(x){return x.company_name}),true);
-    choose_main_stock.empty();
-    choose_second_stock.empty();
-    all_company.forEach(function(c){
-      // console.log(c);
-      choose_main_stock.append("<option>"+c+"</option>");
-      choose_second_stock.append("<option>"+c+"</option>");
-    });
-    choose_main_stock.selectpicker('refresh');
-    choose_second_stock.selectpicker('refresh');
-  });
 
-  Tracker.autorun(function() {
-    var all_topics = _.uniq(StockEvents.find({token:token},{sort:{topic:1},fields:{topic:true}}).fetch().map(function(x){return x.topic}),true);
-    choose_topic.empty();
-    all_topics.forEach(function(c){
-      choose_topic.append("<option>"+c+"</option>");
-    });
-    choose_topic.selectpicker('refresh');
+  // populate the two stock selector
+  var all_company = _.uniq(StockPrices.find({}, {fields:{company_name:1}},{sort:{company_name: 1}}).fetch().map(function(x){return x.company_name}),true);
+  choose_main_stock.empty();
+  choose_second_stock.empty();
+  all_company.forEach(function(c){
+    choose_main_stock.append("<option>"+c+"</option>");
+    choose_second_stock.append("<option>"+c+"</option>");
   });
+  choose_main_stock.selectpicker('refresh');
+  choose_second_stock.selectpicker('refresh');
 
-  $('#choose-upper-window').on('change',function(){
-    curr_upper = $(this).val();
-    console.log("upper: "+curr_upper);
-    renderMainGraph();
+  // populate the topic selector
+  var all_topics = _.uniq(StockEvents.find({token:token},{sort:{topic:1},fields:{topic:true}}).fetch().map(function(x){return x.topic}),true);
+  choose_topic.empty();
+  all_topics.forEach(function(c){
+    choose_topic.append("<option>"+c+"</option>");
   });
+  choose_topic.selectpicker('refresh');
 
-  $('#choose-lower-window').on('change',function(){
-    curr_lower = $(this).val();
-    console.log("lower: "+curr_lower);
-    renderMainGraph();
-  });
 
+  // render the whole page with the current setting
   function renderMainGraph() {
     $('#chart-options').hide();
-    $('#chartdiv2').show();
-    $('#chartdiv3').show();
+    $('#chartdiv2').hide();
+    $('#chartdiv3').hide();
     $('#chartdiv2').html('');
     $('#chartdiv3').html('');
     if (curr_graph == "candlesticks"){
+      $('#chartdiv2').show();
+      $('#chartdiv3').show();
       render_candlestick_graph(curr_company);
       render_company_details();
       render_company_chart();
     } else if (curr_graph == 'volatility'){
-      $('#chartdiv2').hide();
-      $('#chartdiv3').hide();
       render_volatility_chart(curr_company);
     } else if (curr_graph == 'event-study'){
+      $('#chartdiv2').show();
+      $('#chartdiv3').show();
       render_events_chart(curr_company, curr_topic, curr_upper, curr_lower);
-      // render_company_details();
-      // render_company_chart();
     } else if (curr_graph == 'stock-topic'){
+      $('#chartdiv2').show();
+      $('#chartdiv3').show();
       render_stock_vs_topic_graph(curr_company, curr_topic, curr_upper, curr_lower);
+      render_stock_topics_average_graph(curr_company,curr_upper,curr_lower);
+      render_stock_topics_graph_significance_table(curr_company, curr_topic, curr_upper, curr_lower);
     }
   }
 
+
+  // listen to the upper window input
+  $('#choose-upper-window').on('change',function(){
+    curr_upper = $(this).val();
+    // console.log("upper: "+curr_upper);
+    renderMainGraph();
+  });
+
+  // listen to the lower window input
+  $('#choose-lower-window').on('change',function(){
+    curr_lower = $(this).val();
+    // console.log("lower: "+curr_lower);
+    renderMainGraph();
+  });
+
+  // listen to the main stock selector input
   choose_main_stock.on('change',function(){
     var c = $(this).val();
     curr_company = c;
@@ -128,12 +131,14 @@ Template.chart.rendered = function() {
     renderMainGraph();
   });
 
+  // listen to the second stock selector input
   choose_second_stock.on('change',function(){
     var c = $(this).val();
     second_company = c;
     console.log("second_company: "+second_company);
   });
 
+  // listen to the topic selector input
   choose_topic.on('change', function(){
     var t = $(this).val();
     curr_topic = t;
@@ -142,66 +147,64 @@ Template.chart.rendered = function() {
 
 
   function render_volatility_chart (company) {
-    var stock_prices = [
-      {time: 0, price: 5},
-      {time: 1, price: 5.1},
-      {time: 2, price: 5.3},
-      {time: 3, price: 5.2},
-      {time: 4, price: 4.9},
-      {time: 5, price: 5.5},
-      {time: 6, price: 5.6},
-      {time: 7, price: 5.8},
-      {time: 8, price: 5.5},
-      {time: 9, price: 5.7},
-      {time: 10, price: 6.1}
-    ];
+    // var stock_prices = [
+    //   {time: 0, price: 5},
+    //   {time: 1, price: 5.1},
+    //   {time: 2, price: 5.3},
+    //   {time: 3, price: 5.2},
+    //   {time: 4, price: 4.9},
+    //   {time: 5, price: 5.5},
+    //   {time: 6, price: 5.6},
+    //   {time: 7, price: 5.8},
+    //   {time: 8, price: 5.5},
+    //   {time: 9, price: 5.7},
+    //   {time: 10, price: 6.1}
+    // ];
 
-     Tracker.autorun(function() {
 
-      var prices = StockPrices.find({token:token, company_name: company, flat_value: {$ne: null}},{fields:{date:true, flat_value: true}}).fetch();
+    var prices = StockPrices.find({token:token, company_name: company, flat_value: {$ne: null}},{fields:{date:true, flat_value: true}}).fetch();
 
-      var stock_prices = [];
-      prices.forEach(function(p){
-        stock_prices.push({
-          time: p.date,
-          price: p.flat_value,
-        });
+    var stock_prices = [];
+    prices.forEach(function(p){
+      stock_prices.push({
+        time: p.date,
+        price: p.flat_value,
       });
+    });
 
-      var sma = [];
-      var avg = 0;
-      var currPrice = 0;
-      var prevPrice = 0;
+    var sma = [];
+    var avg = 0;
+    var currPrice = 0;
+    var prevPrice = 0;
 
-      //calculate standard deviation
-      var toDoList = []; //array of arrays of values [[1,2],[2,3],[9,10]]
-      currPrice = prevPrice = 0;
+    //calculate standard deviation
+    var toDoList = []; //array of arrays of values [[1,2],[2,3],[9,10]]
+    currPrice = prevPrice = 0;
 
-      for(var i = 0; i<(stock_prices.length); i++) {
-        var currArray = [];
-        if (i < 29) {
-          //currArray.push(stock_prices[i].price);
-        } 
-        for(var x = 0; x<30; x++) {
-            if (i>=29) {
-              currArray.push(stock_prices[i-x].price);
-            }
-        }
-        if (i > 29) {
-          toDoList.push({"currArray": currArray, "time": stock_prices[i-30].time, "price": stock_prices[i].price});
-        }
-      // console.log(toDoList);
+    for(var i = 0; i<(stock_prices.length); i++) {
+      var currArray = [];
+      if (i < 29) {
+        //currArray.push(stock_prices[i].price);
+      } 
+      for(var x = 0; x<30; x++) {
+          if (i>=29) {
+            currArray.push(stock_prices[i-x].price);
+          }
       }
-      toDoList.forEach(function (c){
-        var result = standardDeviation(c.currArray);
-        var entry = {"time": c.time, "price": c.price, "mAvg": result[1], "sdUpper": ((result[0]*2)+result[1]), "sdLower": (result[1]-(result[0]*2)), "sd": result[0]};
-        // console.log(entry);
-        sma.push(entry);
-      });
+      if (i > 29) {
+        toDoList.push({"currArray": currArray, "time": stock_prices[i-30].time, "price": stock_prices[i].price});
+      }
+    // console.log(toDoList);
+    }
+    toDoList.forEach(function (c){
+      var result = standardDeviation(c.currArray);
+      var entry = {"time": c.time, "price": c.price, "mAvg": result[1], "sdUpper": ((result[0]*2)+result[1]), "sdLower": (result[1]-(result[0]*2)), "sd": result[0]};
+      // console.log(entry);
+      sma.push(entry);
+    });
 
-      drawGraph(sma,company);
+    drawGraph(sma,company);
 
-     });
 
 
     function standardDeviation(values){
@@ -296,8 +299,6 @@ Template.chart.rendered = function() {
           "percentHeight": 70,
           "valueAxes": [ {
             "id": "v1",
-            // "dashLength": 5
-
             "gridColor": "#000000",
             "gridAlpha": 0.2,
             "dashLength": 10,
@@ -307,35 +308,6 @@ Template.chart.rendered = function() {
             "categoryAxis": {
               "parseDates": true,
               "position":"top",
-              // "axisAlpha": 0,
-              // "minHorizontalGap": 25,
-              // "gridAlpha": 0,
-              // "tickLength": 0,
-              // "dateFormats": [{
-              //     "period": 'fff',
-              //     "format": 'JJ:NN:SS'
-              // }, {
-              //     "period": 'ss',
-              //     "format": 'JJ:NN:SS'
-              // }, {
-              //     "period": 'mm',
-              //     "format": 'JJ:NN'
-              // }, {
-              //     "period": 'hh',
-              //     "format": 'JJ:NN'
-              // }, {
-              //     "period": 'DD',
-              //     "format": 'DD'
-              // }, {
-              //     "period": 'WW',
-              //     "format": 'DD'
-              // }, {
-              //     "period": 'MM',
-              //     "format": 'MMM'
-              // }, {
-              //     "period": 'YYYY',
-              //     "format": 'YYYY'
-              // }],
               "gridPosition": "middle",
 
               "gridAlpha": 0.2,
@@ -531,184 +503,6 @@ Template.chart.rendered = function() {
           }
         }],
       });
-
-    //   var chart = AmCharts.makeChart("chartdiv", {
-    //   "type": "serial",
-    //   "theme": "light",
-    //   "pathToImages": "/amcharts/images/",
-    //   "autoMarginOffset": 20,
-    //   "marginRight": 80,
-    //   "titles": [{
-    //     "text": "Volatility for "+ company,
-    //   }],
-    //   "legend": {
-    //     "equalWidths": false,
-    //     //"periodValueText": "total: [[value.sum]]",
-    //     "position": "top",
-    //     "valueAlign": "left",
-    //     "valueWidth": 100,
-    //     "clickMarker": handleLegendClick,
-    //     "clickLabel": handleLegendClick
-    //   },
-    //   "dataProvider": sma,
-    //   "panels": [ 
-    //     {
-    //       "title": "Volatility",
-    //       "percentHeight": 30,
-    //       "marginTop": 1,
-    //       "showCategoryAxis": true,
-    //       "valueAxes": [ {
-    //         "dashLength": 5
-    //       } ],
-
-    //       "categoryAxis": {
-    //         "dashLength": 5
-    //       },
-
-    //       "stockGraphs": [{
-    //         "valueField": "sd",
-    //         "type": "line",
-    //         "showBalloon": false,
-    //         "fillAlphas": 1
-    //       }],
-    //     }
-    //   ],
-    //   "valueAxes": [ {
-    //     "gridColor": "#000000",
-    //     "gridAlpha": 0.2,
-    //     "dashLength": 10,
-    //     "title": "Stock Price ($)"
-    //   } ],
-    //   "gridAboveGraphs": true,
-    //   "startDuration": 0,
-    //   "graphs": [ {
-    //     "id": "priceGraph",
-    //     "balloonText": "Price: <b>[[price]]</b><br>Upper Band: <b>[[sdUpper]]</b><br>SMA(30): <b>[[mAvg]]</b><br>Lower Band: <b>[[sdLower]]</b>",
-    //     "balloonFunction": function(item, graph) {
-    //       var result = graph.balloonText;
-    //       for (var key in item.dataContext) {
-    //         if (item.dataContext.hasOwnProperty(key) && !isNaN(item.dataContext[key])) {
-    //           var formatted = AmCharts.formatNumber(item.dataContext[key], {
-    //             precision: chart.precision,
-    //             decimalSeparator: chart.decimalSeparator,
-    //             thousandsSeparator: chart.thousandsSeparator
-    //           }, 2);
-    //           result = result.replace("[[" + key + "]]", formatted);
-    //         }
-    //       }
-    //       return result;
-    //     },
-    //     // "bullet": "round",
-    //     "fillAlphas": 0,
-    //     "lineAlpha": 1,
-    //     "type": "line",
-    //     "lineColor": "#ff6600",
-    //     "lineThickness": 2,
-    //     "valueField": "price",
-    //     "title": "Stock Price",
-    //     "labelPosition": "right",
-    //     //"visibleInLegend": false,
-    //     "labelFunction": labelFunction,
-    //     //"labelText": "Stock Price"
-    //   },
-    //   {
-    //     "id": "smaGraph",
-    //     //"balloonText": "SMA(30): <b>[[value]]</b>",
-    //     "showBalloon": false,
-    //     "fillAlphas": 0,
-    //     "lineAlpha": 0.8,
-    //     "lineThickness": 2,
-    //     "type": "line",
-    //     "dashLength": 4,
-    //     "lineColor": "#0077aa",
-    //     "valueField": "mAvg",
-    //     "title": "Bollinger Bands",
-    //     "labelPosition": "right",
-    //     "labelFunction": labelFunction,
-    //     "labelText": "SMA(30)"
-    //   },
-    //   {
-    //     "id": "sdUpperGraph",
-    //     //"balloonText": "Upper Band: <b>[[value]]</b>",
-    //     "showBalloon": false,
-    //     "fillAlphas": 0.3,
-    //     "fillColors": ["#ffa31a"],
-    //     "lineAlpha": 0,
-    //     "type": "line",
-    //     "fillToGraph": "sdLowerGraph",
-    //     "valueField": "sdUpper",
-    //     "title": "UpperBand",
-    //     "visibleInLegend": false,
-    //     "labelPosition": "right",
-    //     "labelFunction": labelFunction,
-    //     //"labelText": "Upper Band"
-    //   },
-    //   {
-    //     "id": "sdLowerGraph",
-    //     //"balloonText": "Lower Band: <b>[[value]]</b>",
-    //     "showBalloon": false,
-    //     "fillAlphas": 0,
-    //     "lineAlpha": 0,
-    //     "type": "line",
-    //     "valueField": "sdLower",
-    //     "title": "LowerBand",
-    //     "labelPosition": "right",
-    //     "visibleInLegend": false,
-    //     "labelFunction": labelFunction,
-    //     //"labelText": "Lower Band"
-    //   }],
-    //   "chartCursor": {
-    //     "categoryBalloonEnabled": false,
-    //     "cursorAlpha": 0,
-    //     "zoomable": true
-    //   },
-    //   "chartScrollbar": {
-    //     "autoGridCount": true,
-    //     "graph": "priceGraph",
-    //     "scrollbarHeight": 30,
-    //     "updateOnReleaseOnly": true,
-    //     //"graphFillColor": "orange",
-    //     "selectedGraphFillColor": "orange",
-    //     "selectedGraphFillAlpha": 0.8,
-    //   },
-    //   "categoryField": "time",
-    //   "categoryAxis": {
-    //     "gridPosition": "middle",
-    //     "parseDates": true,
-
-    //     "gridAlpha": 0.2,
-    //     "dashLength": 10,
-    //     "title": "Time (Days)"
-    //     //"tickPosition": "start",
-    //     //"tickLength": 20
-    //   },
-    //   "listeners": [{
-    //     "event": "init",
-    //     "method": function(event) {
-    //       //var end = new Date(); // today
-    //       //var start = new Date(end);
-    //       //start.setDate(end.getDate() - 10);
-    //       event.chart.zoomToIndexes(event.chart.dataProvider.length - 80, event.chart.dataProvider.length - 1);
-    //       var graph = event.chart.getGraphById("priceGraph");
-    //       graph.bullet = "round";
-    //     }},{
-    //     "event": "zoomed",
-    //     "method": function(event) {
-    //       var zoomPercent = (event.endIndex - event.startIndex) / event.endIndex;
-    //       console.log("zoom: "+zoomPercent);
-    //       var graph = event.chart.getGraphById("priceGraph");
-    //       var chart = event.chart;
-    //       if (zoomPercent > 0.4){
-    //         graph.bullet = "none";
-    //       } else {
-    //         graph.bullet = "round";
-    //       }
-    //     }}],
-    //   "export": {
-    //     "enabled": true
-    //   }
-    // }); 
-
   }
 
     function handleLegendClick( graph ) {
@@ -750,39 +544,53 @@ Template.chart.rendered = function() {
     $('#chart-options').show();
     $('#second-stock-selection').hide();
 
-    Tracker.autorun(function() {
-      var chartData = [];
+    var chartData = [];
 
-      // var all_topics = _.uniq(StockEvents.find({token:token},{sort:{topic:1},fields:{topic:true}}).fetch().map(function(x){return x.topic}),true);
+    // var all_topics = _.uniq(StockEvents.find({token:token},{sort:{topic:1},fields:{topic:true}}).fetch().map(function(x){return x.topic}),true);
 
-      var dates = _.uniq(StockEvents.find({token:token,company_name: company, topic: topic, value: {$gt: 0}},{sort:{date:1},fields: {date: true}}).fetch().map(function(x){return x.date}),true);
+    // var dates = _.uniq(StockEvents.find({token:token,company_name: company, topic: topic, value: {$gt: 0}},{sort:{date:1},fields: {date: true}}).fetch().map(function(x){return x.date}),true);
 
-      for (var date = lower_range; date <= upper_range; date++) {
-        var entry = {
-          year: date,
+    var events = StockEvents.find({token:token,company_name: company, topic: topic, value: {$gt: 0}},{sort:{date:1},fields: {date: true}}).fetch();
+
+
+    var graphs = [];
+    var graphsReady = false;
+
+
+    for (var date = lower_range; date <= upper_range; date++) {
+      var entry = {date: date};
+      events.forEach(function (e) {
+        var currDate = new Date(e.date.getTime());
+        currDate.setDate(e.date.getDate()+date);
+        var cr = StockPrices.findOne({token: token, company_name: company, date: currDate},{fields:{cum_return:true}});
+        if (cr === undefined)
+          cr = null;
+        else
+          cr = cr.cum_return;
+        entry[e.date.toDateString()] = cr;
+
+        if(!graphsReady){
+          graphs.push({
+            "balloonText": "[[value]]%",
+            "bullet": "round",
+            "hidden": false,
+            "title": e.date.toDateString(),
+            "valueField": e.date.toDateString(),
+            "fillAlphas": 0,
+          });  
         }
-        dates.forEach(function (d) {
-          var currDate = new Date(d.getTime());
-          currDate.setDate(d.getDate()+date);
-          var cr = StockPrices.findOne({token: token, company_name: company, date: currDate},{fields:{cum_return:true}});
-          if (cr === undefined)
-            cr = null;
-          else
-            cr = cr.cum_return;
-          entry[d.toDateString()] = cr;
-        });
 
-        chartData.push(entry);
-      }
+      });
+      graphsReady = true;
 
-      drawGraph(chartData,dates,company,topic);
-    });
+      chartData.push(entry);
+    }
+
+    drawGraph(chartData,graphs,company,topic);
 
 
 
-
-
-    function drawGraph (chartData,dates,company, topic) {
+    function drawGraph (chartData,graphs,company, topic) {
 
 
 
@@ -807,19 +615,20 @@ Template.chart.rendered = function() {
               // "integersOnly": true,
               // "maximum": 6,
               // "minimum": 1,
-              "reversed": true,
+              "reversed": false,
               "axisAlpha": 0,
               "dashLength": 5,
               "gridCount": 10,
               "position": "left",
               "title": "Cumulative Return (%)"
+              // 'recalculateToPercents' : true,
           }],
           "startDuration": 0,
           "chartCursor": {
               "cursorAlpha": 0,
               "zoomable": false
           },
-          "categoryField": "year",
+          "categoryField": "date",
           "categoryAxis": {
               "gridPosition": "start",
               "axisAlpha": 0,
@@ -827,7 +636,7 @@ Template.chart.rendered = function() {
               "fillColor": "#000000",
               "gridAlpha": 0,
               "position": "bottom",
-              "title": "Relative event day",
+              "title": "Relative Event Day",
           },
           "export": {
             "enabled": true,
@@ -836,17 +645,6 @@ Template.chart.rendered = function() {
 
       };
 
-      var graphs = [];
-      dates.forEach(function(d){
-        graphs.push({
-          "balloonText": "[[value]]",
-          "bullet": "round",
-          "hidden": false,
-          "title": d.toDateString(),
-          "valueField": d.toDateString(),
-          "fillAlphas": 0,
-        });  
-      });
       chartOptions['graphs'] = graphs;
 
       // console.log(chartOptions);
@@ -855,13 +653,12 @@ Template.chart.rendered = function() {
   }
 
 
+
+
   function render_candlestick_graph (company_name) {
     var chartData = [];
-    Tracker.autorun(function() {
-      var stockPrices = StockPrices.find({company_name: company_name, token: token, 'open': {$ne : null}}, {fields: {'date':1, 'open':1, 'last':1, 'high':1, 'low':1, 'volume':1, 'flat_value':1}}).fetch();
-
-      drawGraph(stockPrices,company_name);
-    });
+    var stockPrices = StockPrices.find({company_name: company_name, token: token, 'open': {$ne : null}}, {fields: {'date':1, 'open':1, 'last':1, 'high':1, 'low':1, 'volume':1, 'flat_value':1}}).fetch();
+    drawGraph(stockPrices,company_name);
 
     function drawGraph(chartData,company) {
 
@@ -1114,7 +911,7 @@ Template.chart.rendered = function() {
       chart.dataProvider = chartData;
       chart.categoryField = "company_name";
       //      chart.startDuration = 1;
-      chart.startEffect = "elastic ";
+      chart.startEffect = "elastic";
       chart.theme = 'light';
 
       chart.titles = [{
@@ -1156,7 +953,7 @@ Template.chart.rendered = function() {
 
       chart.addGraph(graph);
 
-      chart.write("chartdiv3");
+      chart.write("chartdiv2");
     }
   }
 
@@ -1165,78 +962,67 @@ Template.chart.rendered = function() {
     $('#second-stock-selection').show();
 
 
-    Tracker.autorun(function() {
-      var stocks = StockPrices.find({company_name: company_name, token:token}, {fields: {'date':1, 'cum_return':1}}).fetch();
-      var chartData = [];
-      var guides = [];
+    var stocks = StockPrices.find({company_name: company_name, token:token}, {fields: {'date':1, 'cum_return':1}}).fetch();
+    var chartData = [];
+    var guides = [];
 
-      // events
-      var events = StockEvents.find({token: token, company_name: company_name, topic: topic, value: {$gt : 0}}, {fields: {'date':1}}).fetch(); 
-      // console.log(events);
+    // events
+    var events = StockEvents.find({token: token, company_name: company_name, topic: topic, value: {$gt : 0}}, {fields: {'date':1}}).fetch(); 
+    // console.log(events);
 
-      events.forEach(function(c) {
-        var dateLower = new Date(c.date);
-        dateLower.setDate(dateLower.getDate() + lower_range);
-        var dateUpper = new Date(c.date);
-        dateUpper.setDate(dateUpper.getDate() + upper_range);
+    events.forEach(function(c) {
+      var dateLower = new Date(c.date);
+      dateLower.setDate(dateLower.getDate() + lower_range);
+      var dateUpper = new Date(c.date);
+      dateUpper.setDate(dateUpper.getDate() + upper_range);
 
-        // console.log(c.date);
-        // console.log(dateLower);
-        // console.log(dateUpper);
-        var significantDays = StockPrices.find({company_name: company_name, token:token, date: {$gte : dateLower, $lte : dateUpper}}, {fields: {'cum_return':1}, sort: {cum_return:1}});
-        console.log(significantDays);
-        if (significantDays != undefined) {
-          var hi = significantDays[Object.keys(significantDays)[Object.keys(significantDays).length - 1]].cum_return;
-          var lo = significantDays[Object.keys(significantDays)[0]].cum_return;
-          // console.log(hi);
-          // console.log(lo);
-          //fruitObject[Object.keys(fruitObject)[Object.keys(fruitObject).length - 1]] 
-          var p = (hi - lo);
-          console.log(p);
+      // console.log(c.date);
+      // console.log(dateLower);
+      // console.log(dateUpper);
+      var significantDays = StockPrices.find({company_name: company_name, token:token, date: {$gte : dateLower, $lte : dateUpper}}, {fields: {'cum_return':1}, sort: {cum_return:1}}).fetch();
+      console.log(significantDays);
+      if (significantDays !== undefined) {
+        var hi = significantDays[Object.keys(significantDays)[Object.keys(significantDays).length - 1]].cum_return;
+        var lo = significantDays[Object.keys(significantDays)[0]].cum_return;
+        // console.log(hi);
+        // console.log(lo);
+        //fruitObject[Object.keys(fruitObject)[Object.keys(fruitObject).length - 1]] 
+        var p = (hi - lo);
+        console.log(p);
 
-          var significance = "Non-significant event";
-          if (p > 0.02) {
-            significance = "Significant event";
-            guides.push({
-              "fillAlpha": 0.30,
-              "fillColor": "#ff6600",
-              "lineColor": "#ff6600",
-              "lineAlpha": 0.9,
-              "label": topic,
-              "balloonText": significance,
-              "labelRotation": 90,
-              "above": true,
-              "date": dateLower,
-              "toDate": dateUpper,
-            });
-          } else {
-            guides.push({
-              "fillAlpha": 0.30,
-              "fillColor": "#ff0000",
-              "lineColor": "#ff0000",
-              "lineAlpha": 0.9,
-              "label": topic,
-              "balloonText": significance,
-              "labelRotation": 90,
-              "above": true,
-              "date": dateLower,
-              "toDate": dateUpper,
-            });
-          }
+        var significance = "Non-significant event";
+        if (p > 0.02) {
+          significance = "Significant event";
+          guides.push({
+            "fillAlpha": 0.30,
+            "fillColor": "#ff6600",
+            "lineColor": "#ff6600",
+            "lineAlpha": 0.9,
+            "label": topic,
+            "balloonText": significance,
+            "labelRotation": 90,
+            "above": true,
+            "date": dateLower,
+            "toDate": dateUpper,
+          });
+        } else {
+          guides.push({
+            "fillAlpha": 0.30,
+            "fillColor": "#ff0000",
+            "lineColor": "#ff0000",
+            "lineAlpha": 0.9,
+            "label": topic,
+            "balloonText": significance,
+            "labelRotation": 90,
+            "above": true,
+            "date": dateLower,
+            "toDate": dateUpper,
+          });
         }
-      });
-
-      // every day
-      stocks.forEach(function(c) {
-
-        var entry = {
-          "date": c.date,
-          "cr": parseFloat(c.cum_return),
-        };
-        chartData.push(entry);
-      });
-      drawGraph(chartData, guides);
+      }
     });
+
+    drawGraph(stocks, guides);
 
     function drawGraph(chartData, guides) {
       // console.log(guides);
@@ -1278,7 +1064,7 @@ Template.chart.rendered = function() {
             "bulletColor": "#FFFFFF",
             "hideBulletsCount": 50,
             "title": "red line",
-            "valueField": "cr",
+            "valueField": "cum_return",
             "useLineColorForBulletBorder": true,
 
         }],
@@ -1315,10 +1101,150 @@ Template.chart.rendered = function() {
     }
   }
 
+  function render_stock_topics_average_graph (company,upper_range,lower_range) {
+    var chartData = [];
+
+    var all_topics = _.uniq(StockEvents.find({token:token},{sort:{topic:1},fields:{topic:true}}).fetch().map(function(x){return x.topic}),true);
+
+    all_topics.forEach(function(t) {
+      var events = StockEvents.find({token:token, company_name: company, topic: t, value: {$gt: 0}},{sort:{date:1},fields: {date: true}}).fetch();
+
+      var events_avg = 0;
+
+      events.forEach(function(e){
+        var dateLower = new Date(e.date);
+        dateLower.setDate(dateLower.getDate() + lower_range);
+        var dateUpper = new Date(e.date);
+        dateUpper.setDate(dateUpper.getDate() + upper_range);
+        
+        var days = StockPrices.find({company_name: company, token:token, date: {$gte : dateLower, $lte : dateUpper}}, {fields: {'cum_return':1}, sort: {cum_return:1}}).fetch().map(function(x){return x.cum_return});          
+        var sum = 0;
+        days.forEach(function(d){
+          sum += d;
+        });
+        var avg = sum/days.length;
+
+        events_avg += avg;
+      });
+
+      events_avg = events_avg/events.length;
+
+      chartData.push({
+        topic: t,
+        avg_cr : events_avg,
+      });
+
+    });
+
+    AmCharts.addInitHandler(function (chart) {
+      // check if there are graphs with autoColor: true set
+      for (var i = 0; i < chart.graphs.length; i++) {
+        var graph = chart.graphs[i];
+        if (graph.autoColor !== true)
+          continue;
+        var colorKey = "autoColor-" + i;
+        graph.lineColorField = colorKey;
+        graph.fillColorsField = colorKey;
+        for (var x = 0; x < chart.dataProvider.length; x++) {
+          //var color = ['#d64608', '#1d7865', '#ff9e1c', '#ff831e', '#ff6400', '#d64608', '#1d7865', '#ff9e1c', '#ff831e', '#ff6400'][x];
+          var color = ["#334D5C", "#45B29D", "#EFC94C", "#E27A3F", "#DF5A49", "#334D5C", "#45B29D", "#EFC94C", "#E27A3F", "#DF5A49"][x];
+
+          chart.dataProvider[x][colorKey] = color;
+        }
+      }
+
+    }, ["serial"]);
+
+
+    var chart = AmCharts.makeChart( "chartdiv2", {
+      "type": "serial",
+      "theme": "light",
+      "dataProvider": chartData,
+      "valueAxes": [ {
+        "gridColor": "#FFFFFF",
+        "gridAlpha": 0.2,
+        "dashLength": 0
+      } ],
+      "gridAboveGraphs": true,
+      "startDuration": 1,
+      "graphs": [ {
+        "balloonText": "[[category]]: <b>[[value]]</b>",
+        "fillAlphas": 0.8,
+        "lineAlpha": 0.2,
+        "type": "column",
+        "valueField": "avg_cr",
+        'autoColor': true,
+      } ],
+      "chartCursor": {
+        "categoryBalloonEnabled": false,
+        "cursorAlpha": 0,
+        "zoomable": false
+      },
+      "categoryField": "topic",
+      "categoryAxis": {
+        "gridPosition": "start",
+        "gridAlpha": 0,
+        'labelRotation': 40,
+        'equalSpacing' : true,
+        // "tickPosition": "start",
+        // "tickLength": 20
+      },
+      "export": {
+        "enabled": true
+      }
+
+    } );
+  }
+
+  function render_stock_topics_graph_significance_table (company, topic, upper_range, lower_range){
+    var dom = document.getElementById('chartdiv3');
+
+    Blaze.render(Template.topics_sig_table, dom);
+
+    var data = [];
+
+    var dates = StockEvents.find({token:token,company_name: company, topic: topic, value: {$gt: 0}},{sort:{date:1},fields: {date: true}}).fetch();
+    dates.forEach(function(d) {
+      var dateLower = new Date(d.date);
+      dateLower.setDate(dateLower.getDate() + lower_range);
+      var dateUpper = new Date(d.date);
+      dateUpper.setDate(dateUpper.getDate() + upper_range);
+
+      var significantDays = StockPrices.find({company_name: company, token:token, date: {$gte : dateLower, $lte : dateUpper}}, {fields: {'cum_return':1}, sort: {cum_return:1}}).fetch();
+      if (significantDays !== undefined) {
+        var hi = significantDays[Object.keys(significantDays)[Object.keys(significantDays).length - 1]].cum_return;
+        var lo = significantDays[Object.keys(significantDays)[0]].cum_return;
+        var p = (hi - lo);
+        // console.log(p);
+        data.push({
+          date: d.date.toDateString(),
+          p   : p,
+        });
+      }
+    });
+
+    // populate table
+    $('#sig_table tr:not(:first):not(:last)').remove();
+    var html = '';
+    var significance_threshold = 0.02;
+    for (var i = 0; i < data.length; i++){
+      // console.log(data[i].p);
+      if (data[i].p < significance_threshold)
+        html += '<tr class=\"success\">';
+      else if (data[i].p < significance_threshold*2)
+        html += '<tr class=\"warning\">';
+      else
+        html += '<tr class=\"danger\">';
+        
+      html += '<td>' + data[i].date + '</td><td>' + data[i].p + '&#37;</td></tr>';
+    }
+    $('#sig_table tr').first().after(html);
+  }
+
   // predefined list of companies
   function render_company_details() {
-    $('#chartdiv2').html('');
-    var dom = document.getElementById('chartdiv2');
+    $('#chartdiv3').html('');
+    var dom = document.getElementById('chartdiv3');
 
     // Meteor.call('scrapeSearch', curr_company, function(err, response) {
     //   // console.log(response);
@@ -1353,79 +1279,4 @@ Template.chart.rendered = function() {
       $('#chartdiv2').html('We have no additional information about ' + curr_company + '.');
     }
   }
-};
-
-Template.homePage.rendered = function() {
-  var debug = false;
-  var upload_response = $("#upload_response");
-  var cumulative_response = $('#cumulative_response');
-  $(".json-response").hide();
-  $('#chart_display').hide();
-
-  console.log(screen.height);
-  $('.header').css('height', screen.height);
-
-
-  var gui_input = $('.form-input-name-row');
-  gui_input.on('change paste keyup', function () {
-    var input = $(this).find('input');
-    var input_name = input.attr('name');
-    var input_val = input.val();
-
-    console.log(input_name);
-    if (input_name == null) {
-      input_name = 'var_name';
-      var e = $('select#topic-name').val();
-      console.log(e);
-      input_val = e;
-    }
-    
-    if (input_val != '') {
-      if ((input_name == 'token' && input_val != '') ||
-        (input_name == 'stock_characteristic_file' && input_val != '') ||
-        (input_name == 'stock_price_file' && input_val != '')) {
-        $(this).removeClass('form-invalid-data');
-        $(this).addClass('form-valid-data');
-      } else {
-        $(this).removeClass('form-valid-data');
-        $(this).addClass('form-invalid-data');
-      }
-    } else {
-      $(this).removeClass('form-valid-data');
-      $(this).removeClass('form-invalid-data');
-    }
-  });
-  var base_url = window.location.href;
-  var token = $("input[name=token]");
-  $("#upload_form").submit(function (event) {
-    event.preventDefault();
-
-    upload_response.empty();
-    upload_response.show();
-    upload_response.html("Processing ...");
-
-    $.ajax({
-      url: base_url + "api/v1/event-study/submit-files",
-      type: 'POST',
-      data: new FormData(this),
-      processData: false,
-      contentType: false,
-      success: function (data) {
-        console.log(data.token);
-        $(location).attr('href', base_url + "chart/" + data.token);
-      },
-      error: function (data) {
-        upload_response.show();
-        upload_response.empty();
-        upload_response.html(data.responseJSON.log.exec_status);
-        //        upload_response.text(JSON.stringify(data.responseJSON, undefined, 2));
-      },
-    });
-    return false;
-  });
-  $("#cumulative-return-form").submit(function (event) {
-    event.preventDefault();
-    $(location).attr('href', base_url + "chart/" + $(token).val());
-    return false;
-  });
 };

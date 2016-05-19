@@ -26,10 +26,6 @@
 
 #chartdiv2 {
   position: relative;
-  background-color: white;
-  border-radius: 10px;
-  padding: 10px;
-  margin-top: 12px;
   /* either all panels have box-shadows, or none */
 /*  box-shadow: 0 2px 10px 0 rgb(0,0,0);
   box-shadow: 0 2px 10px 0 rgba(0,0,0,0.1);*/
@@ -41,32 +37,22 @@
 
 #chartdiv3  {
   /*margin-top:8px;*/
-  background-color:white;
-  margin-top: 12px;
-  padding: 10px;
-  border-radius: 10px;
   height: 350px;
 }
 
-.tables {
+.subsection {
   /*margin-top:17px;*/
+  padding: 10px;
+  margin-top: 12px;
+  background-color:white;
   border-radius: 10px;
 }
 
-.tables table {
-  width:100%;
-/*  border: 1px solid black;*/
-}
+
 
 ul#tabs {
   margin-left: 20px;
   border-radius: 10px;
-}
-
-.card {
-  margin-top:8px;
-  margin-bottom:8px;
-  padding:2px;
 }
 
 .head-brandname {
