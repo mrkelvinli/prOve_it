@@ -63,9 +63,11 @@ if(Meteor.isServer) {
     },
     scrapeSearch: function(company) {
       // (from https://themeteorchef.com/snippets/synchronous-methods/)
-      var withoutAX = company.replace(/\.[Aa][Xx]/, '');
-      var url = "http://www.delisted.com.au/company/company_search_by_code/?keywords_code=" + withoutAX;
-      // var url = "http://www.asx.com.au/asx/research/company.do#!/AAC/details";
+      // var withoutAX = company.replace(/\.[Aa][Xx]/, '');
+      var withoutAX = company.substring(0,3);
+      // var url = "http://theaustralian.com.au/shares/" + withoutAX;
+      var url = "http://theaustralian.com.au/shares/tgr";
+
       console.log(url);
 
       if (withoutAX.length != 3) {

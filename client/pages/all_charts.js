@@ -1321,12 +1321,16 @@ Template.chart.rendered = function() {
     var dom = document.getElementById('chartdiv2');
 
     // Meteor.call('scrapeSearch', curr_company, function(err, response) {
-    //   console.log(response);
+    //   // console.log(response);
     //   console.log(err);
     //   if (response != null) {
-    //     var regex = /\<table class="[a-z]*tablesorter.*\<\/tbody\>/;
+    //     // market.theaustralian.com.au
+    //     // key stats
+    //     var regex = /KEY STATS.*DETAILS\<\/h2\>/;
     //     var rawResults1 = response.match(regex);
     //     console.log("results: " + rawResults1);
+
+    //     // key details
     //   }
     // });
 
