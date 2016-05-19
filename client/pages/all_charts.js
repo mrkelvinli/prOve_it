@@ -1266,18 +1266,18 @@ Template.chart.rendered = function() {
         var regexDescription = /\<div id="company\-description"\>.*\<div id="company\-website/;
         var descriptionRaw = String(details).match(regexDescription);
         var description = String(descriptionRaw).replace(/\<div id="company\-description"\>/, "").replace(/\<\/div\>\<div id="company\-website/, "");
-        console.log("description: " + description);
+        // console.log("description: " + description);
 
         var regexWebsite = /\<div id="company\-website.*\<\/section/;
         var websiteRaw = String(details).match(regexWebsite);
         var website = String(websiteRaw).replace(/\<div id="company\-website.*"\>/, "").replace(/\<\/a>.*/, "");
-        console.log("website: " + website);
+        // console.log("website: " + website);
 
         // tbody
         var regexTbody = /\<tbody\>.*\<\/tbody\>/;
         var tbodyRaw = String(keyStats).match(regexTbody);
         var tbody = String(tbodyRaw).replace(/\\n/g, "");
-        console.log(tbody);
+        // console.log(tbody);
 
         Blaze.render(Template.companyDetails, dom);
         $('#website').html(website);
