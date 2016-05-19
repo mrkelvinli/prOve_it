@@ -23,16 +23,10 @@ Template.chart.rendered = function() {
     validToken = response;
     // console.log(response);
     if (validToken) {
-<<<<<<< HEAD
       $('ul.nav-tabs li a#'+curr_graph).parent().addClass('active');
       renderMainGraph();
       // render_company_chart();
       render_company_details();
-=======
-      curr_graph = 'volatility';
-      $('ul.nav-tabs li a#volatility').parent().addClass('active');
-      renderMainGraph();
->>>>>>> afff184ef7aa561aee687bcda7d6abbc71d01dcd
     } else {
       alert("invalid token");
     }
