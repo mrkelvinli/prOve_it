@@ -25,14 +25,13 @@ Template.chart.rendered = function() {
       $('ul.nav-tabs li a#'+curr_graph).parent().addClass('active');
 
       // initialise the correct first company
-      Tracker.autorun(function() {
-        var all_company = _.uniq(StockPrices.find({}, {fields:{company_name:1}},{sort:{company_name: 1}}).fetch().map(function(x){return x.company_name}),true);
-        curr_company = all_company[0];
-      });
+      var all_company = StockPrices.findOne({token: token}, {fields:{company_name:1}, sort:{company_name: 1}}).fetch().map(function(x){return x.company_name});
+      curr_company = all_company[0];
 
       renderMainGraph();
     } else {
       alert("invalid token");
+      Router.go('/');
     }
   });
 
