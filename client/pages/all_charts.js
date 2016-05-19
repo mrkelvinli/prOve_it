@@ -231,6 +231,15 @@ Template.chart.rendered = function() {
         "marginRight": 80,
         "titles": [{
           "text": "Volatility for "+ company,
+          "bold": true
+        },
+        {
+          "text": "This Volatility-Analysis tool allows you to determine the dispersion a stock price has around its average.",
+          "bold": false
+        }, 
+        {
+          "text": "This gives you an idea on the risk and reward of investing, as well as help vistually understand how unstable a stock is.",
+          "bold": false
         }],
         
 
@@ -774,8 +783,12 @@ Template.chart.rendered = function() {
               "valueText": '',
           },
           "titles":[{
-            "text": "Events of "+topic+" for "+company,
+            "text": "Individual "+topic+" events for "+company,
             "size": 15
+          },
+          {
+            "text": "By comparing individual event-windows we can determine how companies can expect to react to certain event types",
+            "bold": false
           }],
           "dataProvider": chartData,
           
@@ -790,8 +803,7 @@ Template.chart.rendered = function() {
               "position": "left",
               "title": "Cumulative Return (%)"
           }],
-          "startDuration": 0.5,
-
+          "startDuration": 0,
           "chartCursor": {
               "cursorAlpha": 0,
               "zoomable": false
@@ -816,7 +828,7 @@ Template.chart.rendered = function() {
       var graphs = [];
       dates.forEach(function(d){
         graphs.push({
-          "balloonText": "cumulative return  is [[value]] at [[category]] day relative to "+d.toDateString(),
+          "balloonText": "[[value]]",
           "bullet": "round",
           "hidden": false,
           "title": d.toDateString(),
@@ -871,7 +883,7 @@ Template.chart.rendered = function() {
             "fromField": "flat_value",
             "toField": "value"
           } ],
-          "color": "#7f8da9",
+          "color": "#ff6600",
           "dataProvider": chartData,
           "title": "Candlestick",
           "categoryField": "date"
@@ -880,7 +892,8 @@ Template.chart.rendered = function() {
             "fromField": "flat_value",
             "toField": "value"
           } ],
-          "color": "#fac314",
+          "color": "#0077aa",
+          "lineColor": "#0077aa",
           "dataProvider": chartData,
           "compared": true,
           "title": "Line",
@@ -915,8 +928,8 @@ Template.chart.rendered = function() {
             "valueField": "close",
             "lineColor": "#7f8da9",
             "fillColors": "#7f8da9",
-            "negativeLineColor": "#db4c3c",
-            "negativeFillColors": "#db4c3c",
+            "negativeLineColor": "#ff6600",
+            "negativeFillColors": "#ff6600",
             "fillAlphas": 1,
             "useDataSetColors": false,
             // "comparable": true,
@@ -934,11 +947,10 @@ Template.chart.rendered = function() {
             // "highField": "high",
             // "lowField": "low",
             "valueField": "value",
-            "lineColor": "orange",
-            "fillColors": "#7f8da9",
-            "negativeLineColor": "#db4c3c",
-            "negativeFillColors": "#db4c3c",
+            "lineColor": "#0077aa",
             "fillAlphas": 0,
+            "lineThickness": 1.5,
+            "dashLength": 4,
             "useDataSetColors": false,
             // "comparable": true,
             // "compareField": "value",
@@ -1160,19 +1172,47 @@ Template.chart.rendered = function() {
         // console.log(c.date);
         // console.log(dateLower);
         // console.log(dateUpper);
+        var significantDays = StockPrices.find({company_name: company_name, token:token, date: {$gte : dateLower, $lte : dateUpper}}, {fields: {'cum_return':1}, sort: {cum_return:1}});
+        console.log(significantDays);
+        if (significantDays != undefined) {
+          var hi = significantDays[Object.keys(significantDays)[Object.keys(significantDays).length - 1]].cum_return;
+          var lo = significantDays[Object.keys(significantDays)[0]].cum_return;
+          // console.log(hi);
+          // console.log(lo);
+          //fruitObject[Object.keys(fruitObject)[Object.keys(fruitObject).length - 1]] 
+          var p = (hi - lo);
+          console.log(p);
 
-        guides.push({
-          "fillAlpha": 0.30,
-          "fillColor": "#ff9900",
-          "lineColor": "#000000",
-          "lineAlpha": 1,
-          "label": topic,
-          "balloonText": "Click for more details",
-          "labelRotation": 90,
-          "above": true,
-          "date": dateLower,
-          "toDate": dateUpper,
-        });
+          var significance = "Non-significant event";
+          if (p > 0.02) {
+            significance = "Significant event";
+            guides.push({
+              "fillAlpha": 0.30,
+              "fillColor": "#ff6600",
+              "lineColor": "#ff6600",
+              "lineAlpha": 0.9,
+              "label": topic,
+              "balloonText": significance,
+              "labelRotation": 90,
+              "above": true,
+              "date": dateLower,
+              "toDate": dateUpper,
+            });
+          } else {
+            guides.push({
+              "fillAlpha": 0.30,
+              "fillColor": "#ff0000",
+              "lineColor": "#ff0000",
+              "lineAlpha": 0.9,
+              "label": topic,
+              "balloonText": significance,
+              "labelRotation": 90,
+              "above": true,
+              "date": dateLower,
+              "toDate": dateUpper,
+            });
+          }
+        }
       });
 
       // every day
@@ -1213,7 +1253,7 @@ Template.chart.rendered = function() {
               for (var key in item.dataContext) {
                 if (item.dataContext.hasOwnProperty(key) && !isNaN(item.dataContext[key])) {
                   var formatted = AmCharts.formatNumber(item.dataContext[key], {
-                    precision: chart.precision,
+                    precision: 5,
                     decimalSeparator: chart.decimalSeparator,
                     thousandsSeparator: chart.thousandsSeparator
                   }, 2);
@@ -1256,9 +1296,9 @@ Template.chart.rendered = function() {
             bold: true,
           },
           {
-            text: titleSmall,
+            text: "This Event Study tool allows you to analyse the effect that each event has on the cumulative returns of a company.",
             bold: false,
-          }
+          },
         ]
       });
     }
