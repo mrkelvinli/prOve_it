@@ -1331,8 +1331,10 @@ Template.homePage.rendered = function() {
   var upload_response = $("#upload_response");
   var cumulative_response = $('#cumulative_response');
   $(".json-response").hide();
-
   $('#chart_display').hide();
+
+  console.log(screen.height);
+  $('.header').css('height', screen.height);
 
 
   var gui_input = $('.form-input-name-row');
