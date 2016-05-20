@@ -1251,7 +1251,7 @@ Template.chart.rendered = function() {
 
   // predefined list of companies
   function render_company_details() {
-    $('#details').html('');
+    $('#details').html('Loading details...');
     var all_company = _.uniq(StockPrices.find({}, {fields:{company_name:1}},{sort:{company_name: 1}}).fetch().map(function(x){return x.company_name}),true);
     var num_companies = all_company.length;
     if (num_companies > 10) {
@@ -1292,10 +1292,33 @@ Template.chart.rendered = function() {
         var tbody = String(tbodyRaw).replace(/\\n/g, "");
         // console.log(tbody);
 
+        var descriptionFlag = false;
+        var websiteFlag = false;
+        var tableFlag = false;
+        $('#details').html('');
         Blaze.render(Template.companyDetails, dom);
-        $('#website').html("<a href=\'"+website+"\'>"+website+"<\a>");
-        $('#description').html(description);
-        $('#table').html('<table class=\"table table-striped table-hover \">' + tbody + '</table>');
+
+        if (website != '') {
+          websiteFlag = true;
+          $('#website').html("<a href=\'"+website+"\'>"+website+"<\a>");
+          var bareWebsite = String(website).replace(/www\./, "");
+          $('#logo').html('<img src="//logo.clearbit.com/' + bareWebsite + '">');
+          var image = $('#logo img');
+          image.onerror = function () {
+            image.hide();
+          };
+        }
+        if (description != '') {
+          descriptionFlag = true;
+          $('#description').html(description);
+        }
+        if (table != '') {
+          tableFlag = true;
+          $('#table').html('<table class=\"table table-striped table-hover \">' + tbody + '</table>');
+        }
+        if (!websiteFlag && !descriptionFlag && !tableFlag) {
+          $('#details').html('We have no additional information about ' + curr_company + '.');
+        }
         // console.log(website);
         // console.log(description);
         // console.log(tbody);

@@ -47,6 +47,10 @@
   padding: 20px;
 }
 
+#description {
+  margin-bottom: 10px;
+}
+
 .subsection {
   /*margin-top:17px;*/
   padding: 10px;
