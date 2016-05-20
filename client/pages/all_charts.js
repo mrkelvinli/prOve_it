@@ -1440,30 +1440,31 @@ Template.chart.rendered = function() {
     // date wanted
 
     var dom = document.getElementById('details');
-      var year = d.date.getFullYear();
-      var month = padZero(d.date.getMonth()+1,2);
-      var date = d.date.getDate();
-      
-      var dateFormated = year+"-"+month+"-"+date;
-      // date format: YYYY-MM-DD
-      Meteor.call('scrapeRelatedNews', company, dateFormated, function(err, response) {
-        // console.log(response);
-        console.log(err);
-        if (response != null) {
-          var regexRaw = /<div class="mod yfi_quote_headline withsky.*<table width="100%"/
-          var rawHeadlines = String(response).match(regexRaw);
-          var headlines = String(rawHeadlines).replace(/<div class="mod yfi_quote_headline withsky"><ul class="yfncnhl newsheadlines"><\/ul>/, "").replace(/<\/cite><\/li><\/ul><table width="100%"/, "");
-          // console.log(headlines);
-          if (headlines != null) {
-            $('#chartdiv3').append(headlines);
-          } else {
-            console.log('DOG');
-            $('#chartdiv3').html('No related news found for the current events.');
-          }
+    var year = d.date.getFullYear();
+    var month = padZero(d.date.getMonth()+1,2);
+    var date = d.date.getDate();
+
+    
+    var dateFormated = year+"-"+month+"-"+date;
+    // date format: YYYY-MM-DD
+    Meteor.call('scrapeRelatedNews', company, dateFormated, function(err, response) {
+      // console.log(response);
+      console.log(err);
+      if (response != null) {
+        var regexRaw = /<div class="mod yfi_quote_headline withsky.*<table width="100%"/
+        var rawHeadlines = String(response).match(regexRaw);
+        var headlines = String(rawHeadlines).replace(/<div class="mod yfi_quote_headline withsky"><ul class="yfncnhl newsheadlines"><\/ul>/, "").replace(/<\/cite><\/li><\/ul><table width="100%"/, "");
+        // console.log(headlines);
+        if (headlines != null) {
+          $('#chartdiv3').append(headlines);
         } else {
+          console.log('DOG');
           $('#chartdiv3').html('No related news found for the current events.');
         }
-      });
+      } else {
+        $('#chartdiv3').html('No related news found for the current events.');
+      }
+    });
   }
 
   function padZero (str, max) {
