@@ -10,10 +10,15 @@ Template.chart.rendered = function() {
   $('a[href="http://www.amcharts.com/javascript-charts/"').hide();
 
   var token = Router.current().params.token;
+  $('#token-input').attr('placeholder',token);
+  $('#token-input').on('input',function(){
+    var t = $(this).val();
+    Router.go('/chart/'+t);
+  });
   var validToken = false;
   
   var curr_graph = 'candlesticks';
-  var curr_company = "AAC.AX";
+  var curr_company = "TGR.AX";
   var second_company = "AAC.AX";
   var curr_topic = "Cash Rate";
   var curr_upper = 5;
@@ -25,11 +30,10 @@ Template.chart.rendered = function() {
       $('ul.nav-tabs li a#'+curr_graph).parent().addClass('active');
 
       // initialise the correct first company
-      // var curr_company = StockPrices.findOne({token: token}, {fields:{company_name:1}, sort:{company_name: 1}}).company_namee;
-      var all_company = _.uniq(StockPrices.find({}, {fields:{company_name:1}},{sort:{company_name: 1}}).fetch().map(function(x){return x.company_name}),true);
-      curr_company = all_company[0];
-      console.log(curr_company);
 
+      var company = StockPrices.findOne({token: token}, {fields:{company_name:1}, sort:{company_name: 1}});
+      curr_company = company.company_name;
+      // console.log(curr_company);
       renderMainGraph();
     } else {
       alert("invalid token");
@@ -853,7 +857,8 @@ Template.chart.rendered = function() {
 
   function render_company_chart() {
     var c_cr = [];
-    var all_company = _.uniq(StockPrices.find({token: token}, {fields:{company_name:1, _id:0}},{sort:{company_name: 1}}).fetch().map(function(x){return x.company_name}),true);
+    var all_company = _.uniq(StockPrices.find({token:token}, {fields:{company_name:1, _id:0},sort:{company_name: 1}}).fetch().map(function(x){return x.company_name}),true);
+
     all_company.forEach(function(c){
       var ret = StockPrices.findOne(
         {
