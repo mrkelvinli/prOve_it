@@ -33,11 +33,15 @@ body {
 }
 
 .chartdiv#chartdivcompany {
+  border-radius: 10px;
   position: relative;
   top: 10px;
+  width: 102%;
+  left: -10px;
 }
 
 .chartdiv#chartdivtopics {
+  border-radius: 10px;
   position: relative;
   top: 10px;
   margin-bottom: 50px;
