@@ -1,7 +1,4 @@
 import { Meteor } from 'meteor/meteor';
-import './companies.html';
-import './companies.css';
-
 
 Template.chart.rendered = function() {
   $('.selectpicker').selectpicker();
@@ -1390,24 +1387,9 @@ Template.chart.rendered = function() {
         $('#details').html('We have no additional information about ' + curr_company + '.');
       }
     });
+  }
 
-    // // is there a better way to code this?
-    // if (curr_company == 'AAC.AX') {
-    //   Blaze.render(Template.aac, dom);
-    // } else if (curr_company == 'ELD.AX') {
-    //   Blaze.render(Template.eld, dom);
-    // } else if (curr_company == 'ELDDA.AX') {
-    //   Blaze.render(Template.eld, dom);
-    // } else if (curr_company == 'GNC.AX') {
-    //   Blaze.render(Template.gnc, dom);
-    // }  else if (curr_company == 'RIC.AX') {
-    //   Blaze.render(Template.ric, dom);
-    // }  else if (curr_company == 'TGR.AX') {
-    //   Blaze.render(Template.tgr, dom);
-    // }  else if (curr_company == 'WBA.AX') {
-    //   Blaze.render(Template.wba, dom);
-    // } else {
-    //   $('#chartdiv2').html('We have no additional information about ' + curr_company + '.');
-    // }
+  function render_news() {
+
   }
 };

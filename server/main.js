@@ -85,6 +85,9 @@ if(Meteor.isServer) {
         // console.log(resultOfAsyncToSync);
         return resultOfAsyncToSync;
       }
+    },
+    scrapeNews: function(company, date) {
+      return '';
     }
   });
 }
