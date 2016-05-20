@@ -72,8 +72,8 @@ Uploader = {
         // var all_query_company = ES.get_all_query_company(stock_characteristic_file_json);
 
 
-        StockPrices.remove({});
-        StockEvents.remove({});
+        // StockPrices.remove({});
+        // StockEvents.remove({});
         ES.process_stock_price_file(stock_price_file_json, token);
         ES.process_stock_characteristic_file(stock_characteristic_file_json, token);
 

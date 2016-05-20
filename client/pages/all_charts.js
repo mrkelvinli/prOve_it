@@ -10,10 +10,15 @@ Template.chart.rendered = function() {
   $('a[href="http://www.amcharts.com/javascript-charts/"').hide();
 
   var token = Router.current().params.token;
+  $('#token-input').attr('placeholder',token);
+  $('#token-input').on('input',function(){
+    var t = $(this).val();
+    Router.go('/chart/'+t);
+  });
   var validToken = false;
   
   var curr_graph = 'candlesticks';
-  var curr_company = "AAC.AX";
+  var curr_company = "TGR.AX";
   var second_company = "AAC.AX";
   var curr_topic = "Cash Rate";
   var curr_upper = 5;
@@ -25,8 +30,10 @@ Template.chart.rendered = function() {
       $('ul.nav-tabs li a#'+curr_graph).parent().addClass('active');
 
       // initialise the correct first company
-      var curr_company = StockPrices.find({token: token}, {fields:{company_name:1}, sort:{company_name: 1}});
 
+      var company = StockPrices.findOne({token: token}, {fields:{company_name:1}, sort:{company_name: 1}});
+      curr_company = company.company_name;
+      // console.log(curr_company);
       renderMainGraph();
     } else {
       alert("invalid token");
@@ -883,7 +890,8 @@ Template.chart.rendered = function() {
 
   function render_company_chart() {
     var c_cr = [];
-    var all_company = _.uniq(StockPrices.find({}, {fields:{company_name:1, _id:0}},{sort:{company_name: 1}}).fetch().map(function(x){return x.company_name}),true);
+    var all_company = _.uniq(StockPrices.find({token:token}, {fields:{company_name:1, _id:0},sort:{company_name: 1}}).fetch().map(function(x){return x.company_name}),true);
+
     all_company.forEach(function(c){
       var ret = StockPrices.findOne(
         {
@@ -932,7 +940,15 @@ Template.chart.rendered = function() {
           graph.fillColorsField = colorKey;
           for (var x = 0; x < chart.dataProvider.length; x++) {
             //var color = ['#d64608', '#1d7865', '#ff9e1c', '#ff831e', '#ff6400', '#d64608', '#1d7865', '#ff9e1c', '#ff831e', '#ff6400'][x];
-            var color = ["#334D5C", "#45B29D", "#EFC94C", "#E27A3F", "#DF5A49", "#334D5C", "#45B29D", "#EFC94C", "#E27A3F", "#DF5A49"][x];
+            var color = ["#334D5C", "#45B29D", "#EFC94C", "#E27A3F", "#DF5A49", 
+             "#334D5C", "#45B29D", "#EFC94C", "#E27A3F", "#DF5A49",
+             "#334D5C", "#45B29D", "#EFC94C", "#E27A3F", "#DF5A49",
+             "#334D5C", "#45B29D", "#EFC94C", "#E27A3F", "#DF5A49",
+             "#334D5C", "#45B29D", "#EFC94C", "#E27A3F", "#DF5A49",
+             "#334D5C", "#45B29D", "#EFC94C", "#E27A3F", "#DF5A49",
+             "#334D5C", "#45B29D", "#EFC94C", "#E27A3F", "#DF5A49",
+             "#334D5C", "#45B29D", "#EFC94C", "#E27A3F", "#DF5A49",
+             "#334D5C", "#45B29D", "#EFC94C", "#E27A3F", "#DF5A49",][x];
 
             chart.dataProvider[x][colorKey] = color;
           }
@@ -1183,7 +1199,15 @@ Template.chart.rendered = function() {
         graph.fillColorsField = colorKey;
         for (var x = 0; x < chart.dataProvider.length; x++) {
           //var color = ['#d64608', '#1d7865', '#ff9e1c', '#ff831e', '#ff6400', '#d64608', '#1d7865', '#ff9e1c', '#ff831e', '#ff6400'][x];
-          var color = ["#334D5C", "#45B29D", "#EFC94C", "#E27A3F", "#DF5A49", "#334D5C", "#45B29D", "#EFC94C", "#E27A3F", "#DF5A49"][x];
+          var color = ["#334D5C", "#45B29D", "#EFC94C", "#E27A3F", "#DF5A49", 
+                       "#334D5C", "#45B29D", "#EFC94C", "#E27A3F", "#DF5A49",
+                       "#334D5C", "#45B29D", "#EFC94C", "#E27A3F", "#DF5A49",
+                       "#334D5C", "#45B29D", "#EFC94C", "#E27A3F", "#DF5A49",
+                       "#334D5C", "#45B29D", "#EFC94C", "#E27A3F", "#DF5A49",
+                       "#334D5C", "#45B29D", "#EFC94C", "#E27A3F", "#DF5A49",
+                       "#334D5C", "#45B29D", "#EFC94C", "#E27A3F", "#DF5A49",
+                       "#334D5C", "#45B29D", "#EFC94C", "#E27A3F", "#DF5A49",
+                       "#334D5C", "#45B29D", "#EFC94C", "#E27A3F", "#DF5A49",][x];
 
           chart.dataProvider[x][colorKey] = color;
         }
@@ -1279,7 +1303,12 @@ Template.chart.rendered = function() {
 
   // predefined list of companies
   function render_company_details() {
-    $('#details').html('');
+    $('#details').html('Loading details...');
+    var all_company = _.uniq(StockPrices.find({}, {fields:{company_name:1}},{sort:{company_name: 1}}).fetch().map(function(x){return x.company_name}),true);
+    var num_companies = all_company.length;
+    if (num_companies > 10) {
+      $('#chartdiv2').css('height', '520');
+    }
     var dom = document.getElementById('details');
 
     Meteor.call('scrapeSearch', curr_company, function(err, response) {
@@ -1315,15 +1344,38 @@ Template.chart.rendered = function() {
         var tbody = String(tbodyRaw).replace(/\\n/g, "");
         // console.log(tbody);
 
+        var descriptionFlag = false;
+        var websiteFlag = false;
+        var tableFlag = false;
+        $('#details').html('');
         Blaze.render(Template.companyDetails, dom);
-        $('#website').html("<a href=\'"+website+"\'>"+website+"<\a>");
-        $('#description').html(description);
-        $('#table').html('<table class=\"table table-striped table-hover \">' + tbody + '</table>');
+
+        if (website != '') {
+          websiteFlag = true;
+          $('#website').html("<a href=\'"+website+"\'>"+website+"<\a>");
+          var bareWebsite = String(website).replace(/www\./, "");
+          $('#logo').html('<img src="//logo.clearbit.com/' + bareWebsite + '">');
+          var image = $('#logo img');
+          image.onerror = function () {
+            image.hide();
+          };
+        }
+        if (description != '') {
+          descriptionFlag = true;
+          $('#description').html(description);
+        }
+        if (table != '') {
+          tableFlag = true;
+          $('#table').html('<table class=\"table table-striped table-hover \">' + tbody + '</table>');
+        }
+        if (!websiteFlag && !descriptionFlag && !tableFlag) {
+          $('#details').html('We have no additional information about ' + curr_company + '.');
+        }
         // console.log(website);
         // console.log(description);
         // console.log(tbody);
       } else {
-        $('#chartdiv3').html('We have no additional information about ' + curr_company + '.');
+        $('#details').html('We have no additional information about ' + curr_company + '.');
       }
     });
 
