@@ -14,7 +14,7 @@ Template.chart.rendered = function() {
   });
   var validToken = false;
   
-  var curr_graph = 'volatility';
+  var curr_graph = 'event-study';
   var curr_company = "TGR.AX";
   var second_company = "AAC.AX";
   var curr_topic = "Cash Rate";
@@ -101,7 +101,6 @@ Template.chart.rendered = function() {
     } else if (curr_graph == 'event-study'){
       $('#chartdiv2').show();
       $('#chartdiv3').show();
-      render_related_news();
       render_events_chart(curr_company, curr_topic, curr_upper, curr_lower);
     } else if (curr_graph == 'stock-topic'){
       $('#chartdiv2').show();
@@ -660,6 +659,8 @@ Template.chart.rendered = function() {
 
       // console.log(chartOptions);
       var chart = AmCharts.makeChart("chartdiv", chartOptions);
+
+
     }
   }
 
@@ -990,6 +991,9 @@ Template.chart.rendered = function() {
     var events = StockEvents.find({token: token, company_name: company_name, topic: topic, value: {$gt : 0}}, {fields: {'date':1}}).fetch(); 
     // console.log(events);
 
+    var dates = events.map(function(x){return x.date});
+    render_related_news(company_name, topic, dates);
+
     events.forEach(function(c) {
       var dateLower = new Date(c.date);
       dateLower.setDate(dateLower.getDate() + lower_range);
@@ -1167,6 +1171,7 @@ Template.chart.rendered = function() {
         ]
       });
     }
+
   }
 
   function render_stock_topics_average_graph (company,upper_range,lower_range) {
@@ -1396,14 +1401,22 @@ Template.chart.rendered = function() {
     });
   }
 
-  function render_related_news() {
+  function render_related_news(company, topic, dates) {
     // date wanted
 
-
     var dom = document.getElementById('details');
+    dates.forEach(function(d){
+      var year = date.getFullYear();
+      var month = padZero(date.getMonth()+1,2);
+      var date = date.getDate();
+      
+    });
+
+
+
     // date format: YYYY-MM-DD
     var date = 'herp';
-    Meteor.call('scrapeRelatedNews', curr_company, date, function(err, response) {
+    Meteor.call('scrapeRelatedNews', company, , function(err, response) {
       console.log(response);
       console.log(err);
 
@@ -1412,4 +1425,9 @@ Template.chart.rendered = function() {
       // }
     });
   }
+
+  function padZero (str, max) {
+  str = str.toString();
+  return str.length < max ? padZero("0" + str, max) : str;
+}
 };
