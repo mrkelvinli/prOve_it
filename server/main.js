@@ -87,9 +87,9 @@ if(Meteor.isServer) {
       }
     },
     scrapeRelatedNews: function(company, date) {
-      var withoutAX = company.substring(0,3);
-      // e.g. https://au.finance.yahoo.com/q/h\?s\=AAC\&t\=2004-01-01
-      var url = 'https://au.finance.yahoo.com/q/\h\?s\=' + withoutAX + "\\&t\=" + date;
+      // e.g. https://au.finance.yahoo.com/q/h?s=AAC.AX&t=2016-03-01
+      var url = 'https://au.finance.yahoo.com/q/h?s=' + company + "\\&t=" + date;
+
       console.log(date);
       console.log(url);
 

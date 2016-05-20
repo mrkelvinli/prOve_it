@@ -1024,11 +1024,10 @@ Template.chart.rendered = function() {
     var guides = [];
 
     // events
-    var events = StockEvents.find({token: token, company_name: company_name, topic: topic, value: {$gt : 0}}, {fields: {'date':1}}).fetch(); 
+    var events = StockEvents.find({token: token, company_name: company_name, topic: topic, value: {$gt : 0}}, {fields: {'date':1},sort:{date:-1}}).fetch(); 
     // console.log(events);
 
-    var dates = events.map(function(x){return x.date});
-    render_related_news(company_name, topic, dates);
+    render_related_news(company_name, topic, events[0]);
 
     events.forEach(function(c) {
       var dateLower = new Date(c.date);
@@ -1437,42 +1436,34 @@ Template.chart.rendered = function() {
     });
   }
 
-  function render_related_news(company, topic, dates) {
+  function render_related_news(company, topic, d) {
     // date wanted
 
     var dom = document.getElementById('details');
-    dates.forEach(function(d){
-      var year = date.getFullYear();
-      var month = padZero(date.getMonth()+1,2);
-      var date = date.getDate();
+      var year = d.date.getFullYear();
+      var month = padZero(d.date.getMonth()+1,2);
+      var date = d.date.getDate();
       
       var dateFormated = year+"-"+month+"-"+date;
       // date format: YYYY-MM-DD
       Meteor.call('scrapeRelatedNews', company, dateFormated, function(err, response) {
-        console.log(response);
+        // console.log(response);
         console.log(err);
         if (response != null) {
-          // check if date has no headlines
-          var regexNoHeadlines = /no headlines available for [A-Z]{3} prior to /;
-          var noHeadlines = String(response).match(regexNoHeadlines);
-          if (noHeadlines == null) {
-            console.log("CAT");
-            // we have headlines
-            var regexRaw = /<div class="mod yfi_quote_headline withsky.*<table width="100%"/
-            var rawHeadlines = String(response).match(regexRaw);
-            var headlines = String(rawHeadlines).replace(/<div class="mod yfi_quote_headline withsky"><ul class="yfncnhl newsheadlines"><\/ul>/, "").replace(/<\/cite><\/li><\/ul><table width="100%"/, "");
-            console.log(headlines);
-            $('#chartdiv3').html(headlines);
+          var regexRaw = /<div class="mod yfi_quote_headline withsky.*<table width="100%"/
+          var rawHeadlines = String(response).match(regexRaw);
+          var headlines = String(rawHeadlines).replace(/<div class="mod yfi_quote_headline withsky"><ul class="yfncnhl newsheadlines"><\/ul>/, "").replace(/<\/cite><\/li><\/ul><table width="100%"/, "");
+          // console.log(headlines);
+          if (headlines != null) {
+            $('#chartdiv3').append(headlines);
+          } else {
+            console.log('DOG');
+            $('#chartdiv3').html('No related news found for the current events.');
           }
         } else {
-          console.log('DOG');
-          $('#chartdiv3').html('no data yet, TODO');
+          $('#chartdiv3').html('No related news found for the current events.');
         }
       });
-    });
-
-
-
   }
 
   function padZero (str, max) {
