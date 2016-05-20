@@ -12,7 +12,7 @@ Template.chart.rendered = function() {
   var token = Router.current().params.token;
   var validToken = false;
   
-  var curr_graph = 'stock-topic';
+  var curr_graph = 'candlesticks';
   var curr_company = "AAC.AX";
   var second_company = "AAC.AX";
   var curr_topic = "Cash Rate";
@@ -82,11 +82,13 @@ Template.chart.rendered = function() {
     $('#chart-options').hide();
     $('#chartdiv2').hide();
     $('#chartdiv3').hide();
+    $('#details').hide();
     $('#chartdiv2').html('');
     $('#chartdiv3').html('');
+    $('#details').html('');
     if (curr_graph == "candlesticks"){
       $('#chartdiv2').show();
-      $('#chartdiv3').show();
+      $('#details').show();
       render_candlestick_graph(curr_company);
       render_company_details();
       render_company_chart();
@@ -1241,8 +1243,8 @@ Template.chart.rendered = function() {
 
   // predefined list of companies
   function render_company_details() {
-    $('#chartdiv3').html('');
-    var dom = document.getElementById('chartdiv3');
+    $('#details').html('');
+    var dom = document.getElementById('details');
 
     Meteor.call('scrapeSearch', curr_company, function(err, response) {
       // console.log(response);
@@ -1278,9 +1280,12 @@ Template.chart.rendered = function() {
         // console.log(tbody);
 
         Blaze.render(Template.companyDetails, dom);
-        $('#website').html(website);
+        $('#website').html("<a href=\'"+website+"\'>"+website+"<\a>");
         $('#description').html(description);
-        $('#table').html('<table>' + tbody + '</table>');
+        $('#table').html('<table class=\"table table-striped table-hover \">' + tbody + '</table>');
+        // console.log(website);
+        // console.log(description);
+        // console.log(tbody);
       } else {
         $('#chartdiv3').html('We have no additional information about ' + curr_company + '.');
       }
