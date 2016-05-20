@@ -17,7 +17,7 @@ Template.chart.rendered = function() {
   });
   var validToken = false;
   
-  var curr_graph = 'event-study';
+  var curr_graph = 'volatility';
   var curr_company = "TGR.AX";
   var second_company = "AAC.AX";
   var curr_topic = "Cash Rate";
@@ -154,6 +154,12 @@ Template.chart.rendered = function() {
 
 
   function render_volatility_chart (company) {
+    $('#chart-options').show();
+    $('#topic-selection').hide();
+    $('#upper-window-selection').hide();
+    $('#lower-window-selection').hide();
+    // $('#second-stock-selection').show();
+
     // var stock_prices = [
     //   {time: 0, price: 5},
     //   {time: 1, price: 5.1},
