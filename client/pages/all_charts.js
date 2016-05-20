@@ -17,7 +17,7 @@ Template.chart.rendered = function() {
   });
   var validToken = false;
   
-  var curr_graph = 'candlesticks';
+  var curr_graph = 'event-study';
   var curr_company = "TGR.AX";
   var second_company = "AAC.AX";
   var curr_topic = "Cash Rate";
@@ -969,7 +969,7 @@ Template.chart.rendered = function() {
     $('#second-stock-selection').show();
 
 
-    var stocks = StockPrices.find({company_name: company_name, token:token}, {fields: {'date':1, 'cum_return':1}}).fetch();
+    var stocks = StockPrices.find({company_name: company_name, token:token}, {fields: {'date':1, 'cum_return':1, 'flat_value':1}}).fetch();
     var chartData = [];
     var guides = [];
 
@@ -1042,37 +1042,85 @@ Template.chart.rendered = function() {
         "marginRight": 80,
         "autoMarginOffset": 20,
         "marginTop": 7,
+        "legend": {
+          "equalWidths": false,
+          "useGraphSettings": true,
+          "valueAlign": "left",
+          "valueWidth": 120
+        },
         "dataProvider": chartData,
         "valueAxes": [{
-            "axisAlpha": 0.2,
-            "dashLength": 1,
-            "position": "left"
+          'id': "crAxis",
+          "axisAlpha": 0.2,
+          "dashLength": 1,
+          "position": "left",
+          'unit' : "%",
+          'unitPosition': 'right',
+          "title": "Cumulative Return (%)",
+
+        },{
+          "id": "priceAxis",
+          "axisAlpha": 0.2,
+          "dashLength": 1,
+          // "labelsEnabled": true,
+          "position": "right",
+          'unit' : "$",
+          'unitPosition': 'left',
+          "title": "Daily Stock Price Average ($)",
         }],
         "mouseWheelZoomEnabled": false,
         "graphs": [{
-            "id": "g1",
-            "balloonText": "CR: [[cr]]",
-            "balloonFunction": function(item, graph) {
-              var result = graph.balloonText;
-              for (var key in item.dataContext) {
-                if (item.dataContext.hasOwnProperty(key) && !isNaN(item.dataContext[key])) {
-                  var formatted = AmCharts.formatNumber(item.dataContext[key], {
-                    precision: 5,
-                    decimalSeparator: chart.decimalSeparator,
-                    thousandsSeparator: chart.thousandsSeparator
-                  }, 2);
-                  result = result.replace("[[" + key + "]]", formatted);
-                }
+          "id": "g1",
+          "balloonText": "Cumulative Return: [[cum_return]]%",
+          "balloonFunction": function(item, graph) {
+            var result = graph.balloonText;
+            for (var key in item.dataContext) {
+              if (item.dataContext.hasOwnProperty(key) && !isNaN(item.dataContext[key])) {
+                var formatted = AmCharts.formatNumber(item.dataContext[key], {
+                  precision: 5,
+                  decimalSeparator: chart.decimalSeparator,
+                  thousandsSeparator: chart.thousandsSeparator
+                }, 2);
+                result = result.replace("[[" + key + "]]", formatted);
               }
-              return result;
-            },
-            "bullet": "round",
-            "bulletBorderAlpha": 1,
-            "bulletColor": "#FFFFFF",
-            "hideBulletsCount": 50,
-            "title": "red line",
-            "valueField": "cum_return",
-            "useLineColorForBulletBorder": true,
+            }
+            return result;
+          },
+          "bullet": "round",
+          "bulletBorderAlpha": 1,
+          "bulletColor": "#FFFFFF",
+          "hideBulletsCount": 50,
+          "title": "Daily Stock Price Average",
+          "valueField": "cum_return",
+          "valueAxis": "crAxis",
+          "useLineColorForBulletBorder": true,
+
+
+        },{
+          "id": "g1",
+          "balloonText": "Daily Stock Price Average: $[[flat_value]]",
+          "balloonFunction": function(item, graph) {
+            var result = graph.balloonText;
+            for (var key in item.dataContext) {
+              if (item.dataContext.hasOwnProperty(key) && !isNaN(item.dataContext[key])) {
+                var formatted = AmCharts.formatNumber(item.dataContext[key], {
+                  precision: 5,
+                  decimalSeparator: chart.decimalSeparator,
+                  thousandsSeparator: chart.thousandsSeparator
+                }, 2);
+                result = result.replace("[[" + key + "]]", formatted);
+              }
+            }
+            return result;
+          },
+          "bullet": "round",
+          "bulletBorderAlpha": 1,
+          "bulletColor": "#FFFFFF",
+          "hideBulletsCount": 50,
+          "title": "Cumulative Return",
+          "valueField": "flat_value",
+          "valueAxis": "priceAxis",
+          "useLineColorForBulletBorder": true,
 
         }],
         "chartScrollbar": {
@@ -1094,7 +1142,7 @@ Template.chart.rendered = function() {
             "enabled": true
         },
         "guides": guides,
-        titles: [
+        'titles': [
           {
             text: titleBig,
             bold: true,
