@@ -1106,7 +1106,7 @@ Template.chart.rendered = function() {
 
 
         },{
-          "id": "g1",
+          "id": "g2",
           "balloonText": "Daily Stock Price Average: $[[flat_value]]",
           "balloonFunction": function(item, graph) {
             var result = graph.balloonText;
