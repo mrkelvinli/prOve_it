@@ -86,8 +86,18 @@ if(Meteor.isServer) {
         return resultOfAsyncToSync;
       }
     },
-    scrapeNews: function(company, date) {
-      return '';
+    scrapeRelatedNews: function(company, date) {
+      var withoutAX = company.substring(0,3);
+      // e.g. https://au.finance.yahoo.com/q/h\?s\=AAC\&t\=2004-01-01
+      var url = 'https://au.finance.yahoo.com/q/\h\?s\=' + withoutAX + "\\&t\=" + date;
+      console.log(date);
+      console.log(url);
+
+      var command = 'python3 ../../../../../.name/scrape.py ' + url
+        var convertAsyncToSync  = Meteor.wrapAsync(exec),
+          resultOfAsyncToSync = convertAsyncToSync(command);
+        // console.log(resultOfAsyncToSync);
+        return resultOfAsyncToSync;
     }
   });
 }
