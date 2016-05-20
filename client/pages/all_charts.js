@@ -331,7 +331,7 @@ Template.chart.rendered = function() {
         "panels": [ {
           "title": "Volatility",
           "percentHeight": 30,
-          "marginTop": 30,
+          "marginTop": 1,
           "showCategoryAxis": true,
           "percentHeight": 70,
           "valueAxes": [ {
