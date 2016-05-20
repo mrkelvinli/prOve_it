@@ -243,6 +243,7 @@ $(document).ready(function () {
       }, ["serial"]);
 
       var chart = new AmCharts.AmSerialChart();
+      chart.theme = 'light';
       chart.dataProvider = chartData;
       chart.categoryField = "company_name";
       //      chart.startDuration = 1;
