@@ -10,6 +10,7 @@ if (len(sys.argv) != 2):
     raise ValueError('Usage: ./scrape.py <url>, current command: ' + str);
 
 url = sys.argv[1]
+# print("       > url: " + url + "\n\n\n\n")
 page = urllib.request.urlopen(url)
 herp = page.read()
 print(herp)

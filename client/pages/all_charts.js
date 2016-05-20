@@ -1402,14 +1402,27 @@ Template.chart.rendered = function() {
 
     var dom = document.getElementById('details');
     // date format: YYYY-MM-DD
-    var date = 'herp';
+    var date = '2016-01-01';
     Meteor.call('scrapeRelatedNews', curr_company, date, function(err, response) {
       console.log(response);
       console.log(err);
-
-      // if (response != null) {
-
-      // }
+      if (response != null) {
+        // check if date has no headlines
+        var regexNoHeadlines = /no headlines available for [A-Z]{3} prior to /;
+        var noHeadlines = String(response).match(regexNoHeadlines);
+        if (noHeadlines == null) {
+          console.log("CAT");
+          // we have headlines
+          var regexRaw = /<div class="mod yfi_quote_headline withsky.*<table width="100%"/
+          var rawHeadlines = String(response).match(regexRaw);
+          var headlines = String(rawHeadlines).replace(/<div class="mod yfi_quote_headline withsky"><ul class="yfncnhl newsheadlines"><\/ul>/, "").replace(/<\/cite><\/li><\/ul><table width="100%"/, "");
+          console.log(headlines);
+          $('#chartdiv3').html(headlines);
+        }
+      } else {
+        console.log('DOG');
+        $('#chartdiv3').html('no data yet, TODO');
+      }
     });
   }
 };
