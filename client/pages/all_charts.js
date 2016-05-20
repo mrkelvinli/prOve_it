@@ -907,7 +907,15 @@ Template.chart.rendered = function() {
           graph.fillColorsField = colorKey;
           for (var x = 0; x < chart.dataProvider.length; x++) {
             //var color = ['#d64608', '#1d7865', '#ff9e1c', '#ff831e', '#ff6400', '#d64608', '#1d7865', '#ff9e1c', '#ff831e', '#ff6400'][x];
-            var color = ["#334D5C", "#45B29D", "#EFC94C", "#E27A3F", "#DF5A49", "#334D5C", "#45B29D", "#EFC94C", "#E27A3F", "#DF5A49"][x];
+            var color = ["#334D5C", "#45B29D", "#EFC94C", "#E27A3F", "#DF5A49", 
+             "#334D5C", "#45B29D", "#EFC94C", "#E27A3F", "#DF5A49",
+             "#334D5C", "#45B29D", "#EFC94C", "#E27A3F", "#DF5A49",
+             "#334D5C", "#45B29D", "#EFC94C", "#E27A3F", "#DF5A49",
+             "#334D5C", "#45B29D", "#EFC94C", "#E27A3F", "#DF5A49",
+             "#334D5C", "#45B29D", "#EFC94C", "#E27A3F", "#DF5A49",
+             "#334D5C", "#45B29D", "#EFC94C", "#E27A3F", "#DF5A49",
+             "#334D5C", "#45B29D", "#EFC94C", "#E27A3F", "#DF5A49",
+             "#334D5C", "#45B29D", "#EFC94C", "#E27A3F", "#DF5A49",][x];
 
             chart.dataProvider[x][colorKey] = color;
           }
@@ -1155,7 +1163,15 @@ Template.chart.rendered = function() {
         graph.fillColorsField = colorKey;
         for (var x = 0; x < chart.dataProvider.length; x++) {
           //var color = ['#d64608', '#1d7865', '#ff9e1c', '#ff831e', '#ff6400', '#d64608', '#1d7865', '#ff9e1c', '#ff831e', '#ff6400'][x];
-          var color = ["#334D5C", "#45B29D", "#EFC94C", "#E27A3F", "#DF5A49", "#334D5C", "#45B29D", "#EFC94C", "#E27A3F", "#DF5A49"][x];
+          var color = ["#334D5C", "#45B29D", "#EFC94C", "#E27A3F", "#DF5A49", 
+                       "#334D5C", "#45B29D", "#EFC94C", "#E27A3F", "#DF5A49",
+                       "#334D5C", "#45B29D", "#EFC94C", "#E27A3F", "#DF5A49",
+                       "#334D5C", "#45B29D", "#EFC94C", "#E27A3F", "#DF5A49",
+                       "#334D5C", "#45B29D", "#EFC94C", "#E27A3F", "#DF5A49",
+                       "#334D5C", "#45B29D", "#EFC94C", "#E27A3F", "#DF5A49",
+                       "#334D5C", "#45B29D", "#EFC94C", "#E27A3F", "#DF5A49",
+                       "#334D5C", "#45B29D", "#EFC94C", "#E27A3F", "#DF5A49",
+                       "#334D5C", "#45B29D", "#EFC94C", "#E27A3F", "#DF5A49",][x];
 
           chart.dataProvider[x][colorKey] = color;
         }
