@@ -101,6 +101,7 @@ Template.chart.rendered = function() {
     } else if (curr_graph == 'event-study'){
       $('#chartdiv2').show();
       $('#chartdiv3').show();
+      render_related_news();
       render_events_chart(curr_company, curr_topic, curr_upper, curr_lower);
     } else if (curr_graph == 'stock-topic'){
       $('#chartdiv2').show();
@@ -1389,7 +1390,20 @@ Template.chart.rendered = function() {
     });
   }
 
-  function render_news() {
+  function render_related_news() {
+    // date wanted
 
+
+    var dom = document.getElementById('details');
+    // date format: YYYY-MM-DD
+    var date = 'herp';
+    Meteor.call('scrapeRelatedNews', curr_company, date, function(err, response) {
+      console.log(response);
+      console.log(err);
+
+      // if (response != null) {
+
+      // }
+    });
   }
 };
