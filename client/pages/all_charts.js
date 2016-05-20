@@ -1442,9 +1442,9 @@ Template.chart.rendered = function() {
 
     var dom = document.getElementById('details');
     dates.forEach(function(d){
-      var year = date.getFullYear();
-      var month = padZero(date.getMonth()+1,2);
-      var date = date.getDate();
+      var year = d.getFullYear();
+      var month = padZero(d.getMonth()+1,2);
+      var date = d.getDate();
       
       var dateFormated = year+"-"+month+"-"+date;
       // date format: YYYY-MM-DD
