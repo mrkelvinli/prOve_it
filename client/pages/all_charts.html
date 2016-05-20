@@ -13,22 +13,23 @@
 
 <template name="chart">
   <ul class="nav nav-tabs" id='tabs'>
-    <li role="presentation"><a id='candlesticks'>Candlesticks</a></li>
-    <li role="presentation"><a id='volatility'>Volatility</a></li>
+    <li role="presentation"><a id='candlesticks'>Company Breakdown</a></li>
+    <li role="presentation"><a id='volatility'>Volatility Analysis</a></li>
     <li role="presentation"><a id='event-study'>Event Study</a></li>
-    <li role="presentation"><a id='stock-topic'>Stock vs Topic</a></li>
+    <li role="presentation"><a id='stock-topic'>Reaction Study</a></li>
+    <li role="presentation"><a id='stock-topic'>Performance Ratios</a></li>
   </ul>
   <div class="chart-frame">
     <!-- chart setting section -->
     <div class="row" id="chart-options">
       <div class="col-sm-3" id="second-stock-selection">
         <div>Compare to:</div>
-        <select class="form-control selectpicker" title="Choose one of the stock..." id="choose-second-stock" data-live-search="true">
+        <select class="form-control selectpicker" title="Stock" id="choose-second-stock" data-live-search="true">
         </select>
       </div>
       <div class="col-sm-3">
         <div>Topics:</div>
-        <select class="form-control selectpicker" title="Choose one of the topic..." id="choose-topic" data-live-search="true">
+        <select class="form-control selectpicker" title="Choose a topic" id="choose-topic" data-live-search="true">
         </select>
 
       </div>
@@ -79,7 +80,7 @@
           <p class="navbar-text" style="font-weight: 700; margin-right:-5px">Stock:</p>
           <div class="navbar-form navbar-left">
             <div class="form-group">
-              <select class="form-control selectpicker" title="Choose one of the stock..." id="choose-main-stock" data-live-search="true">
+              <select class="form-control selectpicker" title="Choose a stock" id="choose-main-stock" data-live-search="true">
               </select>
             </div>
           </div>
