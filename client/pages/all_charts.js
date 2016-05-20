@@ -25,7 +25,10 @@ Template.chart.rendered = function() {
       $('ul.nav-tabs li a#'+curr_graph).parent().addClass('active');
 
       // initialise the correct first company
-      var curr_company = StockPrices.find({token: token}, {fields:{company_name:1}, sort:{company_name: 1}});
+      // var curr_company = StockPrices.findOne({token: token}, {fields:{company_name:1}, sort:{company_name: 1}}).company_namee;
+      var all_company = _.uniq(StockPrices.find({}, {fields:{company_name:1}},{sort:{company_name: 1}}).fetch().map(function(x){return x.company_name}),true);
+      curr_company = all_company[0];
+      console.log(curr_company);
 
       renderMainGraph();
     } else {
@@ -850,7 +853,7 @@ Template.chart.rendered = function() {
 
   function render_company_chart() {
     var c_cr = [];
-    var all_company = _.uniq(StockPrices.find({}, {fields:{company_name:1, _id:0}},{sort:{company_name: 1}}).fetch().map(function(x){return x.company_name}),true);
+    var all_company = _.uniq(StockPrices.find({token: token}, {fields:{company_name:1, _id:0}},{sort:{company_name: 1}}).fetch().map(function(x){return x.company_name}),true);
     all_company.forEach(function(c){
       var ret = StockPrices.findOne(
         {
@@ -1244,6 +1247,11 @@ Template.chart.rendered = function() {
   // predefined list of companies
   function render_company_details() {
     $('#details').html('');
+    var all_company = _.uniq(StockPrices.find({}, {fields:{company_name:1}},{sort:{company_name: 1}}).fetch().map(function(x){return x.company_name}),true);
+    var num_companies = all_company.length;
+    if (num_companies > 10) {
+      $('#chartdiv2').css('height', '520');
+    }
     var dom = document.getElementById('details');
 
     Meteor.call('scrapeSearch', curr_company, function(err, response) {
@@ -1287,7 +1295,7 @@ Template.chart.rendered = function() {
         // console.log(description);
         // console.log(tbody);
       } else {
-        $('#chartdiv3').html('We have no additional information about ' + curr_company + '.');
+        $('#details').html('We have no additional information about ' + curr_company + '.');
       }
     });
 

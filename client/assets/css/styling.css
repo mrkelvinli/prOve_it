@@ -40,6 +40,11 @@
   height: 350px;
 }
 
+#details {
+  /*height: 500px;*/
+  padding: 20px;
+}
+
 .subsection {
   /*margin-top:17px;*/
   padding: 10px;
