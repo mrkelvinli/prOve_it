@@ -209,7 +209,14 @@ Template.chart.rendered = function() {
     }
     toDoList.forEach(function (c){
       var result = standardDeviation(c.currArray);
-      var entry = {"time": c.time, "price": c.price, "mAvg": result[1], "sdUpper": ((result[0]*2)+result[1]), "sdLower": (result[1]-(result[0]*2)), "sd": result[0]};
+      var zScore = (c.price - result[1]) / result[0];
+      zScore = Math.abs(zScore);
+      var entry = {};
+      if (zScore >= 1) {
+        entry = {"time": c.time, "price": c.price, "mAvg": result[1], "sdUpper": ((result[0]*2)+result[1]), "sdLower": (result[1]-(result[0]*2)), "sd": result[0], "zScore": zScore, "lineColor": "#ff0000"};
+      } else {
+        entry = {"time": c.time, "price": c.price, "mAvg": result[1], "sdUpper": ((result[0]*2)+result[1]), "sdLower": (result[1]-(result[0]*2)), "sd": result[0], "zScore": zScore, "lineColor": "#0077aa"};
+      }
       // console.log(entry);
       sma.push(entry);
     });
@@ -246,6 +253,29 @@ Template.chart.rendered = function() {
 
     function drawGraph(sma,company) {
 
+      // events
+      var company_name = company;
+      var guides =[];
+      var events = StockEvents.find({token: token, company_name: company_name, value: {$gt : 0}}, {fields: {'date':1,'topic':1}}).fetch(); 
+      console.log(events);
+
+      events.forEach(function(c) {
+        var date = new Date(c.date);
+        guides.push({
+          "lineColor": "#00aa77",
+          "lineAlpha": 1,
+          //"label": c.topic+" event",
+          "balloonText": c.topic + " event",
+          "dashLength": 1,
+          "lineThickness": 2,
+          "date": date,
+          //"toDate": date.setDate(date.getDate() + 1)
+
+
+        });
+      });
+
+
       var chart = AmCharts.makeChart( "chartdiv", {
         "type": "stock",
         "theme": "light",
@@ -280,8 +310,8 @@ Template.chart.rendered = function() {
             "fromField": "sdLower",
             "toField": "sdLower"
           },{
-            "fromField": "sd",
-            "toField": "sd"
+            "fromField": "zScore",
+            "toField": "zScore"
           }],
           "color": "orange",
           "dataProvider": sma,
@@ -318,6 +348,7 @@ Template.chart.rendered = function() {
           "categoryField": "time",
             "categoryAxis": {
               "parseDates": true,
+              "guides": guides,
               "position":"top",
               "gridPosition": "middle",
 
@@ -334,7 +365,7 @@ Template.chart.rendered = function() {
                 for (var key in item.dataContext) {
                   if (item.dataContext.hasOwnProperty(key) && !isNaN(item.dataContext[key])) {
                     var formatted = AmCharts.formatNumber(item.dataContext[key], {
-                      precision: chart.precision,
+                      precision: 3,
                       decimalSeparator: chart.decimalSeparator,
                       thousandsSeparator: chart.thousandsSeparator
                     }, 2);
@@ -421,8 +452,8 @@ Template.chart.rendered = function() {
           },
 
           {
-            "title": "Standard Deviation",
-            "percentHeight": 30,
+            "title": "Standard Score (# of Std. Dev from the mean)",
+            "percentHeight": 35,
             "marginTop": 1,
             "showCategoryAxis": true,
             "valueAxes": [ {
@@ -434,11 +465,13 @@ Template.chart.rendered = function() {
             },
 
             "stockGraphs": [ {
-              "valueField": "sd",
+              "valueField": "zScore",
               "type": "line",
+              "lineColorField": "lineColor",
+              "lineThickness": 1.5,
               "showBalloon": false,
-              "fillAlphas": 0,
-              "lineColor": "#ff6600",
+              //"fillAlpha": 0.8,
+              //"lineColor": "#ff6600",
               "useDataSetColors":false,
             } ],
 
@@ -446,7 +479,7 @@ Template.chart.rendered = function() {
               "markerType": "none",
               "markerSize": 0,
               "labelText": "",
-              "periodValueTextRegular": "[[sd]]"
+              "periodValueTextRegular": "[[zScore]]"
             }
           }
         ],
@@ -755,7 +788,7 @@ Template.chart.rendered = function() {
             // "compareField": "value",
             "showBalloon": true,
             "proCandlesticks": true,
-            "title": "Candle Stick",
+            "title": "Candlestick",
             "balloonText": "Open:<b>[[open]]</b><br>Low:<b>[[low]]</b><br>High:<b>[[high]]</b><br>Close:<b>[[close]]</b><br>Value:<b>[[value]]</b>",
           },
           {
@@ -935,8 +968,11 @@ Template.chart.rendered = function() {
       chart.theme = 'light';
 
       chart.titles = [{
-        "text": "Cumulative returns for each stock",
+        "text": "Stock Comparison",
         "bold": true,
+        },{
+          "text": "Cumulative returns for the last 30 days",
+          "bold": false,
         }];
 
       // add click listener
