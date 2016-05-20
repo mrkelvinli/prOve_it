@@ -1,7 +1,4 @@
 import { Meteor } from 'meteor/meteor';
-import './companies.html';
-import './companies.css';
-
 
 Template.chart.rendered = function() {
   $('.selectpicker').selectpicker();
@@ -17,7 +14,7 @@ Template.chart.rendered = function() {
   });
   var validToken = false;
   
-  var curr_graph = 'candlesticks';
+  var curr_graph = 'volatility';
   var curr_company = "TGR.AX";
   var second_company = "AAC.AX";
   var curr_topic = "Cash Rate";
@@ -104,6 +101,7 @@ Template.chart.rendered = function() {
     } else if (curr_graph == 'event-study'){
       $('#chartdiv2').show();
       $('#chartdiv3').show();
+      render_related_news();
       render_events_chart(curr_company, curr_topic, curr_upper, curr_lower);
     } else if (curr_graph == 'stock-topic'){
       $('#chartdiv2').show();
@@ -154,6 +152,12 @@ Template.chart.rendered = function() {
 
 
   function render_volatility_chart (company) {
+    $('#chart-options').show();
+    $('#topic-selection').hide();
+    $('#upper-window-selection').hide();
+    $('#lower-window-selection').hide();
+    // $('#second-stock-selection').show();
+
     // var stock_prices = [
     //   {time: 0, price: 5},
     //   {time: 1, price: 5.1},
@@ -1014,7 +1018,7 @@ Template.chart.rendered = function() {
     $('#second-stock-selection').show();
 
 
-    var stocks = StockPrices.find({company_name: company_name, token:token}, {fields: {'date':1, 'cum_return':1}}).fetch();
+    var stocks = StockPrices.find({company_name: company_name, token:token}, {fields: {'date':1, 'cum_return':1, 'flat_value':1}}).fetch();
     var chartData = [];
     var guides = [];
 
@@ -1087,37 +1091,85 @@ Template.chart.rendered = function() {
         "marginRight": 80,
         "autoMarginOffset": 20,
         "marginTop": 7,
+        "legend": {
+          "equalWidths": false,
+          "useGraphSettings": true,
+          "valueAlign": "left",
+          "valueWidth": 120
+        },
         "dataProvider": chartData,
         "valueAxes": [{
-            "axisAlpha": 0.2,
-            "dashLength": 1,
-            "position": "left"
+          'id': "crAxis",
+          "axisAlpha": 0.2,
+          "dashLength": 1,
+          "position": "left",
+          'unit' : "%",
+          'unitPosition': 'right',
+          "title": "Cumulative Return (%)",
+
+        },{
+          "id": "priceAxis",
+          "axisAlpha": 0.2,
+          "dashLength": 1,
+          // "labelsEnabled": true,
+          "position": "right",
+          'unit' : "$",
+          'unitPosition': 'left',
+          "title": "Daily Stock Price Average ($)",
         }],
         "mouseWheelZoomEnabled": false,
         "graphs": [{
-            "id": "g1",
-            "balloonText": "CR: [[value]]",
-            "balloonFunction": function(item, graph) {
-              var result = graph.balloonText;
-              for (var key in item.dataContext) {
-                if (item.dataContext.hasOwnProperty(key) && !isNaN(item.dataContext[key])) {
-                  var formatted = AmCharts.formatNumber(item.dataContext[key], {
-                    precision: 5,
-                    decimalSeparator: chart.decimalSeparator,
-                    thousandsSeparator: chart.thousandsSeparator
-                  }, 2);
-                  result = result.replace("[[" + key + "]]", formatted);
-                }
+          "id": "g1",
+          "balloonText": "Cumulative Return: [[cum_return]]%",
+          "balloonFunction": function(item, graph) {
+            var result = graph.balloonText;
+            for (var key in item.dataContext) {
+              if (item.dataContext.hasOwnProperty(key) && !isNaN(item.dataContext[key])) {
+                var formatted = AmCharts.formatNumber(item.dataContext[key], {
+                  precision: 5,
+                  decimalSeparator: chart.decimalSeparator,
+                  thousandsSeparator: chart.thousandsSeparator
+                }, 2);
+                result = result.replace("[[" + key + "]]", formatted);
               }
-              return result;
-            },
-            "bullet": "round",
-            "bulletBorderAlpha": 1,
-            "bulletColor": "#FFFFFF",
-            "hideBulletsCount": 50,
-            "title": "red line",
-            "valueField": "cum_return",
-            "useLineColorForBulletBorder": true,
+            }
+            return result;
+          },
+          "bullet": "round",
+          "bulletBorderAlpha": 1,
+          "bulletColor": "#FFFFFF",
+          "hideBulletsCount": 50,
+          "title": "Daily Stock Price Average",
+          "valueField": "cum_return",
+          "valueAxis": "crAxis",
+          "useLineColorForBulletBorder": true,
+
+
+        },{
+          "id": "g2",
+          "balloonText": "Daily Stock Price Average: $[[flat_value]]",
+          "balloonFunction": function(item, graph) {
+            var result = graph.balloonText;
+            for (var key in item.dataContext) {
+              if (item.dataContext.hasOwnProperty(key) && !isNaN(item.dataContext[key])) {
+                var formatted = AmCharts.formatNumber(item.dataContext[key], {
+                  precision: 5,
+                  decimalSeparator: chart.decimalSeparator,
+                  thousandsSeparator: chart.thousandsSeparator
+                }, 2);
+                result = result.replace("[[" + key + "]]", formatted);
+              }
+            }
+            return result;
+          },
+          "bullet": "round",
+          "bulletBorderAlpha": 1,
+          "bulletColor": "#FFFFFF",
+          "hideBulletsCount": 50,
+          "title": "Cumulative Return",
+          "valueField": "flat_value",
+          "valueAxis": "priceAxis",
+          "useLineColorForBulletBorder": true,
 
         }],
         "chartScrollbar": {
@@ -1139,7 +1191,7 @@ Template.chart.rendered = function() {
             "enabled": true
         },
         "guides": guides,
-        titles: [
+        'titles': [
           {
             text: titleBig,
             bold: true,
@@ -1378,24 +1430,22 @@ Template.chart.rendered = function() {
         $('#details').html('We have no additional information about ' + curr_company + '.');
       }
     });
+  }
 
-    // // is there a better way to code this?
-    // if (curr_company == 'AAC.AX') {
-    //   Blaze.render(Template.aac, dom);
-    // } else if (curr_company == 'ELD.AX') {
-    //   Blaze.render(Template.eld, dom);
-    // } else if (curr_company == 'ELDDA.AX') {
-    //   Blaze.render(Template.eld, dom);
-    // } else if (curr_company == 'GNC.AX') {
-    //   Blaze.render(Template.gnc, dom);
-    // }  else if (curr_company == 'RIC.AX') {
-    //   Blaze.render(Template.ric, dom);
-    // }  else if (curr_company == 'TGR.AX') {
-    //   Blaze.render(Template.tgr, dom);
-    // }  else if (curr_company == 'WBA.AX') {
-    //   Blaze.render(Template.wba, dom);
-    // } else {
-    //   $('#chartdiv2').html('We have no additional information about ' + curr_company + '.');
-    // }
+  function render_related_news() {
+    // date wanted
+
+
+    var dom = document.getElementById('details');
+    // date format: YYYY-MM-DD
+    var date = 'herp';
+    Meteor.call('scrapeRelatedNews', curr_company, date, function(err, response) {
+      console.log(response);
+      console.log(err);
+
+      // if (response != null) {
+
+      // }
+    });
   }
 };
