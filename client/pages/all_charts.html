@@ -154,30 +154,39 @@
         </tr>
         <tr>
            <td rowspan="3" valign="top">
-              <div id="rrgchart"><canvas width="600" height="400" style="-webkit-user-select: none; cursor: default;"></canvas></div></td>
-           <td colspan="2" valign="top">
-              <div id="benchmarkchart"><canvas width="320" height="240" style="-webkit-user-select: none; cursor: -webkit-grab;"></canvas></div></td>
-        </tr>
-        <tr>
-           <td colspan="2" valign="middle">
-              <div id="controls" style="display: block;">
-                 Tail Length: <div style="width: 150px; min-height: 16px; margin-left: 8px; margin-right: 8px; -webkit-user-select: none; position: relative; box-sizing: border-box; display: inline-block; vertical-align: middle;"><div id='herp' style="position: absolute; top: 50%; -webkit-user-select: none; cursor: pointer; border: 1px solid rgb(102, 102, 102); width: 100%; height: 4px; margin-top: -3px; border-radius: 3px; background: -webkit-linear-gradient(top, rgb(187, 187, 187), rgb(221, 221, 221));"></div><div id='derp' style="position: absolute; top: 50%; -webkit-user-select: none; cursor: pointer; border: 1px solid rgb(68, 68, 68); width: 14px; height: 14px; margin-top: -8px; margin-left: -8px; border-radius: 8px; left: 0px; background: -webkit-linear-gradient(top, rgb(255, 255, 255), rgb(238, 238, 238));" class=""></div></div><input id="taillength" type="text" value="10" style="display: none;"><span class="taillength-value">0</span> <span class="period-value">weeks</span><br><br>
-                 <div style='border: 1px solid #fafafa' class="btn animate" id="animate">animate</div>
-                 <div style='border: 1px solid #fafafa' class="btn zoom" id="zoomin">+</div>
-                 <div style='border: 1px solid #fafafa' class="btn zoom" id="zoomout">-</div>
-                 <div style='border: 1px solid #fafafa' class="btn zoom" id="zoomfit">fit</div>
-                 <div style='border: 1px solid #fafafa' class="btn zoom" id="zoomctr">ctr</div>
-                 <div style='border: 1px solid #fafafa' class="btn zoom" id="zoommax">max</div>
-              </div>
-           </td>
-        </tr>
-        <tr>
-           <td colspan="2" align="right" valign="bottom">
-              <img id="resize" class="membercontent" src="./corner-resize.png" style="display: none;">
-           </td>
+              <div id="rrgchart"><canvas width="800" height="600" style="-webkit-user-select: none; cursor: default;"></canvas></div></td>
         </tr>
      </tbody></table>
   </div>
+</template>
+
+<template name="rrgControls">
+  <table>
+    <tbody>
+      <tr>
+        <td colspan="2" valign="top">
+          <div id="benchmarkchart"><canvas width="320" height="240" style="-webkit-user-select: none; cursor: -webkit-grab;"></canvas></div></td>
+      </tr>
+      <tr>
+         <td colspan="2" valign="middle">
+            <div id="controls" style="display: block;">
+               Tail Length: <!-- <div style="width: 150px; min-height: 16px; margin-left: 8px; margin-right: 8px; -webkit-user-select: none; position: relative; box-sizing: border-box; display: inline-block; vertical-align: middle;"><div id='herp' style="position: absolute; top: 50%; -webkit-user-select: none; cursor: pointer; border: 1px solid rgb(102, 102, 102); width: 100%; height: 4px; margin-top: -3px; border-radius: 3px; background: -webkit-linear-gradient(top, rgb(187, 187, 187), rgb(221, 221, 221));"></div><div id='derp' style="position: absolute; top: 50%; -webkit-user-select: none; cursor: pointer; border: 1px solid rgb(68, 68, 68); width: 14px; height: 14px; margin-top: -8px; margin-left: -8px; border-radius: 8px; left: 0px; background: -webkit-linear-gradient(top, rgb(255, 255, 255), rgb(238, 238, 238));" class=""></div></div> --><div id="taillength" type="text" value="10"></div><span class="taillength-value">0</span> <span class="period-value">weeks</span><br><br>
+               <div style='border: 1px solid #fafafa' class="btn animate" id="animate">animate</div>
+               <div style='border: 1px solid #fafafa' class="btn zoom" id="zoomin">+</div>
+               <div style='border: 1px solid #fafafa' class="btn zoom" id="zoomout">-</div>
+               <div style='border: 1px solid #fafafa' class="btn zoom" id="zoomfit">fit</div>
+               <div style='border: 1px solid #fafafa' class="btn zoom" id="zoomctr">ctr</div>
+               <div style='border: 1px solid #fafafa' class="btn zoom" id="zoommax">max</div>
+            </div>
+         </td>
+      </tr>
+      <tr>
+         <td colspan="2" align="right" valign="bottom">
+            <img id="resize" class="membercontent" src="./corner-resize.png" style="display: none;">
+         </td>
+      </tr>
+    </tbody>
+  </table>
 </template>
 
 <template name="rrgSymbols">

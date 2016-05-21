@@ -93,6 +93,13 @@ Template.chart.rendered = function() {
     $('#chartdiv2').html('');
     $('#chartdiv3').html('');
     $('#details').html('');
+
+    $('#chartdiv2').parent().removeClass('col-md-8');
+    $('#chartdiv2').parent().addClass('col-md-7');
+
+    $('#chartdiv3').parent().removeClass('col-md-4');
+    $('#chartdiv3').parent().addClass('col-md-5');
+
     if (curr_graph == "candlesticks"){
       $('#chartdiv2').show();
       $('#details').show();
@@ -1491,5 +1498,11 @@ Template.chart.rendered = function() {
     $('#chartdiv2').css('margin', '0');
     var dom2 = document.getElementById('chartdiv2');
     Blaze.render(Template.rrgSymbols, dom2);
+
+    $('#chartdiv3').show();
+    $('#chartdiv3').parent().removeClass('col-md-5');
+    $('#chartdiv3').parent().addClass('col-md-4');
+    var dom3 = document.getElementById('chartdiv3');
+    Blaze.render(Template.rrgControls, dom3);
   }
 };

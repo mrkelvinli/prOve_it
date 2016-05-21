@@ -1,7 +1,12 @@
 
+#rrg thead tr {
+   padding-left: 200px;
+}
+
 #rrg td {
    _border: 1px solid gray;
 }
+
 #rrg table {
    font: normal 12px "Helvetica Neue", Helvetica, Arial, sans-serif;
    text-align: center;

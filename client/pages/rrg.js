@@ -1,10 +1,4 @@
 Template.rrgMain.rendered = function() {
-  $(document).ready(function() {
-    console.log('ready');
-    $('#animate').on('click', function() {
-      console.log('clikd');
-    });
-  });
   Array.prototype.indexOf || (Array.prototype.indexOf = function(t, i) {
       if (void 0 === this || null === this) throw new TypeError('"this" is null or not defined');
       var e = this.length >>> 0;
@@ -71,6 +65,7 @@ Template.rrgMain.rendered = function() {
           this.limitDailyData(s);
           this.fillFormFields(s);
           this.hideUiElements();
+          // changed getJson to return the json we want
           this.getJson("http://stockcharts.com/d-rrg/rrg", s, function(i, e, n, o, a) {
               $("#symbols").size() > 0 && "hidden" != $("#symbols").attr("type") && $("#symbols").val(n);
               $("#benchmark").val(i);
@@ -228,27 +223,39 @@ Template.rrgMain.rendered = function() {
           $(".period-value").text(s);
           if (!this.isInitialized) {
               var n = this;
+              // $('#taillength').noUiSlider({
+              //   start: [ 10 ],
+              //   step: 1,
+              //   range: {
+              //     'min': [  0 ],
+              //     'max': [ 30 ]
+              //   }
+              // });
+
               $("#taillength").slider({
+                  value: 10,
                   step: 1,
                   width: 150,
-                  range: [0, 30],
+                  min: 0,
+                  max: 30,
                   sizeDragger: this.isTouchDevice() ? 28 : 16,
                   backgroundDragger: ["#ffffff", "#eeeeee"],
-                  onInit: function(t, i) {
-                      $(".taillength-value").text(i)
+                  create: function(t, i) {
+                      console.log("INIT");
+                      $(".taillength-value").text(i.value);
                   },
-                  onChange: function(t, i) {
-                      $(".taillength-value").text(i);
+                  slide: function(t, i) {
+                      console.log('CHANGEEE');
+                      $(".taillength-value").text(i.value);
                       var e = $("#period").val();
                       var s = "w" == e ? "week" : "trading day";
-                      1 != i && (s += "s");
+                      1 != i.value && (s += "s");
                       $(".period-value").text(s);
-                      n.rrgChart.setTailLength(i);
-                      n.benchmarkChart.setTailLength(i)
+                      n.rrgChart.setTailLength(i.value);
+                      n.benchmarkChart.setTailLength(i.value)
                   }
               });
               $("#animate").on("click", function() {
-                  console.log("CLICKED");
                   "animate" == $(this).text() ? n.startAnimation() : n.stopAnimation()
               });
               $("#zoomin").on("mousedown touchstart", function() {
@@ -528,8 +535,8 @@ Template.rrgMain.rendered = function() {
               benchmarkSymbol: null,
               benchmarkData: null,
               rrgData: null,
-              width: 600,
-              height: 400,
+              width: 800,
+              height: 600,
               tailLength: 10,
               endTailDate: null,
               gridBounds: null,
@@ -548,15 +555,18 @@ Template.rrgMain.rendered = function() {
               hilitedSymbol: null,
               hiddenSymbols: null,
               isCentered: !1,
-              minWidth: 600,
-              minHeight: 400,
+              minWidth: 800,
+              minHeight: 600,
               onZoom: function() {},
               onPan: function() {},
               onChangeTailLength: function() {},
               onChangeEndTailDate: function() {}
           }, i || {});
-          this.width = this.settings.width;
-          this.height = this.settings.height;
+          // this.width = this.settings.width;
+          // this.height = this.settings.height;
+          this.width = 1000;
+          this.height = 500;
+          console.log(this.width + ' x ' + this.height);
           this.$canvas = $("<canvas width='" + this.width + "' height='" + this.height + "'></canvas>").css("-webkit-user-select", "none");
           this.canvas = this.$canvas[0];
           this.ctx = this.canvas.getContext("2d");
@@ -2352,7 +2362,7 @@ Template.rrgMain.rendered = function() {
                           var m = Math.ceil(40 * (Math.abs(u) / d));
                           m > 40 && (m = 40);
                           1 > m && (m = 1);
-                          var f = u >= 0 ? "http://stockcharts.com/freecharts/rrg/greenbar.png" : "http://stockcharts.com/freecharts/rrg/redbar.png";
+                          var f = u >= 0 ? "/images/greenbar.png" : "/images/redbar.png";
                           u = "<img src='" + f + "' width='" + m + "' height='10'> " + u.toFixed(1);
                           g = "left"
                       }
@@ -2363,7 +2373,7 @@ Template.rrgMain.rendered = function() {
                       1 > m && (m = 1);
                       if ("white" == u) u = "";
                       else if (u) {
-                          var f = "http://stockcharts.com/freecharts/rrg/" + u + "bar.png";
+                          var f = "/images/" + u + "bar.png";
                           u = "<img src='" + f + "' width='" + m + "' height='10'>"
                       }
                       g = "left"
@@ -2371,7 +2381,7 @@ Template.rrgMain.rendered = function() {
                       u = o ? "" : u ? "<input type='checkbox' checked='checked' />" : "<input type='checkbox' />";
                       g = "center"
                   } else if ("chart" == l) {
-                      u = "<a href=''><img src='http://stockcharts.com/freecharts/rrg/candle.gif'></a>";
+                      u = "<a href=''><img src='/images/candle.gif'></a>";
                       g = "center"
                   }
                   i += "<td align='" + g + "' class='" + c + "'>" + u + "</td>"
