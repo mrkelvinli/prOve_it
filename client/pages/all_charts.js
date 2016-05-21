@@ -14,7 +14,7 @@ Template.chart.rendered = function() {
   });
   var validToken = false;
   
-  var curr_graph = 'event-study';
+  var curr_graph = 'stock-topic';
   var curr_company = "TGR.AX";
   var second_company = "AAC.AX";
   var curr_topic = "Cash Rate";
@@ -42,6 +42,7 @@ Template.chart.rendered = function() {
   $('ul.nav-tabs li a').on('click', function() {
     var currentTab = $(this);
     var tabId = currentTab.attr('id');
+    console.log(tabId);
     $('ul.nav-tabs li').removeClass('active');
     if (tabId == 'candlesticks') {
       curr_graph = 'candlesticks';
@@ -51,6 +52,8 @@ Template.chart.rendered = function() {
       curr_graph = 'event-study';
     } else if (tabId == 'stock-topic') {
       curr_graph = 'stock-topic';
+    } else if (tabId == 'rrg') {
+      curr_graph = 'rrg';
     }
     renderMainGraph();
     currentTab.parent().addClass('active');
@@ -108,9 +111,14 @@ Template.chart.rendered = function() {
       render_stock_vs_topic_graph(curr_company, curr_topic, curr_upper, curr_lower);
       render_stock_topics_average_graph(curr_company,curr_upper,curr_lower);
       render_stock_topics_graph_significance_table(curr_company, curr_topic, curr_upper, curr_lower);
+    } else if (curr_graph == 'rrg') {
+      $('#chartdiv').html('');
+      var company1 = '';
+      var company2 = '';
+      var company3 = '';
+      render_rrg(curr_company);
     }
   }
-
 
   // listen to the upper window input
   $('#choose-upper-window').on('change',function(){
@@ -1359,7 +1367,7 @@ Template.chart.rendered = function() {
 
   // predefined list of companies
   function render_company_details() {
-    $('#details').html('Loading details...');
+    $('#details').html('Loading details of ' + curr_company + '...');
     var all_company = _.uniq(StockPrices.find({}, {fields:{company_name:1}},{sort:{company_name: 1}}).fetch().map(function(x){return x.company_name}),true);
     var num_companies = all_company.length;
     if (num_companies > 10) {
@@ -1408,7 +1416,7 @@ Template.chart.rendered = function() {
 
         if (website != '') {
           websiteFlag = true;
-          $('#website').html("<a href=\'"+website+"\'>"+website+"<\a>");
+          $('#website').html("<a href=\'http://"+website+"\'>"+website+"<\a>");
           var bareWebsite = String(website).replace(/www\./, "");
           $('#logo').html('<img src="//logo.clearbit.com/' + bareWebsite + '">');
           var image = $('#logo img');
@@ -1468,7 +1476,20 @@ Template.chart.rendered = function() {
   }
 
   function padZero (str, max) {
-  str = str.toString();
-  return str.length < max ? padZero("0" + str, max) : str;
-}
+    str = str.toString();
+    return str.length < max ? padZero("0" + str, max) : str;
+  }
+
+  function render_rrg(company) {
+    console.log("hi");
+    var dom = document.getElementById('chartdiv');
+    Blaze.render(Template.rrgMain, dom);
+
+    $('#chartdiv2').show();
+    $('#chartdiv2').parent().removeClass('col-md-7');
+    $('#chartdiv2').parent().addClass('col-md-8');
+    $('#chartdiv2').css('margin', '0');
+    var dom2 = document.getElementById('chartdiv2');
+    Blaze.render(Template.rrgSymbols, dom2);
+  }
 };
