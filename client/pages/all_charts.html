@@ -119,6 +119,7 @@
 </template>
 
 <template name="rrgMain">
+  <input type='hidden' id='hidden'/>
   <div class="box">
      <table id="ui">
         <tbody><tr class="membercontent" style="display: none;">
@@ -170,7 +171,7 @@
       <tr>
          <td colspan="2" valign="middle">
             <div id="controls" style="display: block;">
-               Tail Length: <!-- <div style="width: 150px; min-height: 16px; margin-left: 8px; margin-right: 8px; -webkit-user-select: none; position: relative; box-sizing: border-box; display: inline-block; vertical-align: middle;"><div id='herp' style="position: absolute; top: 50%; -webkit-user-select: none; cursor: pointer; border: 1px solid rgb(102, 102, 102); width: 100%; height: 4px; margin-top: -3px; border-radius: 3px; background: -webkit-linear-gradient(top, rgb(187, 187, 187), rgb(221, 221, 221));"></div><div id='derp' style="position: absolute; top: 50%; -webkit-user-select: none; cursor: pointer; border: 1px solid rgb(68, 68, 68); width: 14px; height: 14px; margin-top: -8px; margin-left: -8px; border-radius: 8px; left: 0px; background: -webkit-linear-gradient(top, rgb(255, 255, 255), rgb(238, 238, 238));" class=""></div></div> --><div id="taillength" type="text" value="10"></div><span class="taillength-value">0</span> <span class="period-value">weeks</span><br><br>
+               Tail Length: <!-- <div style="width: 150px; min-height: 16px; margin-left: 8px; margin-right: 8px; -webkit-user-select: none; position: relative; box-sizing: border-box; display: inline-block; vertical-align: middle;"><div id='herp' style="position: absolute; top: 50%; -webkit-user-select: none; cursor: pointer; border: 1px solid rgb(102, 102, 102); width: 100%; height: 4px; margin-top: -3px; border-radius: 3px; background: -webkit-linear-gradient(top, rgb(187, 187, 187), rgb(221, 221, 221));"></div><div id='derp' style="position: absolute; top: 50%; -webkit-user-select: none; cursor: pointer; border: 1px solid rgb(68, 68, 68); width: 14px; height: 14px; margin-top: -8px; margin-left: -8px; border-radius: 8px; left: 0px; background: -webkit-linear-gradient(top, rgb(255, 255, 255), rgb(238, 238, 238));" class=""></div></div> --><div id="taillength" type="text" value="10"></div><span class="taillength-value">10</span> <span class="period-value">weeks</span><br><br>
                <div style='border: 1px solid #fafafa' class="btn animate" id="animate">animate</div>
                <div style='border: 1px solid #fafafa' class="btn zoom" id="zoomin">+</div>
                <div style='border: 1px solid #fafafa' class="btn zoom" id="zoomout">-</div>
@@ -190,9 +191,15 @@
 </template>
 
 <template name="rrgSymbols">
-  <div id="rrg" style='width: 100%'>
-  <div id="symbolgrid"><table class="symbolgrid"> 
-  <thead><tr><th>chart</th><th>visible</th><th class="sort-descending">tail</th><th>symbol</th><th>name</th><th>sector</th><th>industry</th><th>price</th><th>%chg</th></tr></thead><tbody><tr class="row green"><td align="center" class="chart"><a href=""><img src="./candle.gif"></a></td><td align="center" class="visible"><input type="checkbox" checked="checked"></td><td align="left" class="tail"><img src="./greenbar.png" width="40" height="10"></td><td align="right" class="symbol">$CDNX</td><td align="right" class="name">S&amp;P/TSX Venture (CDNX) Composite Index</td><td align="right" class="sector"></td><td align="right" class="industry"></td><td align="right" class="price">678.23</td><td align="left" class="chg"><img src="./greenbar.png" width="1" height="10"> 0.0</td></tr><tr class="row green"><td align="center" class="chart"><a href=""><img src="./candle.gif"></a></td><td align="center" class="visible"><input type="checkbox" checked="checked"></td><td align="left" class="tail"><img src="./greenbar.png" width="12" height="10"></td><td align="right" class="symbol">$XAX</td><td align="right" class="name">AMEX Composite</td><td align="right" class="sector"></td><td align="right" class="industry"></td><td align="right" class="price">2287.99</td><td align="left" class="chg"><img src="./greenbar.png" width="1" height="10"> 0.0</td></tr><tr class="row green"><td align="center" class="chart"><a href=""><img src="./candle.gif"></a></td><td align="center" class="visible"><input type="checkbox" checked="checked"></td><td align="left" class="tail"><img src="./greenbar.png" width="7" height="10"></td><td align="right" class="symbol">$TSX</td><td align="right" class="name">TSX Composite Index</td><td align="right" class="sector"></td><td align="right" class="industry"></td><td align="right" class="price">13817.32</td><td align="left" class="chg"><img src="./greenbar.png" width="1" height="10"> 0.0</td></tr><tr class="row green"><td align="center" class="chart"><a href=""><img src="./candle.gif"></a></td><td align="center" class="visible"><input type="checkbox" checked="checked"></td><td align="left" class="tail"><img src="./greenbar.png" width="3" height="10"></td><td align="right" class="symbol">$NYA</td><td align="right" class="name">NYSE Composite Index</td><td align="right" class="sector"></td><td align="right" class="industry"></td><td align="right" class="price">10192.48</td><td align="left" class="chg"><img src="./greenbar.png" width="1" height="10"> 0.0</td></tr><tr class="row green"><td align="center" class="chart"><a href=""><img src="./candle.gif"></a></td><td align="center" class="visible"><input type="checkbox" checked="checked"></td><td align="left" class="tail"><img src="./greenbar.png" width="3" height="10"></td><td align="right" class="symbol">$INDU</td><td align="right" class="name">Dow Jones Industrial Average</td><td align="right" class="sector"></td><td align="right" class="industry"></td><td align="right" class="price">17435.40</td><td align="left" class="chg"><img src="./greenbar.png" width="1" height="10"> 0.0</td></tr><tr class="row blue"><td align="center" class="chart"><a href=""><img src="./candle.gif"></a></td><td align="center" class="visible"><input type="checkbox" checked="checked"></td><td align="left" class="tail"><img src="./bluebar.png" width="10" height="10"></td><td align="right" class="symbol">$COMPQ</td><td align="right" class="name">Nasdaq Composite</td><td align="right" class="sector"></td><td align="right" class="industry"></td><td align="right" class="price">4712.53</td><td align="left" class="chg"><img src="./greenbar.png" width="1" height="10"> 0.0</td></tr><tr class="row white"><td align="center" class="chart"><a href=""><img src="./candle.gif"></a></td><td align="center" class="visible"></td><td align="left" class="tail"></td><td align="right" class="symbol">$SPX</td><td align="right" class="name">S&amp;P 500 Large Cap Index</td><td align="right" class="sector"></td><td align="right" class="industry"></td><td align="right" class="price">2040.04</td><td align="left" class="chg"><img src="./greenbar.png" width="1" height="10"> 0.0</td></tr></tbody></table></div>
+<div id="rrg" style='width: 100%'>
+  <div id="symbolgrid">
+    <table class="symbolgrid">
+      <thead>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+  </div>
 </div>
 </template>
 
