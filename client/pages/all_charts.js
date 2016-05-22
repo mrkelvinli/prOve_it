@@ -176,7 +176,7 @@ Template.chart.rendered = function() {
     $('#topic-selection').hide();
     $('#upper-window-selection').hide();
     $('#lower-window-selection').hide();
-    // $('#second-stock-selection').show();
+    $('#second-stock-selection').show();
 
     // var stock_prices = [
     //   {time: 0, price: 5},
@@ -688,36 +688,37 @@ Template.chart.rendered = function() {
     var graphs = [];
     var graphsReady = false;
 
+    if (events.length > 0) {
 
-    for (var date = lower_range; date <= upper_range; date++) {
-      var entry = {date: date};
-      events.forEach(function (e) {
-        var currDate = new Date(e.date.getTime());
-        // console.log("currDate :"+currDate); 
-        currDate.setUTCDate(e.date.getUTCDate()+date);
-        // console.log("window: "+ date + " " + currDate+ " event date: "+ e.date );
-        var cr = StockPrices.findOne({token: token, company_name: company, date: currDate},{fields:{cum_return:true}});
-        if (cr === undefined)
-          cr = null;
-        else
-          cr = cr.cum_return;
-        entry[e.date.toDateString()] = cr;
+      for (var date = lower_range; date <= upper_range; date++) {
+        var entry = {date: date};
+        events.forEach(function (e) {
+          var currDate = new Date(e.date.getTime());
+          // console.log("currDate :"+currDate); 
+          currDate.setUTCDate(e.date.getUTCDate()+date);
+          // console.log("window: "+ date + " " + currDate+ " event date: "+ e.date );
+          var cr = StockPrices.findOne({token: token, company_name: company, date: currDate},{fields:{cum_return:true}});
+          if (cr === undefined)
+            cr = null;
+          else
+            cr = cr.cum_return;
+          entry[e.date.toDateString()] = cr;
 
-        if(!graphsReady){
-          graphs.push({
-            "balloonText": "[[value]]%",
-            "bullet": "round",
-            "hidden": false,
-            "title": e.date.toDateString(),
-            "valueField": e.date.toDateString(),
-            "fillAlphas": 0,
-          });  
-        }
+          if(!graphsReady){
+            graphs.push({
+              "balloonText": "[[value]]%",
+              "bullet": "round",
+              "hidden": false,
+              "title": e.date.toDateString(),
+              "valueField": e.date.toDateString(),
+              "fillAlphas": 0,
+            });  
+          }
 
-      });
-      graphsReady = true;
-
-      chartData.push(entry);
+        });
+        graphsReady = true;
+        chartData.push(entry);
+      }
     }
 
     // console.log(chartData);
@@ -785,6 +786,31 @@ Template.chart.rendered = function() {
 
       // console.log(chartOptions);
       var chart = AmCharts.makeChart("chartdiv", chartOptions);
+
+      AmCharts.checkEmptyData = function (chart) {
+        if (chart.dataProvider.length == 0) {
+          // set min/max on the value axis
+          chart.valueAxes[0].minimum = 0;
+          chart.valueAxes[0].maximum = 100;
+          
+          // add dummy data point
+          var dataPoint = {
+            dummyValue: 0
+          };
+          dataPoint[chart.categoryField] = '';
+          chart.dataProvider = [dataPoint];
+          
+          // add label
+          chart.addLabel(0, '50%', 'The chart contains no data', 'center');
+          
+          // set opacity of the chart div
+          chart.chartDiv.style.opacity = 0.5;
+          
+          // redraw it
+          chart.validateNow();
+        }
+      }
+
       AmCharts.checkEmptyData(chart);
 
     }
@@ -983,7 +1009,6 @@ Template.chart.rendered = function() {
           "enabled": true
         }
       });
-      AmCharts.checkEmptyData(chart);
     }
   }
 
@@ -1104,14 +1129,17 @@ Template.chart.rendered = function() {
 
       chart.addGraph(graph);
 
-      AmCharts.checkEmptyData(chart);
       chart.write("chartdiv2");
     }
   }
 
   function render_events_chart(company_name, topic, upper_range, lower_range) {
     $('#chart-options').show();
+    $('#topic-selection').show();
+    $('#upper-window-selection').show();
+    $('#lower-window-selection').show();
     $('#second-stock-selection').hide();
+
 
     // console.log("render_events_chart: topic: "+topic+" upper: "+upper_range+" lower: "+lower_range);
 
@@ -1325,12 +1353,18 @@ Template.chart.rendered = function() {
           },
         ]
       });
-      AmCharts.checkEmptyData(chart);
     }
 
   }
 
   function render_stock_topics_average_graph (company,upper_range,lower_range) {
+    $('#chart-options').show();
+    $('#topic-selection').show();
+    $('#upper-window-selection').show();
+    $('#lower-window-selection').show();
+    $('#second-stock-selection').hide();
+
+
     var chartData = [];
 
     var all_topics = _.uniq(StockEvents.find({token:token},{sort:{topic:1},fields:{topic:true}}).fetch().map(function(x){return x.topic}),true);
@@ -1436,7 +1470,7 @@ Template.chart.rendered = function() {
 
     } );
 
-    AmCharts.checkEmptyData(chart);
+
   }
 
   function render_stock_topics_graph_significance_table (company, topic, upper_range, lower_range){
@@ -1649,29 +1683,6 @@ Template.chart.rendered = function() {
     });
   }
 
-  AmCharts.checkEmptyData = function (chart) {
-    if ( 0 == chart.dataProvider.length ) {
-      // set min/max on the value axis
-      chart.valueAxes[0].minimum = 0;
-      chart.valueAxes[0].maximum = 100;
-      
-      // add dummy data point
-      var dataPoint = {
-          dummyValue: 0
-      };
-      dataPoint[chart.categoryField] = '';
-      chart.dataProvider = [dataPoint];
-      
-      // add label
-      chart.addLabel(0, '50%', 'The chart contains no data', 'center');
-      
-      // set opacity of the chart div
-      chart.chartDiv.style.opacity = 0.5;
-      
-      // redraw it
-      chart.validateNow();
-    }
-  }
 
   function padZero (str, max) {
     str = str.toString();
