@@ -102,6 +102,7 @@ Template.chart.rendered = function() {
     $('#chartdiv3').parent().removeClass('col-md-4');
     $('#chartdiv3').parent().addClass('col-md-5');
 
+    $('#chartdiv2').removeClass('related_news');
     $('#chartdiv3').removeClass('related_news');
     if (curr_graph == "candlesticks"){
       $('#chartdiv2').show();
@@ -1491,6 +1492,8 @@ Template.chart.rendered = function() {
   function render_related_news(company, topic, d) {
     $('#chartdiv3').addClass('related_news');
     $('#chartdiv3').html('<h4 style="padding-left: 5px; padding-bottom: 5px">News related to ' + curr_company + '</h4>');
+    $('#chartdiv2').addClass('related_news');
+    $('#chartdiv2').html('<iframe name="news_iframe"></iframe');
     // date wanted
     var dom = document.getElementById('details');
     var year = d.getUTCFullYear();
@@ -1512,13 +1515,12 @@ Template.chart.rendered = function() {
           $('#chartdiv3').append(headlinesNoBackslash);
 
           // change links to open in iframe
-          // $('#chartdiv2').html('<iframe id="news_iframe"></iframe>');
-          // $('#chartdiv3.related_news').find('ul li a').attr('target', 'myIframe');
+          $('#chartdiv3.related_news').find('ul li a').each(function() {
+            console.log($(this));
+            $(this).attr('target', 'news_iframe');
+          });
 
-          // aylien, is article good or bad?
-        //    var regex = /^([0-9]{2})-([a-zA-Z]+)-([0-9]{4})/;
-        //   var matches = regex.exec(checkedDate);
-        // var date = matches[1];
+          // aylien API, is article good or bad?
           var regex = /\<a href\=\"[^\<\>]*\"\>/g;
           var allLinks = headlinesNoBackslash.match(regex);
           allLinks.forEach(function(linkRaw) {
@@ -1528,7 +1530,6 @@ Template.chart.rendered = function() {
             Meteor.call('aylienApi', link, function(err, response) {
               // console.log(response);
               // console.log(err);
-
               if (response != null) {
                 var sentiment = JSON.parse(response.content).polarity;
                 console.log(sentiment);
