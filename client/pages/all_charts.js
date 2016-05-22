@@ -1492,6 +1492,7 @@ Template.chart.rendered = function() {
   function render_rrg(company) {
     var dom = document.getElementById('chartdiv');
     Session.set('company', company);
+    Session.set('token', token);
     Blaze.render(Template.rrgMain, dom);
 
     $('#chartdiv2').show();

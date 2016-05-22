@@ -9,48 +9,39 @@ APItesting = {
 
 
       var token = params['token'];
-      var company = "AAC.AX";
-      var topic = "Cash Rate";
-      var lower_range = -5;
-      var upper_range = 5;
+      // var company = "AAC.AX";
+      // var topic = "Cash Rate";
+      // var lower_range = -5;
+      // var upper_range = 5;
+
+      var string2num = {
+        'JAN' : 1,
+        'FEB' : 2,
+        'MAR' : 3,
+        'APR' : 4,
+        'MAY' : 5,
+        'JUN' : 6,
+        'JUL' : 7,
+        'AUG' : 8,
+        'SEP' : 9,
+        'OCT' : 10,
+        'NOV' : 11,
+        'DEC' : 12
+      }
 
 
-      var chartData = [];
+      var checkedDate = "01-JAN-2015";
 
-      var all_topics = _.uniq(StockEvents.find({token:token},{sort:{topic:1},fields:{topic:true}}).fetch().map(function(x){return x.topic}),true);
+      var regex = /^([0-9]{2})-([a-zA-Z]{3})-([0-9]{4})/;
+      var matches = regex.exec(checkedDate);
+      var date = matches[1];
 
-      all_topics.forEach(function(t) {
-        var events = StockEvents.find({token:token, company_name: company, topic: t, value: {$gt: 0}},{sort:{date:1},fields: {date: true}}).fetch();
-
-        var events_avg = 0;
-
-        events.forEach(function(e){
-          var dateLower = new Date(e.date);
-          dateLower.setDate(dateLower.getDate() + lower_range);
-          var dateUpper = new Date(e.date);
-          dateUpper.setDate(dateUpper.getDate() + upper_range);
-          
-          var days = StockPrices.find({company_name: company, token:token, date: {$gte : dateLower, $lte : dateUpper}}, {fields: {'cum_return':1}, sort: {cum_return:1}}).fetch().map(function(x){return x.cum_return});          
-          var sum = 0;
-          days.forEach(function(d){
-            sum += d;
-          });
-          var avg = sum/days.length;
-
-          events_avg += avg;
-        });
-
-        events_avg = events_avg/events.length;
-
-        chartData.push({
-          topic: t,
-          avg_cr : events_avg,
-        });
-
-      });
+      var month = string2num[matches[2]] - 1;
+      var year = matches[3];
+      var wantedDate = new Date(Date.UTC(year, month, date, 1));
 
 
-      API.utility.response(context, 200, chartData);
+      API.utility.response(context, 200, wantedDate);
     }
   },
 };

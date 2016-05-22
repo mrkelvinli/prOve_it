@@ -665,12 +665,52 @@ function parseDate (d) {
       checkedDate = checkedDayDate.replace(/([0-9]{2}-[a-zA-Z]{3}-)([0-9]{2})/, "$120$2");
     }
   }
-  var onlyForParsing = new Date(checkedDate);
-  var year = onlyForParsing.getFullYear();
-  var month = onlyForParsing.getMonth();
-  var date = onlyForParsing.getDate();
-  
-  var wantedDate = new Date(Date.UTC(year, month, date, 6));
+  // var onlyForParsing = new Date(checkedDate);
+  // var year = onlyForParsing.getFullYear();
+  // var month = onlyForParsing.getMonth();
+  // var date = onlyForParsing.getDate();
+  var string2num = {
+    'JAN' : 1,
+    'FEB' : 2,
+    'MAR' : 3,
+    'APR' : 4,
+    'MAY' : 5,
+    'JUN' : 6,
+    'JUL' : 7,
+    'AUG' : 8,
+    'SEP' : 9,
+    'OCT' : 10,
+    'NOV' : 11,
+    'DEC' : 12,
+    'JANUARY' : 1,
+    'FEBRUARY' : 2,
+    'MARCH' : 3,
+    'APRIL' : 4,
+    'JUNE' : 6,
+    'JULY' : 7,
+    'AUGUST' : 8,
+    'SEPTEMBER' : 9,
+    'OCTOBER' : 10,
+    'NOVEMBER' : 11,
+    'DECEMBER' : 12
+  }
+  var regex = /^([0-9]{2})-([a-zA-Z]+)-([0-9]{4})/;
+  var matches = regex.exec(checkedDate);
+  if (matches == null) {
+    console.log(checkedDate);
+    var onlyForParsing = new Date(checkedDate);
+    var year = onlyForParsing.getFullYear();
+    var month = onlyForParsing.getMonth();
+    var date = onlyForParsing.getDate();
+  } else {
+    var date = matches[1];
+
+    var month = string2num[matches[2].toUpperCase()] - 1;
+    var year = matches[3];
+    var wantedDate = new Date(Date.UTC(year, month, date, 6));
+    
+    
+  }
   return wantedDate;
 }
 

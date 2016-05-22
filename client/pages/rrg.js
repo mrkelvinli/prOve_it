@@ -1,4 +1,13 @@
 Template.rrgMain.rendered = function() {
+  var token = Session.get('token');
+
+  Tracker.autorun(function(){
+
+    Meteor.subscribe('stockPrices_db',token);
+    Meteor.subscribe('stockEvents_db',token);
+    console.log("tracker");
+  });
+
   Array.prototype.indexOf || (Array.prototype.indexOf = function(t, i) {
       if (void 0 === this || null === this) throw new TypeError('"this" is null or not defined');
       var e = this.length >>> 0;
@@ -441,6 +450,7 @@ Template.rrgMain.rendered = function() {
           e && e(results.benchmarkSymbol, results.benchmarkData, results.rrgSymbols, results.rrgData, results.companyInfo);
       },
       generateJson: function() {
+        var token = Session.get('token');
         var helpers = {};
         helpers.average = function(data){
           var sum = 0;
@@ -474,11 +484,10 @@ Template.rrgMain.rendered = function() {
           var dd  = d.getDate().toString();
           return yyyy + (mm[1]?mm:"0"+mm[0]) + (dd[1]?dd:"0"+dd[0]); // padding
         }
-
         var wanted_company = Session.get('company');
         var json = new Object();
         // companies
-        var all_company = _.uniq(StockPrices.find({}, {fields:{company_name:1}},{sort:{company_name: 1}}).fetch().map(function(x){return x.company_name}),true);
+        var all_company = _.uniq(StockPrices.find({token: token}, {fields:{company_name:1}},{sort:{company_name: 1}}).fetch().map(function(x){return x.company_name}),true);
         var list_companies = [];
         all_company.forEach(function(c){
           // have to find a way to get companies' real names
@@ -496,18 +505,21 @@ Template.rrgMain.rendered = function() {
         var ratio = null;
         for (var i=0; i<52; i++) {
           var dateString = yyyymmdd(date);
-          var company_price_query = StockPrices.findOne({date: date, company_name:wanted_company}, {fields: {last: 1, open:1}});
+
+          var company_price_query = StockPrices.findOne({token: token, date: date, company_name:wanted_company}, {fields: {last: 1, open:1}});
           var company_price;
           if (company_price_query == null) {
             // can't use findOne for some reason
             // TODO fix, doesn't work
-            var all_queries = StockPrices.find({date: date, company_name:wanted_company}, {fields: {last: 1, open:1}});
-            if ((all_queries != null) && (all_queries.length > 0) && (all_queries[0] != null)) {
-              company_price = all_queries[0].last;
-            } else {
-              company_price = null;
-            }
+            console.log('null: ' + date);
+            // var all_queries = StockPrices.find({date: date, company_name:wanted_company}, {fields: {last: 1, open:1}});
+            // if ((all_queries != null) && (all_queries.length > 0) && (all_queries[0] != null)) {
+            //   company_price = all_queries[0].last;
+            // } else {
+            //   company_price = null;
+            // }
           } else {
+            console.log('not null: ' + date);
             company_price = company_price_query.last;
           }
           
@@ -589,8 +601,8 @@ Template.rrgMain.rendered = function() {
           list_rrgdata.push(current);
 
           // increment date
-          var inc = date.getDate() + 7;
-          date.setDate(inc);
+          var inc = date.getUTCDate() + 7;
+          date.setUTCDate(inc);
         }
         json.companies = list_companies;
         json.rrgdata = list_rrgdata;
