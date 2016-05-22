@@ -1491,7 +1491,7 @@ Template.chart.rendered = function() {
 
   function render_related_news(company, topic, d) {
     $('#chartdiv3').addClass('related_news');
-    $('#chartdiv3').html('<h4 style="padding-left: 5px; padding-bottom: 5px">News related to ' + curr_company + '</h4>');
+    $('#chartdiv3').html('<h4 style="padding: 0 0 5px 5px;">News related to ' + curr_company + '</h4>');
     $('#chartdiv2').addClass('related_news');
     $('#chartdiv2').html('<iframe name="news_iframe"></iframe');
     // date wanted
@@ -1509,10 +1509,13 @@ Template.chart.rendered = function() {
         var regexRaw = /<div class="mod yfi_quote_headline withsky.*<table width="100%"/
         var rawHeadlines = String(response).match(regexRaw);
         var headlines = String(rawHeadlines).replace(/<div class="mod yfi_quote_headline withsky"><ul class="yfncnhl newsheadlines"><\/ul>/, "").replace(/<\/cite><\/li><\/ul><table width="100%"/, "");
-        // console.log(headlines);
         if (headlines != null) {
           var headlinesNoBackslash = headlines.replace(/\\/g, '');
           $('#chartdiv3').append(headlinesNoBackslash);
+
+          // styling, change cite span's text to h3's text
+
+
 
           // change links to open in iframe
           $('#chartdiv3.related_news').find('ul li a').each(function() {
@@ -1527,21 +1530,21 @@ Template.chart.rendered = function() {
             console.log('in loop');
             var linkMid = linkRaw.replace(/<a href="/, "").replace(/">/, "");
             var link = linkMid.replace(/.*\/\*/, "").replace(/\?.*/, "");
-            Meteor.call('aylienApi', link, function(err, response) {
-              // console.log(response);
-              // console.log(err);
-              if (response != null) {
-                var sentiment = JSON.parse(response.content).polarity;
-                console.log(sentiment);
-                if (sentiment == 'positive') {
-                  $('a[href="'+linkMid+'"]').css({'color': 'green', 'font-weight': '700', 'background-color': 'rgba(0, 255, 0, 0.1)'});
-                } else if (sentiment == 'negative') {
-                  $('a[href="'+linkMid+'"]').css({'color': 'red', 'font-weight': '700', 'background-color' : 'rgba(255, 0, 0, 0.1)'});
-                } else {
-                  console.log(link + ' is neutral or null');
-                }
-              }
-            });
+            // Meteor.call('aylienApi', link, function(err, response) {
+            //   // console.log(response);
+            //   // console.log(err);
+            //   if (response != null) {
+            //     var sentiment = JSON.parse(response.content).polarity;
+            //     console.log(sentiment);
+            //     if (sentiment == 'positive') {
+            //       $('a[href="'+linkMid+'"]').css({'color': 'green', 'font-weight': '700', 'background-color': 'rgba(0, 255, 0, 0.1)'});
+            //     } else if (sentiment == 'negative') {
+            //       $('a[href="'+linkMid+'"]').css({'color': 'red', 'font-weight': '700', 'background-color' : 'rgba(255, 0, 0, 0.1)'});
+            //     } else {
+            //       console.log(link + ' is neutral or null');
+            //     }
+            //   }
+            // });
           });
         } else {
           $('#chartdiv3').html('No related news found for the current events.');
