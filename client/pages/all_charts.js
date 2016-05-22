@@ -299,11 +299,13 @@ Template.chart.rendered = function() {
         "titles": [{
           "text": "Volatility Analysis for "+ company,
           "bold": true
-        },
-        {
-          "text": "This Volatility-Analysis tool allows you to determine the dispersion a stock price has around its average.",
-          "bold": false
-        },],
+        }
+        // {
+        //   "text": "This Volatility-Analysis tool allows you to determine the dispersion a stock price has around its average.",
+        //   "bold": false
+        // },
+
+        ],
       
         "dataSets": [ {
           "fieldMappings": [ {
@@ -343,7 +345,7 @@ Template.chart.rendered = function() {
 
         "panels": [ {
           "title": "Volatility",
-          "percentHeight": 30,
+          "percentHeight": 40,
           "marginTop": 1,
           "showCategoryAxis": true,
           "percentHeight": 70,
@@ -383,7 +385,8 @@ Template.chart.rendered = function() {
                 }
                 return result;
               },
-              // "bullet": "round",
+              "bullet": "round",
+              "bulletSize": 2.5,
               "fillAlphas": 0,
               "lineAlpha": 1,
               "type": "line",
@@ -477,8 +480,11 @@ Template.chart.rendered = function() {
               "valueField": "zScore",
               "type": "line",
               "lineColorField": "lineColor",
-              "lineThickness": 1.5,
-              "showBalloon": false,
+              "lineThickness": 2,
+              "showBalloon": true,
+              "bullet": "round",
+              "bulletSize": 1.5,
+              "balloonText": "[[value]]",
               //"fillAlpha": 0.8,
               //"lineColor": "#ff6600",
               "useDataSetColors":false,
@@ -500,8 +506,8 @@ Template.chart.rendered = function() {
         },
 
         "chartCursorSettings": {
-          "valueLineBalloonEnabled": true,
-          "valueLineEnabled": true
+          //"valueLineBalloonEnabled": true,
+          //"valueLineEnabled": true
         },
 
         "periodSelector": {
