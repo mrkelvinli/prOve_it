@@ -297,19 +297,14 @@ Template.chart.rendered = function() {
         "autoMarginOffset": 20,
         "marginRight": 80,
         "titles": [{
-          "text": "Volatility for "+ company,
+          "text": "Volatility Analysis for "+ company,
           "bold": true
         },
         {
           "text": "This Volatility-Analysis tool allows you to determine the dispersion a stock price has around its average.",
           "bold": false
-        }, 
-        {
-          "text": "This gives you an idea on the risk and reward of investing, as well as help vistually understand how unstable a stock is.",
-          "bold": false
-        }],
-        
-
+        },],
+      
         "dataSets": [ {
           "fieldMappings": [ {
             "fromField": "price",
@@ -1082,8 +1077,8 @@ Template.chart.rendered = function() {
         } else {
           guides.push({
             "fillAlpha": 0.30,
-            "fillColor": "#ff0000",
-            "lineColor": "#ff0000",
+            "fillColor": "#404040",
+            "lineColor": "#404040",
             "lineAlpha": 0.9,
             "label": topic,
             "balloonText": significance,
@@ -1138,7 +1133,7 @@ Template.chart.rendered = function() {
         "mouseWheelZoomEnabled": false,
         "graphs": [{
           "id": "g1",
-          "balloonText": "Cumulative Return: [[cum_return]]%",
+          "balloonText": "CR: [[cum_return]]%",
           "balloonFunction": function(item, graph) {
             var result = graph.balloonText;
             for (var key in item.dataContext) {
@@ -1156,9 +1151,11 @@ Template.chart.rendered = function() {
           "bullet": "round",
           "bulletBorderAlpha": 1,
           "bulletColor": "#FFFFFF",
+          "lineColor": "#ff6600",
           "hideBulletsCount": 50,
-          "title": "Daily Stock Price Average",
+          "title": "Cumulative Return",
           "valueField": "cum_return",
+          "lineThickness": 2,
           "valueAxis": "crAxis",
           "useLineColorForBulletBorder": true,
 
@@ -1180,11 +1177,12 @@ Template.chart.rendered = function() {
             }
             return result;
           },
-          "bullet": "round",
+          "bullet": "none",
           "bulletBorderAlpha": 1,
           "bulletColor": "#FFFFFF",
           "hideBulletsCount": 50,
-          "title": "Cumulative Return",
+          "lineColor": "#45B29D",
+          "title": "Daily Stock Price Average",
           "valueField": "flat_value",
           "valueAxis": "priceAxis",
           "useLineColorForBulletBorder": true,
@@ -1292,9 +1290,9 @@ Template.chart.rendered = function() {
       "theme": "light",
       "dataProvider": chartData,
       "valueAxes": [ {
-        "gridColor": "#FFFFFF",
-        "gridAlpha": 0.2,
-        "dashLength": 0
+        "gridColor": "#000000",
+        "gridAlpha": 0.3,
+        "dashLength": 4
       } ],
       "gridAboveGraphs": true,
       "startDuration": 1,
@@ -1304,7 +1302,7 @@ Template.chart.rendered = function() {
         "lineAlpha": 0.2,
         "type": "column",
         "valueField": "avg_cr",
-        'autoColor': true,
+        "autoColor": true,
       } ],
       "chartCursor": {
         "categoryBalloonEnabled": false,
@@ -1320,6 +1318,10 @@ Template.chart.rendered = function() {
         // "tickPosition": "start",
         // "tickLength": 20
       },
+      "titles": [{
+        "text": "Average impact of each event-type on CR(%)",
+        "bold": true,
+      }],
       "export": {
         "enabled": true
       }
