@@ -98,6 +98,29 @@ if(Meteor.isServer) {
           resultOfAsyncToSync = convertAsyncToSync(command);
         // console.log(resultOfAsyncToSync);
         return resultOfAsyncToSync;
+    },
+    aylienApi: function(url) {
+      // e.g.
+      // curl https://api.aylien.com/api/v1/sentiment \
+      //    -H "X-AYLIEN-TextAPI-Application-Key: 0c9e08decd35c5e7172f336d3cb43aa8" \
+      //    -H "X-AYLIEN-TextAPI-Application-ID: fe435f7a" \
+      //    -d mode="document" \
+      //    -d url="http://www.capitalcube.com/blog/index.php/australian-agricultural-co-ltd-overvalued-relative-to-peers-but-may-deserve-another-look/"
+      
+      var apiUrl = "https://api.aylien.com/api/v1/sentiment";
+      var convertAsyncToSync  = Meteor.wrapAsync(HTTP.get),
+        resultOfAsyncToSync = convertAsyncToSync(apiUrl, {
+          headers: {
+            "X-AYLIEN-TextAPI-Application-Key": "0c9e08decd35c5e7172f336d3cb43aa8",
+            "X-AYLIEN-TextAPI-Application-ID": "fe435f7a"
+          },
+          params: {
+            "mode": "document",
+            "url": url
+          }
+        });
+      // console.log(resultOfAsyncToSync);
+      return resultOfAsyncToSync;
     }
   });
 }

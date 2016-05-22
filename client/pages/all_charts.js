@@ -1519,12 +1519,29 @@ Template.chart.rendered = function() {
         //    var regex = /^([0-9]{2})-([a-zA-Z]+)-([0-9]{4})/;
         //   var matches = regex.exec(checkedDate);
         // var date = matches[1];
-          var regex = /\<a href\=\"[^<>]*\"\>/;
-          var matches =
-          console.log(headlinesNoBackslash);
-          // var allLinks = headlinesNoBackslash.match()
-          // for 
+          var regex = /\<a href\=\"[^\<\>]*\"\>/g;
+          var allLinks = headlinesNoBackslash.match(regex);
+          allLinks.forEach(function(linkRaw) {
+            console.log('in loop');
+            var linkMid = linkRaw.replace(/<a href="/, "").replace(/">/, "");
+            var link = linkMid.replace(/.*\/\*/, "").replace(/\?.*/, "");
+            Meteor.call('aylienApi', link, function(err, response) {
+              // console.log(response);
+              // console.log(err);
 
+              if (response != null) {
+                var sentiment = JSON.parse(response.content).polarity;
+                console.log(sentiment);
+                if (sentiment == 'positive') {
+                  $('a[href="'+linkMid+'"]').css({'color': 'green', 'font-weight': '700', 'background-color': 'rgba(0, 255, 0, 0.1)'});
+                } else if (sentiment == 'negative') {
+                  $('a[href="'+linkMid+'"]').css({'color': 'red', 'font-weight': '700', 'background-color' : 'rgba(255, 0, 0, 0.1)'});
+                } else {
+                  console.log(link + ' is neutral or null');
+                }
+              }
+            });
+          });
         } else {
           $('#chartdiv3').html('No related news found for the current events.');
         }

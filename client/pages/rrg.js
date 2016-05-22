@@ -184,7 +184,8 @@ Template.rrgMain.rendered = function() {
               pageColorBorder: null,
               gridColorFill: "#f5f5f5",
               endTailDate: s,
-              tailLength: e,
+              // tailLength: e,
+              tailLength: 0,
               useArrowKeys: !0,
               onInit: function(t, i) {
                   $("#enddate-value").text(i.format("MMM D, YYYY"))
@@ -242,7 +243,7 @@ Template.rrgMain.rendered = function() {
               // });
 
               $("#taillength").slider({
-                  value: 10,
+                  value: 0,
                   step: 1,
                   width: 150,
                   min: 0,
@@ -250,11 +251,11 @@ Template.rrgMain.rendered = function() {
                   sizeDragger: this.isTouchDevice() ? 28 : 16,
                   backgroundDragger: ["#ffffff", "#eeeeee"],
                   create: function(t, i) {
-                      console.log("INIT");
+                      // console.log("INIT");
                       $(".taillength-value").text(i.value);
                   },
                   slide: function(t, i) {
-                      console.log('CHANGEEE');
+                      // console.log('CHANGEEE');
                       $(".taillength-value").text(i.value);
                       var e = $("#period").val();
                       var s = "w" == e ? "week" : "trading day";
@@ -511,7 +512,7 @@ Template.rrgMain.rendered = function() {
           if (company_price_query == null) {
             // can't use findOne for some reason
             // TODO fix, doesn't work
-            console.log('null: ' + date);
+            // console.log('null: ' + date);
             // var all_queries = StockPrices.find({date: date, company_name:wanted_company}, {fields: {last: 1, open:1}});
             // if ((all_queries != null) && (all_queries.length > 0) && (all_queries[0] != null)) {
             //   company_price = all_queries[0].last;
@@ -519,7 +520,7 @@ Template.rrgMain.rendered = function() {
             //   company_price = null;
             // }
           } else {
-            console.log('not null: ' + date);
+            // console.log('not null: ' + date);
             company_price = company_price_query.last;
           }
           
@@ -606,7 +607,7 @@ Template.rrgMain.rendered = function() {
         }
         json.companies = list_companies;
         json.rrgdata = list_rrgdata;
-        console.log(JSON.stringify(json));
+        // console.log(JSON.stringify(json));
         return json;
       },
       getStaticJson: function(t) {
@@ -707,7 +708,7 @@ Template.rrgMain.rendered = function() {
               rrgData: null,
               width: 800,
               height: 600,
-              tailLength: 10,
+              tailLength: 0,
               endTailDate: null,
               gridBounds: null,
               fontSize: 10,
@@ -780,7 +781,8 @@ Template.rrgMain.rendered = function() {
               benchmarkSeries: this.benchmarkSeries,
               seriesCollection: this.seriesCollection,
               fontSize: this.settings.fontSize,
-              tailLength: this.settings.tailLength,
+              // tailLength: this.settings.tailLength,
+              tailLength: 0,
               gridBounds: this.settings.gridBounds,
               endTailDate: this.settings.endTailDate,
               margin: this.settings.gridMargin,
@@ -1817,7 +1819,7 @@ Template.rrgMain.rendered = function() {
                   bottom: 20,
                   left: 10
               },
-              tailLength: 10,
+              tailLength: 0,
               endTailDate: null,
               fontSize: 10,
               fontFamily: "Arial",
