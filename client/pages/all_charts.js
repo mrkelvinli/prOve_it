@@ -100,6 +100,7 @@ Template.chart.rendered = function() {
     $('#chartdiv3').parent().removeClass('col-md-4');
     $('#chartdiv3').parent().addClass('col-md-5');
 
+    $('#chartdiv3').removeClass('related_news');
     if (curr_graph == "candlesticks"){
       $('#chartdiv2').show();
       $('#details').show();
@@ -1110,6 +1111,15 @@ Template.chart.rendered = function() {
           "valueAlign": "left",
           "valueWidth": 120
         },
+        "stockEvents":[{
+          "date": new Date(Date.UTC(2015, 3, 8)),
+          "showOnAxis": true,
+          "backgroundColor": "#85CDE6",
+          "type": "pin",
+          "text": "X",
+          "graph": "g1",
+          "description": "This is description of an event",
+        }],
         "dataProvider": chartData,
         "valueAxes": [{
           'id': "crAxis",
@@ -1454,9 +1464,9 @@ Template.chart.rendered = function() {
   }
 
   function render_related_news(company, topic, d) {
+    $('#chartdiv3').addClass('related_news');
+    $('#chartdiv3').html('<h4 style="padding-left: 5px; padding-bottom: 5px">News related to ' + curr_company + '</h4>');
     // date wanted
-
-    var dom = document.getElementById('details');
     var year = d.date.getFullYear();
     var month = padZero(d.date.getMonth()+1,2);
     var date = d.date.getDate();
@@ -1473,9 +1483,24 @@ Template.chart.rendered = function() {
         var headlines = String(rawHeadlines).replace(/<div class="mod yfi_quote_headline withsky"><ul class="yfncnhl newsheadlines"><\/ul>/, "").replace(/<\/cite><\/li><\/ul><table width="100%"/, "");
         // console.log(headlines);
         if (headlines != null) {
-          $('#chartdiv3').append(headlines);
+          var headlinesNoBackslash = headlines.replace(/\\/g, '');
+          $('#chartdiv3').append(headlinesNoBackslash);
+
+          // change links to open in iframe
+          // $('#chartdiv2').html('<iframe id="news_iframe"></iframe>');
+          // $('#chartdiv3.related_news').find('ul li a').attr('target', 'myIframe');
+
+          // aylien, is article good or bad?
+        //    var regex = /^([0-9]{2})-([a-zA-Z]+)-([0-9]{4})/;
+        //   var matches = regex.exec(checkedDate);
+        // var date = matches[1];
+          var regex = /\<a href\=\"[^<>]*\"\>/;
+          var matches =
+          console.log(headlinesNoBackslash);
+          // var allLinks = headlinesNoBackslash.match()
+          // for 
+
         } else {
-          console.log('DOG');
           $('#chartdiv3').html('No related news found for the current events.');
         }
       } else {

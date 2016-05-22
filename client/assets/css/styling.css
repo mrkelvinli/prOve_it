@@ -40,6 +40,33 @@
   height: 350px;
 }
 
+#chartdiv3.related_news {
+  overflow-y: scroll;
+}
+
+#chartdiv3.related_news ul {
+  padding-left: 20px;
+}
+
+#chartdiv3.related_news li {
+  padding-bottom: 15px;
+}
+
+#chartdiv3.related_news cite {
+  padding-left: 7px;
+  color: #999;
+  font-size: 90%;
+}
+
+#chartdiv3.related_news cite span {
+  text-transform: uppercase; 
+  font-weight: 700;
+}
+
+#chartdiv3.related_news h3 {
+  display:none;
+}
+
 #details {
   /*height: 500px;*/
   padding: 20px;
