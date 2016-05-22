@@ -4,7 +4,7 @@ Template.chart.rendered = function() {
   $('.selectpicker').selectpicker();
   $('#chart-options').hide();
 
-  $('a[href="http://www.amcharts.com/javascript-charts/"').hide();
+  // $('a[href="http://www.amcharts.com/javascript-charts/"').hide();
 
   var token = Router.current().params.token;
   $('#token-input').attr('placeholder',token);
@@ -14,24 +14,25 @@ Template.chart.rendered = function() {
   });
   var validToken = false;
   
-  var curr_graph = 'stock-topic';
+  var curr_graph = 'event-study';
   var curr_company = "TGR.AX";
   var second_company = "AAC.AX";
   var curr_topic = "Cash Rate";
   var curr_upper = 5;
   var curr_lower = -5;
 
+  // selector to switch between the stocks and topics
+  var choose_main_stock = $('#choose-main-stock');
+  var choose_second_stock = $('#choose-second-stock');
+  var choose_topic = $('#choose-topic');
   Meteor.call('checkToken',token, function(err, response) {
     validToken = response;
     if (validToken) {
       $('ul.nav-tabs li a#'+curr_graph).parent().addClass('active');
-
       // initialise the correct first company
-
-      var company = StockPrices.findOne({token: token}, {fields:{company_name:1}, sort:{company_name: 1}});
-      curr_company = company.company_name;
+      // var company = StockPrices.findOne({token: token}, {fields:{company_name:1}, sort:{company_name: 1}});
+      // curr_company = company.company_name;
       // console.log(curr_company);
-      renderMainGraph();
     } else {
       alert("invalid token");
       Router.go('/');
@@ -59,10 +60,6 @@ Template.chart.rendered = function() {
     currentTab.parent().addClass('active');
   });
 
-  // selector to switch between the stocks and topics
-  var choose_main_stock = $('#choose-main-stock');
-  var choose_second_stock = $('#choose-second-stock');
-  var choose_topic = $('#choose-topic');
 
   // populate the two stock selector
   var all_company = _.uniq(StockPrices.find({}, {fields:{company_name:1}},{sort:{company_name: 1}}).fetch().map(function(x){return x.company_name}),true);
@@ -74,6 +71,9 @@ Template.chart.rendered = function() {
   });
   choose_main_stock.selectpicker('refresh');
   choose_second_stock.selectpicker('refresh');
+  choose_main_stock.selectpicker('val', all_company[0]);
+  curr_company = all_company[0];
+  second_company = all_company[0];
 
   // populate the topic selector
   var all_topics = _.uniq(StockEvents.find({token:token},{sort:{topic:1},fields:{topic:true}}).fetch().map(function(x){return x.topic}),true);
@@ -82,6 +82,8 @@ Template.chart.rendered = function() {
     choose_topic.append("<option>"+c+"</option>");
   });
   choose_topic.selectpicker('refresh');
+  // choose_topic.selectpicker('val', all_topics[0]);
+  // curr_topic = all_topics[0];
 
 
   // render the whole page with the current setting
@@ -130,14 +132,14 @@ Template.chart.rendered = function() {
 
   // listen to the upper window input
   $('#choose-upper-window').on('change',function(){
-    curr_upper = $(this).val();
+    curr_upper = parseInt($(this).val());
     // console.log("upper: "+curr_upper);
     renderMainGraph();
   });
 
   // listen to the lower window input
   $('#choose-lower-window').on('change',function(){
-    curr_lower = $(this).val();
+    curr_lower = parseInt($(this).val());
     // console.log("lower: "+curr_lower);
     renderMainGraph();
   });
@@ -160,11 +162,11 @@ Template.chart.rendered = function() {
 
   // listen to the topic selector input
   choose_topic.on('change', function(){
-    var t = $(this).val();
-    curr_topic = t;
+    curr_topic = $(this).val();
     renderMainGraph();
   });
 
+  renderMainGraph();
 
   function render_volatility_chart (company) {
     $('#chart-options').show();
@@ -300,11 +302,13 @@ Template.chart.rendered = function() {
         "titles": [{
           "text": "Volatility Analysis for "+ company,
           "bold": true
-        },
-        {
-          "text": "This Volatility-Analysis tool allows you to determine the dispersion a stock price has around its average.",
-          "bold": false
-        },],
+        }
+        // {
+        //   "text": "This Volatility-Analysis tool allows you to determine the dispersion a stock price has around its average.",
+        //   "bold": false
+        // },
+
+        ],
       
         "dataSets": [ {
           "fieldMappings": [ {
@@ -344,7 +348,7 @@ Template.chart.rendered = function() {
 
         "panels": [ {
           "title": "Volatility",
-          "percentHeight": 30,
+          "percentHeight": 40,
           "marginTop": 1,
           "showCategoryAxis": true,
           "percentHeight": 70,
@@ -384,7 +388,8 @@ Template.chart.rendered = function() {
                 }
                 return result;
               },
-              // "bullet": "round",
+              "bullet": "round",
+              "bulletSize": 2.5,
               "fillAlphas": 0,
               "lineAlpha": 1,
               "type": "line",
@@ -478,8 +483,11 @@ Template.chart.rendered = function() {
               "valueField": "zScore",
               "type": "line",
               "lineColorField": "lineColor",
-              "lineThickness": 1.5,
-              "showBalloon": false,
+              "lineThickness": 2,
+              "showBalloon": true,
+              "bullet": "round",
+              "bulletSize": 1.5,
+              "balloonText": "[[value]]",
               //"fillAlpha": 0.8,
               //"lineColor": "#ff6600",
               "useDataSetColors":false,
@@ -501,8 +509,8 @@ Template.chart.rendered = function() {
         },
 
         "chartCursorSettings": {
-          "valueLineBalloonEnabled": true,
-          "valueLineEnabled": true
+          //"valueLineBalloonEnabled": true,
+          //"valueLineEnabled": true
         },
 
         "periodSelector": {
@@ -598,6 +606,8 @@ Template.chart.rendered = function() {
     $('#chart-options').show();
     $('#second-stock-selection').hide();
 
+
+
     var chartData = [];
 
     // var all_topics = _.uniq(StockEvents.find({token:token},{sort:{topic:1},fields:{topic:true}}).fetch().map(function(x){return x.topic}),true);
@@ -615,7 +625,9 @@ Template.chart.rendered = function() {
       var entry = {date: date};
       events.forEach(function (e) {
         var currDate = new Date(e.date.getTime());
-        currDate.setDate(e.date.getDate()+date);
+        // console.log("currDate :"+currDate); 
+        currDate.setUTCDate(e.date.getUTCDate()+date);
+        // console.log("window: "+ date + " " + currDate+ " event date: "+ e.date );
         var cr = StockPrices.findOne({token: token, company_name: company, date: currDate},{fields:{cum_return:true}});
         if (cr === undefined)
           cr = null;
@@ -639,6 +651,8 @@ Template.chart.rendered = function() {
 
       chartData.push(entry);
     }
+
+    // console.log(chartData);
 
     drawGraph(chartData,graphs,company,topic);
 
@@ -1027,7 +1041,9 @@ Template.chart.rendered = function() {
 
   function render_events_chart(company_name, topic, upper_range, lower_range) {
     $('#chart-options').show();
-    $('#second-stock-selection').show();
+    $('#second-stock-selection').hide();
+
+    // console.log("render_events_chart: topic: "+topic+" upper: "+upper_range+" lower: "+lower_range);
 
 
     var stocks = StockPrices.find({company_name: company_name, token:token}, {fields: {'date':1, 'cum_return':1, 'flat_value':1}}).fetch();
@@ -1038,7 +1054,11 @@ Template.chart.rendered = function() {
     var events = StockEvents.find({token: token, company_name: company_name, topic: topic, value: {$gt : 0}}, {fields: {'date':1},sort:{date:-1}}).fetch(); 
     // console.log(events);
 
-    render_related_news(company_name, topic, events[0]);
+    if (events.length <= 0) {
+      $('#chartdiv3').html('No related events for '+company_name+" on "+topic+".");
+    } else {
+      render_related_news(company_name, topic, events[0].date);
+    }
 
     events.forEach(function(c) {
       var dateLower = new Date(c.date);
@@ -1050,7 +1070,7 @@ Template.chart.rendered = function() {
       // console.log(dateLower);
       // console.log(dateUpper);
       var significantDays = StockPrices.find({company_name: company_name, token:token, date: {$gte : dateLower, $lte : dateUpper}}, {fields: {'cum_return':1}, sort: {cum_return:1}}).fetch();
-      console.log(significantDays);
+      // console.log(significantDays);
       if (significantDays !== undefined) {
         var hi = significantDays[Object.keys(significantDays)[Object.keys(significantDays).length - 1]].cum_return;
         var lo = significantDays[Object.keys(significantDays)[0]].cum_return;
@@ -1058,7 +1078,7 @@ Template.chart.rendered = function() {
         // console.log(lo);
         //fruitObject[Object.keys(fruitObject)[Object.keys(fruitObject).length - 1]] 
         var p = (hi - lo);
-        console.log(p);
+        // console.log(p);
 
         var significance = "Non-significant event";
         if (p > 0.02) {
@@ -1203,6 +1223,9 @@ Template.chart.rendered = function() {
             "graph": "g1",
             "scrollbarHeight": 40
         },
+        // "ChartScrollbarSettings":{
+        //   'position': 'bottom',
+        // }
         "chartCursor": {
            "limitToGraph":"g1"
         },
@@ -1244,9 +1267,9 @@ Template.chart.rendered = function() {
 
       events.forEach(function(e){
         var dateLower = new Date(e.date);
-        dateLower.setDate(dateLower.getDate() + lower_range);
+        dateLower.setDate(dateLower.getUTCDate() + lower_range);
         var dateUpper = new Date(e.date);
-        dateUpper.setDate(dateUpper.getDate() + upper_range);
+        dateUpper.setDate(dateUpper.getUTCDate() + upper_range);
         
         var days = StockPrices.find({company_name: company, token:token, date: {$gte : dateLower, $lte : dateUpper}}, {fields: {'cum_return':1}, sort: {cum_return:1}}).fetch().map(function(x){return x.cum_return});          
         var sum = 0;
@@ -1342,6 +1365,8 @@ Template.chart.rendered = function() {
   function render_stock_topics_graph_significance_table (company, topic, upper_range, lower_range){
     var dom = document.getElementById('chartdiv3');
 
+    console.log("render_stock_topics_graph_significance_table:"+upper_range+" "+lower_range);
+
     Blaze.render(Template.topics_sig_table, dom);
 
     var data = [];
@@ -1349,9 +1374,9 @@ Template.chart.rendered = function() {
     var dates = StockEvents.find({token:token,company_name: company, topic: topic, value: {$gt: 0}},{sort:{date:1},fields: {date: true}}).fetch();
     dates.forEach(function(d) {
       var dateLower = new Date(d.date);
-      dateLower.setDate(dateLower.getDate() + lower_range);
+      dateLower.setUTCDate(dateLower.getUTCDate() + lower_range);
       var dateUpper = new Date(d.date);
-      dateUpper.setDate(dateUpper.getDate() + upper_range);
+      dateUpper.setUTCDate(dateUpper.getUTCDate() + upper_range);
 
       var significantDays = StockPrices.find({company_name: company, token:token, date: {$gte : dateLower, $lte : dateUpper}}, {fields: {'cum_return':1}, sort: {cum_return:1}}).fetch();
       if (significantDays !== undefined) {
@@ -1467,10 +1492,10 @@ Template.chart.rendered = function() {
     $('#chartdiv3').addClass('related_news');
     $('#chartdiv3').html('<h4 style="padding-left: 5px; padding-bottom: 5px">News related to ' + curr_company + '</h4>');
     // date wanted
-    var year = d.date.getFullYear();
-    var month = padZero(d.date.getMonth()+1,2);
-    var date = d.date.getDate();
-
+    var dom = document.getElementById('details');
+    var year = d.getUTCFullYear();
+    var month = padZero(d.getUTCMonth()+1,2);
+    var date = d.getUTCDate();
     
     var dateFormated = year+"-"+month+"-"+date;
     // date format: YYYY-MM-DD
