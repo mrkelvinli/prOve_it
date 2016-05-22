@@ -489,7 +489,7 @@ Template.rrgMain.rendered = function() {
           });
         });
         // rrgdata - for all dates, list all companies' values
-        // start: 04 JAN 2015, end: 03 JAN 2016 (??), increment: +7 days
+        // start: 04 FEB 2015, end: 27 JAN 2016 (??), increment: +7 days
         var list_rrgdata = [];
         var date = new Date(Date.UTC(2015, 1, 4, 6));
         var oldratios = {};
@@ -499,13 +499,16 @@ Template.rrgMain.rendered = function() {
           var company_price_query = StockPrices.findOne({date: date, company_name:wanted_company}, {fields: {last: 1, open:1}});
           var company_price;
           if (company_price_query == null) {
-            company_price = null;
-          } else {
-            if (company_price_query.last != null) {
-              company_price = company_price_query.last;
+            // can't use findOne for some reason
+            // TODO fix, doesn't work
+            var all_queries = StockPrices.find({date: date, company_name:wanted_company}, {fields: {last: 1, open:1}});
+            if ((all_queries != null) && (all_queries.length > 0) && (all_queries[0] != null)) {
+              company_price = all_queries[0].last;
             } else {
-              company_price = company_price_query.open;
+              company_price = null;
             }
+          } else {
+            company_price = company_price_query.last;
           }
           
           var current = new Object();
@@ -532,8 +535,8 @@ Template.rrgMain.rendered = function() {
           });
           var average = helpers.average(rcps);
           var stddev = standardDeviation(rcps);
-          console.log('average: ' + average);
-          console.log('stddev: ' + stddev);
+          // console.log('average: ' + average);
+          // console.log('stddev: ' + stddev);
 
           var other_companies = [];
           var index = all_company.indexOf(wanted_company);
