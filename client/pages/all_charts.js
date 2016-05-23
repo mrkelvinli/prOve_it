@@ -1164,18 +1164,31 @@ Template.chart.rendered = function() {
     $('#lower-window-selection').show();
     $('#second-stock-selection').hide();
 
-
+    console.log(relatedNews);
     // console.log("render_events_chart: topic: "+topic+" upper: "+upper_range+" lower: "+lower_range);
 
 
     var stocks = StockPrices.find({company_name: company_name, token:token}, {fields: {'date':1, 'cum_return':1, 'flat_value':1}}).fetch();
     var stocksCustomBullet= [];
+
     stocks.forEach(function(c) {
-      var entry = [];
-      if (1) {
-        newEntry = {'date': c.date, 'cum_return': c.cum_return, 'flat_value': c.flat_value, 'customBullet': "https://cdn2.iconfinder.com/data/icons/windows-8-metro-style/512/newspaper.png"};
-      } else {
-        newEntry = {'date': c.date, 'cum_return': c.cum_return, 'flat_value': c.flat_value};
+      var newEntry = [];
+      var found = 0;
+      relatedNews.forEach(function(n){
+
+        var thisString = c.date.getDate()+"-"+c.date.getMonth()+"-"+c.date.getFullYear();
+
+        //console.log("thisDate: "+thisDate + " n.date: "+n.date);
+        var dateString = n.date.getDate()+"-"+n.date.getMonth()+"-"+n.date.getFullYear();
+
+        // if (thisDate.getDate() == n.date.getDate() && thisDate.getMonth() == n.date.getMonth() &&  thisDate.getFullYear() == n.date.getYear()){
+        if (thisString == dateString){
+          newEntry = {'date': c.date, 'cum_return': c.cum_return, 'flat_value': c.flat_value, 'customBullet': "https://cdn2.iconfinder.com/data/icons/windows-8-metro-style/512/newspaper.png"};
+          found = 1;
+        } 
+      });
+      if (found == 0) {
+          newEntry = {'date': c.date, 'cum_return': c.cum_return, 'flat_value': c.flat_value};
       }
       stocksCustomBullet.push(newEntry);
     });
