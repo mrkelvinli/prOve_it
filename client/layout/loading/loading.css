@@ -36,14 +36,16 @@
   width: 33%;
   height: 33%;
   background-color: #ef7213;
-    
   float: left;
   -webkit-animation: sk-cubeGridScaleDelay 2.6s infinite ease-in-out;
           animation: sk-cubeGridScaleDelay 2.6s infinite ease-in-out; 
 }
+
 .sk-cube-grid .sk-cube1 {
   -webkit-animation-delay: 0.4s;
-          animation-delay: 0.4s; }
+          animation-delay: 0.4s;
+  /*background-image: url('logobig 0-0');*/
+}
 .sk-cube-grid .sk-cube2 {
   -webkit-animation-delay: 0.6s;
           animation-delay: 0.6s; }
