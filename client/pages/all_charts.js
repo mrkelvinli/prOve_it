@@ -1352,22 +1352,27 @@ Template.chart.rendered = function() {
             text: "This Event Study tool allows you to analyse the effect that each event has on the cumulative returns of a company.",
             bold: false,
           },
-        ]
+        ],
+        "listeners": [{
+          "event": "rollOverGraph",
+          "method": function(event) {
+            // if ( undefined === event.index)
+            //   return;
+            // console.log(event);
+            var idx = event.chart.chartCursor.index;
+            var date = event.chart.dataProvider[idx].date;
+            
+          }
+        }],
       });
-      // chart.addListener( "rollOverGraph", function( event ) {
-      //     var categoryIndex = event.chart.categoryAxis.index;
-      //     // console.log(categoryIndex);
-      //     // console.log(event.target.x);
-      //     console.log(categoryIndex);
-      // } );
 
-      document.getElementById('chartdiv').addEventListener('rollOverGraph', function(e) {
-      });
-      $("#chartdiv").mousemove(function (event) {
-        var ss = chart.categoryAxis.xToIndex(e.x);
-        var vall = chart.categoryAxis.data[ss].category;
-        console.log(vall);
-      });
+
+      // document.getElementById('chartdiv').addEventListener('mousemove', function(e) {
+      //   var ss = chart.categoryAxis.xToIndex(e.x);
+      //   var vall = chart.categoryAxis.data[ss].category;
+      //   console.log(vall);
+      // });
+
     }
 
   }
