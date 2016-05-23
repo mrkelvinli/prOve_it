@@ -7,14 +7,14 @@ Template.chart.rendered = function() {
   // $('a[href="http://www.amcharts.com/javascript-charts/"').hide();
 
   var token = Router.current().params.token;
-  $('#token-input').attr('placeholder',token);
+  $('#token-input').attr('value',token);
   $('#token-input').on('input',function(){
     var t = $(this).val();
     Router.go('/chart/'+t);
   });
   var validToken = false;
   
-  var curr_graph = 'event-study';
+  var curr_graph = 'candlesticks';
   var curr_company = "TGR.AX";
   var second_company = "AAC.AX";
   var curr_topic = "Cash Rate";
@@ -195,7 +195,6 @@ Template.chart.rendered = function() {
     function generateData (company) {
 
       var prices = StockPrices.find({token:token, company_name: company, flat_value: {$ne: null}},{fields:{date:true, flat_value: true}}).fetch();
-
       var stock_prices = [];
       prices.forEach(function(p){
         stock_prices.push({
@@ -318,11 +317,11 @@ Template.chart.rendered = function() {
         "titles": [{
           "text": "Volatility Analysis for "+ company,
           "bold": true
-        }
-        // {
-        //   "text": "This Volatility-Analysis tool allows you to determine the dispersion a stock price has around its average.",
-        //   "bold": false
-        // },
+        },
+        {
+          "text": "This tool allows you to determine the dispersion that a stock price has around its average.",
+          "bold": false
+        },
 
         ],
       
@@ -419,7 +418,7 @@ Template.chart.rendered = function() {
               "labelPosition": "right",
               //"visibleInLegend": false,
               "labelFunction": labelFunction,
-              "labelText": "Stock Price ($)",
+              //"labelText": "Stock Price ($)",
               "useDataSetColors":false,
               "labelOffset":-70,
             }, {
@@ -492,7 +491,7 @@ Template.chart.rendered = function() {
           },
 
           {
-            "title": "Standard Score (# of Std. Dev from the mean) for "+company,
+            "title": "Standard Scores for "+company+" compared to "+second_company,
             "percentHeight": 35,
             "marginTop": 1,
             // "showCategoryAxis": true,
@@ -518,69 +517,88 @@ Template.chart.rendered = function() {
               //"lineColor": "#ff6600",
               "useDataSetColors":false,
               "comparable": true
-            }],
-
-            "stockLegend": {
-              "markerType": "none",
-              "markerSize": 0,
-              "labelText": "",
-              "periodValueTextRegular": "[[zScore]]"
-            }
-          },
-          {
-            "title": "Standard Score (# of Std. Dev from the mean) for "+second_company,
-            "percentHeight": 35,
-            "marginTop": 1,
-            "showCategoryAxis": true,
-            "valueAxes": [ {
-              "dashLength": 5
-            } ],
-
-            "categoryAxis": {
-              "dashLength": 5
             },
-
-            "recalculateToPercents":"never" ,
-            "stockGraphs": [ {
+            { //add to compare
               "valueField": "zScore2",
               "type": "line",
-              "lineColorField": "lineColor",
-              "lineThickness": 2,
-              "showBalloon": true,
+              //"lineColorField": "lineColor",
+              "lineColor": "#0066aa",
+              "lineThickness": 5,
+              //"lineAlpha": 0.4,
+              //"showBalloon": true,
               "bullet": "round",
-              "bulletSize": 1.5,
-              "balloonText": "[[value]]",
+              //"bulletSize": 1.5,
+              //"balloonText": "[[value]]",
               //"fillAlpha": 0.8,
               //"lineColor": "#ff6600",
-              "useDataSetColors":false,
-              "compareField": "zScore2",
+              //"useDataSetColors":false,
               "comparable": true,
-              "compareGraphLineThickness": 2,
-              "compareGraphBullet": "round",
-              "compareGraphBulletSize": 1.5,
-              "compareGraphLineColor":"#0077aa",
-              "compareGraphBulletColor":"#0077aa",
+              "compareGraphLineColor": "#00aa77",
+              "compareGraphLineAlpha": 0.7
             }],
 
             "stockLegend": {
               "markerType": "none",
               "markerSize": 0,
               "labelText": "",
-              "periodValueTextRegular": "[[zScore2]]"
+              //"periodValueTextRegular": "[[zScore]]"
             }
-          }
+          },
+          // {
+          //   "title": "Standard Score for "+second_company,
+          //   "percentHeight": 35,
+          //   "marginTop": 1,
+          //   "showCategoryAxis": true,
+          //   "valueAxes": [ {
+          //     "dashLength": 5
+          //   } ],
+
+          //   "categoryAxis": {
+          //     "dashLength": 5
+          //   },
+
+          //   "recalculateToPercents":"never" ,
+          //   "stockGraphs": [ {
+          //     "valueField": "zScore2",
+          //     "type": "line",
+          //     "lineColorField": "lineColor",
+          //     "lineThickness": 2,
+          //     "showBalloon": true,
+          //     "bullet": "round",
+          //     "bulletSize": 1.5,
+          //     "balloonText": "[[value]]",
+          //     //"fillAlpha": 0.8,
+          //     //"lineColor": "#ff6600",
+          //     "useDataSetColors":false,
+          //     "compareField": "zScore2",
+          //     "comparable": true,
+          //     "compareGraphLineThickness": 2,
+          //     "compareGraphBullet": "round",
+          //     "compareGraphBulletSize": 1.5,
+          //     "compareGraphLineColor":"#0077aa",
+          //     "compareGraphBulletColor":"#0077aa",
+          //   }],
+
+          //   "stockLegend": {
+          //     "markerType": "none",
+          //     "markerSize": 0,
+          //     "labelText": "",
+          //     "periodValueTextRegular": "[[zScore2]]"
+          //   }
+          // }
         ],
 
         "chartScrollbarSettings": {
           "graph": "priceGraph",
           "graphType": "line",
-          "usePeriod": "WW"
+          "usePeriod": "WW",
+          "position": "top"
         },
 
         "chartCursorSettings": {
-          //"valueLineBalloonEnabled": true,
+          "valueLineBalloonEnabled": true,
           //"valueLineEnabled": true
-        },
+        }, 
 
         "periodSelector": {
           "position": "bottom",
@@ -605,9 +623,12 @@ Template.chart.rendered = function() {
             "label": "MAX"
           } ]
         },
+        //   "dataSetSelector": {
+        //     "position": "left"
+        // },
         "export": {
           "enabled": true
-        },
+        }, 
         "listeners": [{
           "event": "init",
           "method": function(event) {
@@ -963,7 +984,9 @@ Template.chart.rendered = function() {
             "markerSize": 0,
             "labelText": "",
             "periodValueTextRegular": "[[value.close]]"
-          }
+          },
+
+          "drawingIconsEnabled": true,
         }
         ],
 
@@ -1141,13 +1164,8 @@ Template.chart.rendered = function() {
     $('#lower-window-selection').show();
     $('#second-stock-selection').hide();
 
-
+    console.log(relatedNews);
     // console.log("render_events_chart: topic: "+topic+" upper: "+upper_range+" lower: "+lower_range);
-
-
-    var stocks = StockPrices.find({company_name: company_name, token:token}, {fields: {'date':1, 'cum_return':1, 'flat_value':1}}).fetch();
-    var chartData = [];
-    var guides = [];
 
     // events
     var events = StockEvents.find({token: token, company_name: company_name, topic: topic, value: {$gt : 0}}, {fields: {'date':1},sort:{date:-1}}).fetch(); 
@@ -1162,6 +1180,36 @@ Template.chart.rendered = function() {
       render_related_news(company_name, topic, events[0].date);
     }
     // render_related_news(company_name, topic, date);
+
+    var stocks = StockPrices.find({company_name: company_name, token:token}, {fields: {'date':1, 'cum_return':1, 'flat_value':1}}).fetch();
+    var stocksCustomBullet= [];
+
+    // stocks.forEach(function(c) {
+    //   var newEntry = {};
+    //   // newEntry = {'date': c.date, 'cum_return': c.cum_return, 'flat_value': c.flat_value, 'customBullet': "https://cdn2.iconfinder.com/data/icons/windows-8-metro-style/512/newspaper.png"};
+    //   var found = 0;
+    //   relatedNews.forEach(function(n){
+
+    //     var thisString = c.date.getDate()+"-"+c.date.getMonth()+"-"+c.date.getFullYear();
+
+    //     //console.log("thisDate: "+thisDate + " n.date: "+n.date);
+    //     var dateString = n.date.getDate()+"-"+n.date.getMonth()+"-"+n.date.getFullYear();
+
+    //     // if (thisDate.getDate() == n.date.getDate() && thisDate.getMonth() == n.date.getMonth() &&  thisDate.getFullYear() == n.date.getYear()){
+    //     if (thisString == dateString && found == 0){
+    //       newEntry = {'date': c.date, 'cum_return': c.cum_return, 'flat_value': c.flat_value, 'customBullet': "https://cdn2.iconfinder.com/data/icons/windows-8-metro-style/512/newspaper.png"};
+    //       found = 1;
+    //       console.log("found c.date"+c.date);
+    //     } 
+    //   });
+    //   if (found == 0) {
+    //       newEntry = {'date': c.date, 'cum_return': c.cum_return, 'flat_value': c.flat_value};
+    //   }
+    //   stocksCustomBullet.push(newEntry);
+    // });
+    var chartData = [];
+    var guides = [];
+
 
     
 
@@ -1216,6 +1264,8 @@ Template.chart.rendered = function() {
         }
       }
     });
+
+    console.log(stocksCustomBullet);
 
     drawGraph(stocks, guides);
 
@@ -1283,9 +1333,11 @@ Template.chart.rendered = function() {
             }
             return result;
           },
-          "bullet": "round",
-          "bulletBorderAlpha": 1,
-          "bulletColor": "#FFFFFF",
+          //"bullet": "round",
+          "customBulletField": "customBullet",
+          "bulletSize": 30,
+          //"bulletBorderAlpha": 1,
+          //"bulletColor": "#FFFFFF",
           "lineColor": "#ff6600",
           "hideBulletsCount": 50,
           "title": "Cumulative Return",
