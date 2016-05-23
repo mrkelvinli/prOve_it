@@ -1412,6 +1412,10 @@ Template.chart.rendered = function() {
 
             console.log(relatedNews);
 
+            $('#chartdiv3.related_news').find('ul li a').each(function() {
+              $(this).css('background-color','');
+            });
+
             var idx = event.chart.chartCursor.index;
             var thisDate = event.chart.dataProvider[idx].date;
 
@@ -1423,11 +1427,13 @@ Template.chart.rendered = function() {
               // if (thisDate.getDate() == n.date.getDate() && thisDate.getMonth() == n.date.getMonth() &&  thisDate.getFullYear() == n.date.getYear()){
               if (thisString == dateString){
                 // console.log(n.headline);
+                var highlightHeadline = n.headline;
                 $('#chartdiv3.related_news').find('ul li a').each(function() {
                   var headline = $(this).html();
                   console.log("Checking: "+headline);
                   console.log("wanted headline: "+n.headline);
-                  if (headline == n.headline){
+                  if (headline == highlightHeadline){
+                    console.log($(this));
                     $(this).css('background-color','yellow');
                   }
                 });
@@ -1435,7 +1441,8 @@ Template.chart.rendered = function() {
             });
             
           }
-        }],
+        }
+        ],
       });
 
 
@@ -1722,87 +1729,60 @@ Template.chart.rendered = function() {
 
           // // change links to open in iframe
           relatedNews = [];
-          $('#chartdiv3.related_news').find('ul li a').each(function() {
-            $(this).attr('target', 'news_iframe');
+          $('#chartdiv3.related_news').find('h3').each(function() {
+            var dateString = $(this).find('span').html();
+            console.log(dateString);
+            var headlineObj = $(this).next().find('li a');
+            var headline = headlineObj.html();
+            console.log(headline);
+            headlineObj.attr('target', 'news_iframe');
 
-            var headline = $(this).html();
-            $(this).parent().parent().parent().find('h3 span').each(function() {
-                var string2num = {
-                  'JAN' : 1,
-                  'FEB' : 2,
-                  'MAR' : 3,
-                  'APR' : 4,
-                  'MAY' : 5,
-                  'JUN' : 6,
-                  'JUL' : 7,
-                  'AUG' : 8,
-                  'SEP' : 9,
-                  'OCT' : 10,
-                  'NOV' : 11,
-                  'DEC' : 12,
-                  'JANUARY' : 1,
-                  'FEBRUARY' : 2,
-                  'MARCH' : 3,
-                  'APRIL' : 4,
-                  'JUNE' : 6,
-                  'JULY' : 7,
-                  'AUGUST' : 8,
-                  'SEPTEMBER' : 9,
-                  'OCTOBER' : 10,
-                  'NOVEMBER' : 11,
-                  'DECEMBER' : 12
-                }
-              var dateString = $(this).html();
-
-              //Wednesday, 23 December 2015
-              var regex = /([a-zA-Z]+),\ ([0-9][0-9]?)\ ([a-zA-Z]+)\ ([0-9]{4})/;
-              var matches = regex.exec(dateString);
-              if (matches == null) {
-                var onlyForParsing = new Date(dateString);
-                var year = onlyForParsing.getFullYear();
-                var month = onlyForParsing.getMonth();
-                var date = onlyForParsing.getDate();
-              } else {
-                var date = matches[2];
-                var month = string2num[matches[3].toUpperCase()] - 1;
-                var year = matches[4];
-              }
-              var newDate = new Date(Date.UTC(year, month, date, 6));
-              console.log(newDate);
-              relatedNews.push({
-                date: newDate,
-                headline: headline,
-              });
+            var string2num = {
+              'JAN' : 1,
+              'FEB' : 2,
+              'MAR' : 3,
+              'APR' : 4,
+              'MAY' : 5,
+              'JUN' : 6,
+              'JUL' : 7,
+              'AUG' : 8,
+              'SEP' : 9,
+              'OCT' : 10,
+              'NOV' : 11,
+              'DEC' : 12,
+              'JANUARY' : 1,
+              'FEBRUARY' : 2,
+              'MARCH' : 3,
+              'APRIL' : 4,
+              'JUNE' : 6,
+              'JULY' : 7,
+              'AUGUST' : 8,
+              'SEPTEMBER' : 9,
+              'OCTOBER' : 10,
+              'NOVEMBER' : 11,
+              'DECEMBER' : 12
+            }
+            var regex = /([a-zA-Z]+),\ ([0-9][0-9]?)\ ([a-zA-Z]+)\ ([0-9]{4})/;
+            var matches = regex.exec(dateString);
+            if (matches == null) {
+              var onlyForParsing = new Date(dateString);
+              var year = onlyForParsing.getFullYear();
+              var month = onlyForParsing.getMonth();
+              var date = onlyForParsing.getDate();
+            } else {
+              var date = matches[2];
+              var month = string2num[matches[3].toUpperCase()] - 1;
+              var year = matches[4];
+            }
+            var newDate = new Date(Date.UTC(year, month, date, 6));
+            console.log(newDate);
+            relatedNews.push({
+              date: newDate,
+              headline: headline,
             });
-
-            $('#chartdiv3.related_news').find('h3').hide();
-            // dateString = dateString.replace(/^\(...\s/,"").replace(/\)$/,"");
-            // var match = dateString.match(/([0-9]{2})\s([a-zA-Z]{3})/);
-
-            // var newDateString = d.getUTCFullYear()+"-"+match[2]+"-"+match[1];
-            // console.log(headline + " at " + match[1]+ "-"+match[2]);
-
-            // Wednesday, 23 December 2015
-
-            // var regex = /^([0-9]{2})-([a-zA-Z]+)-([0-9]{4})/;
-            // var matches = regex.exec(dateString);
-            // if (matches == null) {
-            //   var onlyForParsing = new Date(dateString);
-            //   var year = onlyForParsing.getFullYear();
-            //   var month = onlyForParsing.getMonth();
-            //   var date = onlyForParsing.getDate();
-            // } else {
-            //   var date = matches[1];
-
-            //   var month = string2num[matches[2].toUpperCase()] - 1;
-            //   var year = matches[3];
-            // }
-            // var wantedDate = new Date(Date.UTC(year, month, date, 6));
-    
-            // console.log(newDate);
-
-
           });
+          console.log(relatedNews);
+          $('#chartdiv3.related_news').find('h3').hide();
 
           // aylien API, is article good or bad?
           var regex = /\<a href\=\"[^\<\>]*\"\>/g;
@@ -1814,21 +1794,21 @@ Template.chart.rendered = function() {
 
             // ====== [[[ TOGGLE AYLIEN HERE ]]] ======
 
-            Meteor.call('aylienApi', link, function(err, response) {
-              // console.log(response);
-              // console.log(err);
-              if (response != null) {
-                var sentiment = JSON.parse(response.content).polarity;
-                console.log(sentiment);
-                if (sentiment == 'positive') {
-                  $('a[href="'+linkMid+'"]').css({'color': 'green', 'font-weight': '700', 'background-color': 'rgba(0, 255, 0, 0.1)'});
-                } else if (sentiment == 'negative') {
-                  $('a[href="'+linkMid+'"]').css({'color': 'red', 'font-weight': '700', 'background-color' : 'rgba(255, 0, 0, 0.1)'});
-                } else {
-                  console.log(link + ' is neutral or null');
-                }
-              }
-            });
+            // Meteor.call('aylienApi', link, function(err, response) {
+            //   console.log(response);
+            //   // console.log(err);
+            //   if (response != null) {
+            //     var sentiment = JSON.parse(response.content).polarity;
+            //     console.log(sentiment);
+            //     if (sentiment == 'positive') {
+            //       $('a[href="'+linkMid+'"]').css({'color': 'green', 'font-weight': '700', 'background-color': 'rgba(0, 255, 0, 0.1)'});
+            //     } else if (sentiment == 'negative') {
+            //       $('a[href="'+linkMid+'"]').css({'color': 'red', 'font-weight': '700', 'background-color' : 'rgba(255, 0, 0, 0.1)'});
+            //     } else {
+            //       console.log(link + ' is neutral or null');
+            //     }
+            //   }
+            // });
           });
         } else {
           $('#chartdiv3').html('No related news found for the current events.');
@@ -1854,11 +1834,14 @@ Template.chart.rendered = function() {
     $('#chartdiv2').show();
     $('#chartdiv2').parent().removeClass('col-md-7');
     $('#chartdiv2').parent().addClass('col-md-8');
+    $('#chartdiv2').css('height', '100%');
     // $('#chartdiv2').css('margin', '0');
     var dom2 = document.getElementById('chartdiv2');
     Blaze.render(Template.rrgSymbols, dom2);
+    console.log($('table.symbolgrid'));
 
     $('#chartdiv3').show();
+    $('#chartdiv3').html('');
     $('#chartdiv3').parent().removeClass('col-md-5');
     $('#chartdiv3').parent().addClass('col-md-4');
     $('#chartdiv3').css('height', 370);
