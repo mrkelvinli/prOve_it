@@ -14,7 +14,7 @@ Template.chart.rendered = function() {
   });
   var validToken = false;
   
-  var curr_graph = 'volatility';
+  var curr_graph = 'event-study';
   var curr_company = "TGR.AX";
   var second_company = "AAC.AX";
   var curr_topic = "Cash Rate";
@@ -1176,15 +1176,15 @@ Template.chart.rendered = function() {
     var events = StockEvents.find({token: token, company_name: company_name, topic: topic, value: {$gt : 0}}, {fields: {'date':1},sort:{date:-1}}).fetch(); 
     // console.log(events);
 
-    var company_name = 'AAC.AX';
-    var date = new Date(Date.UTC(2016,2,2));
+    // var company_name = 'AAC.AX';
+    // var date = new Date(Date.UTC(2016,2,2));
 
     if (events.length <= 0) {
       $('#chartdiv3').html('No related events for '+company_name+" on "+topic+".");
     } else {
       render_related_news(company_name, topic, events[0].date);
     }
-    render_related_news(company_name, topic, date);
+    // render_related_news(company_name, topic, date);
 
     events.forEach(function(c) {
       var dateLower = new Date(c.date);
@@ -1289,7 +1289,7 @@ Template.chart.rendered = function() {
         "mouseWheelZoomEnabled": false,
         "graphs": [{
           "id": "g1",
-          "balloonText": "CR: [[cum_return]]%",
+          "balloonText": "Cumulative Return: [[cum_return]]%",
           "balloonFunction": function(item, graph) {
             var result = graph.balloonText;
             for (var key in item.dataContext) {
@@ -1375,8 +1375,27 @@ Template.chart.rendered = function() {
             text: "This Event Study tool allows you to analyse the effect that each event has on the cumulative returns of a company.",
             bold: false,
           },
-        ]
+        ],
+        "listeners": [{
+          "event": "rollOverGraph",
+          "method": function(event) {
+            // if ( undefined === event.index)
+            //   return;
+            // console.log(event);
+            var idx = event.chart.chartCursor.index;
+            var date = event.chart.dataProvider[idx].date;
+            
+          }
+        }],
       });
+
+
+      // document.getElementById('chartdiv').addEventListener('mousemove', function(e) {
+      //   var ss = chart.categoryAxis.xToIndex(e.x);
+      //   var vall = chart.categoryAxis.data[ss].category;
+      //   console.log(vall);
+      // });
+
     }
 
   }
@@ -1732,6 +1751,7 @@ Template.chart.rendered = function() {
     $('#chartdiv3').show();
     $('#chartdiv3').parent().removeClass('col-md-5');
     $('#chartdiv3').parent().addClass('col-md-4');
+    $('#chartdiv3').css('height', 370)
     var dom3 = document.getElementById('chartdiv3');
     Blaze.render(Template.rrgControls, dom3);
   }

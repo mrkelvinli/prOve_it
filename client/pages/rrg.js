@@ -736,7 +736,7 @@ Template.rrgMain.rendered = function() {
           // this.width = this.settings.width;
           // this.height = this.settings.height;
           this.width = 1000;
-          this.height = 500;
+          this.height = 580;
           console.log(this.width + ' x ' + this.height);
           this.$canvas = $("<canvas width='" + this.width + "' height='" + this.height + "'></canvas>").css("-webkit-user-select", "none");
           this.canvas = this.$canvas[0];
