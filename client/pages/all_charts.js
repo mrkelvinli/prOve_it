@@ -194,7 +194,6 @@ Template.chart.rendered = function() {
     function generateData (company) {
 
       var prices = StockPrices.find({token:token, company_name: company, flat_value: {$ne: null}},{fields:{date:true, flat_value: true}}).fetch();
-
       var stock_prices = [];
       prices.forEach(function(p){
         stock_prices.push({
@@ -317,11 +316,11 @@ Template.chart.rendered = function() {
         "titles": [{
           "text": "Volatility Analysis for "+ company,
           "bold": true
-        }
-        // {
-        //   "text": "This Volatility-Analysis tool allows you to determine the dispersion a stock price has around its average.",
-        //   "bold": false
-        // },
+        },
+        {
+          "text": "This tool allows you to determine the dispersion that a stock price has around its average.",
+          "bold": false
+        },
 
         ],
       
@@ -418,7 +417,7 @@ Template.chart.rendered = function() {
               "labelPosition": "right",
               //"visibleInLegend": false,
               "labelFunction": labelFunction,
-              "labelText": "Stock Price ($)",
+              //"labelText": "Stock Price ($)",
               "useDataSetColors":false,
               "labelOffset":-70,
             }, {
@@ -491,7 +490,7 @@ Template.chart.rendered = function() {
           },
 
           {
-            "title": "Standard Score (# of Std. Dev from the mean) for "+company,
+            "title": "Standard Scores for "+company+" compared to "+second_company,
             "percentHeight": 35,
             "marginTop": 1,
             // "showCategoryAxis": true,
@@ -517,69 +516,88 @@ Template.chart.rendered = function() {
               //"lineColor": "#ff6600",
               "useDataSetColors":false,
               "comparable": true
-            }],
-
-            "stockLegend": {
-              "markerType": "none",
-              "markerSize": 0,
-              "labelText": "",
-              "periodValueTextRegular": "[[zScore]]"
-            }
-          },
-          {
-            "title": "Standard Score (# of Std. Dev from the mean) for "+second_company,
-            "percentHeight": 35,
-            "marginTop": 1,
-            "showCategoryAxis": true,
-            "valueAxes": [ {
-              "dashLength": 5
-            } ],
-
-            "categoryAxis": {
-              "dashLength": 5
             },
-
-            "recalculateToPercents":"never" ,
-            "stockGraphs": [ {
+            { //add to compare
               "valueField": "zScore2",
               "type": "line",
-              "lineColorField": "lineColor",
-              "lineThickness": 2,
-              "showBalloon": true,
+              //"lineColorField": "lineColor",
+              "lineColor": "#0066aa",
+              "lineThickness": 5,
+              //"lineAlpha": 0.4,
+              //"showBalloon": true,
               "bullet": "round",
-              "bulletSize": 1.5,
-              "balloonText": "[[value]]",
+              //"bulletSize": 1.5,
+              //"balloonText": "[[value]]",
               //"fillAlpha": 0.8,
               //"lineColor": "#ff6600",
-              "useDataSetColors":false,
-              "compareField": "zScore2",
+              //"useDataSetColors":false,
               "comparable": true,
-              "compareGraphLineThickness": 2,
-              "compareGraphBullet": "round",
-              "compareGraphBulletSize": 1.5,
-              "compareGraphLineColor":"#0077aa",
-              "compareGraphBulletColor":"#0077aa",
+              "compareGraphLineColor": "#00aa77",
+              "compareGraphLineAlpha": 0.7
             }],
 
             "stockLegend": {
               "markerType": "none",
               "markerSize": 0,
               "labelText": "",
-              "periodValueTextRegular": "[[zScore2]]"
+              //"periodValueTextRegular": "[[zScore]]"
             }
-          }
+          },
+          // {
+          //   "title": "Standard Score for "+second_company,
+          //   "percentHeight": 35,
+          //   "marginTop": 1,
+          //   "showCategoryAxis": true,
+          //   "valueAxes": [ {
+          //     "dashLength": 5
+          //   } ],
+
+          //   "categoryAxis": {
+          //     "dashLength": 5
+          //   },
+
+          //   "recalculateToPercents":"never" ,
+          //   "stockGraphs": [ {
+          //     "valueField": "zScore2",
+          //     "type": "line",
+          //     "lineColorField": "lineColor",
+          //     "lineThickness": 2,
+          //     "showBalloon": true,
+          //     "bullet": "round",
+          //     "bulletSize": 1.5,
+          //     "balloonText": "[[value]]",
+          //     //"fillAlpha": 0.8,
+          //     //"lineColor": "#ff6600",
+          //     "useDataSetColors":false,
+          //     "compareField": "zScore2",
+          //     "comparable": true,
+          //     "compareGraphLineThickness": 2,
+          //     "compareGraphBullet": "round",
+          //     "compareGraphBulletSize": 1.5,
+          //     "compareGraphLineColor":"#0077aa",
+          //     "compareGraphBulletColor":"#0077aa",
+          //   }],
+
+          //   "stockLegend": {
+          //     "markerType": "none",
+          //     "markerSize": 0,
+          //     "labelText": "",
+          //     "periodValueTextRegular": "[[zScore2]]"
+          //   }
+          // }
         ],
 
         "chartScrollbarSettings": {
           "graph": "priceGraph",
           "graphType": "line",
-          "usePeriod": "WW"
+          "usePeriod": "WW",
+          "position": "top"
         },
 
         "chartCursorSettings": {
-          //"valueLineBalloonEnabled": true,
+          "valueLineBalloonEnabled": true,
           //"valueLineEnabled": true
-        },
+        }, 
 
         "periodSelector": {
           "position": "bottom",
@@ -604,9 +622,12 @@ Template.chart.rendered = function() {
             "label": "MAX"
           } ]
         },
+        //   "dataSetSelector": {
+        //     "position": "left"
+        // },
         "export": {
           "enabled": true
-        },
+        }, 
         "listeners": [{
           "event": "init",
           "method": function(event) {
@@ -962,7 +983,9 @@ Template.chart.rendered = function() {
             "markerSize": 0,
             "labelText": "",
             "periodValueTextRegular": "[[value.close]]"
-          }
+          },
+
+          "drawingIconsEnabled": true,
         }
         ],
 
