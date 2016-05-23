@@ -1364,6 +1364,10 @@ Template.chart.rendered = function() {
 
             console.log(relatedNews);
 
+            $('#chartdiv3.related_news').find('ul li a').each(function() {
+              $(this).css('background-color','');
+            });
+
             var idx = event.chart.chartCursor.index;
             var thisDate = event.chart.dataProvider[idx].date;
 
@@ -1375,11 +1379,13 @@ Template.chart.rendered = function() {
               // if (thisDate.getDate() == n.date.getDate() && thisDate.getMonth() == n.date.getMonth() &&  thisDate.getFullYear() == n.date.getYear()){
               if (thisString == dateString){
                 // console.log(n.headline);
+                var highlightHeadline = n.headline;
                 $('#chartdiv3.related_news').find('ul li a').each(function() {
                   var headline = $(this).html();
                   console.log("Checking: "+headline);
                   console.log("wanted headline: "+n.headline);
-                  if (headline == n.headline){
+                  if (headline == highlightHeadline){
+                    console.log($(this));
                     $(this).css('background-color','yellow');
                   }
                 });
@@ -1387,7 +1393,8 @@ Template.chart.rendered = function() {
             });
             
           }
-        }],
+        }
+        ],
       });
 
 
