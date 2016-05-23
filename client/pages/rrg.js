@@ -2503,12 +2503,24 @@ Template.rrgMain.rendered = function() {
           var t = ["chart", "visible", "tail", "symbol", /*"name",*/  "sector", "industry", "price", "chg"];
           var i = "";
           i += "<table class='symbolgrid' style='width: 100%;height: 100%;padding: 100px;'> \n";
-          i += "<thead style='position: absolute;top: 27px;width: 800px;'>";
+          i += "<thead style='position: absolute;top: 27px;width:87%'>";
           i += "<tr>";
           for (var e = 0; e < t.length; e++) {
               var s = t[e];
               "chg" == s && (s = "%chg");
-              i += t[e] == this.sortColumn ? "a" == this.sortDirection ? "<th class='sort-ascending'style='width:12%'>" + s + "</th>" : "<th class='sort-descending' style='width:12%'>" + s + "</th>" : "<th style='width:12%'>" + s + "</th>"
+              if (s == 'chart') {
+                i += t[e] == this.sortColumn ? "a" == this.sortDirection ? "<th class='sort-ascending'style='width:10%'>" + s + "</th>" : "<th class='sort-descending' style='width:10%'>" + s + "</th>" : "<th style='width:10%'>" + s + "</th>"
+              } else if (s == 'visible') {
+                i += t[e] == this.sortColumn ? "a" == this.sortDirection ? "<th class='sort-ascending'style='width:9%'>" + s + "</th>" : "<th class='sort-descending' style='width:9%'>" + s + "</th>" : "<th style='width:9%'>" + s + "</th>"
+              } else if (s == 'tail') {
+                i += t[e] == this.sortColumn ? "a" == this.sortDirection ? "<th class='sort-ascending'style='width:8.5%'>" + s + "</th>" : "<th class='sort-descending' style='width:8.5%'>" + s + "</th>" : "<th style='width:8.5%'>" + s + "</th>"
+              } else if (s == 'symbol') {
+                i += t[e] == this.sortColumn ? "a" == this.sortDirection ? "<th class='sort-ascending'style='width:21%'>" + s + "</th>" : "<th class='sort-descending' style='width:21%'>" + s + "</th>" : "<th style='width:21%'>" + s + "</th>"
+              } else if (s == 'sector' || s == 'industry') {
+                i += t[e] == this.sortColumn ? "a" == this.sortDirection ? "<th class='sort-ascending'style='width:1%'>" + s + "</th>" : "<th class='sort-descending' style='width:1%'>" + s + "</th>" : "<th style='width:1%'>" + s + "</th>"
+              } else {
+                i += t[e] == this.sortColumn ? "a" == this.sortDirection ? "<th class='sort-ascending'style='width:12%'>" + s + "</th>" : "<th class='sort-descending' style='width:12%'>" + s + "</th>" : "<th style='width:12%'>" + s + "</th>"
+              }
           }
           i += "</tr>";
           i += "</thead>";
