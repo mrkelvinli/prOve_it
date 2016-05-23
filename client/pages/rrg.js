@@ -2502,7 +2502,7 @@ Template.rrgMain.rendered = function() {
       toTable: function() {
           var t = ["chart", "visible", "tail", "symbol", /*"name",*/  "sector", "industry", "price", "chg"];
           var i = "";
-          i += "<table class='symbolgrid'> \n";
+          i += "<table class='symbolgrid' style='width: 100%; height: 100%'> \n";
           i += "<thead>";
           i += "<tr>";
           for (var e = 0; e < t.length; e++) {
@@ -2519,7 +2519,7 @@ Template.rrgMain.rendered = function() {
               var a = n.symbol;
               var r = ["row", n.tail];
               (!o && this.isHilited(a) || o && "" == this.hilitedSymbol) && r.push("hilited");
-              i += "<tr class='" + r.join(" ") + "'>";
+              i += "<tr class='" + r.join(" ") + "' style='position:relative; right: 100px'>";
               for (var h = 0; h < t.length; h++) {
                   var l = t[h];
                   var u = n[l];
