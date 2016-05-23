@@ -1709,6 +1709,7 @@ Template.chart.rendered = function() {
     $('#chartdiv3').show();
     $('#chartdiv3').parent().removeClass('col-md-5');
     $('#chartdiv3').parent().addClass('col-md-4');
+    $('#chartdiv3').css('height', 370)
     var dom3 = document.getElementById('chartdiv3');
     Blaze.render(Template.rrgControls, dom3);
   }
