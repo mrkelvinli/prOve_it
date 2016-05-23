@@ -1163,7 +1163,7 @@ Template.chart.rendered = function() {
     }
     // render_related_news(company_name, topic, date);
 
-    console.log(relatedNews);
+    
 
     events.forEach(function(c) {
       var dateLower = new Date(c.date);
@@ -1361,12 +1361,15 @@ Template.chart.rendered = function() {
             // if ( undefined === event.index)
             //   return;
             // console.log(event);
+
+            console.log(relatedNews);
+
             var idx = event.chart.chartCursor.index;
             var thisDate = event.chart.dataProvider[idx].date;
 
+            var thisString = thisDate.getDate()+"-"+thisDate.getMonth()+"-"+thisDate.getFullYear();
             relatedNews.forEach(function(n){
               console.log("thisDate: "+thisDate + " n.date: "+n.date);
-              var thisString = thisDate.getDate()+"-"+thisDate.getMonth()+"-"+thisDate.getFullYear();
               var dateString = n.date.getDate()+"-"+n.date.getMonth()+"-"+n.date.getFullYear();
 
               // if (thisDate.getDate() == n.date.getDate() && thisDate.getMonth() == n.date.getMonth() &&  thisDate.getFullYear() == n.date.getYear()){
@@ -1374,6 +1377,8 @@ Template.chart.rendered = function() {
                 // console.log(n.headline);
                 $('#chartdiv3.related_news').find('ul li a').each(function() {
                   var headline = $(this).html();
+                  console.log("Checking: "+headline);
+                  console.log("wanted headline: "+n.headline);
                   if (headline == n.headline){
                     $(this).css('background-color','yellow');
                   }
