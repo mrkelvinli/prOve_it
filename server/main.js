@@ -111,8 +111,8 @@ if(Meteor.isServer) {
       var convertAsyncToSync  = Meteor.wrapAsync(HTTP.get),
         resultOfAsyncToSync = convertAsyncToSync(apiUrl, {
           headers: {
-            "X-AYLIEN-TextAPI-Application-Key": "0c9e08decd35c5e7172f336d3cb43aa8",
-            "X-AYLIEN-TextAPI-Application-ID": "fe435f7a"
+            "X-AYLIEN-TextAPI-Application-Key": "5a038b2601fab2542c90fdb7957bd3d4",
+            "X-AYLIEN-TextAPI-Application-ID": "91a48464"
           },
           params: {
             "mode": "document",
