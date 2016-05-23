@@ -1171,8 +1171,8 @@ Template.chart.rendered = function() {
     var stocks = StockPrices.find({company_name: company_name, token:token}, {fields: {'date':1, 'cum_return':1, 'flat_value':1}}).fetch();
     var stocksCustomBullet= [];
     stocks.forEach(function(c) {
+      var entry = [];
       if (1) {
-        var entry = [];
         newEntry = {'date': c.date, 'cum_return': c.cum_return, 'flat_value': c.flat_value, 'customBullet': "https://cdn2.iconfinder.com/data/icons/windows-8-metro-style/512/newspaper.png"};
       } else {
         newEntry = {'date': c.date, 'cum_return': c.cum_return, 'flat_value': c.flat_value};
