@@ -95,6 +95,7 @@ Template.chart.rendered = function() {
     $('#details').hide();
     $('#chartdiv2').html('');
     $('#chartdiv3').html('');
+    console.log($('#chartdiv2').html());
     $('#details').html('');
 
     $('#chartdiv2').parent().removeClass('col-md-8');
@@ -1643,6 +1644,7 @@ Template.chart.rendered = function() {
         var rawHeadlines = String(response).match(regexRaw);
         var headlines = String(rawHeadlines).replace(/<div class="mod yfi_quote_headline withsky"><ul class="yfncnhl newsheadlines"><\/ul>/, "").replace(/<\/cite><\/li><\/ul><table width="100%"/, "");
         if (headlines != null) {
+          console.log(headlines);
           var headlinesNoBackslash = headlines.replace(/\\/g, '');
           $('#chartdiv3').append(headlinesNoBackslash);
 
@@ -1650,29 +1652,28 @@ Template.chart.rendered = function() {
 
 
 
-          // change links to open in iframe
+          // // change links to open in iframe
           relatedNews = [];
-          // $('#chartdiv3.related_news').find('ul li a').each(function() {
-          //   console.log($(this));
-          //   $(this).attr('target', 'news_iframe');
+          $('#chartdiv3.related_news').find('ul li a').each(function() {
+            $(this).attr('target', 'news_iframe');
 
-          //   var headline = $(this).html();
-          //   var dateString = $(this).parent().find('cite span').html();
-          //   dateString = dateString.replace(/^\(...\s/,"").replace(/\)$/,"");
-          //   var match = dateString.match(/([0-9]{2})\s([a-zA-Z]{3})/);
+            var headline = $(this).html();
+            var dateString = $(this).parent().parent().parent().find('h3 span').html();
+            console.log(dateString);
+            $('#chartdiv3.related_news').find('h3').hide();
+            // dateString = dateString.replace(/^\(...\s/,"").replace(/\)$/,"");
+            // var match = dateString.match(/([0-9]{2})\s([a-zA-Z]{3})/);
 
-          //   var newDateString = d.getUTCFullYear()+"-"+match[2]+"-"+match[1];
-          //   // console.log(headline + " at " + match[1]+ "-"+match[2]);
-          //   var newDate = new Date(newDateString);
-          //   console.log(newDate);
+            // var newDateString = d.getUTCFullYear()+"-"+match[2]+"-"+match[1];
+            // console.log(headline + " at " + match[1]+ "-"+match[2]);
+            var newDate = new Date(dateString);
+            console.log(newDate);
 
-          //   relatedNews.push({
-          //     date: newDate,
-          //     headline: headline,
-          //   });
-
-
-          // });
+            relatedNews.push({
+              date: newDate,
+              headline: headline,
+            });
+          });
 
           // aylien API, is article good or bad?
           var regex = /\<a href\=\"[^\<\>]*\"\>/g;
@@ -1681,6 +1682,9 @@ Template.chart.rendered = function() {
             console.log('in loop');
             var linkMid = linkRaw.replace(/<a href="/, "").replace(/">/, "");
             var link = linkMid.replace(/.*\/\*/, "").replace(/\?.*/, "");
+
+            // ====== [[[ TOGGLE AYLIEN HERE ]]] ======
+
             // Meteor.call('aylienApi', link, function(err, response) {
             //   // console.log(response);
             //   // console.log(err);
@@ -1721,7 +1725,7 @@ Template.chart.rendered = function() {
     $('#chartdiv2').show();
     $('#chartdiv2').parent().removeClass('col-md-7');
     $('#chartdiv2').parent().addClass('col-md-8');
-    $('#chartdiv2').css('margin', '0');
+    // $('#chartdiv2').css('margin', '0');
     var dom2 = document.getElementById('chartdiv2');
     Blaze.render(Template.rrgSymbols, dom2);
 

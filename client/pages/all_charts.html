@@ -21,26 +21,38 @@
   </ul>
   <div class="chart-frame">
     <!-- chart setting section -->
-    <div class="row" id="chart-options">
+    <div class="row" id="chart-options" style='margin-bottom: 10px'>
       <div class="col-sm-3" id="second-stock-selection">
-        <div>Compare to:</div>
-        <select class="form-control selectpicker" title="Choose a Stock" id="choose-second-stock" data-live-search="true">
-        </select>
+        <!-- <span style='font-weight: 700'>Compare with:</span> -->
+        <div class='input-group'>
+          <span class='input-group-addon' style='border: 1px solid #e7e7e7'>Compare With</span>
+          <select class="form-control selectpicker" title="Choose stock" id="choose-second-stock" data-live-search="true">
+          </select>
+        </div>
       </div>
       <div class="col-sm-3" id="topic-selection">
-        <div>Topics:</div>
-        <select class="form-control selectpicker" title="Choose a topic" id="choose-topic" data-live-search="true">
-        </select>
+        <!-- <div>Topics:</div> -->
+        <div class='input-group'>
+          <span class='input-group-addon' style='border: 1px solid #e7e7e7'>Topics</span>
+          <select class="form-control selectpicker" title="Choose a topic" id="choose-topic" data-live-search="true">
+          </select>
+        </div>
 
       </div>
        <div class="col-sm-3" id="upper-window-selection">
-        <div>Upper Window</div>
-        <input type="number" class="form-control" min="0" id='choose-upper-window' value="5">
+        <!-- <div>Upper Window</div> -->
+        <div class='input-group'>
+          <span class='input-group-addon'>Upper Window</span>
+          <input type="number" class="form-control" min="0" id='choose-upper-window' value="5">
+        </div>
 
       </div>
       <div class="col-sm-3" id="lower-window-selection">
-        <div>Lower Window:</div>
-        <input type="number"  class="form-control" max="0" id='choose-lower-window' value="-5">
+        <!-- <div>Lower Window:</div> -->
+        <div class='input-group'>
+          <span class='input-group-addon'>Lower Window</span>
+          <input type="number"  class="form-control" max="0" id='choose-lower-window' value="-5">
+        </div>
 
       </div>
     </div>
@@ -73,13 +85,15 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="#"><font size="4" color="orange">Market Analysis Platform</font></a>
+        <a class="navbar-brand" href="#">Market Analysis Platform</a>
+        <a class="navbar-brand"><p class="head-brandname"><b>prOve_it</b></p></a>
       </div>
 
       <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-        <p class="navbar-text" style="font-weight: 700; margin-right:-5px">Current stock:</p>
+        <!-- <p class="navbar-text" style="font-weight: 700; margin-right:-5px;">Current Stock:</p> -->
         <div class="navbar-form navbar-left">
-          <div class="form-group">
+          <div class="input-group">
+            <span class='input-group-addon' style='border: 1px solid #e7e7e7'>Current Stock</span>
             <select class="form-control selectpicker" title="Choose a stock" id="choose-main-stock" data-live-search="true">
             </select>
           </div>
