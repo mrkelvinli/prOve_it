@@ -14,7 +14,7 @@ Template.chart.rendered = function() {
   });
   var validToken = false;
   
-  var curr_graph = 'volatility';
+  var curr_graph = 'event-study';
   var curr_company = "TGR.AX";
   var second_company = "AAC.AX";
   var curr_topic = "Cash Rate";
@@ -1153,15 +1153,15 @@ Template.chart.rendered = function() {
     var events = StockEvents.find({token: token, company_name: company_name, topic: topic, value: {$gt : 0}}, {fields: {'date':1},sort:{date:-1}}).fetch(); 
     // console.log(events);
 
-    var company_name = 'AAC.AX';
-    var date = new Date(Date.UTC(2016,2,2));
+    // var company_name = 'AAC.AX';
+    // var date = new Date(Date.UTC(2016,2,2));
 
     if (events.length <= 0) {
       $('#chartdiv3').html('No related events for '+company_name+" on "+topic+".");
     } else {
       render_related_news(company_name, topic, events[0].date);
     }
-    render_related_news(company_name, topic, date);
+    // render_related_news(company_name, topic, date);
 
     events.forEach(function(c) {
       var dateLower = new Date(c.date);
@@ -1266,7 +1266,7 @@ Template.chart.rendered = function() {
         "mouseWheelZoomEnabled": false,
         "graphs": [{
           "id": "g1",
-          "balloonText": "CR: [[cum_return]]%",
+          "balloonText": "Cumulative Return: [[cum_return]]%",
           "balloonFunction": function(item, graph) {
             var result = graph.balloonText;
             for (var key in item.dataContext) {
@@ -1353,6 +1353,20 @@ Template.chart.rendered = function() {
             bold: false,
           },
         ]
+      });
+      // chart.addListener( "rollOverGraph", function( event ) {
+      //     var categoryIndex = event.chart.categoryAxis.index;
+      //     // console.log(categoryIndex);
+      //     // console.log(event.target.x);
+      //     console.log(categoryIndex);
+      // } );
+
+      document.getElementById('chartdiv').addEventListener('rollOverGraph', function(e) {
+      });
+      $("#chartdiv").mousemove(function (event) {
+        var ss = chart.categoryAxis.xToIndex(e.x);
+        var vall = chart.categoryAxis.data[ss].category;
+        console.log(vall);
       });
     }
 
