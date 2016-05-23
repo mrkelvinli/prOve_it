@@ -7,14 +7,14 @@ Template.chart.rendered = function() {
   // $('a[href="http://www.amcharts.com/javascript-charts/"').hide();
 
   var token = Router.current().params.token;
-  $('#token-input').attr('placeholder',token);
+  $('#token-input').attr('value',token);
   $('#token-input').on('input',function(){
     var t = $(this).val();
     Router.go('/chart/'+t);
   });
   var validToken = false;
   
-  var curr_graph = 'event-study';
+  var curr_graph = 'candlesticks';
   var curr_company = "TGR.AX";
   var second_company = "AAC.AX";
   var curr_topic = "Cash Rate";
@@ -1184,29 +1184,29 @@ Template.chart.rendered = function() {
     var stocks = StockPrices.find({company_name: company_name, token:token}, {fields: {'date':1, 'cum_return':1, 'flat_value':1}}).fetch();
     var stocksCustomBullet= [];
 
-    stocks.forEach(function(c) {
-      var newEntry = {};
-      // newEntry = {'date': c.date, 'cum_return': c.cum_return, 'flat_value': c.flat_value, 'customBullet': "https://cdn2.iconfinder.com/data/icons/windows-8-metro-style/512/newspaper.png"};
-      var found = 0;
-      relatedNews.forEach(function(n){
+    // stocks.forEach(function(c) {
+    //   var newEntry = {};
+    //   // newEntry = {'date': c.date, 'cum_return': c.cum_return, 'flat_value': c.flat_value, 'customBullet': "https://cdn2.iconfinder.com/data/icons/windows-8-metro-style/512/newspaper.png"};
+    //   var found = 0;
+    //   relatedNews.forEach(function(n){
 
-        var thisString = c.date.getDate()+"-"+c.date.getMonth()+"-"+c.date.getFullYear();
+    //     var thisString = c.date.getDate()+"-"+c.date.getMonth()+"-"+c.date.getFullYear();
 
-        //console.log("thisDate: "+thisDate + " n.date: "+n.date);
-        var dateString = n.date.getDate()+"-"+n.date.getMonth()+"-"+n.date.getFullYear();
+    //     //console.log("thisDate: "+thisDate + " n.date: "+n.date);
+    //     var dateString = n.date.getDate()+"-"+n.date.getMonth()+"-"+n.date.getFullYear();
 
-        // if (thisDate.getDate() == n.date.getDate() && thisDate.getMonth() == n.date.getMonth() &&  thisDate.getFullYear() == n.date.getYear()){
-        if (thisString == dateString && found == 0){
-          newEntry = {'date': c.date, 'cum_return': c.cum_return, 'flat_value': c.flat_value, 'customBullet': "https://cdn2.iconfinder.com/data/icons/windows-8-metro-style/512/newspaper.png"};
-          found = 1;
-          console.log("found c.date"+c.date);
-        } 
-      });
-      if (found == 0) {
-          newEntry = {'date': c.date, 'cum_return': c.cum_return, 'flat_value': c.flat_value};
-      }
-      stocksCustomBullet.push(newEntry);
-    });
+    //     // if (thisDate.getDate() == n.date.getDate() && thisDate.getMonth() == n.date.getMonth() &&  thisDate.getFullYear() == n.date.getYear()){
+    //     if (thisString == dateString && found == 0){
+    //       newEntry = {'date': c.date, 'cum_return': c.cum_return, 'flat_value': c.flat_value, 'customBullet': "https://cdn2.iconfinder.com/data/icons/windows-8-metro-style/512/newspaper.png"};
+    //       found = 1;
+    //       console.log("found c.date"+c.date);
+    //     } 
+    //   });
+    //   if (found == 0) {
+    //       newEntry = {'date': c.date, 'cum_return': c.cum_return, 'flat_value': c.flat_value};
+    //   }
+    //   stocksCustomBullet.push(newEntry);
+    // });
     var chartData = [];
     var guides = [];
 
@@ -1267,7 +1267,7 @@ Template.chart.rendered = function() {
 
     console.log(stocksCustomBullet);
 
-    drawGraph(stocksCustomBullet, guides);
+    drawGraph(stocks, guides);
 
     function drawGraph(chartData, guides) {
       // console.log(guides);
