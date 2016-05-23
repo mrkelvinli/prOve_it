@@ -1169,6 +1169,16 @@ Template.chart.rendered = function() {
 
 
     var stocks = StockPrices.find({company_name: company_name, token:token}, {fields: {'date':1, 'cum_return':1, 'flat_value':1}}).fetch();
+    var stocksCustomBullet= [];
+    stocks.forEach(function(c) {
+      if (1) {
+        var entry = [];
+        newEntry = {'date': c.date, 'cum_return': c.cum_return, 'flat_value': c.flat_value, 'customBullet': "https://cdn2.iconfinder.com/data/icons/windows-8-metro-style/512/newspaper.png"};
+      } else {
+        newEntry = {'date': c.date, 'cum_return': c.cum_return, 'flat_value': c.flat_value};
+      }
+      stocksCustomBullet.push(newEntry);
+    });
     var chartData = [];
     var guides = [];
 
@@ -1238,7 +1248,7 @@ Template.chart.rendered = function() {
       }
     });
 
-    drawGraph(stocks, guides);
+    drawGraph(stocksCustomBullet, guides);
 
     function drawGraph(chartData, guides) {
       // console.log(guides);
@@ -1304,9 +1314,11 @@ Template.chart.rendered = function() {
             }
             return result;
           },
-          "bullet": "round",
-          "bulletBorderAlpha": 1,
-          "bulletColor": "#FFFFFF",
+          //"bullet": "round",
+          "customBulletField": "customBullet",
+          "bulletSize": 30,
+          //"bulletBorderAlpha": 1,
+          //"bulletColor": "#FFFFFF",
           "lineColor": "#ff6600",
           "hideBulletsCount": 50,
           "title": "Cumulative Return",
