@@ -34,11 +34,17 @@ span.input-group-addon {
   height: 40px;
 }
 
+.input-group .form-control:last-child, .input-group-addon:last-child, .input-group-btn:last-child>.btn, .input-group-btn:last-child>.btn-group>.btn, .input-group-btn:last-child>.dropdown-toggle, .input-group-btn:first-child>.btn:not(:first-child), .input-group-btn:first-child>.btn-group:not(:first-child)>.btn {
+    border-bottom-left-radius: 5px !important;
+    border-top-left-radius: 5px !important;
+    margin-left: 10px;
+}
+
 button.btn{
   width:175px;
   height:40px;
   /*background:#F47C3C;*/
-  border-radius:4px;
+  border-radius:5px;
   /*color:#ffffff;*/
   font-size:14px;
   text-transform:uppercase;
