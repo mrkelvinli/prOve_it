@@ -2502,13 +2502,13 @@ Template.rrgMain.rendered = function() {
       toTable: function() {
           var t = ["chart", "visible", "tail", "symbol", /*"name",*/  "sector", "industry", "price", "chg"];
           var i = "";
-          i += "<table class='symbolgrid' style='width: 100%; height: 100%'> \n";
-          i += "<thead>";
+          i += "<table class='symbolgrid' style='width: 100%;height: 100%;padding: 100px;'> \n";
+          i += "<thead style='position: absolute;top: 27px;width: 800px;'>";
           i += "<tr>";
           for (var e = 0; e < t.length; e++) {
               var s = t[e];
               "chg" == s && (s = "%chg");
-              i += t[e] == this.sortColumn ? "a" == this.sortDirection ? "<th class='sort-ascending'>" + s + "</th>" : "<th class='sort-descending'>" + s + "</th>" : "<th>" + s + "</th>"
+              i += t[e] == this.sortColumn ? "a" == this.sortDirection ? "<th class='sort-ascending'style='width:12%'>" + s + "</th>" : "<th class='sort-descending' style='width:12%'>" + s + "</th>" : "<th style='width:12%'>" + s + "</th>"
           }
           i += "</tr>";
           i += "</thead>";
