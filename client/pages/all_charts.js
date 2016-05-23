@@ -1163,6 +1163,8 @@ Template.chart.rendered = function() {
     }
     // render_related_news(company_name, topic, date);
 
+    
+
     events.forEach(function(c) {
       var dateLower = new Date(c.date);
       dateLower.setDate(dateLower.getDate() + lower_range);
@@ -1359,11 +1361,40 @@ Template.chart.rendered = function() {
             // if ( undefined === event.index)
             //   return;
             // console.log(event);
+
+            console.log(relatedNews);
+
+            $('#chartdiv3.related_news').find('ul li a').each(function() {
+              $(this).css('background-color','');
+            });
+
             var idx = event.chart.chartCursor.index;
-            var date = event.chart.dataProvider[idx].date;
+            var thisDate = event.chart.dataProvider[idx].date;
+
+            var thisString = thisDate.getDate()+"-"+thisDate.getMonth()+"-"+thisDate.getFullYear();
+            relatedNews.forEach(function(n){
+              console.log("thisDate: "+thisDate + " n.date: "+n.date);
+              var dateString = n.date.getDate()+"-"+n.date.getMonth()+"-"+n.date.getFullYear();
+
+              // if (thisDate.getDate() == n.date.getDate() && thisDate.getMonth() == n.date.getMonth() &&  thisDate.getFullYear() == n.date.getYear()){
+              if (thisString == dateString){
+                // console.log(n.headline);
+                var highlightHeadline = n.headline;
+                $('#chartdiv3.related_news').find('ul li a').each(function() {
+                  var headline = $(this).html();
+                  console.log("Checking: "+headline);
+                  console.log("wanted headline: "+n.headline);
+                  if (headline == highlightHeadline){
+                    console.log($(this));
+                    $(this).css('background-color','yellow');
+                  }
+                });
+              }
+            });
             
           }
-        }],
+        }
+        ],
       });
 
 
