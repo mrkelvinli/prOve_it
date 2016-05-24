@@ -1719,7 +1719,7 @@ Template.chart.rendered = function() {
       if (response != null) {
         var regexTable = /<th>Ex-Dividend.*?<\/tbody><\/table>/;
         var table = response.match(regexTable);
-        table = '<table><thead>' + table;
+        table = '<table class="table-striped"><thead>' + table;
         var tableNoBackslash = table.replace(/\\[a-zA-Z]/g, '');
         // console.log('      >> table is: ');
         // console.log(table);
