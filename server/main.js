@@ -121,6 +121,19 @@ if(Meteor.isServer) {
         });
       // console.log(resultOfAsyncToSync);
       return resultOfAsyncToSync;
+    },
+    scrapeDividends: function(company) {
+      // e.g. http://dividends.com.au/dividend-history/?enter_code=tgr
+      var withoutAX = company.substring(0,3);
+      var url = 'http://dividends.com.au/dividend-history/?enter_code=' + withoutAX;
+
+      console.log(url);
+
+      var command = 'python3 ../../../../../.name/scrape.py ' + url;
+      var convertAsyncToSync  = Meteor.wrapAsync(exec),
+        resultOfAsyncToSync = convertAsyncToSync(command);
+      // console.log(resultOfAsyncToSync);
+      return resultOfAsyncToSync;
     }
   });
 }

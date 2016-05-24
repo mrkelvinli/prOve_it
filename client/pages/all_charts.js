@@ -98,10 +98,10 @@ Template.chart.rendered = function() {
     console.log($('#chartdiv2').html());
     $('#details').html('');
 
-    $('#chartdiv2').parent().removeClass('col-md-8');
+    $('#chartdiv2').parent().removeClass();
     $('#chartdiv2').parent().addClass('col-md-7');
 
-    $('#chartdiv3').parent().removeClass('col-md-4');
+    $('#chartdiv3').parent().removeClass();
     $('#chartdiv3').parent().addClass('col-md-5');
 
     $('#chartdiv2').removeClass('related_news');
@@ -117,6 +117,7 @@ Template.chart.rendered = function() {
     } else if (curr_graph == 'event-study'){
       $('#chartdiv2').show();
       $('#chartdiv3').show();
+      render_dividends(curr_company);
       render_events_chart(curr_company, curr_topic, curr_upper, curr_lower);
     } else if (curr_graph == 'stock-topic'){
       $('#chartdiv2').show();
@@ -1702,11 +1703,37 @@ Template.chart.rendered = function() {
     });
   }
 
+  function render_dividends(company) {
+    $('#chartdiv2').parent().removeClass();
+    $('#chartdiv2').parent().addClass('col-md-8');
+
+    $('#chartdiv3').parent().removeClass();
+    $('#chartdiv3').parent().addClass('col-md-4');
+
+    $('#chartdiv2').css({'height':'100%', 'padding': '5px'});
+    $('#chartdiv2').html('<h4 style="padding: 5px 0 5px 5px;">Dividend history of ' + curr_company + '</h4>');
+
+    Meteor.call('scrapeDividends', company, function(err, response) {
+      // console.log(response);
+      console.log(err);
+      if (response != null) {
+        var regexTable = /<th>Ex-Dividend.*?<\/tbody><\/table>/;
+        var table = response.match(regexTable);
+        table = '<table><thead>' + table;
+        var tableNoBackslash = table.replace(/\\[a-zA-Z]/g, '');
+        // console.log('      >> table is: ');
+        // console.log(table);
+        $('#chartdiv2').append(tableNoBackslash);
+        console.log($('#chartdiv2'));
+      }
+    });
+  }
+
   function render_related_news(company, topic, d) {
+    $('#chartdiv3').css('height', '500px');
+
     $('#chartdiv3').addClass('related_news');
     $('#chartdiv3').html('<h4 style="padding: 0 0 5px 5px;">News related to ' + curr_company + '</h4>');
-    $('#chartdiv2').addClass('related_news');
-    $('#chartdiv2').html('<iframe name="news_iframe"></iframe');
     // date wanted
     var dom = document.getElementById('details');
     var year = d.getUTCFullYear();
@@ -1722,16 +1749,24 @@ Template.chart.rendered = function() {
         var regexRaw = /<div class="mod yfi_quote_headline withsky.*<table width="100%"/
         var rawHeadlines = String(response).match(regexRaw);
         var headlines = String(rawHeadlines).replace(/<div class="mod yfi_quote_headline withsky"><ul class="yfncnhl newsheadlines"><\/ul>/, "").replace(/<\/cite><\/li><\/ul><table width="100%"/, "");
-        if (headlines != null) {
+        // TODO: use .test() to see if headlines regex succeeds
+        if (headlines) {
           console.log(headlines);
           var headlinesNoBackslash = headlines.replace(/\\/g, '');
-          $('#chartdiv3').append(headlinesNoBackslash);
 
-          // styling, change cite span's text to h3's text
+          // check if we haven't changed anything already in the span of scraping
+          if ((curr_graph == 'event-study') && (curr_company == company)) {
+            if (headlinesNoBackslash == null) {
+              $('#chartdiv3').append(headlines);
+              
+            } else {
+              $('#chartdiv3').append(headlinesNoBackslash);
+            }
+          } else {
+            return;
+          }
+          // TODO styling, change cite span's text to h3's text (to have year as well)
 
-
-
-          // // change links to open in iframe
           relatedNews = [];
           $('#chartdiv3.related_news').find('h3').each(function() {
             var dateString = $(this).find('span').html();
@@ -1739,7 +1774,7 @@ Template.chart.rendered = function() {
             var headlineObj = $(this).next().find('li a');
             var headline = headlineObj.html();
             console.log(headline);
-            headlineObj.attr('target', 'news_iframe');
+            headlineObj.attr('target', '_blank'); // to open new tab instead of iframe
 
             var string2num = {
               'JAN' : 1,
