@@ -1,9 +1,19 @@
 @import url(https://fonts.googleapis.com/css?family=Poiret+One|Slabo+27px|Noto+Sans);
 @import url(http://fonts.googleapis.com/css?family=Droid+Sans:400,700);
 
+/* chart fonts */
+.amcharts-main-div tspan {
+  font-family: 'Droid Sans', sans-serif;
+  font-size: 13px;
+}
+
+.highcharts-container tspan {
+  font-family: 'Droid Sans', sans-serif;
+}
+
 .my-body {
   font-family: 'Droid Sans', sans-serif;
-  background-color: #fafafa;
+  background-color: #f1f1f1;
   padding-bottom:20px;
 
 }
@@ -92,6 +102,10 @@ button.btn:hover{
   /*padding-bottom: 100px;*/
   padding: 0;
 } 
+
+div.highcharts-container {
+  border-radius: 3px;
+}
 
 #chartdiv3  {
   /*margin-top:8px;*/
@@ -203,7 +217,7 @@ ul#tabs {
   border: 0;
 }
 
-ul#tabs a {
+ul#tabs li>a {
   border: 0;
   box-shadow: 0 0 20px rgba(0,0,0,0.08);
   margin-right: 5px;
