@@ -2044,7 +2044,7 @@ Template.chart.rendered = function() {
     Blaze.render(Template.rrgControls, dom3);
   }
 
-  // market index vs company price
+  // market change vs company change
   function render_regression(company) {
     $('#chartdiv2').parent().removeClass();
     $('#chartdiv2').parent().addClass('col-md-12');
@@ -2090,7 +2090,7 @@ Template.chart.rendered = function() {
         xAxis: {
           title: {
             enabled: true,
-            text: 'ASX 300 Price Return Change (%)'
+            text: 'ASX 300 Daily Price Return Change (%)'
           },
           startOnTick: true,
           endOnTick: true,
@@ -2098,7 +2098,7 @@ Template.chart.rendered = function() {
         },
         yAxis: {
           title: {
-            text: 'Company Price Change (%)'
+            text: 'Company Daily Price Change (%)'
           }
         },
         legend: {
@@ -2148,112 +2148,4 @@ Template.chart.rendered = function() {
       });
     }
   }
-
-  // market momentum vs company momentum
-  // [[ This graph doesn't work, gradient always near 0 with seemingly random points. ]]
-  // [[      v      Can try out if wanted & try see what the problem is.      v       ]]
-  // function render_regression_momentum(company) {
-  //   $('#chartdiv2').parent().removeClass();
-  //   $('#chartdiv2').parent().addClass('col-md-12');
-
-  //   var company_prices = StockPrices.find({token: token, company_name: company},{fields:{last:true, date:true, _id:false}}).fetch();
-  //   // console.log(company_cr);
-
-  //   var data = [];
-  //   var prev_price = null;
-  //   company_prices.forEach(function(entry) {
-  //     var price = entry.last;
-  //     if (prev_price != null) {
-  //       // get current company's momentum for this date
-  //       var date = entry.date;
-
-  //       // get market momentum for this date
-  //       var db_query = Market.findOne({date: date}, {fields: {momentum: true, _id: false}});
-  //       if ((db_query != null) && (price != null) && (prev_price != 0) && (price != 0)) {
-  //         var company_momentum = ((price - prev_price) / prev_price) * 100;
-  //         var market_momentum = parseFloat(db_query.momentum);
-  //         console.log('prev: ' + prev_price + ', curr: ' + price + ', percent change: ' + company_momentum + ', market change: ' + market_momentum + ', date: ' + date);
-  //         if (company_momentum != 0) {
-  //           data.push([market_momentum, company_momentum]);
-  //         }
-  //       }
-  //     }
-  //     prev_price = price;
-  //   });
-  //   // console.log("DONE");
-  //   drawGraph(data);
-
-  //   function drawGraph(data) {
-  //     $('#chartdiv2').highcharts({
-  //       chart: {
-  //         type: 'scatter',
-  //         zoomType: 'xy'
-  //       },
-  //       title: {
-  //         text: 'Regression of ' + company
-  //       },
-  //       subtitle: {
-  //         text: 'Compared to ASX 300'
-  //       },
-  //       xAxis: {
-  //         title: {
-  //           enabled: true,
-  //           text: 'Market Momentum (%)'
-  //         },
-  //         startOnTick: true,
-  //         endOnTick: true,
-  //         showLastLabel: true
-  //       },
-  //       yAxis: {
-  //         title: {
-  //           text: 'Company Momentum (%)'
-  //         }
-  //       },
-  //       legend: {
-  //         layout: 'vertical',
-  //         align: 'left',
-  //         verticalAlign: 'top',
-  //         x: 100,
-  //         y: 70,
-  //         floating: true,
-  //         backgroundColor: '#FFFFFF',
-  //         borderWidth: 1
-  //       },
-  //       plotOptions: {
-  //         scatter: {
-  //           marker: {
-  //             radius: 5,
-  //             states: {
-  //               hover: {
-  //                 enabled: true,
-  //                 lineColor: 'rgb(100,100,100)'
-  //               }
-  //             }
-  //           },
-  //           states: {
-  //             hover: {
-  //               marker: {
-  //                 enabled: false
-  //               }
-  //             }
-  //           },
-  //           tooltip: {
-  //             headerFormat: '<b>{series.name}</b><br>',
-  //             pointFormat: 'Market: {point.x}%, Company: {point.y}%'
-  //           }
-  //         }
-  //       },
-  //       series: [{
-  //         regression: true ,
-  //         regressionSettings: {
-  //           type: 'linear',
-  //           color:  'rgba(223, 83, 83, .9)'
-  //         },
-  //         name: 'Daily',
-  //         color: 'rgba(223, 83, 83, .5)',
-  //         data: data
-  //       }]
-  //     });
-  //   }
-  // }
 };

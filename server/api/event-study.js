@@ -504,15 +504,15 @@ ES = {
     // Fiber(function() {
     var fields = market_file[0];
     var date_id = fields.indexOf('date');
-    var value_id = fields.indexOf('S&P/ASX 300');
-    var momentum_id = fields.indexOf('momentum');
-    // console.log(fields);
+    var value_id = fields.indexOf('value');
+    // var momentum_id = fields.indexOf('momentum');
+    console.log(fields);
 
     for (var i = 1; i < market_file.length; i++) {
       var line = market_file[i];
       var dateString = line[date_id];
       var value = line[value_id];
-      var momentum = line[momentum_id];
+      // var momentum = line[momentum_id];
 
       // create new utc date, DD/MM/YYYY
       var regex = /^([0-9]{1}[0-9]?)\/([0-9]{1}[0-9]?)\/([0-9]{4})/;
@@ -521,7 +521,7 @@ ES = {
       var month;
       var date;
       if (matches == null) {
-        console.log('cant make utc date: `' + dateString + '`');
+        console.warn('cant make utc date: `' + dateString + '`');
         var onlyForParsing = new Date(dateString);
         year = onlyForParsing.getUTCFullYear();
         month = onlyForParsing.getUTCMonth();
@@ -535,7 +535,7 @@ ES = {
       Market.insert({
         date: wantedDate,
         value: value,
-        momentum: momentum,
+        // momentum: momentum,
       });
     }
     // });
