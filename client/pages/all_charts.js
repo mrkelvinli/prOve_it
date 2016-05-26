@@ -5,6 +5,8 @@ Template.chart.rendered = function() {
   $('.selectpicker').selectpicker();
   $('#chart-options').hide();
 
+
+
   // $('a[href="http://www.amcharts.com/javascript-charts/"').hide();
 
   var token = Router.current().params.token;
@@ -15,13 +17,15 @@ Template.chart.rendered = function() {
   });
   var validToken = false;
   
-  var curr_graph = 'candlesticks';
+  // var curr_graph = 'candlesticks';  // default
+  var curr_graph = 'event-study';
   var curr_company = "TGR.AX";
-  var second_company = "AAC.AX";
+  var second_company = '';
   var curr_topic = "Cash Rate";
   var curr_upper = 5;
   var curr_lower = -5;
-  var relatedNews = [];
+  RelatedNews = new Mongo.Collection(null);
+
 
   // selector to switch between the stocks and topics
   var choose_main_stock = $('#choose-main-stock');
@@ -67,15 +71,16 @@ Template.chart.rendered = function() {
   var all_company = _.uniq(StockPrices.find({}, {fields:{company_name:1}},{sort:{company_name: 1}}).fetch().map(function(x){return x.company_name}),true);
   choose_main_stock.empty();
   choose_second_stock.empty();
+  choose_second_stock.append("<option value=\'\'>None</option>")
   all_company.forEach(function(c){
-    choose_main_stock.append("<option>"+c+"</option>");
-    choose_second_stock.append("<option>"+c+"</option>");
+    choose_main_stock.append("<option value=\'"+c+"\'>"+c+"</option>");
+    choose_second_stock.append("<option value=\'"+c+"\'>"+c+"</option>");
   });
   choose_main_stock.selectpicker('refresh');
   choose_second_stock.selectpicker('refresh');
   choose_main_stock.selectpicker('val', all_company[0]);
+  choose_second_stock.selectpicker('val', "None");
   curr_company = all_company[0];
-  second_company = all_company[1];
 
   // populate the topic selector
   var all_topics = _.uniq(StockEvents.find({token:token},{sort:{topic:1},fields:{topic:true}}).fetch().map(function(x){return x.topic}),true);
@@ -253,7 +258,10 @@ Template.chart.rendered = function() {
     }
 
     var chartData1 = generateData(company);
-    var chartData2 = generateData(second_company);
+    var chartData2 = [];
+    if (second_company != null) {
+      chartData2 = generateData(second_company);
+    }
 
 
     drawGraph(chartData1,chartData2,company,second_company);
@@ -315,6 +323,10 @@ Template.chart.rendered = function() {
         });
       });
 
+      var sdScoreTitle = "Standard Scores for "+company;
+      if (second_company != '') {
+        sdScoreTitle = "Standard Scores for "+company+" compared to "+second_company;
+      }
 
       var chart = AmCharts.makeChart( "chartdiv", {
         "type": "stock",
@@ -499,7 +511,7 @@ Template.chart.rendered = function() {
           },
 
           {
-            "title": "Standard Scores for "+company+" compared to "+second_company,
+            "title": sdScoreTitle,
             "percentHeight": 35,
             "marginTop": 1,
             // "showCategoryAxis": true,
@@ -523,8 +535,8 @@ Template.chart.rendered = function() {
               "balloonText": "[[value]]",
               //"fillAlpha": 0.8,
               //"lineColor": "#ff6600",
+              "comparable": true,
               "useDataSetColors":false,
-              "comparable": true
             },
             { //add to compare
               "valueField": "zScore2",
@@ -540,9 +552,10 @@ Template.chart.rendered = function() {
               //"fillAlpha": 0.8,
               //"lineColor": "#ff6600",
               //"useDataSetColors":false,
+              "compareGraphVisibleInLegend" : false,
               "comparable": true,
               "compareGraphLineColor": "#00aa77",
-              "compareGraphLineAlpha": 0.7
+              "compareGraphLineAlpha": 0.7,
             }],
 
             "stockLegend": {
@@ -1070,6 +1083,9 @@ Template.chart.rendered = function() {
       });
     });
 
+    c_cr = _.sortBy(c_cr, 'last_cr');
+    c_cr.reverse();
+
     drawGraph(c_cr);
 
     function handleClick(event) {
@@ -1166,25 +1182,22 @@ Template.chart.rendered = function() {
   }
 
   function render_events_chart(company_name, topic, upper_range, lower_range) {
+
+
+
     $('#chart-options').show();
     $('#topic-selection').show();
     $('#upper-window-selection').show();
     $('#lower-window-selection').show();
     $('#second-stock-selection').hide();
-    
-    Tracker.autorun(function(){
+    var relatedNews = [];
 
-      Meteor.subscribe('stockPrices_db',token);
-      Meteor.subscribe('stockEvents_db',token);
-      console.log("tracker");
-    });
-
-
-    console.log(relatedNews);
+    // console.log(relatedNews);
     // console.log("render_events_chart: topic: "+topic+" upper: "+upper_range+" lower: "+lower_range);
 
     // events
     var events = StockEvents.find({token: token, company_name: company_name, topic: topic, value: {$gt : 0}}, {fields: {'date':1},sort:{date:-1}}).fetch(); 
+    var stocks = StockPrices.find({company_name: company_name, token:token}, {fields: {'date':1, 'cum_return':1, 'flat_value':1}}).fetch();
     // console.log(events);
 
     // var company_name = 'AAC.AX';
@@ -1197,37 +1210,8 @@ Template.chart.rendered = function() {
     }
     // render_related_news(company_name, topic, date);
 
-    var stocks = StockPrices.find({company_name: company_name, token:token}, {fields: {'date':1, 'cum_return':1, 'flat_value':1}}).fetch();
-    var stocksCustomBullet= [];
 
-    stocks.forEach(function(c) {
-      var newEntry = {};
-      newEntry = {'date': c.date, 'cum_return': c.cum_return, 'flat_value': c.flat_value, 'customBullet': "https://cdn2.iconfinder.com/data/icons/windows-8-metro-style/512/newspaper.png"};
-      var found = 0;
-      relatedNews.forEach(function(n){
-
-        var thisString = c.date.getDate()+"-"+c.date.getMonth()+"-"+c.date.getFullYear();
-
-        //console.log("thisDate: "+thisDate + " n.date: "+n.date);
-        var dateString = n.date.getDate()+"-"+n.date.getMonth()+"-"+n.date.getFullYear();
-
-        // if (thisDate.getDate() == n.date.getDate() && thisDate.getMonth() == n.date.getMonth() &&  thisDate.getFullYear() == n.date.getYear()){
-        if (thisString == dateString && found == 0){
-          newEntry = {'date': c.date, 'cum_return': c.cum_return, 'flat_value': c.flat_value, 'customBullet': "https://cdn2.iconfinder.com/data/icons/windows-8-metro-style/512/newspaper.png"};
-          found = 1;
-          console.log("found c.date"+c.date);
-        } 
-      });
-      if (found == 0) {
-          newEntry = {'date': c.date, 'cum_return': c.cum_return, 'flat_value': c.flat_value};
-      }
-      stocksCustomBullet.push(newEntry);
-    });
-    var chartData = [];
     var guides = [];
-
-
-    
 
     events.forEach(function(c) {
       var dateLower = new Date(c.date);
@@ -1281,15 +1265,12 @@ Template.chart.rendered = function() {
       }
     });
 
-    console.log(stocksCustomBullet);
 
-    drawGraph(stocks, guides);
 
-    function drawGraph(chartData, guides) {
-      // console.log(guides);
+    var stocksCustomBullet = [];
       var titleBig = "Stock Price of " + company_name;
       var titleSmall = topic + " events highlighted";
-      var chart = AmCharts.makeChart("chartdiv", {
+    var chart = AmCharts.makeChart("chartdiv", {
         "type": "serial",
         "theme": "light",
         "pathToImages": "/amcharts/images/",
@@ -1311,7 +1292,7 @@ Template.chart.rendered = function() {
           "graph": "g1",
           "description": "This is description of an event",
         }],
-        "dataProvider": chartData,
+        "dataProvider": stocksCustomBullet,
         "valueAxes": [{
           'id': "crAxis",
           "axisAlpha": 0.2,
@@ -1430,7 +1411,7 @@ Template.chart.rendered = function() {
             //   return;
             // console.log(event);
 
-            console.log(relatedNews);
+            // console.log(relatedNews);
 
             $('#chartdiv3.related_news').find('ul li a').each(function() {
               $(this).css('background-color','');
@@ -1441,7 +1422,7 @@ Template.chart.rendered = function() {
 
             var thisString = thisDate.getDate()+"-"+thisDate.getMonth()+"-"+thisDate.getFullYear();
             relatedNews.forEach(function(n){
-              console.log("thisDate: "+thisDate + " n.date: "+n.date);
+              // console.log("thisDate: "+thisDate + " n.date: "+n.date);
               var dateString = n.date.getDate()+"-"+n.date.getMonth()+"-"+n.date.getFullYear();
 
               // if (thisDate.getDate() == n.date.getDate() && thisDate.getMonth() == n.date.getMonth() &&  thisDate.getFullYear() == n.date.getYear()){
@@ -1450,10 +1431,10 @@ Template.chart.rendered = function() {
                 var highlightHeadline = n.headline;
                 $('#chartdiv3.related_news').find('ul li a').each(function() {
                   var headline = $(this).html();
-                  console.log("Checking: "+headline);
-                  console.log("wanted headline: "+n.headline);
+                  // console.log("Checking: "+headline);
+                  // console.log("wanted headline: "+n.headline);
                   if (headline == highlightHeadline){
-                    console.log($(this));
+                    // console.log($(this));
                     $(this).css('background-color','yellow');
                   }
                 });
@@ -1465,15 +1446,20 @@ Template.chart.rendered = function() {
         ],
       });
 
-
-      // document.getElementById('chartdiv').addEventListener('mousemove', function(e) {
-      //   var ss = chart.categoryAxis.xToIndex(e.x);
-      //   var vall = chart.categoryAxis.data[ss].category;
-      //   console.log(vall);
-      // });
-
-    }
-
+    Tracker.autorun(function(){
+      chart.dataProvider = [];
+      relatedNews = RelatedNews.find({company:company_name}).fetch();
+      stocks.forEach(function(c) {
+        var newEntry = {};
+        if (RelatedNews.find({'date':c.date, 'company':company_name, 'topic':topic}).count() > 0)
+          newEntry = {'date': c.date, 'cum_return': c.cum_return, 'flat_value': c.flat_value, 'customBullet': "https://cdn2.iconfinder.com/data/icons/windows-8-metro-style/512/newspaper.png"};
+        else
+          newEntry = {'date': c.date, 'cum_return': c.cum_return, 'flat_value': c.flat_value};
+        chart.dataProvider.push(newEntry);
+      });
+      chart.validateData();
+      console.log("validateData");
+    });
   }
 
   function render_stock_topics_average_graph (company,upper_range,lower_range) {
@@ -1595,7 +1581,7 @@ Template.chart.rendered = function() {
   function render_stock_topics_graph_significance_table (company, topic, upper_range, lower_range){
     var dom = document.getElementById('chartdiv3');
 
-    console.log("render_stock_topics_graph_significance_table:"+upper_range+" "+lower_range);
+    // console.log("render_stock_topics_graph_significance_table:"+upper_range+" "+lower_range);
 
     Blaze.render(Template.topics_sig_table, dom);
 
@@ -1651,7 +1637,7 @@ Template.chart.rendered = function() {
 
     Meteor.call('scrapeSearch', curr_company, function(err, response) {
       // console.log(response);
-      console.log(err);
+      // console.log(err);
       if (response != null) {
         // market.theaustralian.com.au
         // key stats
@@ -1730,16 +1716,16 @@ Template.chart.rendered = function() {
 
     Meteor.call('scrapeDividends', company, function(err, response) {
       // console.log(response);
-      console.log(err);
+      // console.log(err);
       if (response != null) {
         var regexTable = /<th>Ex-Dividend.*?<\/tbody><\/table>/;
         var table = response.match(regexTable);
-        table = '<table class="table-striped"><thead>' + table;
+        table = '<table class="table table-striped"><thead>' + table;
         var tableNoBackslash = table.replace(/\\[a-zA-Z]/g, '');
         // console.log('      >> table is: ');
         // console.log(table);
         $('#chartdiv2').append(tableNoBackslash);
-        console.log($('#chartdiv2'));
+        // console.log($('#chartdiv2'));
       }
     });
   }
@@ -1759,14 +1745,14 @@ Template.chart.rendered = function() {
     // date format: YYYY-MM-DD
     Meteor.call('scrapeRelatedNews', company, dateFormated, function(err, response) {
       // console.log(response);
-      console.log(err);
+      // console.log(err);
       if (response != null) {
         var regexRaw = /<div class="mod yfi_quote_headline withsky.*<table width="100%"/
         var rawHeadlines = String(response).match(regexRaw);
         var headlines = String(rawHeadlines).replace(/<div class="mod yfi_quote_headline withsky"><ul class="yfncnhl newsheadlines"><\/ul>/, "").replace(/<\/cite><\/li><\/ul><table width="100%"/, "");
         // TODO: use .test() to see if headlines regex succeeds
         if (headlines) {
-          console.log(headlines);
+          // console.log(headlines);
           var headlinesNoBackslash = headlines.replace(/\\/g, '');
 
           // check if we haven't changed anything already in the span of scraping
@@ -1782,13 +1768,13 @@ Template.chart.rendered = function() {
           }
           // TODO styling, change cite span's text to h3's text (to have year as well)
 
-          relatedNews = [];
           $('#chartdiv3.related_news').find('h3').each(function() {
             var dateString = $(this).find('span').html();
-            console.log(dateString);
+            // console.log(dateString);
             var headlineObj = $(this).next().find('li a');
+            // console.log(headlineObj);
             var headline = headlineObj.html();
-            console.log(headline);
+            // console.log(headline);
             headlineObj.attr('target', '_blank'); // to open new tab instead of iframe
 
             var string2num = {
@@ -1829,20 +1815,27 @@ Template.chart.rendered = function() {
               var year = matches[4];
             }
             var newDate = new Date(Date.UTC(year, month, date, 6));
-            console.log(newDate);
-            relatedNews.push({
+            // console.log(newDate);
+            // console.log("parsing: "+headline);
+            RelatedNews.insert({
               date: newDate,
               headline: headline,
+              company: company,
+              topic: topic,
             });
           });
-          console.log(relatedNews);
+          // console.log(relatedNews);
           $('#chartdiv3.related_news').find('h3').hide();
+
+          // console.log("pushed");
+          // console.log("related new returning: "+relatedNews);
+          // return relatedNews;
 
           // aylien API, is article good or bad?
           var regex = /\<a href\=\"[^\<\>]*\"\>/g;
           var allLinks = headlinesNoBackslash.match(regex);
           allLinks.forEach(function(linkRaw) {
-            console.log('in loop');
+            // console.log('in loop');
             var linkMid = linkRaw.replace(/<a href="/, "").replace(/">/, "");
             var link = linkMid.replace(/.*\/\*/, "").replace(/\?.*/, "");
 
