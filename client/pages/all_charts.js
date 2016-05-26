@@ -875,7 +875,6 @@ Template.chart.rendered = function() {
 
 
   function render_candlestick_graph (company_name) {
-    var chartData = [];
     var stockPrices = StockPrices.find({company_name: company_name, token: token, 'open': {$ne : null}}, {fields: {'date':1, 'open':1, 'last':1, 'high':1, 'low':1, 'volume':1, 'flat_value':1}}).fetch();
    
     //calculate MACD
@@ -988,6 +987,7 @@ Template.chart.rendered = function() {
 
 
         "panels": [ {
+
           "title": "Stock Price",
           "showCategoryAxis": false,
           "percentHeight": 70,
@@ -1089,7 +1089,8 @@ Template.chart.rendered = function() {
             "clickLabel": handleCandleLegend
             // "valueTextRegular": undefined,
             // "periodValueTextComparing": "[[value.close]]%"
-          }
+          },
+          "drawingIconsEnabled": true,
         },
 
         {
@@ -1119,7 +1120,6 @@ Template.chart.rendered = function() {
             "periodValueTextRegular": "[[value.close]]",
           },
 
-          "drawingIconsEnabled": true,
         }
         ],
 
@@ -1162,9 +1162,9 @@ Template.chart.rendered = function() {
             selected: true,
           } ]
         },
-        "export": {
-          "enabled": true
-        }
+        // "export": {
+        //   "enabled": true
+        // }
       });
     }
     function handleCandleLegend( graph ) {
