@@ -71,7 +71,6 @@ Template.chart.rendered = function() {
   var all_company = _.uniq(StockPrices.find({}, {fields:{company_name:1}},{sort:{company_name: 1}}).fetch().map(function(x){return x.company_name}),true);
   choose_main_stock.empty();
   choose_second_stock.empty();
-  choose_second_stock.append("<option value=\'\'>None</option>")
   all_company.forEach(function(c){
     choose_main_stock.append("<option value=\'"+c+"\'>"+c+"</option>");
     choose_second_stock.append("<option value=\'"+c+"\'>"+c+"</option>");
@@ -79,7 +78,7 @@ Template.chart.rendered = function() {
   choose_main_stock.selectpicker('refresh');
   choose_second_stock.selectpicker('refresh');
   choose_main_stock.selectpicker('val', all_company[0]);
-  choose_second_stock.selectpicker('val', "None");
+  choose_second_stock.selectpicker('val','');
   curr_company = all_company[0];
 
   // populate the topic selector
@@ -89,6 +88,7 @@ Template.chart.rendered = function() {
     choose_topic.append("<option>"+c+"</option>");
   });
   choose_topic.selectpicker('refresh');
+  choose_topic.selectpicker('val','');
   // choose_topic.selectpicker('val', all_topics[0]);
   // curr_topic = all_topics[0];
 
@@ -875,56 +875,54 @@ Template.chart.rendered = function() {
     var chartData = [];
     var stockPrices = StockPrices.find({company_name: company_name, token: token, 'open': {$ne : null}}, {fields: {'date':1, 'open':1, 'last':1, 'high':1, 'low':1, 'volume':1, 'flat_value':1}}).fetch();
    
-
-
     //calculate MACD
-      var toDoList = []; //array of arrays of values [[1,2],[2,3],[9,10]]
-      var ppo = [];
-      var currPrice = prevPrice = 0;
+    var toDoList = []; //array of arrays of values [[1,2],[2,3],[9,10]]
+    var ppo = [];
+    var currPrice = prevPrice = 0;
 
-      for(var i = 0; i<(stockPrices.length); i++) {
-        var bigArray = [];
-        var smallArray = [];
+    for(var i = 0; i<(stockPrices.length); i++) {
+      var bigArray = [];
+      var smallArray = [];
 
-        if (i < 29) {
-          //currArray.push(stock_prices[i].price);
-        } 
-        for(var x = 0; x<30; x++) {
-            if (i>=29) {
-              if (x < 15) {
-                smallArray.push(stockPrices[i-x].last);
-              }
-              bigArray.push(stockPrices[i-x].last);
+      if (i < 29) {
+        //currArray.push(stock_prices[i].price);
+      } 
+      for(var x = 0; x<30; x++) {
+          if (i>=29) {
+            if (x < 15) {
+              smallArray.push(stockPrices[i-x].last);
             }
-        }
-
-        if (i > 29) {
-          toDoList.push({"bigArray": bigArray, "smallArray": smallArray, "date": stockPrices[i-30].date, "open": stockPrices[i].open, "last": stockPrices[i].last, "high": stockPrices[i].high, "low": stockPrices[i].low, "volume": stockPrices[i].volume, "flat_value": stockPrices[i].flat_value});
-        }
-      // console.log(toDoList);
+            bigArray.push(stockPrices[i-x].last);
+          }
       }
 
-      toDoList.forEach(function (c){
-        var result = movAvg(c.bigArray);
-        var result2 = movAvg(c.smallArray);
-        console.log(result2);
-        entry = {"date": c.date, "open": c.open, "last": c.last, "high": c.high, "low": c.low, "volume": c.volume, "flat_value": c.flat_value, "bigAvg": result, "smallAvg": result2, "lineColor": "#ff0000"};
-        // console.log(entry);
-        ppo.push(entry);
-      });
+      if (i > 29) {
+        toDoList.push({"bigArray": bigArray, "smallArray": smallArray, "date": stockPrices[i-30].date, "open": stockPrices[i].open, "last": stockPrices[i].last, "high": stockPrices[i].high, "low": stockPrices[i].low, "volume": stockPrices[i].volume, "flat_value": stockPrices[i].flat_value});
+      }
+    // console.log(toDoList);
+    }
 
-      function movAvg(data){
-        var sum = 0;
-        for(var i = 0; i<data.length; i++) {
-          sum = sum + data[i];
-        }
+    toDoList.forEach(function (c){
+      var result = movAvg(c.bigArray);
+      var result2 = movAvg(c.smallArray);
+      console.log(result2);
+      entry = {"date": c.date, "open": c.open, "last": c.last, "high": c.high, "low": c.low, "volume": c.volume, "flat_value": c.flat_value, "bigAvg": result, "smallAvg": result2, "lineColor": "#ff0000"};
+      // console.log(entry);
+      ppo.push(entry);
+    });
 
-        var avg = sum / data.length;
-        return avg;
+    function movAvg(data){
+      var sum = 0;
+      for(var i = 0; i<data.length; i++) {
+        sum = sum + data[i];
       }
 
-      //return ppo;
-    //}
+      var avg = sum / data.length;
+      return avg;
+    }
+
+    //return ppo;
+  //}
 
 
 
@@ -1860,7 +1858,7 @@ Template.chart.rendered = function() {
       if (response != null) {
         var regexTable = /<th>Ex-Dividend.*?<\/tbody><\/table>/;
         var table = response.match(regexTable);
-        table = '<table class="table table-striped"><thead>' + table;
+        table = '<table class="table table-striped table-hover"><thead>' + table;
         var tableNoBackslash = table.replace(/\\[a-zA-Z]/g, '');
         // console.log('      >> table is: ');
         // console.log(table);
