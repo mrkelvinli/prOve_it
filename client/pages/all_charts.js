@@ -2049,10 +2049,12 @@ Template.chart.rendered = function() {
     $('#chartdiv2').parent().removeClass();
     $('#chartdiv2').parent().addClass('col-md-12');
 
-    var company_prices = StockPrices.find({token: token, company_name: company},{fields:{last:true, date:true, _id:false}}).fetch();
+    var company_prices = StockPrices.find({token: token, company_name: company, last: {$ne: null}},{fields:{last:true, date:true, _id:false}}).fetch();
     // console.log(company_cr);
 
     var data = [];
+    var prev_price = null;
+    var prev_market = null;
     company_prices.forEach(function(entry) {
       var date = entry.date;
       var price = entry.last;
@@ -2060,6 +2062,7 @@ Template.chart.rendered = function() {
       if ((db_query != null) && (price != null)) {
         var market_price = parseFloat(db_query.value);
         console.log('price: ' + price + ', market: ' + market_price + ', date: ' + date);
+        
         data.push([market_price, price]);
       }
     });
@@ -2081,7 +2084,7 @@ Template.chart.rendered = function() {
         xAxis: {
           title: {
             enabled: true,
-            text: 'Market Return'
+            text: 'ASX 300 Price Return'
           },
           startOnTick: true,
           endOnTick: true,
