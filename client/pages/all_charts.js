@@ -1855,7 +1855,7 @@ Template.chart.rendered = function() {
     $('#chartdiv3').parent().removeClass();
     $('#chartdiv3').parent().addClass('col-md-4');
 
-    $('#chartdiv2').css({'height':'100%', 'padding': '5px'});
+    $('#chartdiv2').css({'height':'100%', 'padding': '10px'});
     $('#chartdiv2').html('<h4 style="padding: 5px 0 5px 5px;">Dividend history of ' + curr_company + '</h4>');
 
     Meteor.call('scrapeDividends', company, function(err, response) {
@@ -1864,13 +1864,14 @@ Template.chart.rendered = function() {
       if (response != null) {
         var regexTable = /<th>Ex-Dividend.*?<\/tbody><\/table>/;
         var table = response.match(regexTable);
-        table = '<table class="table table-striped table-hover"><thead>' + table;
+        table = '<table class="table table-striped table-hover dividends-table"><thead>' + table;
         var tableNoBackslash = table.replace(/\\[a-zA-Z]/g, '');
         // console.log('      >> table is: ');
         // console.log(table);
         if (curr_graph != 'event-study')
           return;
         $('#chartdiv2').append(tableNoBackslash);
+        $("td:empty").remove();
         // console.log($('#chartdiv2'));
       }
     });
