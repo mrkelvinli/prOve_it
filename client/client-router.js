@@ -23,7 +23,6 @@ Router.map(function() {
       if(!ReadyList.js3.ready()){ return }
       ReadyList.js4 = IRLibLoader.load('/amcharts/themes/light.js');
       if(!ReadyList.js4.ready()){ return }
-
       this.next();
     },
     waitOn: function(){

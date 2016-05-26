@@ -1,13 +1,16 @@
 import { Meteor } from 'meteor/meteor';
 import Highcharts from 'highcharts';
 
+
 Template.chart.rendered = function() {
   $('.selectpicker').selectpicker();
   $('#chart-options').hide();
 
 
-
   // $('a[href="http://www.amcharts.com/javascript-charts/"').hide();
+
+  $('#share-link').attr('value',window.location.href);
+  new Clipboard('.btn');
 
   var token = Router.current().params.token;
   $('#token-input').attr('value',token);
@@ -104,7 +107,7 @@ Template.chart.rendered = function() {
     $('#details').hide();
     $('#chartdiv2').html('');
     $('#chartdiv3').html('');
-    console.log($('#chartdiv2').html());
+    // console.log($('#chartdiv2').html());
     $('#details').html('');
 
 
@@ -1862,6 +1865,8 @@ Template.chart.rendered = function() {
         var tableNoBackslash = table.replace(/\\[a-zA-Z]/g, '');
         // console.log('      >> table is: ');
         // console.log(table);
+        if (curr_graph != 'event-study')
+          return;
         $('#chartdiv2').append(tableNoBackslash);
         // console.log($('#chartdiv2'));
       }

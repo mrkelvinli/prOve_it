@@ -27,6 +27,7 @@ ecmascript-runtime@0.2.10
 ejson@1.0.11
 es5-shim@4.5.10
 fastclick@1.0.11
+fortawesome:fontawesome@4.5.0
 geojson-utils@1.0.8
 harrison:papa-parse@1.1.1
 hot-code-push@1.0.4
@@ -99,3 +100,4 @@ underscore@1.0.8
 url@1.0.9
 webapp@1.2.8
 webapp-hashing@1.0.9
+zenorocha:clipboard@1.5.10
