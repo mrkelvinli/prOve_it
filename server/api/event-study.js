@@ -1,3 +1,5 @@
+
+
 ES = {
   
 
@@ -478,7 +480,7 @@ ES = {
     var n_topics = topics.length;
     for (var i = 1; i < stock_characteristic_file.length; i++){
       var line = stock_characteristic_file[i];
-      var company_name = line[RIC_id].toString();;
+      var company_name = line[RIC_id].toString();
       var date = parseDate(line[date_id]);
       for (var j = 0; j < n_topics; j++){
         var topic_idx = j + 2;
@@ -496,7 +498,48 @@ ES = {
     }
   },
 
+  // at the moment, only one market index file of 2016-2016, not dynamic
+  process_market_file: function(market_file) {
+    // var Fiber = Npm.require('fibers');
+    // Fiber(function() {
+    var fields = market_file[0];
+    var date_id = fields.indexOf('date');
+    var value_id = fields.indexOf('S&P/ASX 300');
+    var momentum_id = fields.indexOf('momentum');
+    // console.log(fields);
 
+    for (var i = 1; i < market_file.length; i++) {
+      var line = market_file[i];
+      var dateString = line[date_id];
+      var value = line[value_id];
+      var momentum = line[momentum_id];
+
+      // create new utc date, DD/MM/YYYY
+      var regex = /^([0-9]{1}[0-9]?)\/([0-9]{1}[0-9]?)\/([0-9]{4})/;
+      var matches = regex.exec(dateString);
+      var year;
+      var month;
+      var date;
+      if (matches == null) {
+        console.log('cant make utc date: `' + dateString + '`');
+        var onlyForParsing = new Date(dateString);
+        year = onlyForParsing.getUTCFullYear();
+        month = onlyForParsing.getUTCMonth();
+        date = onlyForParsing.getUTCDate();
+      } else {
+        date = parseInt(matches[1]);
+        month = parseInt(matches[2]);
+        year = parseInt(matches[3]);
+      }
+      var wantedDate = new Date(Date.UTC(year, month, date, 6));
+      Market.insert({
+        date: wantedDate,
+        value: value,
+        momentum: momentum,
+      });
+    }
+    // });
+  },
 
 
 

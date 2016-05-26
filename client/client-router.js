@@ -29,6 +29,7 @@ Router.map(function() {
     waitOn: function(){
       ReadyList.subPrices = Meteor.subscribe('stockPrices_db',this.params.token);
       ReadyList.subEvents = Meteor.subscribe('stockEvents_db',this.params.token);
+      ReadyList.subEvents = Meteor.subscribe('market_db');
       return [
         ReadyList.subPrices,
         ReadyList.subEvents,
