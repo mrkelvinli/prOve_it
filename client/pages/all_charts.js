@@ -2050,7 +2050,6 @@ Template.chart.rendered = function() {
     $('#chartdiv2').parent().addClass('col-md-12');
 
     var company_prices = StockPrices.find({token: token, company_name: company, last: {$ne: null}},{fields:{last:true, date:true, _id:false}}).fetch();
-    // console.log(company_cr);
 
     var data = [];
     var prev_price = null;
@@ -2061,9 +2060,16 @@ Template.chart.rendered = function() {
       var db_query = Market.findOne({date: date}, {fields: {value: true, _id: false}});
       if ((db_query != null) && (price != null)) {
         var market_price = parseFloat(db_query.value);
-        console.log('price: ' + price + ', market: ' + market_price + ', date: ' + date);
-        
-        data.push([market_price, price]);
+        if ((prev_price != null) && (prev_market != null)) {
+          var company_momentum = ((price - prev_price) / prev_price) * 100;
+          var market_momentum = ((market_price - prev_market) / prev_market) * 100;
+
+          console.log('prev: ' + prev_price + ' price: ' + price + ' prevm: ' + prev_market + ' mark: ' + market_price + ' date: ' + date);
+          console.log('markmom: ' + market_momentum + ' compmom: ' + company_momentum);
+          data.push([market_momentum, company_momentum]);
+        }
+        prev_price = price;
+        prev_market = market_price;        
       }
     });
     // console.log("DONE");
@@ -2084,7 +2090,7 @@ Template.chart.rendered = function() {
         xAxis: {
           title: {
             enabled: true,
-            text: 'ASX 300 Price Return'
+            text: 'ASX 300 Price Return Change (%)'
           },
           startOnTick: true,
           endOnTick: true,
@@ -2092,7 +2098,7 @@ Template.chart.rendered = function() {
         },
         yAxis: {
           title: {
-            text: 'Company Price ($)'
+            text: 'Company Price Change (%)'
           }
         },
         legend: {
@@ -2125,7 +2131,7 @@ Template.chart.rendered = function() {
             },
             tooltip: {
               headerFormat: '<b>{series.name}</b><br>',
-              pointFormat: 'Market: {point.x}, Company: ${point.y}'
+              pointFormat: 'Market: {point.x}%, Company: {point.y}%'
             }
           }
         },
