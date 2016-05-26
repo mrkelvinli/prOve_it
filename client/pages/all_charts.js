@@ -633,10 +633,19 @@ Template.chart.rendered = function() {
         "listeners": [{
           "event": "init",
           "method": function(event) {
-            //var end = new Date(); // today
-            //var start = new Date(end);
-            //start.setDate(end.getDate() - 10);
-            // event.chart.zoomToIndexes(event.chart.dataProvider.length - 80, event.chart.dataProvider.length - 1);
+            // var chart = event.chart;
+            // var stockGraph = event.stockChart;
+
+            // console.log(chart.dataProvider.length);
+            // console.log(stockGraph.dataProvider.length);
+
+            // var end = new Date(); // today
+            // var start = new Date(end);
+            // start.setDate(end.getDate() - 10);
+            // console.log('test');
+            // var chart = event.chart;
+            // //var graph = chart.graph;
+            // event.chart.zoomToIndexes(event.chart.dataProvider.length - 2, event.chart.dataProvider.length - 1);
             // var graph = event.chart.getGraphById("priceGraph");
             // graph.bullet = "round";
           }
