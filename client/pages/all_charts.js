@@ -1,11 +1,16 @@
 import { Meteor } from 'meteor/meteor';
 import Highcharts from 'highcharts';
 
+
 Template.chart.rendered = function() {
   $('.selectpicker').selectpicker();
   $('#chart-options').hide();
 
+
   // $('a[href="http://www.amcharts.com/javascript-charts/"').hide();
+
+  $('#share-link').attr('value',window.location.href);
+  new Clipboard('.btn');
 
   var token = Router.current().params.token;
   $('#token-input').attr('value',token);
@@ -15,13 +20,15 @@ Template.chart.rendered = function() {
   });
   var validToken = false;
   
-  var curr_graph = 'candlesticks';
+  // var curr_graph = 'candlesticks';  // default
+  var curr_graph = 'event-study';
   var curr_company = "TGR.AX";
-  var second_company = "AAC.AX";
+  var second_company = '';
   var curr_topic = "Cash Rate";
   var curr_upper = 5;
   var curr_lower = -5;
-  var relatedNews = [];
+  RelatedNews = new Mongo.Collection(null);
+
 
   // selector to switch between the stocks and topics
   var choose_main_stock = $('#choose-main-stock');
@@ -68,14 +75,14 @@ Template.chart.rendered = function() {
   choose_main_stock.empty();
   choose_second_stock.empty();
   all_company.forEach(function(c){
-    choose_main_stock.append("<option>"+c+"</option>");
-    choose_second_stock.append("<option>"+c+"</option>");
+    choose_main_stock.append("<option value=\'"+c+"\'>"+c+"</option>");
+    choose_second_stock.append("<option value=\'"+c+"\'>"+c+"</option>");
   });
   choose_main_stock.selectpicker('refresh');
   choose_second_stock.selectpicker('refresh');
   choose_main_stock.selectpicker('val', all_company[0]);
+  choose_second_stock.selectpicker('val','');
   curr_company = all_company[0];
-  second_company = all_company[1];
 
   // populate the topic selector
   var all_topics = _.uniq(StockEvents.find({token:token},{sort:{topic:1},fields:{topic:true}}).fetch().map(function(x){return x.topic}),true);
@@ -84,6 +91,7 @@ Template.chart.rendered = function() {
     choose_topic.append("<option>"+c+"</option>");
   });
   choose_topic.selectpicker('refresh');
+  choose_topic.selectpicker('val','');
   // choose_topic.selectpicker('val', all_topics[0]);
   // curr_topic = all_topics[0];
 
@@ -99,7 +107,7 @@ Template.chart.rendered = function() {
     $('#details').hide();
     $('#chartdiv2').html('');
     $('#chartdiv3').html('');
-    console.log($('#chartdiv2').html());
+    // console.log($('#chartdiv2').html());
     $('#details').html('');
 
 
@@ -256,7 +264,10 @@ Template.chart.rendered = function() {
     }
 
     var chartData1 = generateData(company);
-    var chartData2 = generateData(second_company);
+    var chartData2 = [];
+    if (second_company != null) {
+      chartData2 = generateData(second_company);
+    }
 
 
     drawGraph(chartData1,chartData2,company,second_company);
@@ -318,6 +329,10 @@ Template.chart.rendered = function() {
         });
       });
 
+      var sdScoreTitle = "Standard Scores for "+company;
+      if (second_company != '') {
+        sdScoreTitle = "Standard Scores for "+company+" compared to "+second_company;
+      }
 
       var chart = AmCharts.makeChart( "chartdiv", {
         "type": "stock",
@@ -502,7 +517,7 @@ Template.chart.rendered = function() {
           },
 
           {
-            "title": "Standard Scores for "+company+" compared to "+second_company,
+            "title": sdScoreTitle,
             "percentHeight": 35,
             "marginTop": 1,
             // "showCategoryAxis": true,
@@ -526,8 +541,8 @@ Template.chart.rendered = function() {
               "balloonText": "[[value]]",
               //"fillAlpha": 0.8,
               //"lineColor": "#ff6600",
+              "comparable": true,
               "useDataSetColors":false,
-              "comparable": true
             },
             { //add to compare
               "valueField": "zScore2",
@@ -543,9 +558,10 @@ Template.chart.rendered = function() {
               //"fillAlpha": 0.8,
               //"lineColor": "#ff6600",
               //"useDataSetColors":false,
+              "compareGraphVisibleInLegend" : false,
               "comparable": true,
               "compareGraphLineColor": "#00aa77",
-              "compareGraphLineAlpha": 0.7
+              "compareGraphLineAlpha": 0.7,
             }],
 
             "stockLegend": {
@@ -643,10 +659,19 @@ Template.chart.rendered = function() {
         "listeners": [{
           "event": "init",
           "method": function(event) {
-            //var end = new Date(); // today
-            //var start = new Date(end);
-            //start.setDate(end.getDate() - 10);
-            // event.chart.zoomToIndexes(event.chart.dataProvider.length - 80, event.chart.dataProvider.length - 1);
+            // var chart = event.chart;
+            // var stockGraph = event.stockChart;
+
+            // console.log(chart.dataProvider.length);
+            // console.log(stockGraph.dataProvider.length);
+
+            // var end = new Date(); // today
+            // var start = new Date(end);
+            // start.setDate(end.getDate() - 10);
+            // console.log('test');
+            // var chart = event.chart;
+            // //var graph = chart.graph;
+            // event.chart.zoomToIndexes(event.chart.dataProvider.length - 2, event.chart.dataProvider.length - 1);
             // var graph = event.chart.getGraphById("priceGraph");
             // graph.bullet = "round";
           }
@@ -853,9 +878,61 @@ Template.chart.rendered = function() {
 
 
   function render_candlestick_graph (company_name) {
-    var chartData = [];
     var stockPrices = StockPrices.find({company_name: company_name, token: token, 'open': {$ne : null}}, {fields: {'date':1, 'open':1, 'last':1, 'high':1, 'low':1, 'volume':1, 'flat_value':1}}).fetch();
-    drawGraph(stockPrices,company_name);
+   
+    //calculate MACD
+    var toDoList = []; //array of arrays of values [[1,2],[2,3],[9,10]]
+    var ppo = [];
+    var currPrice = prevPrice = 0;
+
+    for(var i = 0; i<(stockPrices.length); i++) {
+      var bigArray = [];
+      var smallArray = [];
+
+      if (i < 29) {
+        //currArray.push(stock_prices[i].price);
+      } 
+      for(var x = 0; x<30; x++) {
+          if (i>=29) {
+            if (x < 15) {
+              smallArray.push(stockPrices[i-x].last);
+            }
+            bigArray.push(stockPrices[i-x].last);
+          }
+      }
+
+      if (i > 29) {
+        toDoList.push({"bigArray": bigArray, "smallArray": smallArray, "date": stockPrices[i-30].date, "open": stockPrices[i].open, "last": stockPrices[i].last, "high": stockPrices[i].high, "low": stockPrices[i].low, "volume": stockPrices[i].volume, "flat_value": stockPrices[i].flat_value});
+      }
+    // console.log(toDoList);
+    }
+
+    toDoList.forEach(function (c){
+      var result = movAvg(c.bigArray);
+      var result2 = movAvg(c.smallArray);
+      console.log(result2);
+      entry = {"date": c.date, "open": c.open, "last": c.last, "high": c.high, "low": c.low, "volume": c.volume, "flat_value": c.flat_value, "bigAvg": result, "smallAvg": result2, "lineColor": "#ff0000"};
+      // console.log(entry);
+      ppo.push(entry);
+    });
+
+    function movAvg(data){
+      var sum = 0;
+      for(var i = 0; i<data.length; i++) {
+        sum = sum + data[i];
+      }
+
+      var avg = sum / data.length;
+      return avg;
+    }
+
+    //return ppo;
+  //}
+
+
+
+
+    drawGraph(ppo,company_name);
 
     function drawGraph(chartData,company) {
 
@@ -887,7 +964,13 @@ Template.chart.rendered = function() {
           }, {
             "fromField": "flat_value",
             "toField": "value"
-          } ],
+          }, {
+            "fromField": "smallAvg",
+            "toField": "smallAvg"
+          }, {
+            "fromField": "bigAvg",
+            "toField": "bigAvg"
+          }],
           "color": "#ff6600",
           "dataProvider": chartData,
           "title": "Candlestick",
@@ -907,6 +990,7 @@ Template.chart.rendered = function() {
 
 
         "panels": [ {
+
           "title": "Stock Price",
           "showCategoryAxis": false,
           "percentHeight": 70,
@@ -961,13 +1045,55 @@ Template.chart.rendered = function() {
             // "compareField": "value",
             // "showBalloon": false,
             // "proCandlesticks": true,
-            "title": "Average Price",
+            "title": "Daily Average",
+          },
+          {
+            "type": "line",
+            "id": "sAvg",
+            // "openField": "open",
+            // "closeField": "close",
+            // "highField": "high",
+            // "lowField": "low",
+            "valueField": "smallAvg",
+            "lineColor": " #29a329",
+            "fillAlphas": 0,
+            "lineThickness": 2,
+            //"dashLength": 4,
+            "useDataSetColors": false,
+            // "comparable": true,
+            // "compareField": "value",
+            // "showBalloon": false,
+            // "proCandlesticks": true,
+            "title": "Oscillator (MACD)",
+          },
+          {
+            "type": "line",
+            "id": "bAvg",
+            // "openField": "open",
+            // "closeField": "close",
+            // "highField": "high",
+            // "lowField": "low",
+            "valueField": "bigAvg",
+            "lineColor": " #ffcc00",
+            "visibleInLegend": false,
+            "fillAlphas": 0,
+            "lineThickness": 2,
+            //"dashLength": 4,
+            "useDataSetColors": false,
+            // "comparable": true,
+            // "compareField": "value",
+            // "showBalloon": false,
+            // "proCandlesticks": true,
+            "title": "SMA(30)",
           }],
 
           "stockLegend": {
+            "clickMarker": handleCandleLegend,
+            "clickLabel": handleCandleLegend
             // "valueTextRegular": undefined,
             // "periodValueTextComparing": "[[value.close]]%"
-          }
+          },
+          "drawingIconsEnabled": true,
         },
 
         {
@@ -994,10 +1120,9 @@ Template.chart.rendered = function() {
             "markerType": "none",
             "markerSize": 0,
             "labelText": "",
-            "periodValueTextRegular": "[[value.close]]"
+            "periodValueTextRegular": "[[value.close]]",
           },
 
-          "drawingIconsEnabled": true,
         }
         ],
 
@@ -1040,11 +1165,40 @@ Template.chart.rendered = function() {
             selected: true,
           } ]
         },
-        "export": {
-          "enabled": true
-        }
+        // "export": {
+        //   "enabled": true
+        // }
       });
     }
+    function handleCandleLegend( graph ) {
+      var chart = graph.chart;
+      var hidden = graph.hidden;
+      if (graph.id == 'g1') {
+        if (hidden) {
+          chart.showGraph(chart.graphs[0]);
+        } else {
+          chart.hideGraph(chart.graphs[0]);
+        }
+      } else if (graph.id == 'g2') {
+        if (hidden) {
+          chart.showGraph(chart.graphs[1]);
+        } else {
+          chart.hideGraph(chart.graphs[1]);
+        }
+      } else if (graph.id == 'sAvg') {
+        if (hidden) {
+          chart.showGraph(chart.graphs[2]);
+          chart.showGraph(chart.graphs[3]);
+        } else {
+
+          chart.hideGraph(chart.graphs[2]);
+          chart.hideGraph(chart.graphs[3]);
+        }
+      }
+      return false;
+    }
+
+
   }
 
   function render_company_chart() {
@@ -1072,6 +1226,9 @@ Template.chart.rendered = function() {
         last_cr: ret.cum_return,
       });
     });
+
+    c_cr = _.sortBy(c_cr, 'last_cr');
+    c_cr.reverse();
 
     drawGraph(c_cr);
 
@@ -1170,25 +1327,22 @@ Template.chart.rendered = function() {
   }
 
   function render_events_chart(company_name, topic, upper_range, lower_range) {
+
+
+
     $('#chart-options').show();
     $('#topic-selection').show();
     $('#upper-window-selection').show();
     $('#lower-window-selection').show();
     $('#second-stock-selection').hide();
-    
-    Tracker.autorun(function(){
+    var relatedNews = [];
 
-      Meteor.subscribe('stockPrices_db',token);
-      Meteor.subscribe('stockEvents_db',token);
-      console.log("tracker");
-    });
-
-
-    console.log(relatedNews);
+    // console.log(relatedNews);
     // console.log("render_events_chart: topic: "+topic+" upper: "+upper_range+" lower: "+lower_range);
 
     // events
     var events = StockEvents.find({token: token, company_name: company_name, topic: topic, value: {$gt : 0}}, {fields: {'date':1},sort:{date:-1}}).fetch(); 
+    var stocks = StockPrices.find({company_name: company_name, token:token}, {fields: {'date':1, 'cum_return':1, 'flat_value':1}}).fetch();
     // console.log(events);
 
     // var company_name = 'AAC.AX';
@@ -1201,37 +1355,7 @@ Template.chart.rendered = function() {
     }
     // render_related_news(company_name, topic, date);
 
-    var stocks = StockPrices.find({company_name: company_name, token:token}, {fields: {'date':1, 'cum_return':1, 'flat_value':1}}).fetch();
-    var stocksCustomBullet= [];
-
-    stocks.forEach(function(c) {
-      var newEntry = {};
-      newEntry = {'date': c.date, 'cum_return': c.cum_return, 'flat_value': c.flat_value, 'customBullet': "https://cdn2.iconfinder.com/data/icons/windows-8-metro-style/512/newspaper.png"};
-      var found = 0;
-      relatedNews.forEach(function(n){
-
-        var thisString = c.date.getDate()+"-"+c.date.getMonth()+"-"+c.date.getFullYear();
-
-        //console.log("thisDate: "+thisDate + " n.date: "+n.date);
-        var dateString = n.date.getDate()+"-"+n.date.getMonth()+"-"+n.date.getFullYear();
-
-        // if (thisDate.getDate() == n.date.getDate() && thisDate.getMonth() == n.date.getMonth() &&  thisDate.getFullYear() == n.date.getYear()){
-        if (thisString == dateString && found == 0){
-          newEntry = {'date': c.date, 'cum_return': c.cum_return, 'flat_value': c.flat_value, 'customBullet': "https://cdn2.iconfinder.com/data/icons/windows-8-metro-style/512/newspaper.png"};
-          found = 1;
-          console.log("found c.date"+c.date);
-        } 
-      });
-      if (found == 0) {
-          newEntry = {'date': c.date, 'cum_return': c.cum_return, 'flat_value': c.flat_value};
-      } 
-      stocksCustomBullet.push(newEntry);
-    });
-    var chartData = [];
     var guides = [];
-
-
-    
 
     events.forEach(function(c) {
       var dateLower = new Date(c.date);
@@ -1285,15 +1409,12 @@ Template.chart.rendered = function() {
       }
     });
 
-    console.log(stocksCustomBullet);
 
-    drawGraph(stocks, guides);
 
-    function drawGraph(chartData, guides) {
-      // console.log(guides);
+    var stocksCustomBullet = [];
       var titleBig = "Stock Price of " + company_name;
       var titleSmall = topic + " events highlighted";
-      var chart = AmCharts.makeChart("chartdiv", {
+    var chart = AmCharts.makeChart("chartdiv", {
         "type": "serial",
         "theme": "light",
         "pathToImages": "/amcharts/images/",
@@ -1315,7 +1436,7 @@ Template.chart.rendered = function() {
           "graph": "g1",
           "description": "This is description of an event",
         }],
-        "dataProvider": chartData,
+        "dataProvider": stocksCustomBullet,
         "valueAxes": [{
           'id': "crAxis",
           "axisAlpha": 0.2,
@@ -1434,7 +1555,7 @@ Template.chart.rendered = function() {
             //   return;
             // console.log(event);
 
-            console.log(relatedNews);
+            // console.log(relatedNews);
 
             $('#chartdiv3.related_news').find('ul li a').each(function() {
               $(this).css('background-color','');
@@ -1445,7 +1566,7 @@ Template.chart.rendered = function() {
 
             var thisString = thisDate.getDate()+"-"+thisDate.getMonth()+"-"+thisDate.getFullYear();
             relatedNews.forEach(function(n){
-              console.log("thisDate: "+thisDate + " n.date: "+n.date);
+              // console.log("thisDate: "+thisDate + " n.date: "+n.date);
               var dateString = n.date.getDate()+"-"+n.date.getMonth()+"-"+n.date.getFullYear();
 
               // if (thisDate.getDate() == n.date.getDate() && thisDate.getMonth() == n.date.getMonth() &&  thisDate.getFullYear() == n.date.getYear()){
@@ -1454,10 +1575,10 @@ Template.chart.rendered = function() {
                 var highlightHeadline = n.headline;
                 $('#chartdiv3.related_news').find('ul li a').each(function() {
                   var headline = $(this).html();
-                  console.log("Checking: "+headline);
-                  console.log("wanted headline: "+n.headline);
+                  // console.log("Checking: "+headline);
+                  // console.log("wanted headline: "+n.headline);
                   if (headline == highlightHeadline){
-                    console.log($(this));
+                    // console.log($(this));
                     $(this).css('background-color','yellow');
                   }
                 });
@@ -1469,15 +1590,20 @@ Template.chart.rendered = function() {
         ],
       });
 
-
-      // document.getElementById('chartdiv').addEventListener('mousemove', function(e) {
-      //   var ss = chart.categoryAxis.xToIndex(e.x);
-      //   var vall = chart.categoryAxis.data[ss].category;
-      //   console.log(vall);
-      // });
-
-    }
-
+    Tracker.autorun(function(){
+      chart.dataProvider = [];
+      relatedNews = RelatedNews.find({company:company_name}).fetch();
+      stocks.forEach(function(c) {
+        var newEntry = {};
+        if (RelatedNews.find({'date':c.date, 'company':company_name, 'topic':topic}).count() > 0)
+          newEntry = {'date': c.date, 'cum_return': c.cum_return, 'flat_value': c.flat_value, 'customBullet': "https://cdn2.iconfinder.com/data/icons/windows-8-metro-style/512/newspaper.png"};
+        else
+          newEntry = {'date': c.date, 'cum_return': c.cum_return, 'flat_value': c.flat_value};
+        chart.dataProvider.push(newEntry);
+      });
+      chart.validateData();
+      console.log("validateData");
+    });
   }
 
   function render_stock_topics_average_graph (company,upper_range,lower_range) {
@@ -1599,7 +1725,7 @@ Template.chart.rendered = function() {
   function render_stock_topics_graph_significance_table (company, topic, upper_range, lower_range){
     var dom = document.getElementById('chartdiv3');
 
-    console.log("render_stock_topics_graph_significance_table:"+upper_range+" "+lower_range);
+    // console.log("render_stock_topics_graph_significance_table:"+upper_range+" "+lower_range);
 
     Blaze.render(Template.topics_sig_table, dom);
 
@@ -1655,7 +1781,7 @@ Template.chart.rendered = function() {
 
     Meteor.call('scrapeSearch', curr_company, function(err, response) {
       // console.log(response);
-      console.log(err);
+      // console.log(err);
       if (response != null) {
         // market.theaustralian.com.au
         // key stats
@@ -1734,16 +1860,18 @@ Template.chart.rendered = function() {
 
     Meteor.call('scrapeDividends', company, function(err, response) {
       // console.log(response);
-      console.log(err);
+      // console.log(err);
       if (response != null) {
         var regexTable = /<th>Ex-Dividend.*?<\/tbody><\/table>/;
         var table = response.match(regexTable);
-        table = '<table class="table-striped"><thead>' + table;
+        table = '<table class="table table-striped table-hover"><thead>' + table;
         var tableNoBackslash = table.replace(/\\[a-zA-Z]/g, '');
         // console.log('      >> table is: ');
         // console.log(table);
+        if (curr_graph != 'event-study')
+          return;
         $('#chartdiv2').append(tableNoBackslash);
-        console.log($('#chartdiv2'));
+        // console.log($('#chartdiv2'));
       }
     });
   }
@@ -1763,14 +1891,14 @@ Template.chart.rendered = function() {
     // date format: YYYY-MM-DD
     Meteor.call('scrapeRelatedNews', company, dateFormated, function(err, response) {
       // console.log(response);
-      console.log(err);
+      // console.log(err);
       if (response != null) {
         var regexRaw = /<div class="mod yfi_quote_headline withsky.*<table width="100%"/
         var rawHeadlines = String(response).match(regexRaw);
         var headlines = String(rawHeadlines).replace(/<div class="mod yfi_quote_headline withsky"><ul class="yfncnhl newsheadlines"><\/ul>/, "").replace(/<\/cite><\/li><\/ul><table width="100%"/, "");
         // TODO: use .test() to see if headlines regex succeeds
         if (headlines) {
-          console.log(headlines);
+          // console.log(headlines);
           var headlinesNoBackslash = headlines.replace(/\\/g, '');
 
           // check if we haven't changed anything already in the span of scraping
@@ -1786,13 +1914,13 @@ Template.chart.rendered = function() {
           }
           // TODO styling, change cite span's text to h3's text (to have year as well)
 
-          relatedNews = [];
           $('#chartdiv3.related_news').find('h3').each(function() {
             var dateString = $(this).find('span').html();
-            console.log(dateString);
+            // console.log(dateString);
             var headlineObj = $(this).next().find('li a');
+            // console.log(headlineObj);
             var headline = headlineObj.html();
-            console.log(headline);
+            // console.log(headline);
             headlineObj.attr('target', '_blank'); // to open new tab instead of iframe
 
             var string2num = {
@@ -1833,20 +1961,27 @@ Template.chart.rendered = function() {
               var year = matches[4];
             }
             var newDate = new Date(Date.UTC(year, month, date, 6));
-            console.log(newDate);
-            relatedNews.push({
+            // console.log(newDate);
+            // console.log("parsing: "+headline);
+            RelatedNews.insert({
               date: newDate,
               headline: headline,
+              company: company,
+              topic: topic,
             });
           });
-          console.log(relatedNews);
+          // console.log(relatedNews);
           $('#chartdiv3.related_news').find('h3').hide();
+
+          // console.log("pushed");
+          // console.log("related new returning: "+relatedNews);
+          // return relatedNews;
 
           // aylien API, is article good or bad?
           var regex = /\<a href\=\"[^\<\>]*\"\>/g;
           var allLinks = headlinesNoBackslash.match(regex);
           allLinks.forEach(function(linkRaw) {
-            console.log('in loop');
+            // console.log('in loop');
             var linkMid = linkRaw.replace(/<a href="/, "").replace(/">/, "");
             var link = linkMid.replace(/.*\/\*/, "").replace(/\?.*/, "");
 

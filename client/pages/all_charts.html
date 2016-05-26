@@ -26,7 +26,7 @@
         <!-- <span style='font-weight: 700'>Compare with:</span> -->
         <div class='input-group'>
           <span class='input-group-addon'>Compare With</span>
-          <select class="form-control selectpicker" title="Choose stock" id="choose-second-stock" data-live-search="true">
+          <select class="form-control selectpicker" id="choose-second-stock" data-live-search="true">
           </select>
         </div>
       </div>
@@ -34,7 +34,7 @@
         <!-- <div>Topics:</div> -->
         <div class='input-group'>
           <span class='input-group-addon'>Topics</span>
-          <select class="form-control selectpicker" title="Choose a topic" id="choose-topic" data-live-search="true">
+          <select class="form-control selectpicker" id="choose-topic" data-live-search="true">
           </select>
         </div>
 
@@ -90,12 +90,16 @@
       </div>
 
       <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-        <!-- <p class="navbar-text" style="font-weight: 700; margin-right:-5px;">Current Stock:</p> -->
-        <form class="navbar-form navbar-right" role="search">
+        <!-- <form class="navbar-form navbar-right" role="search">
           <div class="form-group">
             <input type="text" class="form-control" placeholder="Token" id="token-input">
           </div>
-        </form>
+        </form> -->
+
+
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="" data-toggle="modal" data-target="#shareModal"><i class="fa fa-sliders" aria-hidden="true"></i></a></li>
+      </ul>
         <div class="navbar-form navbar-right">
           <div class="input-group">
             <span class='input-group-addon'>Current Stock</span>
@@ -103,12 +107,46 @@
             </select>
           </div>
         </div>
-
-      <ul class="nav navbar-nav navbar-right">
-      </ul>
       </div>
     </div>
   </nav>
+</template>
+
+<template name="share_modal">
+<div class="modal fade" id="shareModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Session Setting</h4>
+      </div>
+      <div class="modal-body">
+        <!-- <p>One fine body…</p> -->
+        <div>
+          <div class="form-group">
+            <label for="exampleInputEmail1">Session Token</label>
+            <input type="text" class="form-control" placeholder="Token" id="token-input">
+            <small class="text-muted">This is a unique token for your current session on this analysis platform.</small>
+          </div>
+          <div class="form-group">
+            <label class="control-label">Share Link</label>
+            <div class="input-group">
+              <input type="text" class="form-control" id="share-link">
+              <span class="input-group-btn">
+                <button class="btn btn-default btn-sm" type="button" id="share-link-copy-btn" data-clipboard-target="#share-link">Copy</button>
+              </span>
+            </div>
+            <small class="text-muted">Share this link.</small>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+      </div>
+    </div>
+  </div>
+</div>
 </template>
 
 <template name="app_ui">
@@ -123,6 +161,7 @@
       {{ > subsection2 }}
     </div>
   </div>
+  {{ > share_modal }}
 </template>
 
 <template name="companyDetails">
