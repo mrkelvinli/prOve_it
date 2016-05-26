@@ -653,10 +653,19 @@ Template.chart.rendered = function() {
         "listeners": [{
           "event": "init",
           "method": function(event) {
-            //var end = new Date(); // today
-            //var start = new Date(end);
-            //start.setDate(end.getDate() - 10);
-            // event.chart.zoomToIndexes(event.chart.dataProvider.length - 80, event.chart.dataProvider.length - 1);
+            // var chart = event.chart;
+            // var stockGraph = event.stockChart;
+
+            // console.log(chart.dataProvider.length);
+            // console.log(stockGraph.dataProvider.length);
+
+            // var end = new Date(); // today
+            // var start = new Date(end);
+            // start.setDate(end.getDate() - 10);
+            // console.log('test');
+            // var chart = event.chart;
+            // //var graph = chart.graph;
+            // event.chart.zoomToIndexes(event.chart.dataProvider.length - 2, event.chart.dataProvider.length - 1);
             // var graph = event.chart.getGraphById("priceGraph");
             // graph.bullet = "round";
           }
@@ -865,7 +874,62 @@ Template.chart.rendered = function() {
   function render_candlestick_graph (company_name) {
     var chartData = [];
     var stockPrices = StockPrices.find({company_name: company_name, token: token, 'open': {$ne : null}}, {fields: {'date':1, 'open':1, 'last':1, 'high':1, 'low':1, 'volume':1, 'flat_value':1}}).fetch();
-    drawGraph(stockPrices,company_name);
+   
+
+
+    //calculate MACD
+      var toDoList = []; //array of arrays of values [[1,2],[2,3],[9,10]]
+      var ppo = [];
+      var currPrice = prevPrice = 0;
+
+      for(var i = 0; i<(stockPrices.length); i++) {
+        var bigArray = [];
+        var smallArray = [];
+
+        if (i < 29) {
+          //currArray.push(stock_prices[i].price);
+        } 
+        for(var x = 0; x<30; x++) {
+            if (i>=29) {
+              if (x < 15) {
+                smallArray.push(stockPrices[i-x].last);
+              }
+              bigArray.push(stockPrices[i-x].last);
+            }
+        }
+
+        if (i > 29) {
+          toDoList.push({"bigArray": bigArray, "smallArray": smallArray, "date": stockPrices[i-30].date, "open": stockPrices[i].open, "last": stockPrices[i].last, "high": stockPrices[i].high, "low": stockPrices[i].low, "volume": stockPrices[i].volume, "flat_value": stockPrices[i].flat_value});
+        }
+      // console.log(toDoList);
+      }
+
+      toDoList.forEach(function (c){
+        var result = movAvg(c.bigArray);
+        var result2 = movAvg(c.smallArray);
+        console.log(result2);
+        entry = {"date": c.date, "open": c.open, "last": c.last, "high": c.high, "low": c.low, "volume": c.volume, "flat_value": c.flat_value, "bigAvg": result, "smallAvg": result2, "lineColor": "#ff0000"};
+        // console.log(entry);
+        ppo.push(entry);
+      });
+
+      function movAvg(data){
+        var sum = 0;
+        for(var i = 0; i<data.length; i++) {
+          sum = sum + data[i];
+        }
+
+        var avg = sum / data.length;
+        return avg;
+      }
+
+      //return ppo;
+    //}
+
+
+
+
+    drawGraph(ppo,company_name);
 
     function drawGraph(chartData,company) {
 
@@ -897,7 +961,13 @@ Template.chart.rendered = function() {
           }, {
             "fromField": "flat_value",
             "toField": "value"
-          } ],
+          }, {
+            "fromField": "smallAvg",
+            "toField": "smallAvg"
+          }, {
+            "fromField": "bigAvg",
+            "toField": "bigAvg"
+          }],
           "color": "#ff6600",
           "dataProvider": chartData,
           "title": "Candlestick",
@@ -971,10 +1041,51 @@ Template.chart.rendered = function() {
             // "compareField": "value",
             // "showBalloon": false,
             // "proCandlesticks": true,
-            "title": "Average Price",
+            "title": "Daily Average",
+          },
+          {
+            "type": "line",
+            "id": "sAvg",
+            // "openField": "open",
+            // "closeField": "close",
+            // "highField": "high",
+            // "lowField": "low",
+            "valueField": "smallAvg",
+            "lineColor": " #29a329",
+            "fillAlphas": 0,
+            "lineThickness": 2,
+            //"dashLength": 4,
+            "useDataSetColors": false,
+            // "comparable": true,
+            // "compareField": "value",
+            // "showBalloon": false,
+            // "proCandlesticks": true,
+            "title": "Oscillator (MACD)",
+          },
+          {
+            "type": "line",
+            "id": "bAvg",
+            // "openField": "open",
+            // "closeField": "close",
+            // "highField": "high",
+            // "lowField": "low",
+            "valueField": "bigAvg",
+            "lineColor": " #ffcc00",
+            "visibleInLegend": false,
+            "fillAlphas": 0,
+            "lineThickness": 2,
+            //"dashLength": 4,
+            "useDataSetColors": false,
+            // "comparable": true,
+            // "compareField": "value",
+            // "showBalloon": false,
+            // "proCandlesticks": true,
+            "title": "SMA(30)",
           }],
 
           "stockLegend": {
+            "clickMarker": handleCandleLegend,
+            "clickLabel": handleCandleLegend
             // "valueTextRegular": undefined,
             // "periodValueTextComparing": "[[value.close]]%"
           }
@@ -1004,7 +1115,7 @@ Template.chart.rendered = function() {
             "markerType": "none",
             "markerSize": 0,
             "labelText": "",
-            "periodValueTextRegular": "[[value.close]]"
+            "periodValueTextRegular": "[[value.close]]",
           },
 
           "drawingIconsEnabled": true,
@@ -1055,6 +1166,35 @@ Template.chart.rendered = function() {
         }
       });
     }
+    function handleCandleLegend( graph ) {
+      var chart = graph.chart;
+      var hidden = graph.hidden;
+      if (graph.id == 'g1') {
+        if (hidden) {
+          chart.showGraph(chart.graphs[0]);
+        } else {
+          chart.hideGraph(chart.graphs[0]);
+        }
+      } else if (graph.id == 'g2') {
+        if (hidden) {
+          chart.showGraph(chart.graphs[1]);
+        } else {
+          chart.hideGraph(chart.graphs[1]);
+        }
+      } else if (graph.id == 'sAvg') {
+        if (hidden) {
+          chart.showGraph(chart.graphs[2]);
+          chart.showGraph(chart.graphs[3]);
+        } else {
+
+          chart.hideGraph(chart.graphs[2]);
+          chart.hideGraph(chart.graphs[3]);
+        }
+      }
+      return false;
+    }
+
+
   }
 
   function render_company_chart() {
