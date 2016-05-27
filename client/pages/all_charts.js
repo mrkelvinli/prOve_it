@@ -132,7 +132,7 @@ Template.chart.rendered = function() {
     } else if (curr_graph == 'volatility'){
       $('#chartdiv2').show();
       render_volatility_chart(curr_company,second_company);
-      render_regression(curr_company);
+      render_regression_raw(curr_company);
     } else if (curr_graph == 'event-study'){
       $('#chartdiv2').show();
       $('#chartdiv3').show();
@@ -2066,7 +2066,8 @@ Template.chart.rendered = function() {
   }
 
   // market change vs company change
-  function render_regression(company) {
+  // can reference http://asxiq.com/statistical-rankings/end-of-day/top-stocks-ranked-by-beta/
+  function render_regression_change(company) {
     $('#chartdiv2').parent().removeClass();
     $('#chartdiv2').parent().addClass('col-md-12');
 
@@ -2153,6 +2154,109 @@ Template.chart.rendered = function() {
             tooltip: {
               headerFormat: '<b>{series.name}</b><br>',
               pointFormat: 'Market: {point.x}%, Company: {point.y}%'
+            }
+          }
+        },
+        series: [{
+          regression: true ,
+          regressionSettings: {
+            type: 'linear',
+            color:  'rgba(223, 83, 83, .9)'
+          },
+          name: 'Daily',
+          color: 'rgba(223, 83, 83, .5)',
+          data: data
+        }]
+      });
+    }
+  }
+
+  // market index vs company cr
+  function render_regression_raw(company) {
+    $('#chartdiv2').parent().removeClass();
+    $('#chartdiv2').parent().addClass('col-md-12');
+
+    var company_prices = StockPrices.find({token: token, company_name: company, cum_return: {$ne: null}},{fields:{cum_return:true, date:true, _id:false}}).fetch();
+    // console.log(company_cr);
+
+    var data = [];
+    var prev_price = null;
+    var prev_market = null;
+    company_prices.forEach(function(entry) {
+      var date = entry.date;
+      var price = entry.cum_return;
+      var db_query = Market.findOne({date: date}, {fields: {value: true, _id: false}});
+      if ((db_query != null) && (price != null)) {
+        var market_price = parseFloat(db_query.value);
+        console.log('cr: ' + price + ', market: ' + market_price + ', date: ' + date);
+        data.push([market_price, price]);
+      }
+    });
+    // console.log("DONE");
+    drawGraph(data);
+
+    function drawGraph(data) {
+      $('#chartdiv2').highcharts({
+        chart: {
+          type: 'scatter',
+          zoomType: 'xy'
+        },
+        title: {
+          text: 'Regression of ' + company
+        },
+        subtitle: {
+          text: 'Compared to ASX 300'
+        },
+        xAxis: {
+          title: {
+            enabled: true,
+            text: 'ASX 300 Price Return'
+          },
+          startOnTick: true,
+          endOnTick: true,
+          showLastLabel: true
+        },
+        yAxis: {
+          title: {
+            text: 'Company Cumulative Return (%)'
+          }
+        },
+        // legend: {
+        //   layout: 'vertical',
+        //   align: 'left',
+        //   verticalAlign: 'top',
+        //   x: 100,
+        //   y: 70,
+        //   floating: true,
+        //   backgroundColor: '#FFFFFF',
+        //   borderWidth: 1
+        // },
+        options: {
+          legend: {
+          enabled: false
+          },
+        },
+        plotOptions: {
+          scatter: {
+            marker: {
+              radius: 5,
+              states: {
+                hover: {
+                  enabled: true,
+                  lineColor: 'rgb(100,100,100)'
+                }
+              }
+            },
+            states: {
+              hover: {
+                marker: {
+                  enabled: false
+                }
+              }
+            },
+            tooltip: {
+              headerFormat: '<b>{series.name}</b><br>',
+              pointFormat: 'Market: {point.x}, Company: ${point.y}'
             }
           }
         },
