@@ -975,18 +975,20 @@ Template.chart.rendered = function() {
           "dataProvider": chartData,
           "title": "Candlestick",
           "categoryField": "date"
-        }, {
-          "fieldMappings": [ {
-            "fromField": "flat_value",
-            "toField": "value"
-          } ],
-          "color": "#0077aa",
-          "lineColor": "#0077aa",
-          "dataProvider": chartData,
-          "compared": true,
-          "title": "Line",
-          "categoryField": "date"
-        } ],
+        }
+        // , {
+        //   "fieldMappings": [ {
+        //     "fromField": "flat_value",
+        //     "toField": "value"
+        //   } ],
+        //   "color": "#0077aa",
+        //   "lineColor": "#0077aa",
+        //   "dataProvider": chartData,
+        //   "compared": true,
+        //   "title": "Line",
+        //   "categoryField": "date"
+        // } 
+        ],
 
 
         "panels": [ {
@@ -1097,6 +1099,7 @@ Template.chart.rendered = function() {
         },
 
         {
+          "drawingIconsEnabled": true,
           "title": "Volume",
           "percentHeight": 30,
           "marginTop": 1,
