@@ -33,7 +33,8 @@ import Highcharts from 'highcharts';
                         marker: {enabled: false} ,
                         isRegressionLine: true,
                         type: s.regressionSettings.linetype || 'spline',
-                        name: s.regressionSettings.name || "Equation: %eq", 
+                        // name: s.regressionSettings.name || "Equation: %eq", 
+                        name: s.regressionSettings.name || "Line of Best Fit", 
                         color: s.regressionSettings.color || '',
                         dashStyle: s.regressionSettings.dashStyle || 'solid',
                         tooltip:{ 
