@@ -71,12 +71,32 @@ Uploader = {
         // var stock_price_file_with_cr = ES.calc_cumulative_returns(stock_price_file_json);
         // var all_query_company = ES.get_all_query_company(stock_characteristic_file_json);
 
+        // current: /prOve_it/.meteor/local/build/programs/server/
+        if (Market.find({}).count() === 0) {
+          console.log("EMPTY");
+          var contents = fs.readFileSync(process.cwd() + '/../../../../../public/marketPrices10.csv', 'utf8');
+          // console.log(contents);
+          // console.log('second: ' + file == null);
+          var marketObject = null;
+          if (contents != null) {
+            marketObject = Papa.parse(contents);
+          } else {
+            console.warn('contents from fs is null');
+          }
+          if (marketObject != null) {
+            console.log("market csv parsed ok");
+            ES.process_market_file(marketObject.data);
+          } else {
+            console.warn('market object is null');
+          }
+        } else {
+          console.log("NOT EMPTY: " + Market.find({}).count());
+        }
 
         // StockPrices.remove({});
         // StockEvents.remove({});
         ES.process_stock_price_file(stock_price_file_json, token);
         ES.process_stock_characteristic_file(stock_characteristic_file_json, token);
-
 
         console.log("process ok");
 

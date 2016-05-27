@@ -20,7 +20,7 @@ import Highcharts from 'highcharts';
                 s.regressionSettings =  s.regressionSettings || {} ;
                 s.regressionSettings.tooltip = s.regressionSettings.tooltip || {} ;
                 s.regressionSettings.dashStyle = s.regressionSettings.dashStyle || 'solid';
-                s.regressionSettings.decimalPlaces = s.regressionSettings.decimalPlaces || 2;
+                s.regressionSettings.decimalPlaces = s.regressionSettings.decimalPlaces || 10;
                 s.regressionSettings.useAllSeries = s.regressionSettings.useAllSeries || false;
 
                 var regressionType = s.regressionSettings.type || "linear" ;

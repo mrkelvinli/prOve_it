@@ -43,6 +43,10 @@ if(Meteor.isServer) {
     return StockEvents.find({token: token});
   });
 
+  Meteor.publish('market_db', function(){
+    return Market.find();
+  });
+
   var connectHandler = WebApp.connectHandlers;
 
   Meteor.startup(function () {

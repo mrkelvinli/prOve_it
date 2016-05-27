@@ -150,10 +150,18 @@ div.highcharts-container {
   padding: 10px;
 }
 
-iframe {
-  width: 100%;
-  height: 100%;
-  border: 0;
+.dividends-table {
+  text-align: center;
+}
+
+.dividends-table th {
+  /*background-color: #F47C3C;*/
+  background-color: rgba(244, 124, 60, 0.9);
+  color: white;
+  text-align: center;
+  /*text-transform: uppercase;*/
+  font-size: 13px;
+  font-weight: 400;
 }
 
 #details {
