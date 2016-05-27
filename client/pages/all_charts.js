@@ -28,6 +28,7 @@ Template.chart.rendered = function() {
   var curr_upper = 5;
   var curr_lower = -5;
   RelatedNews = new Mongo.Collection(null);
+  DividendHistory = new Mongo.Collection(null);
 
 
   // selector to switch between the stocks and topics
@@ -1531,7 +1532,7 @@ Template.chart.rendered = function() {
         },
 
         {
-          "drawingIconsEnabled": true,
+          // "drawingIconsEnabled": true,
           "title": "Volume",
           "percentHeight": 30,
           "marginTop": 1,
@@ -1915,7 +1916,7 @@ Template.chart.rendered = function() {
           //"bulletBorderAlpha": 1,
           //"bulletColor": "#FFFFFF",
           "lineColor": "#ff6600",
-          "hideBulletsCount": 50,
+          // "hideBulletsCount": 50,
           "title": "Cumulative Return",
           "valueField": "cum_return",
           "lineThickness": 2,
@@ -2027,13 +2028,14 @@ Template.chart.rendered = function() {
 
     Tracker.autorun(function(){
       chart.dataProvider = [];
-      relatedNews = RelatedNews.find({company:company_name}).fetch();
+      // relatedNews = RelatedNews.find({company:company_name}).fetch();
+      // dividendHistoryDates = DividendHistory.find({company: company_name}).fetch();
       stocks.forEach(function(c) {
-        var newEntry = {};
+        var newEntry = {'date': c.date, 'cum_return': c.cum_return, 'flat_value': c.flat_value};
         if (RelatedNews.find({'date':c.date, 'company':company_name, 'topic':topic}).count() > 0)
-          newEntry = {'date': c.date, 'cum_return': c.cum_return, 'flat_value': c.flat_value, 'customBullet': "https://cdn2.iconfinder.com/data/icons/windows-8-metro-style/512/newspaper.png"};
-        else
-          newEntry = {'date': c.date, 'cum_return': c.cum_return, 'flat_value': c.flat_value};
+          newEntry['customBullet'] = "https://cdn2.iconfinder.com/data/icons/windows-8-metro-style/512/newspaper.png";
+        if (DividendHistory.find({'date':c.date, 'company':company_name}).count() > 0)
+          newEntry['customBullet'] = "/assets/img/money-icon.png";
         chart.dataProvider.push(newEntry);
       });
       chart.validateData();
@@ -2284,6 +2286,7 @@ Template.chart.rendered = function() {
   }
 
   function render_dividends(company) {
+    DividendHistory.remove({});
     $('#chartdiv2').parent().removeClass();
     $('#chartdiv2').parent().addClass('col-md-8');
 
@@ -2308,6 +2311,19 @@ Template.chart.rendered = function() {
         $('#chartdiv2').append(tableNoBackslash);
         $("td:empty").remove();
         // console.log($('#chartdiv2'));
+
+        // populate the dividend history date collection, grap the date from the table
+        console.log("populating");
+        $('#chartdiv2').find('table.dividends-table tbody tr td:first-child').each(function(){
+          var dateString = $(this).html();
+          var regex = /([0-9]{2})\-([0-9]{2})\-([0-9]{4})/;
+          var matches = regex.exec(dateString);
+          var newDate = new Date(Date.UTC(parseInt(matches[3]), parseInt(matches[2])-1, parseInt(matches[1]), 6));
+          DividendHistory.insert({
+            date: newDate,
+            company: company,
+          });
+        });
       }
     });
   }
@@ -2317,6 +2333,7 @@ Template.chart.rendered = function() {
 
     $('#chartdiv3').addClass('related_news');
     $('#chartdiv3').html('<h4 style="padding: 0 0 5px 5px;">News related to ' + curr_company + '</h4>');
+    RelatedNews.remove({});
     // date wanted
     var dom = document.getElementById('details');
     var year = d.getUTCFullYear();
@@ -2349,6 +2366,7 @@ Template.chart.rendered = function() {
             return;
           }
           // TODO styling, change cite span's text to h3's text (to have year as well)
+
 
           $('#chartdiv3.related_news').find('h3').each(function() {
             var dateString = $(this).find('span').html();
