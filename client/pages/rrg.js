@@ -2542,20 +2542,24 @@ Template.rrgMain.rendered = function() {
           for (var e = 0; e < t.length; e++) {
               var s = t[e];
               "chg" == s && (s = "%chg");
-              // if (s == 'chart') {
-              //   i += t[e] == this.sortColumn ? "a" == this.sortDirection ? "<th class='sort-ascending'style='width:10%'>" + s + "</th>" : "<th class='sort-descending' style='width:10%'>" + s + "</th>" : "<th style='width:10%'>" + s + "</th>"
-              // } else if (s == 'visible') {
-              //   i += t[e] == this.sortColumn ? "a" == this.sortDirection ? "<th class='sort-ascending'style='width:9%'>" + s + "</th>" : "<th class='sort-descending' style='width:9%'>" + s + "</th>" : "<th style='width:9%'>" + s + "</th>"
-              // } else if (s == 'tail') {
-              //   i += t[e] == this.sortColumn ? "a" == this.sortDirection ? "<th class='sort-ascending'style='width:8.5%'>" + s + "</th>" : "<th class='sort-descending' style='width:8.5%'>" + s + "</th>" : "<th style='width:8.5%'>" + s + "</th>"
-              // } else if (s == 'symbol') {
-              //   i += t[e] == this.sortColumn ? "a" == this.sortDirection ? "<th class='sort-ascending'style='width:21%'>" + s + "</th>" : "<th class='sort-descending' style='width:21%'>" + s + "</th>" : "<th style='width:21%'>" + s + "</th>"
-              // } else if (s == 'sector' || s == 'industry') {
-              //   i += t[e] == this.sortColumn ? "a" == this.sortDirection ? "<th class='sort-ascending'style='width:1%'>" + s + "</th>" : "<th class='sort-descending' style='width:1%'>" + s + "</th>" : "<th style='width:1%'>" + s + "</th>"
-              // } else {
-              //   i += t[e] == this.sortColumn ? "a" == this.sortDirection ? "<th class='sort-ascending'style='width:12%'>" + s + "</th>" : "<th class='sort-descending' style='width:12%'>" + s + "</th>" : "<th style='width:12%'>" + s + "</th>"
-              // }
-              i += t[e] == this.sortColumn ? "a" == this.sortDirection ? "<th class='sort-ascending'>" + s + "</th>" : "<th class='sort-descending'>" + s + "</th>" : "<th>" + s + "</th>"
+              if (s == 'visible') {
+                s = 'Toggle';
+                i += t[e] == this.sortColumn ? "a" == this.sortDirection ? "<th class='sort-ascending'style='width:9%'>" + s + "</th>" : "<th class='sort-descending' style='width:9%'>" + s + "</th>" : "<th style='width:9%'>" + s + "</th>"
+              } else if (s == 'tail') {
+                s = 'Tail';
+                i += t[e] == this.sortColumn ? "a" == this.sortDirection ? "<th class='sort-ascending'style='width:8.5%'>" + s + "</th>" : "<th class='sort-descending' style='width:8.5%'>" + s + "</th>" : "<th style='width:8.5%'>" + s + "</th>"
+              } else if (s == 'symbol') {
+                s = 'Company';
+                i += t[e] == this.sortColumn ? "a" == this.sortDirection ? "<th class='sort-ascending'style='width:21%'>" + s + "</th>" : "<th class='sort-descending' style='width:21%'>" + s + "</th>" : "<th style='width:21%'>" + s + "</th>"
+              } else if (s == 'price') {
+                s = 'Price';
+                i += t[e] == this.sortColumn ? "a" == this.sortDirection ? "<th class='sort-ascending'style='width:12%'>" + s + "</th>" : "<th class='sort-descending' style='width:12%'>" + s + "</th>" : "<th style='width:12%'>" + s + "</th>"
+              } else {
+                console.log(s);
+                s = 'Change';
+                i += t[e] == this.sortColumn ? "a" == this.sortDirection ? "<th class='sort-ascending'style='width:12%'>" + s + "</th>" : "<th class='sort-descending' style='width:12%'>" + s + "</th>" : "<th style='width:12%'>" + s + "</th>"
+              }
+              // i += t[e] == this.sortColumn ? "a" == this.sortDirection ? "<th class='sort-ascending'>" + s + "</th>" : "<th class='sort-descending'>" + s + "</th>" : "<th>" + s + "</th>"
           }
           i += "</tr>";
           i += "</thead>";

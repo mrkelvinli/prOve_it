@@ -2877,7 +2877,7 @@ function render_rrg(company) {
     $('#chartdiv3').parent().removeClass('col-md-5');
     $('#chartdiv3').parent().addClass('col-md-4');
     $('#chartdiv3').css('height', 370);
-    $('#chartdiv2').css('padding', '20px 40px 20px 40px');
+    $('#chartdiv2').css('padding', '50px 40px 20px 40px');
     var dom3 = document.getElementById('chartdiv3');
     Blaze.render(Template.rrgControls, dom3);
   }
