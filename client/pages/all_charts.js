@@ -2505,6 +2505,7 @@ function render_stock_topics_graph_significance_table (company, topic, upper_ran
 
   function render_dividends(company) {
     DividendHistory.remove({});
+    $("#chartdiv2").html('');
     $('#chartdiv2').parent().removeClass();
     $('#chartdiv2').parent().addClass('col-md-8');
 
@@ -2512,7 +2513,7 @@ function render_stock_topics_graph_significance_table (company, topic, upper_ran
     $('#chartdiv3').parent().addClass('col-md-4');
 
     $('#chartdiv2').css({'height':'100%', 'padding': '10px'});
-    $('#chartdiv2').html('<h4 style="padding: 5px 0 5px 5px;">Dividend history of ' + curr_company + '</h4>');
+    // $('#chartdiv2').html('<h4 style="padding: 5px 0 5px 5px;">Dividend history of ' + curr_company + '</h4>');
 
     Meteor.call('scrapeDividends', company, function(err, response) {
       // console.log(response);
@@ -2524,17 +2525,16 @@ function render_stock_topics_graph_significance_table (company, topic, upper_ran
         var tableNoBackslash = table.replace(/\\[a-zA-Z]/g, '');
         // console.log('      >> table is: ');
         // console.log(table);
-        if (curr_graph != 'event-study')
-          return;
         if ((curr_graph == 'event-study') && (curr_company == company)) {
-          $('#chartdiv2').append(tableNoBackslash);
+          console.log("RENDERING");
+          $('#chartdiv2').html('<h4 style="padding: 5px 0 5px 5px;">Dividend history of ' + curr_company + '</h4>' + tableNoBackslash);
         } else {
           return;
         }
         $("td:empty").remove();
         // console.log($('#chartdiv2'));
 
-        // populate the dividend history date collection, grap the date from the table
+        // populate the dividend history date collection, grab the date from the table
         // console.log("populating");
         $('#chartdiv2').find('table.dividends-table tbody tr td:first-child').each(function(){
           var dateString = $(this).html();
