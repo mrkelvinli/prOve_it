@@ -55,7 +55,9 @@ Template.chart.rendered = function() {
     var tabId = currentTab.attr('id');
     console.log(tabId);
     $('ul.nav-tabs li').removeClass('active');
-    if (tabId == 'candlesticks') {
+    if (tabId == 'overview') {
+      curr_graph = 'overview';
+    } else if (tabId == 'candlesticks') {
       curr_graph = 'candlesticks';
     } else if (tabId == 'volatility') {
       curr_graph = 'volatility';
@@ -66,8 +68,8 @@ Template.chart.rendered = function() {
     } else if (tabId == 'rrg') {
       curr_graph = 'rrg';
     }
-    renderMainGraph();
     currentTab.parent().addClass('active');
+    renderMainGraph();
   });
 
 
@@ -123,7 +125,9 @@ Template.chart.rendered = function() {
 
     choose_main_stock.selectpicker('val', curr_company);
 
-    if (curr_graph == "candlesticks"){
+    if (curr_graph == 'overview') {
+      render_overview(curr_company, curr_topic, curr_upper, curr_lower);
+    } else if (curr_graph == "candlesticks"){
       $('#chartdiv2').show();
       $('#details').show();
       render_candlestick_graph(curr_company);
@@ -191,6 +195,434 @@ Template.chart.rendered = function() {
   });
 
   renderMainGraph();
+
+  function render_overview(company, topic, upper, lower) {
+    // !! start event study !!
+    var stockPrices = StockPrices.find({company_name: company, token: token, 'open': {$ne : null}}, {fields: {'date':1, 'open':1, 'last':1, 'high':1, 'low':1, 'volume':1, 'flat_value':1}}).fetch();
+   
+    //calculate MACD
+    var toDoListA = []; //array of arrays of values [[1,2],[2,3],[9,10]]
+    var ppo = [];
+    var currPrice = prevPrice = 0;
+
+    for(var i = 0; i<(stockPrices.length); i++) {
+      var bigArray = [];
+      var smallArray = [];
+
+      for(var x = 0; x<30; x++) {
+          if (i>=29) {
+            if (x < 15) {
+              smallArray.push(stockPrices[i-x].last);
+            }
+            bigArray.push(stockPrices[i-x].last);
+          }
+      }
+      if (i > 29) {
+        toDoListA.push({"bigArray": bigArray, "smallArray": smallArray, "date": stockPrices[i-30].date, "open": stockPrices[i].open, "last": stockPrices[i].last, "high": stockPrices[i].high, "low": stockPrices[i].low, "volume": stockPrices[i].volume, "flat_value": stockPrices[i].flat_value});
+      }
+    }
+
+    toDoListA.forEach(function (c){
+      var result = movAvg(c.bigArray);
+      var result2 = movAvg(c.smallArray);
+      entry = {"date": c.date, "open": c.open, "last": c.last, "high": c.high, "low": c.low, "volume": c.volume, "flat_value": c.flat_value, "bigAvg": result, "smallAvg": result2, "lineColor": "#ff0000"};
+      ppo.push(entry);
+    });
+
+    function movAvg(data){
+      var sum = 0;
+      for(var i = 0; i<data.length; i++) {
+        sum = sum + data[i];
+      }
+      var avg = sum / data.length;
+      return avg;
+    }
+    // !! end event study !!
+
+    // !! start volatility !!
+    function standardDeviation(values){
+      var avg = average(values);
+      
+      var squareDiffs = values.map(function(value){
+        var diff = value - avg;
+        var sqrDiff = diff * diff;
+        return sqrDiff;
+      });
+      
+      var avgSquareDiff = average(squareDiffs);
+
+      var stdDev = Math.sqrt(avgSquareDiff);
+      var result = [stdDev, avg];
+      return result;
+    }
+
+    function average(data){
+      var sum = 0;
+      for(var i = 0; i<data.length; i++) {
+        sum = sum + data[i];
+      }
+
+      var avg = sum / data.length;
+      return avg;
+    }
+
+    function generateData (company) {
+      var prices = StockPrices.find({token:token, company_name: company, flat_value: {$ne: null}},{fields:{date:true, flat_value: true}}).fetch();
+      var stock_prices = [];
+      prices.forEach(function(p){
+        stock_prices.push({
+          time: p.date,
+          price: p.flat_value,
+        });
+      });
+
+      var sma = [];
+      var avg = 0;
+      var currPrice = 0;
+      var prevPrice = 0;
+
+      //calculate standard deviation
+      var toDoList = []; //array of arrays of values [[1,2],[2,3],[9,10]]
+      currPrice = prevPrice = 0;
+
+      for(var i = 0; i<(stock_prices.length); i++) {
+        var currArray = [];
+        if (i < 29) {
+          //currArray.push(stock_prices[i].price);
+        } 
+        for(var x = 0; x<30; x++) {
+            if (i>=29) {
+              currArray.push(stock_prices[i-x].price);
+            }
+        }
+        if (i > 29) {
+          toDoList.push({"currArray": currArray, "time": stock_prices[i-30].time, "price": stock_prices[i].price});
+        }
+      // console.log(toDoList);
+      }
+      toDoList.forEach(function (c){
+        var result = standardDeviation(c.currArray);
+        var zScore = (c.price - result[1]) / result[0];
+        zScore = Math.abs(zScore);
+        var entry = {};
+        if (zScore >= 1) {
+          entry = {"time": c.time, "price": c.price, "mAvg": result[1], "sdUpper": ((result[0]*2)+result[1]), "sdLower": (result[1]-(result[0]*2)), "sd": result[0], "zScore": zScore, "lineColor": "#ff0000"};
+        } else {
+          entry = {"time": c.time, "price": c.price, "mAvg": result[1], "sdUpper": ((result[0]*2)+result[1]), "sdLower": (result[1]-(result[0]*2)), "sd": result[0], "zScore": zScore, "lineColor": "#0077aa"};
+        }
+        // console.log(entry);
+        sma.push(entry);
+      });
+
+      return sma;
+    }
+
+    function labelFunction(item, label) {
+      if (item.index === item.graph.chart.dataProvider.length - 1)
+        return label;
+      else
+        return "";
+    }
+
+    var chartData1 = generateData(company);
+    // var chartData2 = [];
+    // if (second_company != null) {
+    //   chartData2 = generateData(second_company);
+    // }
+
+    var sdScoreTitle = "Standard Scores for "+company;
+    // !! end volatility !!
+
+
+    drawGraph(ppo,company, chartData1);
+    // if (second_company != '') {
+    //   sdScoreTitle = "Standard Scores for "+company+" compared to "+second_company;
+    // }
+    function drawGraph(chartData,company, sma) {
+      console.log(sma);
+      var chart = AmCharts.makeChart( "chartdiv", {
+        "type": "stock",
+        "theme": "light",
+        "pathToImages": "/amcharts/images/",
+        "autoMarginOffset": 20,
+        "marginRight": 80,
+        "dataSets": [{
+          "fieldMappings": [ {
+            "fromField": "open",
+            "toField": "open"
+          }, {
+            "fromField": "last",
+            "toField": "close"
+          }, {
+            "fromField": "high",
+            "toField": "high"
+          }, {
+            "fromField": "low",
+            "toField": "low"
+          }, {
+            "fromField": "volume",
+            "toField": "volume"
+          }, {
+            "fromField": "flat_value",
+            "toField": "value"
+          }, {
+            "fromField": "smallAvg",
+            "toField": "smallAvg"
+          }, {
+            "fromField": "bigAvg",
+            "toField": "bigAvg"
+          },
+          ],
+          "color": "#ff6600",
+          "dataProvider": chartData,
+          "title": "Candlestick",
+          "categoryField": "date"
+        },
+        {
+          "fieldMappings": [ {
+            "fromField": "price",
+            "toField": "price"
+          }, {
+            "fromField": "mAvg",
+            "toField": "mAvg"
+          }, {
+            "fromField": "sdUpper",
+            "toField": "sdUpper"
+          }, {
+            "fromField": "sdLower",
+            "toField": "sdLower"
+          },{
+            "fromField": "zScore",
+            "toField": "zScore"
+          }],
+          "color": "orange",
+          "dataProvider": sma,
+          // "title": "West Stock",
+          "categoryField": "time"
+        }, 
+        ],
+
+        "panels": [ {
+          "title": "Stock Price",
+          "showCategoryAxis": false,
+          "percentHeight": 70,
+          "valueAxes": [ {
+            "id": "v1",
+            "dashLength": 5,
+            "title": "Stock Price ($)",
+            "unit": "$",
+            'unitPosition' : "left",
+          } ],
+
+          "categoryAxis": {
+            "dashLength": 5,
+            "title": "Day"
+          },
+
+          "stockGraphs": [ {
+            "type": "candlestick",
+            "id": "g1",
+            "openField": "open",
+            "closeField": "close",
+            "highField": "high",
+            "lowField": "low",
+            "valueField": "close",
+            "lineColor": "#7f8da9",
+            "fillColors": "#7f8da9",
+            "negativeLineColor": "#ff6600",
+            "negativeFillColors": "#ff6600",
+            "fillAlphas": 1,
+            "useDataSetColors": false,
+            "showBalloon": true,
+            "proCandlesticks": true,
+            "title": "Candlestick",
+            "balloonText": "Open:<b>[[open]]</b><br>Low:<b>[[low]]</b><br>High:<b>[[high]]</b><br>Close:<b>[[close]]</b><br>Value:<b>[[value]]</b>",
+          },
+          {
+            "type": "line",
+            "id": "g2",
+            "valueField": "value",
+            "lineColor": "#0077aa",
+            "fillAlphas": 0,
+            "lineThickness": 1.5,
+            "dashLength": 4,
+            "useDataSetColors": false,
+            "title": "Daily Average",
+          },
+          {
+            "type": "line",
+            "id": "sAvg",
+            "valueField": "smallAvg",
+            "lineColor": " #29a329",
+            "fillAlphas": 0,
+            "lineThickness": 2,
+            "useDataSetColors": false,
+            "title": "Oscillator (MACD)",
+          },
+          {
+            "type": "line",
+            "id": "bAvg",
+            "valueField": "bigAvg",
+            "lineColor": " #ffcc00",
+            "visibleInLegend": false,
+            "fillAlphas": 0,
+            "lineThickness": 2,
+            "useDataSetColors": false,
+            "title": "SMA(30)",
+          },
+          {
+            "id": "sdUpperGraph",
+            //"balloonText": "Upper Band: <b>[[value]]</b>",
+            "showBalloon": false,
+            "fillAlphas": 0.3,
+            "fillColors": ["#ffa31a"],
+            "lineAlpha": 0,
+            "type": "line",
+            "fillToGraph": "sdLowerGraph",
+            "valueField": "sdUpper",
+            "title": "UpperBand",
+            "visibleInLegend": false,
+            "labelPosition": "right",
+            "labelFunction": labelFunction,
+            "useDataSetColors":false,
+            "labelText": "Upper Band",
+            "labelOffset":-55,
+            //"labelText": "Upper Band"
+          }, {
+            "id": "sdLowerGraph",
+            //"balloonText": "Lower Band: <b>[[value]]</b>",
+            "showBalloon": false,
+            "fillAlphas": 0,
+            "lineAlpha": 0,
+            "type": "line",
+            "valueField": "sdLower",
+            "title": "LowerBand",
+            "labelPosition": "right",
+            "visibleInLegend": false,
+            "labelFunction": labelFunction,
+            "useDataSetColors":false,
+            "labelOffset":-55,
+            "labelText": "Lower Band",
+            //"labelText": "Lower Band"
+          },
+          ],
+
+          "stockLegend": {
+            "clickMarker": handleCandleLegend,
+            "clickLabel": handleCandleLegend
+          },
+          "drawingIconsEnabled": true,
+        },
+        {
+          "drawingIconsEnabled": true,
+          "title": "Volume",
+          "percentHeight": 30,
+          "marginTop": 1,
+          "showCategoryAxis": true,
+          "valueAxes": [ {
+            "dashLength": 5
+          } ],
+
+          "categoryAxis": {
+            "dashLength": 5
+          },
+
+          "stockGraphs": [ {
+            "valueField": "volume",
+            "type": "column",
+            "showBalloon": false,
+            "fillAlphas": 1
+          },
+          {
+            "valueField": "zScore",
+            "type": "line",
+            "lineColorField": "lineColor",
+            "lineThickness": 2,
+            "showBalloon": true,
+            "bullet": "round",
+            "bulletSize": 1.5,
+            "balloonText": "[[value]]",
+            //"fillAlpha": 0.8,
+            //"lineColor": "#ff6600",
+            "comparable": true,
+            "useDataSetColors":false,
+          }
+          ],
+
+          "stockLegend": {
+            "markerType": "none",
+            "markerSize": 0,
+            "labelText": "",
+            "periodValueTextRegular": "[[value.close]]",
+          },
+
+        },
+        ],
+        "chartScrollbarSettings": {
+          "graph": "g2",
+          "graphType": "line",
+          "usePeriod": "WW"
+        },
+        "chartCursorSettings": {
+          "valueLineBalloonEnabled": true,
+          "valueLineEnabled": true
+        },
+        "periodSelector": {
+          "position": "bottom",
+          "periods": [ {
+            "period": "DD",
+            "count": 10,
+            "label": "10 days"
+          }, {
+            "period": "MM",
+            "count": 1,
+            "label": "1 month"
+          }, {
+            "period": "YYYY",
+            "count": 1,
+            "label": "1 year"
+          }, {
+            "period": "YTD",
+            "label": "YTD"
+          }, {
+            "period": "MAX",
+            "label": "MAX",
+            selected: true,
+          } ]
+        },
+      });
+      chart.titles = [];
+      chart.validateNow();
+    }
+
+    function handleCandleLegend( graph ) {
+      var chart = graph.chart;
+      var hidden = graph.hidden;
+      if (graph.id == 'g1') {
+        if (hidden) {
+          chart.showGraph(chart.graphs[0]);
+        } else {
+          chart.hideGraph(chart.graphs[0]);
+        }
+      } else if (graph.id == 'g2') {
+        if (hidden) {
+          chart.showGraph(chart.graphs[1]);
+        } else {
+          chart.hideGraph(chart.graphs[1]);
+        }
+      } else if (graph.id == 'sAvg') {
+        if (hidden) {
+          chart.showGraph(chart.graphs[2]);
+          chart.showGraph(chart.graphs[3]);
+        } else {
+
+          chart.hideGraph(chart.graphs[2]);
+          chart.hideGraph(chart.graphs[3]);
+        }
+      }
+      return false;
+    }
+  }
 
   function render_volatility_chart (company,second_company) {
     $('#chart-options').show();
