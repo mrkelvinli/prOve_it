@@ -7,22 +7,24 @@ APItesting = {
   methods: {
     GET: function (context, params) {
 
-      var token = "jayzevYadgwDqDKRvaXe";
+      var token = "ZMThqeZuRXPewD3xfe4g"; // remember to change
       var company_name = "AAC.AX";
       var topic = "Cash Rate";
       var lower_range = -5;
       var upper_range = 5;
 
-      // -----------------------
-      // !! START CANDLESTICK !!
-      var stockPrices = StockPrices.find({company_name: company_name, token: token, 'open': {$ne : null}}, {fields: {'date':1, 'open':1, 'last':1, 'high':1, 'low':1, 'volume':1, 'flat_value':1}}).fetch();
-
+      var stock_prices = StockPrices.find({company_name: company_name, token: token, 'open': {$ne : null}}, {fields: {'date':1, 'open':1, 'last':1, 'high':1, 'low':1, 'volume':1, 'flat_value':1}}).fetch();
       //calculate MACD
       var toDoList = []; //array of arrays of values [[1,2],[2,3],[9,10]]
       var ppo = [];
       var currPrice = prevPrice = 0;
-
-      for(var i = 0; i<(stockPrices.length); i++) {
+      var avg = 0;
+      var currPrice = 0;
+      var prevPrice = 0;
+      //calculate standard deviation
+      currPrice = prevPrice = 0;
+      var range = 30;
+      for(var i = 0; i<(stock_prices.length); i++) {
         var bigArray = [];
         var smallArray = [];
 
@@ -32,86 +34,38 @@ APItesting = {
         for(var x = 0; x<30; x++) {
           if (i>=29) {
             if (x < 15) {
-              smallArray.push(stockPrices[i-x].last);
+              smallArray.push(stock_prices[i-x].last);
             }
-            bigArray.push(stockPrices[i-x].last);
+            bigArray.push(stock_prices[i-x].last);
           }
         }
-
-<<<<<<< HEAD
-      var prices = StockPrices.find({token:token, company_name: company, flat_value: {$ne: null}},{fields:{date:true, flat_value: true}}).fetch();
-      var stock_prices = [];
-      prices.forEach(function(p){
-        stock_prices.push({
-          time: p.date,
-          price: p.flat_value,
-        });
-      });
-
-=======
+        var entry = {};
         if (i > 29) {
-          toDoList.push({"bigArray": bigArray, "smallArray": smallArray, "date": stockPrices[i-30].date, "open": stockPrices[i].open, "last": stockPrices[i].last, "high": stockPrices[i].high, "low": stockPrices[i].low, "volume": stockPrices[i].volume, "flat_value": stockPrices[i].flat_value});
-        }
-      }
-      // !! END CANDLESTICK !!
-      // ----------------------
-      // !! START VOLATILITY !!
->>>>>>> ee0337e0534e9fd3be9fd13dcd9c1d093de24bb4
-      var sma = [];
-      var avg = 0;
-      var currPrice = 0;
-      var prevPrice = 0;
-
-      //calculate standard deviation
-      var toDoList = []; //array of arrays of values [[1,2],[2,3],[9,10]]
-      currPrice = prevPrice = 0;
-
-      for(var i = 0; i<(stock_prices.length); i++) {
-        var currArray = [];
-        if (i < 29) {
-          //currArray.push(stock_prices[i].price);
-        } 
-        for(var x = 0; x<30; x++) {
-          if (i>=29) {
-            currArray.push(stock_prices[i-x].price);
+          var result = average(bigArray);
+          var result2 = average(smallArray);
+          entry = {"bigAvg": result, "smallAvg": result2, "date": stock_prices[i-30].date, "open": stock_prices[i].open, "last": stock_prices[i].last, "high": stock_prices[i].high, "low": stock_prices[i].low, "volume": stock_prices[i].volume, "flat_value": stock_prices[i].flat_value};
+          entry['price'] = stock_prices[i-30].flat_value;
+          var currArray = [];
+          for(var j = 0; j < range; j++) {
+            if ((i-30)-j >= 0) {
+              currArray.push(stock_prices[i-j].flat_value);
+            }
           }
+          var result = standardDeviation(currArray);
+          var zScore = (stock_prices[i].flat_value - result[1]) / result[0];
+          zScore = Math.abs(zScore);
+          entry['mAvg'] = result[1];
+          entry['sdUpper'] = (result[0]*2)+result[1];
+          entry['sdLower'] = result[1]-(result[0]*2);
+          entry['sd'] = result[0];
+          entry['zScore'] = zScore;
+          if (zScore >= 1)
+            entry["lineColor"] = "#ff0000";
+          else
+            entry['lineColor'] = "#0077aa";
+          ppo.push(entry);
         }
-        if (i > 29) {
-          toDoList.push({"currArray": currArray, "time": stock_prices[i-30].time, "price": stock_prices[i].price});
-<<<<<<< HEAD
-        }
-        // console.log(toDoList);
       }
-      toDoList.forEach(function (c){
-        var result = standardDeviation(c.currArray);
-        var zScore = (c.price - result[1]) / result[0];
-        zScore = Math.abs(zScore);
-        var entry = {};
-        if (zScore >= 1) {
-          entry = {"time": c.time, "price": c.price, "mAvg": result[1], "sdUpper": ((result[0]*2)+result[1]), "sdLower": (result[1]-(result[0]*2)), "sd": result[0], "zScore": zScore, "lineColor": "#ff0000"};
-        } else {
-          entry = {"time": c.time, "price": c.price, "mAvg": result[1], "sdUpper": ((result[0]*2)+result[1]), "sdLower": (result[1]-(result[0]*2)), "sd": result[0], "zScore": zScore, "lineColor": "#0077aa"};
-        }
-          // console.log(entry);
-          sma.push(entry);
-        });
-=======
-        }
-      // console.log(toDoList);
-      }
-      toDoList.forEach(function (c){
-        var result = standardDeviation(c.currArray);
-        var zScore = (c.price - result[1]) / result[0];
-        zScore = Math.abs(zScore);
-        var entry = {};
-        if (zScore >= 1) {
-          entry = {"time": c.time, "price": c.price, "mAvg": result[1], "sdUpper": ((result[0]*2)+result[1]), "sdLower": (result[1]-(result[0]*2)), "sd": result[0], "zScore": zScore, "lineColor": "#ff0000"};
-        } else {
-          entry = {"time": c.time, "price": c.price, "mAvg": result[1], "sdUpper": ((result[0]*2)+result[1]), "sdLower": (result[1]-(result[0]*2)), "sd": result[0], "zScore": zScore, "lineColor": "#0077aa"};
-        }
-        // console.log(entry);
-        sma.push(entry);
-      });
 
       function standardDeviation(values){
         var avg = average(values);
@@ -138,14 +92,8 @@ APItesting = {
         var avg = sum / data.length;
         return avg;
       }
-      // !! END VOLATILITY !!
-      // ---------------------
 
->>>>>>> ee0337e0534e9fd3be9fd13dcd9c1d093de24bb4
-
-
-    API.utility.response(context, 200, sma);
-    
+      API.utility.response(context, 200, ppo);
     }
   },
 };

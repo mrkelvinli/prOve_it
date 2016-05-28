@@ -197,63 +197,81 @@ Template.chart.rendered = function() {
   renderMainGraph();
 
   function render_overview(company, topic, upper, lower) {
-    // !! start event study !!
-    var stockPrices = StockPrices.find({company_name: company, token: token, 'open': {$ne : null}}, {fields: {'date':1, 'open':1, 'last':1, 'high':1, 'low':1, 'volume':1, 'flat_value':1}}).fetch();
-   
+    var stock_prices = StockPrices.find({company_name: company, token: token, 'open': {$ne : null}}, {fields: {'date':1, 'open':1, 'last':1, 'high':1, 'low':1, 'volume':1, 'flat_value':1}}).fetch();
     //calculate MACD
-    var toDoListA = []; //array of arrays of values [[1,2],[2,3],[9,10]]
+    var toDoList = []; //array of arrays of values [[1,2],[2,3],[9,10]]
     var ppo = [];
     var currPrice = prevPrice = 0;
-
-    for(var i = 0; i<(stockPrices.length); i++) {
+    var avg = 0;
+    var currPrice = 0;
+    var prevPrice = 0;
+    //calculate standard deviation
+    currPrice = prevPrice = 0;
+    var range = 30;
+    for(var i = 0; i<(stock_prices.length); i++) {
       var bigArray = [];
       var smallArray = [];
 
+      if (i < 29) {
+        //currArray.push(stock_prices[i].price);
+      } 
       for(var x = 0; x<30; x++) {
-          if (i>=29) {
-            if (x < 15) {
-              smallArray.push(stockPrices[i-x].last);
-            }
-            bigArray.push(stockPrices[i-x].last);
+        if (i>=29) {
+          if (x < 15) {
+            smallArray.push(stock_prices[i-x].last);
           }
+          bigArray.push(stock_prices[i-x].last);
+        }
       }
+      var entry = {};
       if (i > 29) {
-        toDoListA.push({"bigArray": bigArray, "smallArray": smallArray, "date": stockPrices[i-30].date, "open": stockPrices[i].open, "last": stockPrices[i].last, "high": stockPrices[i].high, "low": stockPrices[i].low, "volume": stockPrices[i].volume, "flat_value": stockPrices[i].flat_value});
+        var result = average(bigArray);
+        var result2 = average(smallArray);
+        entry = {"bigAvg": result, "smallAvg": result2, "date": stock_prices[i-30].date, "open": stock_prices[i].open, "last": stock_prices[i].last, "high": stock_prices[i].high, "low": stock_prices[i].low, "volume": stock_prices[i].volume, "flat_value": stock_prices[i].flat_value};
+        entry['price'] = stock_prices[i-30].flat_value;
+        var currArray = [];
+        for(var j = 0; j < range; j++) {
+          if ((i-30)-j >= 0) {
+            currArray.push(stock_prices[i-j].flat_value);
+          }
+        }
+        var result = standardDeviation(currArray);
+        var zScore = (stock_prices[i].flat_value - result[1]) / result[0];
+        zScore = Math.abs(zScore);
+        entry['mAvg'] = result[1];
+        entry['sdUpper'] = (result[0]*2)+result[1];
+        entry['sdLower'] = result[1]-(result[0]*2);
+        entry['sd'] = result[0];
+        entry['zScore'] = zScore;
+        if (zScore >= 1)
+          entry["lineColor"] = "#ff0000";
+        else
+          entry['lineColor'] = "#0077aa";
+        ppo.push(entry);
       }
     }
 
-    toDoListA.forEach(function (c){
-      var result = movAvg(c.bigArray);
-      var result2 = movAvg(c.smallArray);
-      entry = {"date": c.date, "open": c.open, "last": c.last, "high": c.high, "low": c.low, "volume": c.volume, "flat_value": c.flat_value, "bigAvg": result, "smallAvg": result2, "lineColor": "#ff0000"};
-      ppo.push(entry);
-    });
-
-    function movAvg(data){
-      var sum = 0;
-      for(var i = 0; i<data.length; i++) {
-        sum = sum + data[i];
-      }
-      var avg = sum / data.length;
-      return avg;
-    }
-    // !! end event study !!
-
-    // !! start volatility !!
     function standardDeviation(values){
       var avg = average(values);
-      
+
       var squareDiffs = values.map(function(value){
         var diff = value - avg;
         var sqrDiff = diff * diff;
         return sqrDiff;
       });
-      
+
       var avgSquareDiff = average(squareDiffs);
 
       var stdDev = Math.sqrt(avgSquareDiff);
       var result = [stdDev, avg];
       return result;
+    }
+
+    function labelFunction(item, label) {
+      if (item.index === item.graph.chart.dataProvider.length - 1) 
+        return label;
+      else
+        return "";
     }
 
     function average(data){
@@ -266,80 +284,9 @@ Template.chart.rendered = function() {
       return avg;
     }
 
-    function generateData (company) {
-      var prices = StockPrices.find({token:token, company_name: company, flat_value: {$ne: null}},{fields:{date:true, flat_value: true}}).fetch();
-      var stock_prices = [];
-      prices.forEach(function(p){
-        stock_prices.push({
-          time: p.date,
-          price: p.flat_value,
-        });
-      });
+    drawGraph(ppo, company);
 
-      var sma = [];
-      var avg = 0;
-      var currPrice = 0;
-      var prevPrice = 0;
-
-      //calculate standard deviation
-      var toDoList = []; //array of arrays of values [[1,2],[2,3],[9,10]]
-      currPrice = prevPrice = 0;
-
-      for(var i = 0; i<(stock_prices.length); i++) {
-        var currArray = [];
-        if (i < 29) {
-          //currArray.push(stock_prices[i].price);
-        } 
-        for(var x = 0; x<30; x++) {
-            if (i>=29) {
-              currArray.push(stock_prices[i-x].price);
-            }
-        }
-        if (i > 29) {
-          toDoList.push({"currArray": currArray, "time": stock_prices[i-30].time, "price": stock_prices[i].price});
-        }
-      // console.log(toDoList);
-      }
-      toDoList.forEach(function (c){
-        var result = standardDeviation(c.currArray);
-        var zScore = (c.price - result[1]) / result[0];
-        zScore = Math.abs(zScore);
-        var entry = {};
-        if (zScore >= 1) {
-          entry = {"time": c.time, "price": c.price, "mAvg": result[1], "sdUpper": ((result[0]*2)+result[1]), "sdLower": (result[1]-(result[0]*2)), "sd": result[0], "zScore": zScore, "lineColor": "#ff0000"};
-        } else {
-          entry = {"time": c.time, "price": c.price, "mAvg": result[1], "sdUpper": ((result[0]*2)+result[1]), "sdLower": (result[1]-(result[0]*2)), "sd": result[0], "zScore": zScore, "lineColor": "#0077aa"};
-        }
-        // console.log(entry);
-        sma.push(entry);
-      });
-
-      return sma;
-    }
-
-    function labelFunction(item, label) {
-      if (item.index === item.graph.chart.dataProvider.length - 1)
-        return label;
-      else
-        return "";
-    }
-
-    var chartData1 = generateData(company);
-    // var chartData2 = [];
-    // if (second_company != null) {
-    //   chartData2 = generateData(second_company);
-    // }
-
-    var sdScoreTitle = "Standard Scores for "+company;
-    // !! end volatility !!
-
-
-    drawGraph(ppo,company, chartData1);
-    // if (second_company != '') {
-    //   sdScoreTitle = "Standard Scores for "+company+" compared to "+second_company;
-    // }
-    function drawGraph(chartData,company, sma) {
-      console.log(sma);
+    function drawGraph(chartData, company) {
       var chart = AmCharts.makeChart( "chartdiv", {
         "type": "stock",
         "theme": "light",
@@ -396,7 +343,7 @@ Template.chart.rendered = function() {
             "toField": "zScore"
           }],
           "color": "orange",
-          "dataProvider": sma,
+          "dataProvider": chartData,
           // "title": "West Stock",
           "categoryField": "time"
         }, 
@@ -1203,12 +1150,12 @@ Template.chart.rendered = function() {
     }
 
     function labelFunction(item, label) {
-      if (item.index === item.graph.chart.dataProvider.length - 1)
+      if (item.index === item.graph.chart.dataProvider.length - 1) 
         return label;
-        else
+      else
         return "";
-      }
     }
+  }
 
 
   function render_stock_vs_topic_graph (company, topic, upper_range, lower_range) {
@@ -1394,9 +1341,10 @@ Template.chart.rendered = function() {
     var result = movAvg(c.bigArray);
     var result2 = movAvg(c.smallArray);
     console.log(result2);
-    entry = {"date": c.date, "open": c.open, "last": c.last, "high": c.high, "low": c.low, "volume": c.volume, "flat_value": c.flat_value, "bigAvg": result, "smallAvg": result2, "lineColor": "#ff0000"};
-      // console.log(entry);
-      ppo.push(entry);
+    // console.log(entry);
+    var entry = {"date": c.date, "open": c.open, "last": c.last, "high": c.high, "low": c.low, "volume": c.volume, "flat_value": c.flat_value, "bigAvg": result, "smallAvg": result2, "lineColor": "#ff0000"};
+    // console.log(entry);
+    ppo.push(entry);
     });
 
   function movAvg(data){
