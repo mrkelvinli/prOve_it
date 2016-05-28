@@ -604,9 +604,11 @@ Template.chart.rendered = function() {
       // });
 
       var sma = [];
+      var distinctAvgToDo = [];
       var avg = 0;
       var currPrice = 0;
       var prevPrice = 0;
+      var currAvg = 0;
 
       //calculate standard deviation
       // var toDoList = []; //array of arrays of values [[1,2],[2,3],[9,10]]
@@ -624,13 +626,35 @@ Template.chart.rendered = function() {
               currArray.push(stock_prices[i-j].flat_value);
             }
           }
+
           var result = standardDeviation(currArray);
+
+
+          if (i>19 && i % 20 == 0) {
+            currAvg = average(distinctAvgToDo);
+            distinctAvgToDo = [];
+          }
+          if (i<20) {
+            currAvg = stock_prices[0].flat_value;
+          }
+          distinctAvgToDo.push(stock_prices[i].flat_value);
+          console.log(currAvg);
+          var md = meanDeviation(currArray, currAvg);
+          //console.log("md: "+md);
+          var cci = stock_prices[i].flat_value - result[1];
+          //console.log("bCCI: "+cci);
+
+          md = md * 0.015;
+          cci = cci/md;
+          //console.log("CCI: "+cci);
+
           var zScore = (stock_prices[i].flat_value - result[1]) / result[0];
           zScore = Math.abs(zScore);
           entry['mAvg'] = result[1];
           entry['sdUpper'] = (result[0]*2)+result[1];
           entry['sdLower'] = result[1]-(result[0]*2);
           entry['sd'] = result[0];
+          entry['cci'] = cci;
           entry['zScore'] = zScore;
           if (zScore >= 1)
             entry["lineColor"] = "#ff0000";
@@ -731,6 +755,27 @@ Template.chart.rendered = function() {
       return avg;
     }
 
+    function meanDeviation(data, average) {
+      // There are four steps to calculating the Mean Deviation. First, subtract 
+      // the most recent 20-period average of the typical price from each period's 
+      // typical price. Second, take the absolute values of these numbers. Third, 
+      // sum the absolute values. Fourth, divide by the total number of periods (20). 
+      var cci;
+      var values = [];
+      //console.log(data);
+      for (var i = 0; i< data.length; i++) {
+        cci = data[i] - average;
+        cci = Math.abs(cci);
+        values.push(cci);
+      }
+      var sum = 0;
+      for (var i = 0; i<values.length; i++){ 
+        sum = sum + values[i];
+      }
+      sum = sum/values.length;
+      return sum;
+    }
+
     function drawGraph(sma,sma2, company, second_company) {
 
         // console.log("sma2");
@@ -798,6 +843,9 @@ Template.chart.rendered = function() {
             },{
               "fromField": "zScore",
               "toField": "zScore"
+            }, {
+              "fromField": "cci",
+              "toField": "cci"
             }],
             "color": "orange",
             "dataProvider": sma,
@@ -946,7 +994,6 @@ Template.chart.rendered = function() {
 
               }
             },
-
             {
               "title": sdScoreTitle,
               "percentHeight": 35,
@@ -1002,48 +1049,76 @@ Template.chart.rendered = function() {
                 //"periodValueTextRegular": "[[zScore]]"
               }
             },
-            // {
-            //   "title": "Standard Score for "+second_company,
-            //   "percentHeight": 35,
-            //   "marginTop": 1,
-            //   "showCategoryAxis": true,
-            //   "valueAxes": [ {
-            //     "dashLength": 5
-            //   } ],
+            {
+              "title": "CCI",
+              "percentHeight": 35,
+              "marginTop": 1,
+              // "showCategoryAxis": true,
+              "valueAxes": [ {
+                "dashLength": 5
+              } ],
 
-            //   "categoryAxis": {
-            //     "dashLength": 5
-            //   },
+              "categoryAxis": {
+                "dashLength": 5,
+              //   "guides":  [{
+              //     "value": 100,
+              //     "toValue": 120,
+              //     "lineColor": "#ff0000",
+              //     "inside": true,
+              //     "fillAlpha": 0.9,
+              //     "fillColor": "#CC0000",
+              //     "lineAlpha": 1,
+              //     "label": "Lambert Correction",
+              // }],
+              },
 
-            //   "recalculateToPercents":"never" ,
-            //   "stockGraphs": [ {
-            //     "valueField": "zScore2",
-            //     "type": "line",
-            //     "lineColorField": "lineColor",
-            //     "lineThickness": 2,
-            //     "showBalloon": true,
-            //     "bullet": "round",
-            //     "bulletSize": 1.5,
-            //     "balloonText": "[[value]]",
-            //     //"fillAlpha": 0.8,
-            //     //"lineColor": "#ff6600",
-            //     "useDataSetColors":false,
-            //     "compareField": "zScore2",
-            //     "comparable": true,
-            //     "compareGraphLineThickness": 2,
-            //     "compareGraphBullet": "round",
-            //     "compareGraphBulletSize": 1.5,
-            //     "compareGraphLineColor":"#0077aa",
-            //     "compareGraphBulletColor":"#0077aa",
-            //   }],
+              "recalculateToPercents":"never" ,
+              "stockGraphs": [{
+                "valueField": "cci",
+                "type": "line",
+                //"lineColorField": "lineColor",
+                "lineColor": "#e6b800",
+                "negativeLineColor": "#2eb82e",
+                "fillColor": "#e6b800",
+                "negativeFillColor": "#2eb82e",
+                "negativeBase": 100,
+                "fillAlphas": 0.8,
+                "negativeFillAlphas": 0,
+                "lineThickness": 2,
+                "showBalloon": true,
+                "balloonText": "[[value]]",
+                //"fillAlpha": 0.8,
+                //"lineColor": "#ff6600",
+                "comparable": true,
+                "useDataSetColors":false,
+              },{
+                "valueField": "cci",
+                "type": "line",
+                //"lineColorField": "lineColor",
+                "lineColor": "#e6b800",
+                "lineAlpha": 0,
+                "negativeLineAlpha": 1,
+                "negativeLineColor": "#e6b800",
+                "fillColor": "#2eb82e",
+                "negativeFillColor": "#2eb82e",
+                "fillAlphas": 0,
+                "negativeFillAlphas": 0.8,
+                "lineThickness": 2,
+                "showBalloon": false,
+                "negativeBase": -100,
+                "comparable": true,
+                "useDataSetColors":false,
+              },],
 
-            //   "stockLegend": {
-            //     "markerType": "none",
-            //     "markerSize": 0,
-            //     "labelText": "",
-            //     "periodValueTextRegular": "[[zScore2]]"
-            //   }
-            // }
+              "stockLegend": {
+                "markerType": "none",
+                "markerSize": 0,
+                "labelText": "",
+                //"periodValueTextRegular": "[[zScore]]"
+              }
+            },
+
+
             ],
 
             "chartScrollbarSettings": {
@@ -1053,10 +1128,17 @@ Template.chart.rendered = function() {
               "position": "top"
             },
 
+
+
             "chartCursorSettings": {
               "valueLineBalloonEnabled": true,
             //"valueLineEnabled": true
           }, 
+
+            // categoryAxesSettings: {
+            //   alwaysGroup: false,
+            //   groupToPeriods: ["DD"],
+            // },
 
           "periodSelector": {
             "position": "bottom",
@@ -1102,7 +1184,7 @@ Template.chart.rendered = function() {
               // console.log('test');
               // var chart = event.chart;
               // //var graph = chart.graph;
-              // event.chart.zoomToIndexes(event.chart.dataProvider.length - 2, event.chart.dataProvider.length - 1);
+              // event.chart.zoomToIndexes(0, 100);
               // var graph = event.chart.getGraphById("priceGraph");
               // graph.bullet = "round";
             }
@@ -2842,7 +2924,7 @@ function render_rrg(company) {
       var db_query = Market.findOne({date: date}, {fields: {value: true, _id: false}});
       if ((db_query != null) && (price != null)) {
         var market_price = parseFloat(db_query.value);
-        console.log('cr: ' + price + ', market: ' + market_price + ', date: ' + date);
+        //console.log('cr: ' + price + ', market: ' + market_price + ', date: ' + date);
         data.push([market_price, price]);
       }
     });
