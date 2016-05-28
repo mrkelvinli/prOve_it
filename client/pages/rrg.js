@@ -268,20 +268,41 @@ Template.rrgMain.rendered = function() {
               $("#animate").on("click", function() {
                   "animate" == $(this).text() ? n.startAnimation() : n.stopAnimation()
               });
-              $("#zoomin").on("mousedown touchstart", function() {
+              // $("#zoomin").on("mousedown touchstart", function() {
+              //     n.zoomId = setInterval(function() {
+              //         n.rrgChart.zoom(.99)
+              //     }, 33)
+              // }).on("mouseup mouseout touchend", function() {
+              //     clearInterval(n.zoomId)
+              // });
+              // $("#zoomout").on("mousedown touchstart", function() {
+              //     n.zoomId = setInterval(function() {
+              //         n.rrgChart.zoom(1.01)
+              //     }, 33)
+              // }).on("mouseup mouseout touchend", function() {
+              //     clearInterval(n.zoomId)
+              // });
+
+              $(document).keypress(function(event) {
+                console.log('key: ' + event.which);
+                if ((event.which == 95) || (event.which == 45)) {
+                  console.log("ZOOMING OUT");
                   n.zoomId = setInterval(function() {
-                      n.rrgChart.zoom(.99)
-                  }, 33)
-              }).on("mouseup mouseout touchend", function() {
-                  clearInterval(n.zoomId)
-              });
-              $("#zoomout").on("mousedown touchstart", function() {
+                      n.rrgChart.zoom(1.01);
+                  }, 33);
+                } else if ((event.which == 61) || (event.which == 43)) {
+                  console.log("ZOOMING IN");
                   n.zoomId = setInterval(function() {
-                      n.rrgChart.zoom(1.01)
-                  }, 33)
-              }).on("mouseup mouseout touchend", function() {
-                  clearInterval(n.zoomId)
+                      n.rrgChart.zoom(.99);
+                  }, 33);
+                }
+                if (event.which == 13) {
+                  console.log("cancelling");
+                  clearInterval(n.zoomId);
+                  event.preventDefault();
+                }
               });
+
               $("#zoomfit").on("click", function() {
                   n.rrgChart.zoom("fit")
               });
@@ -701,788 +722,800 @@ Template.rrgMain.rendered = function() {
       this.init(t, i)
   };
   RrgChart.prototype = {
-      init: function(t, i) {
-          this.settings = $.extend({
-              benchmarkSymbol: null,
-              benchmarkData: null,
-              rrgData: null,
-              width: 800,
-              height: 600,
-              tailLength: 0,
-              endTailDate: null,
-              gridBounds: null,
-              fontSize: 10,
-              colorFill: "#fafacc",
-              colorBorder: "#000000",
-              gridColorFill: "#fafafa",
-              gridColorBorder: "#000000",
-              gridColorLines: "#dddddd",
-              gridMargin: {
-                  top: 10,
-                  right: 13,
-                  bottom: 34,
-                  left: 56
-              },
-              hilitedSymbol: null,
-              hiddenSymbols: null,
-              isCentered: !1,
-              minWidth: 800,
-              minHeight: 600,
-              onZoom: function() {},
-              onPan: function() {},
-              onChangeTailLength: function() {},
-              onChangeEndTailDate: function() {}
-          }, i || {});
-          // this.width = this.settings.width;
-          // this.height = this.settings.height;
-          this.width = 1000;
-          this.height = 580;
-          console.log(this.width + ' x ' + this.height);
-          this.$canvas = $("<canvas width='" + this.width + "' height='" + this.height + "'></canvas>").css("-webkit-user-select", "none");
-          this.canvas = this.$canvas[0];
-          this.ctx = this.canvas.getContext("2d");
-          this.bounds = new Rectangle(0, 0, this.width, this.height);
-          this.$elem = t instanceof jQuery ? t : $(t);
-          this.$elem.empty().append(this.canvas);
-          this.messages = new Messages;
-          this.benchmarkSeries = new TimeSeries(this.settings.benchmarkSymbol, this.settings.benchmarkData);
-          this.seriesCollection = new TimeSeriesCollection;
-          for (var e in this.settings.rrgData) {
-              var s = this.settings.rrgData[e];
-              var n = s[s.length - 1].jdkratio;
-              var o = s[s.length - 1].jdkmom;
-              null != n && null != o && this.seriesCollection.push(new TimeSeries(e, s))
-          }
-          this.isPainting = !1;
-          this.isInitialized = !1;
-          this.mouse = {
-              x: 0,
-              y: 0
-          };
-          this.isTrackingMouse = !1;
-          this.isHovered = !1;
-          this.hiddenSymbols = this.settings.hiddenSymbols ? this.settings.hiddenSymbols.toUpperCase().split(",") : [];
-          this.hilitedSymbol = this.settings.hilitedSymbol;
-          var a = this;
-          this.$canvas.on("mousedown", function(t) {
-              a.onMouseDown(t)
-          }).on("mouseover", function() {
-              a.onMouseOver()
-          }).on("mouseout", function() {
-              a.onMouseOut()
-          }).on("touchstart", function(t) {
-              a.onTouchStart(t)
-          }).on("touchend", function(t) {
-              a.onTouchEnd(t)
-          }).on("touchmove", function(t) {
-              a.onTouchMove(t)
-          });
-          this.graph = new RrgChartAxes(this, {
-              benchmarkSeries: this.benchmarkSeries,
-              seriesCollection: this.seriesCollection,
-              fontSize: this.settings.fontSize,
-              // tailLength: this.settings.tailLength,
-              tailLength: 0,
-              gridBounds: this.settings.gridBounds,
-              endTailDate: this.settings.endTailDate,
-              margin: this.settings.gridMargin,
-              colorFill: this.settings.gridColorFill,
-              colorBorder: this.settings.gridColorBorder,
-              colorLines: this.settings.gridColorLines,
-              isCentered: this.settings.isCentered,
-              messages: this.messages
-          });
-          this.paint();
-          this.isInitialized = !0
-      },
-      paint: function() {
-          if (!this.isPainting) {
-              this.isPainting = !0;
-              this.ctx.clearRect(0, 0, this.width, this.height);
-              this.bounds.paint(this.ctx, this.settings.colorFill, this.settings.colorBorder);
-              this.graph.paint();
-              this.isPainting = !1
-          }
-      },
-      isTouchDevice: function() {
-          return "ontouchstart" in window
-      },
-      onMouseOver: function() {
-          this.isHovered = !0;
-          this.isTrackingMouse || this.startTrackingMouse();
-          this.messages.send("mouseover")
-      },
-      onMouseOut: function() {
-          this.isHovered = !1;
-          this.isTrackingMouse && this.stopTrackingMouse();
-          this.messages.send("mouseout")
-      },
-      onMouseMove: function(t) {
-          var i = this.mouse;
-          this.mouse = this.globalToLocal({
-              x: t.pageX,
-              y: t.pageY
-          });
-          this.messages.send("mousemove", i, this.mouse)
-      },
-      onMouseDown: function(t) {
-          this.mouse = this.globalToLocal({
-              x: t.pageX,
-              y: t.pageY
-          });
-          var i = this;
-          $(document.body).on("mouseup.rrgchart", function() {
-              i.onMouseUp()
-          });
-          this.messages.send("mousedown", this.mouse)
-      },
-      onMouseUp: function() {
-          this.isHovered || this.stopTrackingMouse();
-          $(document.body).off("mouseup.rrgchart");
-          this.messages.send("mouseup")
-      },
-      onTouchStart: function(t) {
-          t = t.originalEvent;
-          this.mouse = this.globalToLocal({
-              x: t.targetTouches[0].pageX,
-              y: t.targetTouches[0].pageY
-          });
-          this.messages.send("mousedown", this.mouse)
-      },
-      onTouchEnd: function() {
-          this.messages.send("mouseup")
-      },
-      onTouchMove: function(t) {
-          t.preventDefault();
-          t = t.originalEvent;
-          var i = this.mouse;
-          this.mouse = this.globalToLocal({
-              x: t.changedTouches[0].pageX,
-              y: t.changedTouches[0].pageY
-          });
-          this.messages.send("mousemove", i, this.mouse)
-      },
-      startTrackingMouse: function() {
-          var t = this;
-          if (!this.isTrackingMouse) {
-              $(document.body).on("mousemove.rrgchart", function(i) {
-                  t.onMouseMove(i)
-              });
-              this.isTrackingMouse = !0
-          }
-      },
-      stopTrackingMouse: function() {
-          $(document.body).off("mousemove.rrgchart");
-          this.isTrackingMouse = !1
-      },
-      globalToLocal: function(t) {
-          return {
-              x: t.x - this.$canvas.offset().left,
-              y: t.y - this.$canvas.offset().top
-          }
-      },
-      localToGlobal: function(t) {
-          return {
-              x: t.x + this.$canvas.offset().left,
-              y: t.y + this.$canvas.offset().top
-          }
-      },
-      getStartTimeStamp: function() {
-          return this.graph.getStartTimeStamp()
-      },
-      getEndTimeStamp: function() {
-          return this.graph.getEndTimeStamp()
-      },
-      getStartTailTimeStamp: function() {
-          return this.graph.getStartTailTimeStamp()
-      },
-      getEndTailTimeStamp: function() {
-          return this.graph.getEndTailTimeStamp()
-      },
-      isEndTailTimeStampToday: function() {
-          return this.graph.isEndTailTimeStampToday()
-      },
-      getTailLength: function() {
-          return this.settings.tailLength
-      },
-      getDataDump: function() {
-          return this.graph.getDataDump()
-      },
-      getValueBounds: function() {
-          return this.graph.getValueBounds()
-      },
-      isCentered: function() {
-          return this.graph.settings.isCentered
-      },
-      getWidth: function() {
-          return this.width
-      },
-      getHeight: function() {
-          return this.height
-      },
-      setTailLength: function(t) {
-          var i = this.graph.setTailLength(t);
-          if (i) {
-              this.paint();
-              this.isInitialized && this.settings.onChangeTailLength(this.graph.getDataDump(), this.graph.getTailLength())
-          }
-      },
-      setEndTailDate: function(t) {
-          var i = this.graph.setEndTailDate(t);
-          if (i) {
-              this.paint();
-              this.isInitialized && this.settings.onChangeEndTailDate(this.graph.getDataDump(), this.graph.getEndTailTimeStamp())
-          }
-      },
-      zoom: function(t) {
-          "ctr" == t && (this.graph.settings.isCentered = !this.graph.settings.isCentered);
-          this.graph.zoom(t);
-          this.paint();
-          this.isInitialized && this.settings.onZoom(this.graph.settings.isCentered)
-      },
-      hideSymbol: function(t) {
-          this.hiddenSymbols.push(t.toUpperCase());
-          this.paint()
-      },
-      showSymbol: function(t) {
-          var i = [];
-          for (var e = 0; e < this.hiddenSymbols.length; e++) this.hiddenSymbols[e] != t.toUpperCase() && i.push(this.hiddenSymbols[e]);
-          this.hiddenSymbols = i;
-          this.paint()
-      },
-      hilite: function(t) {
-          this.hilitedSymbol = t.toUpperCase();
-          this.paint()
-      },
-      unHilite: function() {
-          this.hilitedSymbol = null;
-          this.paint()
-      },
-      isResizing: !1,
-      resize: function(t) {
-          if (!this.isResizing) {
-              this.isResizing = !0;
-              var i = Math.max(this.width + t.x, this.settings.minWidth);
-              var e = Math.max(this.height + t.y, this.settings.minHeight);
-              this.width = i;
-              this.height = e;
-              this.canvas.width = this.width;
-              this.canvas.height = this.height;
-              this.graph.resizeBounds();
-              this.paint();
-              this.isResizing = !1
-          }
-      },
-      resetSize: function() {
-          if (!this.isResizing) {
-              this.isResizing = !0;
-              this.width = this.settings.width;
-              this.height = this.settings.height;
-              this.canvas.width = this.width;
-              this.canvas.height = this.height;
-              this.graph.resizeBounds();
-              this.paint();
-              this.isResizing = !1
-          }
-      }
+    init: function(t, i) {
+        this.settings = $.extend({
+            benchmarkSymbol: null,
+            benchmarkData: null,
+            rrgData: null,
+            width: 600,
+            height: 400,
+            tailLength: 10,
+            endTailDate: null,
+            gridBounds: null,
+            fontSize: 10,
+            colorFill: "#fafacc",
+            colorBorder: "#000000",
+            gridColorFill: "#fafafa",
+            gridColorBorder: "#000000",
+            gridColorLines: "#dddddd",
+            gridMargin: {
+                top: 10,
+                right: 13,
+                bottom: 34,
+                left: 56
+            },
+            hilitedSymbol: null,
+            hiddenSymbols: null,
+            isCentered: !1,
+            minWidth: 600,
+            minHeight: 400,
+            onZoom: function() {},
+            onPan: function() {},
+            onChangeTailLength: function() {},
+            onChangeEndTailDate: function() {}
+        }, i || {});
+        // this.width = this.settings.width;
+        // this.height = this.settings.height;
+        this.width = 1000;
+        this.height = 580;
+        // this.$canvas = $("<canvas width='" + this.width + "' height='" + this.height + "'></canvas>").css("-webkit-user-select", "none");
+        this.$canvas = $("<canvas width='" + this.width + "' height='" + this.height + "'></canvas>").css({"-webkit-user-select": "none", 'width': '1000px', 'margin': '0 auto'});
+        this.canvas = this.$canvas[0];
+        this.ctx = this.canvas.getContext("2d");
+        this.bounds = new Rectangle(0, 0, this.width, this.height);
+        this.$elem = t instanceof jQuery ? t : $(t);
+        this.$elem.empty().append(this.canvas);
+        this.messages = new Messages;
+        this.benchmarkSeries = new TimeSeries(this.settings.benchmarkSymbol, this.settings.benchmarkData);
+        this.seriesCollection = new TimeSeriesCollection;
+        for (var e in this.settings.rrgData) {
+            var s = this.settings.rrgData[e];
+            var n = s[s.length - 1].jdkratio;
+            var o = s[s.length - 1].jdkmom;
+            null != n && null != o && this.seriesCollection.push(new TimeSeries(e, s))
+        }
+        this.isPainting = !1;
+        this.isInitialized = !1;
+        this.mouse = {
+            x: 0,
+            y: 0
+        };
+        this.isTrackingMouse = !1;
+        this.isHovered = !1;
+        this.hiddenSymbols = this.settings.hiddenSymbols ? this.settings.hiddenSymbols.toUpperCase().split(",") : [];
+        this.hilitedSymbol = this.settings.hilitedSymbol;
+        var a = this;
+        this.$canvas.on("mousedown", function(t) {
+            a.onMouseDown(t)
+        }).on("mouseover", function() {
+            a.onMouseOver()
+        }).on("mouseout", function() {
+            a.onMouseOut()
+        }).on("touchstart", function(t) {
+            a.onTouchStart(t)
+        }).on("touchend", function(t) {
+            a.onTouchEnd(t)
+        }).on("touchmove", function(t) {
+            a.onTouchMove(t)
+        });
+        this.graph = new RrgChartAxes(this, {
+            benchmarkSeries: this.benchmarkSeries,
+            seriesCollection: this.seriesCollection,
+            fontSize: this.settings.fontSize,
+            // tailLength: this.settings.tailLength,
+            tailLength: 0,
+            gridBounds: this.settings.gridBounds,
+            endTailDate: this.settings.endTailDate,
+            margin: this.settings.gridMargin,
+            // colorFill: this.settings.gridColorFill,
+            colorFill: "#181818",
+            colorBorder: this.settings.gridColorBorder,
+            colorLines: "rgba(221, 221, 221, 0.2)",
+            // colorLines: this.settings.gridColorLines,
+            isCentered: this.settings.isCentered,
+            messages: this.messages
+        });
+        this.paint();
+        this.isInitialized = !0
+    },
+    paint: function() {
+        if (!this.isPainting) {
+            this.isPainting = !0;
+            this.ctx.clearRect(0, 0, this.width, this.height);
+            this.bounds.paint(this.ctx, this.settings.colorFill, this.settings.colorBorder);
+            this.graph.paint();
+            this.isPainting = !1
+        }
+    },
+    isTouchDevice: function() {
+        return "ontouchstart" in window
+    },
+    onMouseOver: function() {
+        this.isHovered = !0;
+        this.isTrackingMouse || this.startTrackingMouse();
+        this.messages.send("mouseover")
+    },
+    onMouseOut: function() {
+        this.isHovered = !1;
+        this.isTrackingMouse && this.stopTrackingMouse();
+        this.messages.send("mouseout")
+    },
+    onMouseMove: function(t) {
+        var i = this.mouse;
+        this.mouse = this.globalToLocal({
+            x: t.pageX,
+            y: t.pageY
+        });
+        this.messages.send("mousemove", i, this.mouse)
+    },
+    onMouseDown: function(t) {
+        this.mouse = this.globalToLocal({
+            x: t.pageX,
+            y: t.pageY
+        });
+        var i = this;
+        $(document.body).on("mouseup.rrgchart", function() {
+            i.onMouseUp()
+        });
+        this.messages.send("mousedown", this.mouse)
+    },
+    onMouseUp: function() {
+        this.isHovered || this.stopTrackingMouse();
+        $(document.body).off("mouseup.rrgchart");
+        this.messages.send("mouseup")
+    },
+    onTouchStart: function(t) {
+        t = t.originalEvent;
+        this.mouse = this.globalToLocal({
+            x: t.targetTouches[0].pageX,
+            y: t.targetTouches[0].pageY
+        });
+        this.messages.send("mousedown", this.mouse)
+    },
+    onTouchEnd: function() {
+        this.messages.send("mouseup")
+    },
+    onTouchMove: function(t) {
+        t.preventDefault();
+        t = t.originalEvent;
+        var i = this.mouse;
+        this.mouse = this.globalToLocal({
+            x: t.changedTouches[0].pageX,
+            y: t.changedTouches[0].pageY
+        });
+        this.messages.send("mousemove", i, this.mouse)
+    },
+    startTrackingMouse: function() {
+        var t = this;
+        if (!this.isTrackingMouse) {
+            $(document.body).on("mousemove.rrgchart", function(i) {
+                t.onMouseMove(i)
+            });
+            this.isTrackingMouse = !0
+        }
+    },
+    stopTrackingMouse: function() {
+        $(document.body).off("mousemove.rrgchart");
+        this.isTrackingMouse = !1
+    },
+    globalToLocal: function(t) {
+        return {
+            x: t.x - this.$canvas.offset().left,
+            y: t.y - this.$canvas.offset().top
+        }
+    },
+    localToGlobal: function(t) {
+        return {
+            x: t.x + this.$canvas.offset().left,
+            y: t.y + this.$canvas.offset().top
+        }
+    },
+    getStartTimeStamp: function() {
+        return this.graph.getStartTimeStamp()
+    },
+    getEndTimeStamp: function() {
+        return this.graph.getEndTimeStamp()
+    },
+    getStartTailTimeStamp: function() {
+        return this.graph.getStartTailTimeStamp()
+    },
+    getEndTailTimeStamp: function() {
+        return this.graph.getEndTailTimeStamp()
+    },
+    isEndTailTimeStampToday: function() {
+        return this.graph.isEndTailTimeStampToday()
+    },
+    getTailLength: function() {
+        return this.settings.tailLength
+    },
+    getDataDump: function() {
+        return this.graph.getDataDump()
+    },
+    getValueBounds: function() {
+        return this.graph.getValueBounds()
+    },
+    isCentered: function() {
+        return this.graph.settings.isCentered
+    },
+    getWidth: function() {
+        return this.width
+    },
+    getHeight: function() {
+        return this.height
+    },
+    setTailLength: function(t) {
+        var i = this.graph.setTailLength(t);
+        if (i) {
+            this.paint();
+            this.isInitialized && this.settings.onChangeTailLength(this.graph.getDataDump(), this.graph.getTailLength())
+        }
+    },
+    setEndTailDate: function(t) {
+        var i = this.graph.setEndTailDate(t);
+        if (i) {
+            this.paint();
+            this.isInitialized && this.settings.onChangeEndTailDate(this.graph.getDataDump(), this.graph.getEndTailTimeStamp())
+        }
+    },
+    zoom: function(t) {
+        "ctr" == t && (this.graph.settings.isCentered = !this.graph.settings.isCentered);
+        this.graph.zoom(t);
+        this.paint();
+        this.isInitialized && this.settings.onZoom(this.graph.settings.isCentered)
+    },
+    hideSymbol: function(t) {
+        this.hiddenSymbols.push(t.toUpperCase());
+        this.paint()
+    },
+    showSymbol: function(t) {
+        var i = [];
+        for (var e = 0; e < this.hiddenSymbols.length; e++) this.hiddenSymbols[e] != t.toUpperCase() && i.push(this.hiddenSymbols[e]);
+        this.hiddenSymbols = i;
+        this.paint()
+    },
+    hilite: function(t) {
+        this.hilitedSymbol = t.toUpperCase();
+        this.paint()
+    },
+    unHilite: function() {
+        this.hilitedSymbol = null;
+        this.paint()
+    },
+    isResizing: !1,
+    resize: function(t) {
+        if (!this.isResizing) {
+            this.isResizing = !0;
+            var i = Math.max(this.width + t.x, this.settings.minWidth);
+            var e = Math.max(this.height + t.y, this.settings.minHeight);
+            this.width = i;
+            this.height = e;
+            this.canvas.width = this.width;
+            this.canvas.height = this.height;
+            this.graph.resizeBounds();
+            this.paint();
+            this.isResizing = !1
+        }
+    },
+    resetSize: function() {
+        if (!this.isResizing) {
+            this.isResizing = !0;
+            this.width = this.settings.width;
+            this.height = this.settings.height;
+            this.canvas.width = this.width;
+            this.canvas.height = this.height;
+            this.graph.resizeBounds();
+            this.paint();
+            this.isResizing = !1
+        }
+    }
   };
   var RrgChartAxes = function(t, i) {
       this.init(t, i)
   };
   RrgChartAxes.prototype = {
-      GREEN: {
-          r: 0,
-          g: 128,
-          b: 0
-      },
-      BLUE: {
-          r: 48,
-          g: 68,
-          b: 219
-      },
-      YELLOW: {
-          r: 243,
-          g: 195,
-          b: 0
-      },
-      RED: {
-          r: 255,
-          g: 0,
-          b: 0
-      },
-      init: function(t, i) {
-          this.settings = $.extend({
-              benchmarkSeries: null,
-              seriesCollection: null,
-              margin: {
-                  top: 10,
-                  right: 12,
-                  bottom: 34,
-                  left: 56
-              },
-              fontSize: 10,
-              fontFamily: "Arial",
-              tailLength: 10,
-              gridBounds: null,
-              endTailDate: null,
-              colorFill: "lightgray",
-              colorBorder: "black",
-              colorLines: "gray",
-              yLabels: "left",
-              isCentered: !1,
-              messages: null
-          }, i || {});
-          this.parent = t;
-          this.canvas = t.canvas;
-          this.ctx = t.ctx;
-          this.messages = this.settings.messages;
-          this.bounds = new Rectangle(this.settings.margin.left, this.settings.margin.top, this.parent.width - this.settings.margin.left - this.settings.margin.right, this.parent.height - this.settings.margin.top - this.settings.margin.bottom);
-          this.grid = new Grid({
-              top: this.settings.margin.top,
-              right: this.parent.width - this.settings.margin.right,
-              bottom: this.parent.height - this.settings.margin.bottom,
-              left: this.settings.margin.left
-          });
-          this.startTailIndex = null;
-          this.endTailIndex = null;
-          this.setEndTailDate(this.settings.endTailDate);
-          if (this.settings.gridBounds) {
-              var e = this.settings.gridBounds.split(",");
-              var s = {
-                  left: +e[0],
-                  right: +e[1],
-                  bottom: +e[2],
-                  top: +e[3]
-              };
-              this.zoom(s)
-          } else this.zoom(this.settings.isCentered ? "ctr" : "fit");
-          this.isMouseDown = !1;
-          this.mouseDownPixel = null;
-          this.cursorStyle = "default";
-          this.messages.receive("mousemove", this.onMouseMove, this);
-          this.messages.receive("mousedown", this.onMouseDown, this);
-          this.messages.receive("mouseup", this.onMouseUp, this);
-          this.font = this.settings.fontSize + "px " + this.settings.fontFamily;
-          this.ctx.font = this.font;
-          this.ctx.lineJoin = "round"
-      },
-      resizeBounds: function() {
-          this.bounds = new Rectangle(this.settings.margin.left, this.settings.margin.top, this.parent.width - this.settings.margin.left - this.settings.margin.right, this.parent.height - this.settings.margin.top - this.settings.margin.bottom);
-          this.grid.setPixels({
-              top: this.settings.margin.top,
-              right: this.parent.width - this.settings.margin.right,
-              bottom: this.parent.height - this.settings.margin.bottom,
-              left: this.settings.margin.left
-          })
-      },
-      onMouseMove: function(t, i) {
-          this.bounds.contains(i) ? this.isMouseDown ? this.pan({
-              x: i.x - t.x,
-              y: i.y - t.y
-          }) : this.setCursor("grab") : this.setCursor("default")
-      },
-      onMouseDown: function(t) {
-          if (this.bounds.contains(t)) {
-              this.isMouseDown = !0;
-              this.mouseDownPixel = {
-                  x: t.x,
-                  y: t.y
-              };
-              this.setCursor("grabbing");
-              this.parent.paint()
-          }
-      },
-      onMouseUp: function() {
-          this.isMouseDown = !1;
-          this.mouseDownPixel = null;
-          this.setCursor("default");
-          this.parent.paint()
-      },
-      setCursor: function(t) {
-          if (t != this.cursorStyle) {
-              this.cursorStyle = t;
-              if (0 == t.indexOf("grab")) {
-                  this.parent.$canvas.css("cursor", "-moz-" + t);
-                  this.parent.$canvas.css("cursor", "-webkit-" + t)
-              } else this.parent.$canvas.css("cursor", t)
-          }
-      },
-      pan: function(t) {
-          this.settings.isCentered = !1;
-          this.grid.translate(t);
-          this.parent.paint();
-          this.parent.isInitialized && this.parent.settings.onPan()
-      },
-      zoom: function(t) {
-          "ctr" != t && (this.settings.isCentered = !1);
-          if ("string" == typeof t) {
-              if ("fit" == t) {
-                  var i = this.settings.seriesCollection.getMinMaxInRange(this.startTailIndex, this.endTailIndex, "jdkratio", this.parent.hiddenSymbols);
-                  var e = this.settings.seriesCollection.getMinMaxInRange(this.startTailIndex, this.endTailIndex, "jdkmom", this.parent.hiddenSymbols)
-              } else if ("ctr" == t) {
-                  var i = this.settings.seriesCollection.getMinMaxInRange(this.startTailIndex, this.endTailIndex, "jdkratio", this.parent.hiddenSymbols);
-                  var e = this.settings.seriesCollection.getMinMaxInRange(this.startTailIndex, this.endTailIndex, "jdkmom", this.parent.hiddenSymbols);
-                  if (!this.hasNullValues(i) && !this.hasNullValues(e)) {
-                      var s = Math.max(100 - i.min, i.max - 100);
-                      var n = Math.max(100 - e.min, e.max - 100);
-                      i = {
-                          min: 100 - s,
-                          max: 100 + s
-                      };
-                      e = {
-                          min: 100 - n,
-                          max: 100 + n
-                      }
-                  }
-              } else {
-                  var i = this.settings.seriesCollection.getMinMax("jdkratio", this.parent.hiddenSymbols);
-                  var e = this.settings.seriesCollection.getMinMax("jdkmom", this.parent.hiddenSymbols)
-              }
-              var o = this.hasNullValues(i) || this.hasNullValues(e) ? {
-                  left: 99,
-                  right: 101,
-                  bottom: 99,
-                  top: 101
-              } : {
-                  left: i.min,
-                  right: i.max,
-                  bottom: e.min,
-                  top: e.max
-              };
-              this.grid.setValues(o).zoom(1.05)
-          } else if ("object" == typeof t) {
-              var o = t;
-              this.grid.setValues(o)
-          } else {
-              var a = t;
-              this.grid.zoom(a)
-          }
-      },
-      hasNullValues: function(t) {
-          var i = !1;
-          for (var e in t)
-              if (null == t[e]) {
-                  i = !0;
-                  break
-              }
-          return i
-      },
-      getBenchmarkSeries: function() {
-          return this.settings.benchmarkSeries
-      },
-      paint: function() {
-          this.settings.isCentered && this.zoom("ctr");
-          this.bounds.clear(this.ctx);
-          this.bounds.paint(this.ctx, this.settings.colorFill, this.settings.colorBorder);
-          this.paintQuadrants();
-          this.paintGrid();
-          this.paintSeries()
-      },
-      isNull: function(t) {
-          return null == t || "undefined" == typeof t || isNaN(parseFloat(t))
-      },
-      paintQuadrants: function() {
-          this.ctx.save();
-          this.clip();
-          var t = this.grid.valueToPixel({
-              x: 100,
-              y: 100
-          });
-          var i = t.x < this.bounds.right && t.y > this.bounds.top;
-          var e = t.x < this.bounds.right && t.y < this.bounds.bottom;
-          var s = t.x > this.bounds.left && t.y < this.bounds.bottom;
-          var n = t.x > this.bounds.left && t.y > this.bounds.top;
-          i && new Rectangle(t.x, this.bounds.top, this.bounds.right - t.x, t.y - this.bounds.top).paint(this.ctx, this.getColor(this.GREEN, .05), null);
-          e && new Rectangle(t.x, t.y, this.bounds.right - t.x, this.bounds.bottom - t.y).paint(this.ctx, this.getColor(this.YELLOW, .05), null);
-          s && new Rectangle(this.bounds.left, t.y, t.x - this.bounds.left, this.bounds.bottom - t.y).paint(this.ctx, this.getColor(this.RED, .05), null);
-          n && new Rectangle(this.bounds.left, this.bounds.top, t.x - this.bounds.left, t.y - this.bounds.top).paint(this.ctx, this.getColor(this.BLUE, .05), null);
-          var o = 14;
-          this.ctx.font = "bold " + o + "px Arial";
-          if (i) {
-              var a = "Leading";
-              var r = this.ctx.measureText(a).width;
-              var h = {
-                  x: this.bounds.right - r - 1,
-                  y: this.bounds.top + o
-              };
-              this.ctx.fillStyle = this.getColor(this.GREEN, .5);
-              this.ctx.fillText(a, h.x, h.y)
-          }
-          if (e) {
-              a = "Weakening";
-              r = this.ctx.measureText(a).width;
-              h = {
-                  x: this.bounds.right - r - 1,
-                  y: this.bounds.bottom - 4
-              };
-              this.ctx.fillStyle = this.getColor(this.YELLOW, .75);
-              this.ctx.fillText(a, h.x, h.y)
-          }
-          if (n) {
-              a = "Improving";
-              h = {
-                  x: this.bounds.left + 2,
-                  y: this.bounds.top + o
-              };
-              this.ctx.fillStyle = this.getColor(this.BLUE, .5);
-              this.ctx.fillText(a, h.x, h.y)
-          }
-          if (s) {
-              a = "Lagging";
-              h = {
-                  x: this.bounds.left + 2,
-                  y: this.bounds.bottom - 4
-              };
-              this.ctx.fillStyle = this.getColor(this.RED, .4);
-              this.ctx.fillText(a, h.x, h.y)
-          }
-          this.ctx.restore()
-      },
-      paintGrid: function() {
-          this.ctx.save();
-          var t = this.settings.fontSize;
-          var i = "JdK RS-Ratio";
-          var e = this.ctx.measureText(i).width;
-          var s = {
-              x: (this.bounds.left + this.bounds.right) / 2 - e / 2,
-              y: this.bounds.bottom + t + 2 * this.settings.fontSize + 1
-          };
-          this.ctx.fillText(i, s.x, s.y);
-          this.ctx.save();
-          i = "JdK RS-Momentum";
-          e = this.ctx.measureText(i).width;
-          var n = this.ctx.measureText("100.00").width + t;
-          this.ctx.translate(this.bounds.left - n - 4, (this.bounds.top + this.bounds.bottom) / 2 + e / 2);
-          this.ctx.rotate(-Math.PI / 2);
-          this.ctx.fillText(i, 0, 0);
-          this.ctx.restore();
-          this.grid.yFloorToCeiling(function(i, e) {
-              if (!(i <= this.bounds.top || i >= this.bounds.bottom)) {
-                  new Path(this.ctx).moveTo(this.bounds.left, i).lineTo(this.bounds.right, i).stroke(this.settings.colorLines);
-                  var s = e.toFixed(2);
-                  var n = this.ctx.measureText(s).width;
-                  this.ctx.fillStyle = this.settings.colorBorder;
-                  "right" == this.settings.yLabels ? this.ctx.fillText(s, this.bounds.right + 2 + t, i + this.settings.fontSize / 2 - 1) : this.ctx.fillText(s, this.bounds.left - t - n - 2, i + this.settings.fontSize / 2 - 2)
-              }
-          }, this);
-          this.grid.xFloorToCeiling(function(i, e) {
-              if (!(i <= this.bounds.left || i >= this.bounds.right)) {
-                  new Path(this.ctx).moveTo(i, this.bounds.top).lineTo(i, this.bounds.bottom).stroke(this.settings.colorLines);
-                  var s = e.toFixed(2);
-                  var n = this.ctx.measureText(s).width;
-                  this.ctx.fillStyle = this.settings.colorBorder;
-                  this.ctx.fillText(s, i - n / 2, this.bounds.bottom + t + this.settings.fontSize)
-              }
-          }, this);
-          this.bounds.paint(this.ctx, null, this.settings.colorBorder);
-          var s = this.grid.valueToPixel({
-              x: 100,
-              y: 100
-          });
-          s.x > this.bounds.left && s.x < this.bounds.right && new Path(this.ctx).moveTo(s.x, this.bounds.top).lineTo(s.x, this.bounds.bottom).stroke(this.settings.colorBorder);
-          s.y > this.bounds.top && s.y < this.bounds.bottom && new Path(this.ctx).moveTo(this.bounds.left, s.y).lineTo(this.bounds.right, s.y).stroke(this.settings.colorBorder);
-          this.ctx.restore()
-      },
-      clip: function() {
-          this.ctx.rect(this.bounds.x, this.bounds.y, this.bounds.w, this.bounds.h);
-          this.ctx.clip()
-      },
-      isVisibleSeries: function(t) {
-          return !this.isHiddenSeries(t)
-      },
-      isHiddenSeries: function(t) {
-          var i = t.getId();
-          return -1 != this.parent.hiddenSymbols.indexOf(i)
-      },
-      hasHilitedSymbol: function() {
-          return null != this.parent.hilitedSymbol
-      },
-      isHilitedSymbol: function(t) {
-          return this.parent.hilitedSymbol && t.toUpperCase() == this.parent.hilitedSymbol.toUpperCase()
-      },
-      paintSeries: function() {
-          this.ctx.save();
-          this.clip();
-          var t = [];
-          this.settings.seriesCollection.each(function(i, e) {
-              if (!this.isHiddenSeries(e)) {
-                  var s = new RrgChartTail(this.ctx);
-                  e.traverseRange(this.startTailIndex, this.endTailIndex, function(t, i) {
-                      var e = i.jdkratio;
-                      var n = i.jdkmom;
-                      if (e && n) {
-                          var o = this.grid.valueToPixel({
-                              x: e,
-                              y: n
-                          });
-                          s.add(o.x, o.y)
-                      }
-                  }, this);
-                  this.ctx.lineWidth = this.getSeriesThickness(e);
-                  var n = this.getSeriesColor(e);
-                  var o = this.hasHilitedSymbol() && !this.isHilitedSymbol(e.getId()) ? .1 : 1;
-                  if (s.size() > 0) {
-                      s.paint(n.r, n.g, n.b, o);
-                      t.push(s);
-                      var a = e.getId();
-                      var r = this.ctx.measureText(a).width;
-                      var h = {
-                          x: e.get(this.endTailIndex, "jdkratio"),
-                          y: e.get(this.endTailIndex, "jdkmom")
-                      };
-                      var l = this.grid.valueToPixel(h);
-                      this.ctx.fillStyle = "black";
-                      var u = l.x + 7;
-                      var g = l.y + this.settings.fontSize / 2 - 1.5;
-                      var c = u + r > this.bounds.right;
-                      c && (u -= 14 + r);
-                      u + r > this.bounds.right && (u = this.bounds.right - r - 1);
-                      u < this.bounds.left + 2 && (u = this.bounds.left + 2);
-                      g < this.bounds.top - 1 && (g = this.bounds.top - 1);
-                      if (g > this.bounds.bottom + this.settings.fontSize) {
-                          g = this.bounds.bottom + this.settings.fontSize;
-                          this.ctx.fillStyle = null != this.parent.settings.colorFill ? this.parent.settings.colorFill : "#eeeeee";
-                          this.ctx.fillRect(u, g - this.settings.fontSize + 1, r, this.settings.fontSize)
-                      }
-                      o = this.hasHilitedSymbol() && !this.isHilitedSymbol(e.getId()) ? .1 : 1;
-                      this.ctx.font = this.hasHilitedSymbol() && this.isHilitedSymbol(e.getId()) ? "bold " + this.font : this.font;
-                      this.ctx.fillStyle = "rgba(0,0,0," + o + ")";
-                      this.ctx.fillText(a, u, g)
-                  }
-              }
-          }, this);
-          this.ctx.restore();
-          this.ctx.save();
-          for (var i = 0; i < t.length; i++) {
-              var e = t[i].getHead();
-              var s = t[i].headRadius;
-              var n = e.x > this.bounds.right - s - 1 || e.x < this.bounds.left + s + 1 || e.y > this.bounds.bottom - s - 1 || e.y < this.bounds.top + s + 1;
-              e.x > this.bounds.right + s + 1 && (e.x = this.bounds.right + s + 1);
-              e.x < this.bounds.left - s && (e.x = this.bounds.left - s);
-              e.y > this.bounds.bottom + s + 1 && (e.y = this.bounds.bottom + s + 1);
-              e.y < this.bounds.top - s && (e.y = this.bounds.top - s);
-              if (n) {
-                  this.ctx.beginPath();
-                  this.ctx.arc(e.x, e.y, s, 0, 2 * Math.PI, !1);
-                  this.ctx.fillStyle = t[i].getColor();
-                  this.ctx.fill();
-                  this.ctx.strokeStyle = "rgba(0,0,0," + t[i].alpha + ")";
-                  this.ctx.stroke()
-              }
-          }
-          this.ctx.restore()
-      },
-      getSeriesColor: function(t) {
-          var i = t.get(this.endTailIndex, "jdkratio");
-          var e = t.get(this.endTailIndex, "jdkmom");
-          if (!i || !e) return {
-              r: 0,
-              g: 0,
-              b: 0
-          };
-          var s = i - 100;
-          var n = e - 100;
-          var o = 0;
-          o = s >= 0 ? n >= 0 ? Math.atan(n / s) * (180 / Math.PI) : 360 - Math.atan(-n / s) * (180 / Math.PI) : e >= 100 ? 180 - Math.atan(-n / s) * (180 / Math.PI) : 180 + Math.atan(n / s) * (180 / Math.PI);
-          return o >= 0 && 90 > o ? this.GREEN : o >= 90 && 180 > o ? this.BLUE : o >= 180 && 270 > o ? this.RED : o >= 270 && 360 > o ? this.YELLOW : {
-              r: 0,
-              g: 0,
-              b: 0
-          }
-      },
-      getSeriesThickness: function(t) {
-          var i = t.get(this.endTailIndex, "jdkratio");
-          var e = t.get(this.endTailIndex, "jdkmom");
-          if (!i || !e) return 1;
-          var s = Math.sqrt(Math.pow(i - 100, 2) + Math.pow(e - 100, 2));
-          var n = 1.5 * s;
-          .5 > n && (n = .5);
-          n > 4.5 && (n = 4.5);
-          return n
-      },
-      getColor: function(t, i) {
-          return "rgba(" + t.r + "," + t.g + "," + t.b + "," + i + ")"
-      },
-      getStartTimeStamp: function() {
-          return this.getBenchmarkSeries().getStartTimeStamp()
-      },
-      getEndTimeStamp: function() {
-          return this.getBenchmarkSeries().getEndTimeStamp()
-      },
-      getStartTailTimeStamp: function() {
-          return this.getBenchmarkSeries().timestamps[this.startTailIndex]
-      },
-      getEndTailTimeStamp: function() {
-          return this.getBenchmarkSeries().timestamps[this.endTailIndex]
-      },
-      isEndTailTimeStampToday: function() {
-          return this.endTailIndex == this.getBenchmarkSeries().length - 1
-      },
-      getTailLength: function() {
-          return this.settings.tailLength
-      },
-      getDataDump: function() {
-          var t = this.getBenchmarkSeries().timestamps[this.startTailIndex];
-          var i = this.getBenchmarkSeries().timestamps[this.endTailIndex];
-          var e = [];
-          var s = this.getBenchmarkSeries();
-          var n = {
-              symbol: s.getId(),
-              timestampStart: t,
-              timestampEnd: i,
-              priceStart: s.get(this.startTailIndex, "price"),
-              priceEnd: s.get(this.endTailIndex, "price")
-          };
-          e.push(n);
-          this.settings.seriesCollection.each(function(s, n) {
-              var o = n.get(this.endTailIndex, "jdkratio");
-              var a = n.get(this.endTailIndex, "jdkmom");
-              var r = n.get(this.startTailIndex, "price");
-              var h = n.get(this.endTailIndex, "price");
-              // if(isNaN(priceStart) && this.startTailIndex!=0) {
-              var l = !this.isNull(o) && !this.isNull(a);
-              if (l) {
-                  var u = {
-                      symbol: n.getId(),
-                      timestampStart: t,
-                      timestampEnd: i,
-                      priceStart: r,
-                      priceEnd: h,
-                      jdkRatioEnd: o,
-                      jdkMomentumEnd: a
-                  };
-                  e.push(u)
-              }
-          }, this);
-          return e
-      },
-      getValueBounds: function() {
-          return {
-              left: this.grid.x.value.min.toFixed(2),
-              right: this.grid.x.value.max.toFixed(2),
-              bottom: this.grid.y.value.min.toFixed(2),
-              top: this.grid.y.value.max.toFixed(2)
-          }
-      },
-      setTailLength: function(t) {
-          if (t != this.settings.tailLength) {
-              this.settings.tailLength = t;
-              this.setEndTailIndex(this.endTailIndex);
-              return !0
-          }
-          return !1
-      },
-      setEndTailDate: function(t) {
-          var i = t ? this.getBenchmarkSeries().getIndexFromDate(t) : null;
-          this.setEndTailIndex(i);
-          return !0
-      },
-      setEndTailIndex: function(t) {
-          null == t && (t = this.getBenchmarkSeries().length - 1);
-          this.endTailIndex = t;
-          this.startTailIndex = this.endTailIndex - this.settings.tailLength;
-          this.startTailIndex < 0 && (this.startTailIndex = 0)
-      }
+    GREEN: {
+        r: 0,
+        g: 128,
+        b: 0
+    },
+    BLUE: {
+        r: 48,
+        g: 68,
+        b: 219
+    },
+    YELLOW: {
+        r: 243,
+        g: 195,
+        b: 0
+    },
+    RED: {
+        r: 255,
+        g: 0,
+        b: 0
+    },
+    init: function(t, i) {
+        this.settings = $.extend({
+            benchmarkSeries: null,
+            seriesCollection: null,
+            margin: {
+                top: 10,
+                right: 12,
+                bottom: 34,
+                left: 56
+            },
+            fontSize: 10,
+            fontFamily: "Arial",
+            tailLength: 10,
+            gridBounds: null,
+            endTailDate: null,
+            colorFill: "lightgray",
+            colorBorder: "black",
+            colorLines: "gray",
+            yLabels: "left",
+            isCentered: !1,
+            messages: null
+        }, i || {});
+        this.parent = t;
+        this.canvas = t.canvas;
+        this.ctx = t.ctx;
+        this.messages = this.settings.messages;
+        this.bounds = new Rectangle(this.settings.margin.left, this.settings.margin.top, this.parent.width - this.settings.margin.left - this.settings.margin.right, this.parent.height - this.settings.margin.top - this.settings.margin.bottom);
+        this.grid = new Grid({
+            top: this.settings.margin.top,
+            right: this.parent.width - this.settings.margin.right,
+            bottom: this.parent.height - this.settings.margin.bottom,
+            left: this.settings.margin.left
+        });
+        this.startTailIndex = null;
+        this.endTailIndex = null;
+        this.setEndTailDate(this.settings.endTailDate);
+        if (this.settings.gridBounds) {
+            var e = this.settings.gridBounds.split(",");
+            var s = {
+                left: +e[0],
+                right: +e[1],
+                bottom: +e[2],
+                top: +e[3]
+            };
+            this.zoom(s)
+        } else this.zoom(this.settings.isCentered ? "ctr" : "fit");
+        this.isMouseDown = !1;
+        this.mouseDownPixel = null;
+        this.cursorStyle = "default";
+        this.messages.receive("mousemove", this.onMouseMove, this);
+        this.messages.receive("mousedown", this.onMouseDown, this);
+        this.messages.receive("mouseup", this.onMouseUp, this);
+        this.font = this.settings.fontSize + "px " + this.settings.fontFamily;
+        this.ctx.font = this.font;
+        this.ctx.lineJoin = "round"
+    },
+    resizeBounds: function() {
+        this.bounds = new Rectangle(this.settings.margin.left, this.settings.margin.top, this.parent.width - this.settings.margin.left - this.settings.margin.right, this.parent.height - this.settings.margin.top - this.settings.margin.bottom);
+        this.grid.setPixels({
+            top: this.settings.margin.top,
+            right: this.parent.width - this.settings.margin.right,
+            bottom: this.parent.height - this.settings.margin.bottom,
+            left: this.settings.margin.left
+        })
+    },
+    onMouseMove: function(t, i) {
+        this.bounds.contains(i) ? this.isMouseDown ? this.pan({
+            x: i.x - t.x,
+            y: i.y - t.y
+        }) : this.setCursor("grab") : this.setCursor("default")
+    },
+    onMouseDown: function(t) {
+        if (this.bounds.contains(t)) {
+            this.isMouseDown = !0;
+            this.mouseDownPixel = {
+                x: t.x,
+                y: t.y
+            };
+            this.setCursor("grabbing");
+            this.parent.paint()
+        }
+    },
+    onMouseUp: function() {
+        this.isMouseDown = !1;
+        this.mouseDownPixel = null;
+        this.setCursor("default");
+        this.parent.paint()
+    },
+    setCursor: function(t) {
+        if (t != this.cursorStyle) {
+            this.cursorStyle = t;
+            if (0 == t.indexOf("grab")) {
+                this.parent.$canvas.css("cursor", "-moz-" + t);
+                this.parent.$canvas.css("cursor", "-webkit-" + t)
+            } else this.parent.$canvas.css("cursor", t)
+        }
+    },
+    pan: function(t) {
+        this.settings.isCentered = !1;
+        this.grid.translate(t);
+        this.parent.paint();
+        this.parent.isInitialized && this.parent.settings.onPan()
+    },
+    zoom: function(t) {
+        "ctr" != t && (this.settings.isCentered = !1);
+        if ("string" == typeof t) {
+            if ("fit" == t) {
+                var i = this.settings.seriesCollection.getMinMaxInRange(this.startTailIndex, this.endTailIndex, "jdkratio", this.parent.hiddenSymbols);
+                var e = this.settings.seriesCollection.getMinMaxInRange(this.startTailIndex, this.endTailIndex, "jdkmom", this.parent.hiddenSymbols)
+            } else if ("ctr" == t) {
+                var i = this.settings.seriesCollection.getMinMaxInRange(this.startTailIndex, this.endTailIndex, "jdkratio", this.parent.hiddenSymbols);
+                var e = this.settings.seriesCollection.getMinMaxInRange(this.startTailIndex, this.endTailIndex, "jdkmom", this.parent.hiddenSymbols);
+                if (!this.hasNullValues(i) && !this.hasNullValues(e)) {
+                    var s = Math.max(100 - i.min, i.max - 100);
+                    var n = Math.max(100 - e.min, e.max - 100);
+                    i = {
+                        min: 100 - s,
+                        max: 100 + s
+                    };
+                    e = {
+                        min: 100 - n,
+                        max: 100 + n
+                    }
+                }
+            } else {
+                var i = this.settings.seriesCollection.getMinMax("jdkratio", this.parent.hiddenSymbols);
+                var e = this.settings.seriesCollection.getMinMax("jdkmom", this.parent.hiddenSymbols)
+            }
+            var o = this.hasNullValues(i) || this.hasNullValues(e) ? {
+                left: 99,
+                right: 101,
+                bottom: 99,
+                top: 101
+            } : {
+                left: i.min,
+                right: i.max,
+                bottom: e.min,
+                top: e.max
+            };
+            this.grid.setValues(o).zoom(1.05)
+        } else if ("object" == typeof t) {
+            var o = t;
+            this.grid.setValues(o)
+        } else {
+            var a = t;
+            this.grid.zoom(a)
+        }
+    },
+    hasNullValues: function(t) {
+        var i = !1;
+        for (var e in t)
+            if (null == t[e]) {
+                i = !0;
+                break
+            }
+        return i
+    },
+    getBenchmarkSeries: function() {
+        return this.settings.benchmarkSeries
+    },
+    paint: function() {
+        this.settings.isCentered && this.zoom("ctr");
+        this.bounds.clear(this.ctx);
+        this.bounds.paint(this.ctx, this.settings.colorFill, this.settings.colorBorder);
+        this.paintQuadrants();
+        this.paintGrid();
+        this.paintSeries()
+    },
+    isNull: function(t) {
+        return null == t || "undefined" == typeof t || isNaN(parseFloat(t))
+    },
+    paintQuadrants: function() {
+        this.ctx.save();
+        this.clip();
+        var t = this.grid.valueToPixel({
+            x: 100,
+            y: 100
+        });
+        var i = t.x < this.bounds.right && t.y > this.bounds.top;
+        var e = t.x < this.bounds.right && t.y < this.bounds.bottom;
+        var s = t.x > this.bounds.left && t.y < this.bounds.bottom;
+        var n = t.x > this.bounds.left && t.y > this.bounds.top;
+
+        i && new Rectangle(t.x, this.bounds.top, this.bounds.right - t.x, t.y - this.bounds.top).paint(this.ctx, this.getColor(this.GREEN, .1), null);
+        e && new Rectangle(t.x, t.y, this.bounds.right - t.x, this.bounds.bottom - t.y).paint(this.ctx, this.getColor(this.YELLOW, .1), null);
+        s && new Rectangle(this.bounds.left, t.y, t.x - this.bounds.left, this.bounds.bottom - t.y).paint(this.ctx, this.getColor(this.RED, .1), null);
+        n && new Rectangle(this.bounds.left, this.bounds.top, t.x - this.bounds.left, t.y - this.bounds.top).paint(this.ctx, this.getColor(this.BLUE, .1), null);
+        var o = 14;
+        this.ctx.font = "bold " + o + "px Arial";
+        if (i) {
+            var a = "Leading";
+            var r = this.ctx.measureText(a).width;
+            var h = {
+                x: this.bounds.right - r - 1,
+                y: this.bounds.top + o
+            };
+            // this.ctx.fillStyle = this.getColor(this.GREEN, .5);
+            this.ctx.fillStyle = this.getColor(this.GREEN, .6);
+            this.ctx.fillText(a, h.x, h.y)
+        }
+        if (e) {
+            a = "Weakening";
+            r = this.ctx.measureText(a).width;
+            h = {
+                x: this.bounds.right - r - 1,
+                y: this.bounds.bottom - 4
+            };
+            this.ctx.fillStyle = this.getColor(this.YELLOW, .6);
+            this.ctx.fillText(a, h.x, h.y)
+        }
+        if (n) {
+            a = "Improving";
+            h = {
+                x: this.bounds.left + 2,
+                y: this.bounds.top + o
+            };
+            this.ctx.fillStyle = this.getColor(this.BLUE, .6);
+            this.ctx.fillText(a, h.x, h.y)
+        }
+        if (s) {
+            a = "Lagging";
+            h = {
+                x: this.bounds.left + 2,
+                y: this.bounds.bottom - 4
+            };
+            this.ctx.fillStyle = this.getColor(this.RED, .6);
+            this.ctx.fillText(a, h.x, h.y)
+        }
+        this.ctx.restore()
+    },
+    paintGrid: function() {
+        this.ctx.save();
+        var t = this.settings.fontSize;
+        var i = "JdK RS-Ratio";
+        var e = this.ctx.measureText(i).width;
+        var s = {
+            x: (this.bounds.left + this.bounds.right) / 2 - e / 2,
+            y: this.bounds.bottom + t + 2 * this.settings.fontSize + 1
+        };
+        this.ctx.font = 'bold 11px Droid Sans';
+        this.ctx.fillStyle = 'rgba(255,255,255,0.8)';
+        this.ctx.fillText(i, s.x, s.y);
+        this.ctx.save();
+        i = "JdK RS-Momentum";
+        e = this.ctx.measureText(i).width;
+        var n = this.ctx.measureText("100.00").width + t;
+        this.ctx.translate(this.bounds.left - n - 4, (this.bounds.top + this.bounds.bottom) / 2 + e / 2);
+        this.ctx.rotate(-Math.PI / 2);
+        this.ctx.fillText(i, 0, 0);
+        this.ctx.restore();
+        this.grid.yFloorToCeiling(function(i, e) {
+            if (!(i <= this.bounds.top || i >= this.bounds.bottom)) {
+                new Path(this.ctx).moveTo(this.bounds.left, i).lineTo(this.bounds.right, i).stroke(this.settings.colorLines);
+                var s = e.toFixed(2);
+                var n = this.ctx.measureText(s).width;
+                // this.ctx.fillStyle = this.settings.colorBorder;
+                this.ctx.font = '10.5px Droid Sans';
+                this.ctx.fillStyle = 'rgba(255,255,255,0.8)';
+                "right" == this.settings.yLabels ? this.ctx.fillText(s, this.bounds.right + 2 + t, i + this.settings.fontSize / 2 - 1) : this.ctx.fillText(s, this.bounds.left - t - n - 2, i + this.settings.fontSize / 2 - 2)
+            }
+        }, this);
+        this.grid.xFloorToCeiling(function(i, e) {
+            if (!(i <= this.bounds.left || i >= this.bounds.right)) {
+                new Path(this.ctx).moveTo(i, this.bounds.top).lineTo(i, this.bounds.bottom).stroke(this.settings.colorLines);
+                var s = e.toFixed(2);
+                var n = this.ctx.measureText(s).width;
+                // this.ctx.fillStyle = this.settings.colorBorder;
+                this.ctx.font = '10.5px Droid Sans';
+                this.ctx.fillStyle = 'rgba(255,255,255,0.8)';
+                this.ctx.fillText(s, i - n / 2, this.bounds.bottom + t + this.settings.fontSize)
+            }
+        }, this);
+        this.bounds.paint(this.ctx, null, this.settings.colorBorder);
+        var s = this.grid.valueToPixel({
+            x: 100,
+            y: 100
+        });
+        s.x > this.bounds.left && s.x < this.bounds.right && new Path(this.ctx).moveTo(s.x, this.bounds.top).lineTo(s.x, this.bounds.bottom).stroke(this.settings.colorBorder);
+        s.y > this.bounds.top && s.y < this.bounds.bottom && new Path(this.ctx).moveTo(this.bounds.left, s.y).lineTo(this.bounds.right, s.y).stroke(this.settings.colorBorder);
+        this.ctx.restore()
+    },
+    clip: function() {
+        this.ctx.rect(this.bounds.x, this.bounds.y, this.bounds.w, this.bounds.h);
+        this.ctx.clip()
+    },
+    isVisibleSeries: function(t) {
+        return !this.isHiddenSeries(t)
+    },
+    isHiddenSeries: function(t) {
+        var i = t.getId();
+        return -1 != this.parent.hiddenSymbols.indexOf(i)
+    },
+    hasHilitedSymbol: function() {
+        return null != this.parent.hilitedSymbol
+    },
+    isHilitedSymbol: function(t) {
+        return this.parent.hilitedSymbol && t.toUpperCase() == this.parent.hilitedSymbol.toUpperCase()
+    },
+    paintSeries: function() {
+        this.ctx.save();
+        this.clip();
+        var t = [];
+        this.settings.seriesCollection.each(function(i, e) {
+            if (!this.isHiddenSeries(e)) {
+                var s = new RrgChartTail(this.ctx);
+                e.traverseRange(this.startTailIndex, this.endTailIndex, function(t, i) {
+                    var e = i.jdkratio;
+                    var n = i.jdkmom;
+                    if (e && n) {
+                        var o = this.grid.valueToPixel({
+                            x: e,
+                            y: n
+                        });
+                        s.add(o.x, o.y)
+                    }
+                }, this);
+                // this.ctx.lineWidth = this.getSeriesThickness(e);
+                this.ctx.lineWidth = 2.5;
+                var n = this.getSeriesColor(e);
+                var o = this.hasHilitedSymbol() && !this.isHilitedSymbol(e.getId()) ? .1 : 1;
+                if (s.size() > 0) {
+                    s.paint(n.r, n.g, n.b, o);
+                    t.push(s);
+                    var a = e.getId();
+                    var r = this.ctx.measureText(a).width;
+                    var h = {
+                        x: e.get(this.endTailIndex, "jdkratio"),
+                        y: e.get(this.endTailIndex, "jdkmom")
+                    };
+                    var l = this.grid.valueToPixel(h);
+                    this.ctx.fillStyle = "black";
+                    var u = l.x + 7;
+                    var g = l.y + this.settings.fontSize / 2 - 1.5;
+                    var c = u + r > this.bounds.right;
+                    c && (u -= 14 + r);
+                    u + r > this.bounds.right && (u = this.bounds.right - r - 1);
+                    u < this.bounds.left + 2 && (u = this.bounds.left + 2);
+                    g < this.bounds.top - 1 && (g = this.bounds.top - 1);
+                    if (g > this.bounds.bottom + this.settings.fontSize) {
+                        g = this.bounds.bottom + this.settings.fontSize;
+                        this.ctx.fillStyle = null != this.parent.settings.colorFill ? this.parent.settings.colorFill : "#eeeeee";
+                        this.ctx.fillRect(u, g - this.settings.fontSize + 1, r, this.settings.fontSize)
+                    }
+                    o = this.hasHilitedSymbol() && !this.isHilitedSymbol(e.getId()) ? .1 : 1;
+                    this.ctx.font = this.hasHilitedSymbol() && this.isHilitedSymbol(e.getId()) ? "bold " + this.font : '13px Droid Sans';
+                    // this.ctx.fillStyle = "rgba(0,0,0," + o + ")";
+                    this.ctx.fillStyle = "rgba(255,255,255," + o + ")";
+                    this.ctx.fillText(a, u, g)
+                }
+            }
+        }, this);
+        this.ctx.restore();
+        this.ctx.save();
+        for (var i = 0; i < t.length; i++) {
+            var e = t[i].getHead();
+            var s = t[i].headRadius;
+            var n = e.x > this.bounds.right - s - 1 || e.x < this.bounds.left + s + 1 || e.y > this.bounds.bottom - s - 1 || e.y < this.bounds.top + s + 1;
+            e.x > this.bounds.right + s + 1 && (e.x = this.bounds.right + s + 1);
+            e.x < this.bounds.left - s && (e.x = this.bounds.left - s);
+            e.y > this.bounds.bottom + s + 1 && (e.y = this.bounds.bottom + s + 1);
+            e.y < this.bounds.top - s && (e.y = this.bounds.top - s);
+            if (n) {
+                this.ctx.beginPath();
+                this.ctx.arc(e.x, e.y, s, 0, 2 * Math.PI, !1);
+                this.ctx.fillStyle = t[i].getColor();
+                this.ctx.fill();
+                this.ctx.strokeStyle = "rgba(0,0,0," + t[i].alpha + ")";
+                this.ctx.stroke()
+            }
+        }
+        this.ctx.restore()
+    },
+    getSeriesColor: function(t) {
+        var i = t.get(this.endTailIndex, "jdkratio");
+        var e = t.get(this.endTailIndex, "jdkmom");
+        if (!i || !e) return {
+            r: 0,
+            g: 0,
+            b: 0
+        };
+        var s = i - 100;
+        var n = e - 100;
+        var o = 0;
+        o = s >= 0 ? n >= 0 ? Math.atan(n / s) * (180 / Math.PI) : 360 - Math.atan(-n / s) * (180 / Math.PI) : e >= 100 ? 180 - Math.atan(-n / s) * (180 / Math.PI) : 180 + Math.atan(n / s) * (180 / Math.PI);
+        return o >= 0 && 90 > o ? this.GREEN : o >= 90 && 180 > o ? this.BLUE : o >= 180 && 270 > o ? this.RED : o >= 270 && 360 > o ? this.YELLOW : {
+            r: 0,
+            g: 0,
+            b: 0
+        }
+    },
+    getSeriesThickness: function(t) {
+        var i = t.get(this.endTailIndex, "jdkratio");
+        var e = t.get(this.endTailIndex, "jdkmom");
+        if (!i || !e) return 1;
+        var s = Math.sqrt(Math.pow(i - 100, 2) + Math.pow(e - 100, 2));
+        var n = 1.5 * s;
+        .5 > n && (n = .5);
+        n > 4.5 && (n = 4.5);
+        return n
+    },
+    getColor: function(t, i) {
+        return "rgba(" + t.r + "," + t.g + "," + t.b + "," + i + ")"
+    },
+    getStartTimeStamp: function() {
+        return this.getBenchmarkSeries().getStartTimeStamp()
+    },
+    getEndTimeStamp: function() {
+        return this.getBenchmarkSeries().getEndTimeStamp()
+    },
+    getStartTailTimeStamp: function() {
+        return this.getBenchmarkSeries().timestamps[this.startTailIndex]
+    },
+    getEndTailTimeStamp: function() {
+        return this.getBenchmarkSeries().timestamps[this.endTailIndex]
+    },
+    isEndTailTimeStampToday: function() {
+        return this.endTailIndex == this.getBenchmarkSeries().length - 1
+    },
+    getTailLength: function() {
+        return this.settings.tailLength
+    },
+    getDataDump: function() {
+        var t = this.getBenchmarkSeries().timestamps[this.startTailIndex];
+        var i = this.getBenchmarkSeries().timestamps[this.endTailIndex];
+        var e = [];
+        var s = this.getBenchmarkSeries();
+        var n = {
+            symbol: s.getId(),
+            timestampStart: t,
+            timestampEnd: i,
+            priceStart: s.get(this.startTailIndex, "price"),
+            priceEnd: s.get(this.endTailIndex, "price")
+        };
+        e.push(n);
+        this.settings.seriesCollection.each(function(s, n) {
+            var o = n.get(this.endTailIndex, "jdkratio");
+            var a = n.get(this.endTailIndex, "jdkmom");
+            var r = n.get(this.startTailIndex, "price");
+            var h = n.get(this.endTailIndex, "price");
+            // if(isNaN(priceStart) && this.startTailIndex!=0) {
+            var l = !this.isNull(o) && !this.isNull(a);
+            if (l) {
+                var u = {
+                    symbol: n.getId(),
+                    timestampStart: t,
+                    timestampEnd: i,
+                    priceStart: r,
+                    priceEnd: h,
+                    jdkRatioEnd: o,
+                    jdkMomentumEnd: a
+                };
+                e.push(u)
+            }
+        }, this);
+        return e
+    },
+    getValueBounds: function() {
+        return {
+            left: this.grid.x.value.min.toFixed(2),
+            right: this.grid.x.value.max.toFixed(2),
+            bottom: this.grid.y.value.min.toFixed(2),
+            top: this.grid.y.value.max.toFixed(2)
+        }
+    },
+    setTailLength: function(t) {
+        if (t != this.settings.tailLength) {
+            this.settings.tailLength = t;
+            this.setEndTailIndex(this.endTailIndex);
+            return !0
+        }
+        return !1
+    },
+    setEndTailDate: function(t) {
+        var i = t ? this.getBenchmarkSeries().getIndexFromDate(t) : null;
+        this.setEndTailIndex(i);
+        return !0
+    },
+    setEndTailIndex: function(t) {
+        null == t && (t = this.getBenchmarkSeries().length - 1);
+        this.endTailIndex = t;
+        this.startTailIndex = this.endTailIndex - this.settings.tailLength;
+        this.startTailIndex < 0 && (this.startTailIndex = 0)
+    }
   };
   var RrgChartTail = function(t) {
       this.init(t)
@@ -2500,27 +2533,29 @@ Template.rrgMain.rendered = function() {
           this.paint()
       },
       toTable: function() {
-          var t = ["chart", "visible", "tail", "symbol", /*"name",*/  "sector", "industry", "price", "chg"];
+          var t = [/*"chart",*/ "visible", "tail", "symbol", /*"name",  "sector", "industry",*/ "price", "chg"];
           var i = "";
           i += "<table class='symbolgrid' style='width: 100%;height: 100%;padding: 100px;'> \n";
-          i += "<thead style='position: absolute;top: 27px;width:87%'>";
+          i += "<thead style='position: absolute;top:27px;width:100%'>";
+          // i += "<thead>";
           i += "<tr>";
           for (var e = 0; e < t.length; e++) {
               var s = t[e];
               "chg" == s && (s = "%chg");
-              if (s == 'chart') {
-                i += t[e] == this.sortColumn ? "a" == this.sortDirection ? "<th class='sort-ascending'style='width:10%'>" + s + "</th>" : "<th class='sort-descending' style='width:10%'>" + s + "</th>" : "<th style='width:10%'>" + s + "</th>"
-              } else if (s == 'visible') {
-                i += t[e] == this.sortColumn ? "a" == this.sortDirection ? "<th class='sort-ascending'style='width:9%'>" + s + "</th>" : "<th class='sort-descending' style='width:9%'>" + s + "</th>" : "<th style='width:9%'>" + s + "</th>"
-              } else if (s == 'tail') {
-                i += t[e] == this.sortColumn ? "a" == this.sortDirection ? "<th class='sort-ascending'style='width:8.5%'>" + s + "</th>" : "<th class='sort-descending' style='width:8.5%'>" + s + "</th>" : "<th style='width:8.5%'>" + s + "</th>"
-              } else if (s == 'symbol') {
-                i += t[e] == this.sortColumn ? "a" == this.sortDirection ? "<th class='sort-ascending'style='width:21%'>" + s + "</th>" : "<th class='sort-descending' style='width:21%'>" + s + "</th>" : "<th style='width:21%'>" + s + "</th>"
-              } else if (s == 'sector' || s == 'industry') {
-                i += t[e] == this.sortColumn ? "a" == this.sortDirection ? "<th class='sort-ascending'style='width:1%'>" + s + "</th>" : "<th class='sort-descending' style='width:1%'>" + s + "</th>" : "<th style='width:1%'>" + s + "</th>"
-              } else {
-                i += t[e] == this.sortColumn ? "a" == this.sortDirection ? "<th class='sort-ascending'style='width:12%'>" + s + "</th>" : "<th class='sort-descending' style='width:12%'>" + s + "</th>" : "<th style='width:12%'>" + s + "</th>"
-              }
+              // if (s == 'chart') {
+              //   i += t[e] == this.sortColumn ? "a" == this.sortDirection ? "<th class='sort-ascending'style='width:10%'>" + s + "</th>" : "<th class='sort-descending' style='width:10%'>" + s + "</th>" : "<th style='width:10%'>" + s + "</th>"
+              // } else if (s == 'visible') {
+              //   i += t[e] == this.sortColumn ? "a" == this.sortDirection ? "<th class='sort-ascending'style='width:9%'>" + s + "</th>" : "<th class='sort-descending' style='width:9%'>" + s + "</th>" : "<th style='width:9%'>" + s + "</th>"
+              // } else if (s == 'tail') {
+              //   i += t[e] == this.sortColumn ? "a" == this.sortDirection ? "<th class='sort-ascending'style='width:8.5%'>" + s + "</th>" : "<th class='sort-descending' style='width:8.5%'>" + s + "</th>" : "<th style='width:8.5%'>" + s + "</th>"
+              // } else if (s == 'symbol') {
+              //   i += t[e] == this.sortColumn ? "a" == this.sortDirection ? "<th class='sort-ascending'style='width:21%'>" + s + "</th>" : "<th class='sort-descending' style='width:21%'>" + s + "</th>" : "<th style='width:21%'>" + s + "</th>"
+              // } else if (s == 'sector' || s == 'industry') {
+              //   i += t[e] == this.sortColumn ? "a" == this.sortDirection ? "<th class='sort-ascending'style='width:1%'>" + s + "</th>" : "<th class='sort-descending' style='width:1%'>" + s + "</th>" : "<th style='width:1%'>" + s + "</th>"
+              // } else {
+              //   i += t[e] == this.sortColumn ? "a" == this.sortDirection ? "<th class='sort-ascending'style='width:12%'>" + s + "</th>" : "<th class='sort-descending' style='width:12%'>" + s + "</th>" : "<th style='width:12%'>" + s + "</th>"
+              // }
+              i += t[e] == this.sortColumn ? "a" == this.sortDirection ? "<th class='sort-ascending'>" + s + "</th>" : "<th class='sort-descending'>" + s + "</th>" : "<th>" + s + "</th>"
           }
           i += "</tr>";
           i += "</thead>";

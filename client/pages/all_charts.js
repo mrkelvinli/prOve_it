@@ -21,7 +21,7 @@ Template.chart.rendered = function() {
   var validToken = false;
   
   // var curr_graph = 'candlesticks';  // default
-  var curr_graph = 'event-study';
+  var curr_graph = 'stock-topic';
   var curr_company = "TGR.AX";
   var second_company = '';
   var curr_topic = "Cash Rate";
@@ -112,6 +112,9 @@ Template.chart.rendered = function() {
     $('#chartdiv3').html('');
     // console.log($('#chartdiv2').html());
     $('#details').html('');
+
+    // REMOVE THIS (& a similar line in render_rrg):
+    $(".chart-frame").css('background-color', 'white');
 
 
     $('#chartdiv2').parent().removeClass();
@@ -2698,6 +2701,9 @@ function render_rrg(company) {
   Session.set('token', token);
   Blaze.render(Template.rrgMain, dom);
 
+  // don't need this line after implementing dark theme:
+  $(".chart-frame").css('background-color', '#1b1b1b');
+
   $('#chartdiv2').show();
   $('#chartdiv2').parent().removeClass('col-md-7');
   $('#chartdiv2').parent().addClass('col-md-8');
@@ -2712,7 +2718,7 @@ function render_rrg(company) {
     $('#chartdiv3').parent().removeClass('col-md-5');
     $('#chartdiv3').parent().addClass('col-md-4');
     $('#chartdiv3').css('height', 370);
-    $('#chartdiv2').css('padding', 50);
+    $('#chartdiv2').css('padding', '20px 40px 20px 40px');
     var dom3 = document.getElementById('chartdiv3');
     Blaze.render(Template.rrgControls, dom3);
   }

@@ -1,17 +1,19 @@
-
+/*
 #rrg thead tr {
    padding-left: 200px;
-}
+}*/
 
 #rrg td {
    _border: 1px solid gray;
 }
+
 
 #rrg table {
    font: normal 12px "Helvetica Neue", Helvetica, Arial, sans-serif;
    text-align: center;
    border-collapse: collapse;
 }
+
 #rrg table.symbolgrid th {
    border: 1px solid #cccccc;
    background-color: #dee4ea;
@@ -20,9 +22,6 @@
    text-align: center;
    -webkit-user-select: none;
    -moz-user-select: none;
-}
-#rrg table.symbolgrid th:hover {
-   cursor: pointer;
 }
 
 #rrg table.symbolgrid td {
@@ -33,8 +32,27 @@
    cursor: default;
    vertical-align: middle;
 }
+
 #rrg table.symbolgrid th.sort-ascending  { background: #dee4ea url(//stockcharts.com/freecharts/rrg/arrow-sort-up.gif) center bottom no-repeat; }
 #rrg table.symbolgrid th.sort-descending { background: #dee4ea url(//stockcharts.com/freecharts/rrg/arrow-sort-down.gif) center top no-repeat; }
+
+
+
+#rrg table.symbolgrid th:hover {
+   cursor: pointer;
+}
+
+/*#rrg table.symbolgrid th {
+   text-align: center;
+}
+
+#rrg table.symbolgrid tr {
+   height: 30px;
+}
+
+#rrg table.symbolgrid td {
+   vertical-align: middle;
+}*/
 
 #rrg table.symbolgrid tr.green  { background: rgba(0, 128, 0, 0.2); }
 #rrg table.symbolgrid tr.blue   { background: rgba(48, 68, 219, 0.2); }
