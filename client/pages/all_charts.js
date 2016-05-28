@@ -2439,14 +2439,16 @@ function render_stock_topics_average_graph (company,upper_range,lower_range) {
       var dateUpper = new Date(e.date);
       dateUpper.setDate(dateUpper.getUTCDate() + upper_range);
 
-      var days = StockPrices.find({company_name: company, token:token, date: {$gte : dateLower, $lte : dateUpper}}, {fields: {'cum_return':1}, sort: {cum_return:1}}).fetch().map(function(x){return x.cum_return});          
-      var sum = 0;
-      days.forEach(function(d){
-        sum += d;
-      });
-      var avg = sum/days.length;
+      var days = StockPrices.find({company_name: company, token:token, date: {$gte : dateLower, $lte : dateUpper}}, {fields: {'cum_return':1}, sort: {date:1}}).fetch();
 
-      events_avg += avg;
+      if (days.length > 0) {
+        var cr_lower = days[0].cum_return;
+        var cr_upper = days[days.length-1].cum_return;
+        events_avg += (cr_upper - cr_lower);
+      }
+
+
+
     });
 
     events_avg = events_avg/events.length;
