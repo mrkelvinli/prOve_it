@@ -15,80 +15,53 @@ APItesting = {
       var upper_range = 5;
 
 
-     var events = StockEvents.find({token: token, company_name: company_name, topic: topic, value: {$gt : 0}}, {fields: {'date':1},sort:{date:-1}}).fetch(); 
-    
-    var stocks = StockPrices.find({company_name: company_name, token:token}, {fields: {'date':1, 'cum_return':1, 'flat_value':1}}).fetch();
-    stocks.forEach(function(s){
-      if (s.flat_value == null)
-        delete s.flat_value;
-      if (s.cum_return == null)
-        delete s.cum_return;
-    });
-    // console.log(events);
+      var prices = StockPrices.find({token:token, company_name: company, flat_value: {$ne: null}},{fields:{date:true, flat_value: true}}).fetch();
+      var stock_prices = [];
+      prices.forEach(function(p){
+        stock_prices.push({
+          time: p.date,
+          price: p.flat_value,
+        });
+      });
 
-    // var company_name = 'AAC.AX';
-    // var date = new Date(Date.UTC(2016,2,2));
+      var sma = [];
+      var avg = 0;
+      var currPrice = 0;
+      var prevPrice = 0;
 
-    // if (events.length <= 0) {
-    //   $('#chartdiv3').html('No related events for '+company_name+" on "+topic+".");
-    // } else {
-    //   render_related_news(company_name, topic, events[0].date);
-    // }
-    // render_related_news(company_name, topic, date);
+      //calculate standard deviation
+      var toDoList = []; //array of arrays of values [[1,2],[2,3],[9,10]]
+      currPrice = prevPrice = 0;
 
-    var guides = [];
-
-    events.forEach(function(c) {
-      var dateLower = new Date(c.date);
-      dateLower.setDate(dateLower.getDate() + lower_range);
-      var dateUpper = new Date(c.date);
-      dateUpper.setDate(dateUpper.getDate() + upper_range);
-
-      // console.log(c.date);
-      // console.log(dateLower);
-      // console.log(dateUpper);
-      var significantDays = StockPrices.find({company_name: company_name, token:token, date: {$gte : dateLower, $lte : dateUpper}}, {fields: {'cum_return':1}, sort: {cum_return:1}}).fetch();
-      // console.log(significantDays);
-      if (significantDays !== undefined) {
-        var hi = significantDays[Object.keys(significantDays)[Object.keys(significantDays).length - 1]].cum_return;
-        var lo = significantDays[Object.keys(significantDays)[0]].cum_return;
-        // console.log(hi);
-        // console.log(lo);
-        //fruitObject[Object.keys(fruitObject)[Object.keys(fruitObject).length - 1]] 
-        var p = (hi - lo);
-        // console.log(p);
-
-        var significance = "Non-significant event";
-        if (p > 0.02) {
-          significance = "Significant event";
-          guides.push({
-            "fillAlpha": 0.30,
-            "fillColor": "#ff6600",
-            "lineColor": "#ff6600",
-            "lineAlpha": 0.9,
-            "label": topic,
-            "balloonText": significance,
-            "labelRotation": 90,
-            "above": true,
-            "date": dateLower,
-            "toDate": dateUpper,
-          });
-        } else {
-          guides.push({
-            "fillAlpha": 0.30,
-            "fillColor": "#404040",
-            "lineColor": "#404040",
-            "lineAlpha": 0.9,
-            "label": topic,
-            "balloonText": significance,
-            "labelRotation": 90,
-            "above": true,
-            "date": dateLower,
-            "toDate": dateUpper,
-          });
+      for(var i = 0; i<(stock_prices.length); i++) {
+        var currArray = [];
+        if (i < 29) {
+          //currArray.push(stock_prices[i].price);
+        } 
+        for(var x = 0; x<30; x++) {
+          if (i>=29) {
+            currArray.push(stock_prices[i-x].price);
+          }
         }
+        if (i > 29) {
+          toDoList.push({"currArray": currArray, "time": stock_prices[i-30].time, "price": stock_prices[i].price});
+        }
+        // console.log(toDoList);
       }
-    });
+      toDoList.forEach(function (c){
+        var result = standardDeviation(c.currArray);
+        var zScore = (c.price - result[1]) / result[0];
+        zScore = Math.abs(zScore);
+        var entry = {};
+        if (zScore >= 1) {
+          entry = {"time": c.time, "price": c.price, "mAvg": result[1], "sdUpper": ((result[0]*2)+result[1]), "sdLower": (result[1]-(result[0]*2)), "sd": result[0], "zScore": zScore, "lineColor": "#ff0000"};
+        } else {
+          entry = {"time": c.time, "price": c.price, "mAvg": result[1], "sdUpper": ((result[0]*2)+result[1]), "sdLower": (result[1]-(result[0]*2)), "sd": result[0], "zScore": zScore, "lineColor": "#0077aa"};
+        }
+          // console.log(entry);
+          sma.push(entry);
+        });
+
 
       API.utility.response(context, 200, stocks);
     
