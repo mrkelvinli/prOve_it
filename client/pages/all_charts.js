@@ -1347,10 +1347,7 @@ Template.chart.rendered = function() {
           else
             offset_cr = offset_cr.cum_return;
 
-          var offseted_cr = cr-offset_cr;
-          console.log(cr);
-          console.log(offset_cr);
-          entry[e.date.toDateString()] = Math.abs(offseted_cr);
+          entry[e.date.toDateString()] = cr-offset_cr;
 
           if(!graphsReady){
             graphs.push({
