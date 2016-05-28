@@ -2526,7 +2526,11 @@ function render_stock_topics_graph_significance_table (company, topic, upper_ran
         // console.log(table);
         if (curr_graph != 'event-study')
           return;
-        $('#chartdiv2').append(tableNoBackslash);
+        if ((curr_graph == 'event-study') && (curr_company == company)) {
+          $('#chartdiv2').append(tableNoBackslash);
+        } else {
+          return;
+        }
         $("td:empty").remove();
         // console.log($('#chartdiv2'));
 
@@ -2745,7 +2749,9 @@ function render_rrg(company) {
       }
     });
     // console.log("DONE");
-    drawGraph(data);
+    if (curr_graph == 'volatility') {
+      drawGraph(data);
+    }
 
     function drawGraph(data) {
       $('#chartdiv2').highcharts({
