@@ -352,7 +352,7 @@ Template.chart.rendered = function() {
     function drawGraph(chartData, company) {
        var chart = AmCharts.makeChart("chartdiv", {
       "type": "stock",
-      "theme": "light",
+      "theme": "dark",
       "pathToImages": "/amcharts/images/",
       "autoMarginOffset": 20,
       "marginRight": 80,
@@ -885,7 +885,7 @@ Template.chart.rendered = function() {
 
         var chart = AmCharts.makeChart( "chartdiv", {
           "type": "stock",
-          "theme": "light",
+          "theme": "dark",
           "pathToImages": "/amcharts/images/",
           "autoMarginOffset": 20,
           "marginRight": 80,
@@ -1394,7 +1394,7 @@ Template.chart.rendered = function() {
 
       var chartOptions = {
         "type": "serial",
-        "theme": "light",
+        "theme": "dark",
         "legend": {
           "useGraphSettings": true,
           "valueText": '',
@@ -1543,7 +1543,7 @@ Template.chart.rendered = function() {
 
     var chart = AmCharts.makeChart( "chartdiv", {
       "type": "stock",
-      "theme": "light",
+      "theme": "dark",
       "marginRight": 80,
 
       "pathToImages": "/amcharts/images/",
@@ -1905,7 +1905,7 @@ function render_company_chart() {
        chart.categoryField = "company_name";
       //      chart.startDuration = 1;
       chart.startEffect = "elastic";
-      chart.theme = 'light';
+      chart.theme = 'dark';
 
       chart.titles = [{
         "text": "Stock Comparison",
@@ -2050,7 +2050,7 @@ function render_company_chart() {
 
     var chart = AmCharts.makeChart("chartdiv", {
       type: "stock",
-      "theme": "light",
+      "theme": "dark",
       "pathToImages": "/amcharts/images/",
       dataSets: [{
         // color: "#b0de09",
@@ -2555,7 +2555,7 @@ function render_stock_topics_average_graph (company,upper_range,lower_range) {
 
   var chart = AmCharts.makeChart( "chartdiv2", {
     "type": "serial",
-    "theme": "light",
+    "theme": "dar",
     "dataProvider": chartData,
     "valueAxes": [ {
       "gridColor": "#000000",
