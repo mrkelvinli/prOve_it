@@ -25,6 +25,9 @@
   font-size: 12px;
 }
 
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+  color: #ddd;
+}
 
 .amcharts-chart-div a {
   /*background-color: red !important;*/
@@ -47,6 +50,7 @@
   padding-bottom:20px;
   padding-left:20px;
   padding-right:20px;
+  color: #ddd;
 }
 
 form.navbar-form {
@@ -61,6 +65,7 @@ nav.navbar {
   margin-top: 20px;
   margin-bottom: 0;
   text-align: center;
+  border: 1px solid #191919;
   /*box-shadow: 0 0 20px rgba(0,0,0,0.08);*/
 }
 
@@ -117,6 +122,7 @@ button.btn:hover{
   border-radius: 3px;
   padding: 10px;
   position: relative; 
+  border: 1px solid #191919;
   /*box-shadow: 0 0 20px rgba(0,0,0,0.08);*/
 }
 
@@ -221,6 +227,7 @@ div.highcharts-container {
   margin-top: 12px;
   background-color: rgba(100,100,100,0.23);
   border-radius: 3px;
+  border: 1px solid #191919;
   /*box-shadow: 0 0 20px rgba(0,0,0,0.08);*/
 }
 
@@ -242,8 +249,10 @@ input.form-control {
   color: #ddd;
 }
 
-.dropdown-menu.open {
-  background-color: ;
+.dropdown-menu.open, .dropdown-menu.open a {
+  color: #333;
+  /*background-color: rgba(100,100,100,0.4);*/
+  background-color: #eee;
 }
 
 .dropdown-menu>.active>a, .dropdown-menu>.active>a:hover, .dropdown-menu>.active>a:focus {
