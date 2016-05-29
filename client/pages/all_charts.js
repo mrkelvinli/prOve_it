@@ -110,15 +110,13 @@ Template.chart.rendered = function() {
     $('#chart-options').hide();
     $('#chartdiv2').hide();
     $('#chartdiv2').hide();
+    $('#chartdiv4').parent().hide();
     $('#chartdiv4').hide();
     $('#details').hide();
     $('#chartdiv2').html('');
     $('#chartdiv3').html('');
     // console.log($('#chartdiv2').html());
     $('#details').html('');
-
-    // REMOVE THIS (& a similar line in render_rrg):
-    $(".chart-frame").css('background-color', 'white');
 
 
     $('#chartdiv2').parent().removeClass();
@@ -2650,6 +2648,7 @@ function render_stock_topics_graph_significance_table (company, topic, upper_ran
 
   // predefined list of companies
   function render_company_details() {
+    $('#chartdiv3').hide();
     $('#details').html('Loading details of ' + curr_company + '...');
     var all_company = _.uniq(StockPrices.find({}, {fields:{company_name:1}},{sort:{company_name: 1}}).fetch().map(function(x){return x.company_name}),true);
     var num_companies = all_company.length;
@@ -2932,9 +2931,6 @@ function render_rrg(company) {
   Session.set('token', token);
   Blaze.render(Template.rrgMain, dom);
 
-  // don't need this line after implementing dark theme:
-  $(".chart-frame").css('background-color', '#1b1b1b');
-
   $('#chartdiv2').show();
   $('#chartdiv2').parent().removeClass('col-md-7');
   $('#chartdiv2').parent().addClass('col-md-8');
@@ -3066,6 +3062,7 @@ function render_rrg(company) {
 
   // market index vs company cr
   function render_regression_raw(company) {
+    $('#chartdiv4').parent().show();
     $('#chartdiv4').show();
 
     var data_query = Regressions.findOne({token: token, company: company},{fields:{data:true, _id:false}});
@@ -3183,48 +3180,6 @@ function render_rrg(company) {
     var percent = (last_cr - first_cr)/first_cr;
     $('#miniGraph-init-value').html(first_cr.toFixed(5));
     $('#miniGraph-final-percent-changed').html(percent.toFixed(5)+"%");
-
-
-    var chart = new AmCharts.AmSerialChart(AmCharts.themes.none);
-    chart.dataProvider = [];
-    stocksPrice.forEach(function(e){
-      chart.dataProvider.push({
-        day: e.date,
-        value: e.cum_return,
-      });
-    });
-    chart.categoryField = "day";
-    chart.autoMargins = false;
-    chart.marginLeft = 0;
-    chart.marginRight = 5;
-    chart.marginTop = 0;
-    chart.marginBottom = 0;
-
-    var graph = new AmCharts.AmGraph();
-    graph.valueField = "value";
-    graph.showBalloon = false;
-    graph.lineColor = "#ffbf63";
-    graph.negativeLineColor = "#289eaf";
-    chart.addGraph(graph);
-
-    var valueAxis = new AmCharts.ValueAxis();
-    valueAxis.gridAlpha = 0;
-    valueAxis.axisAlpha = 0;
-    chart.addValueAxis(valueAxis);
-
-    var categoryAxis = chart.categoryAxis;
-    categoryAxis.gridAlpha = 0;
-    categoryAxis.axisAlpha = 0;
-    categoryAxis.startOnAxis = true;
-    categoryAxis.parseDates = true;
-
-    // using guide to show 0 grid
-    var guide = new AmCharts.Guide();
-    guide.value = 0;
-    guide.lineAlpha = 0.1;
-    valueAxis.addGuide(guide);
-    chart.write("miniGraph");
-
   }
 
   function render_main_chart_title (company, topic, chart_name) {
