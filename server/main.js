@@ -46,6 +46,10 @@ if(Meteor.isServer) {
   Meteor.publish('market_db', function(){
     return Market.find();
   });
+  Meteor.publish('regressions_db', function(token){
+    console.log(Regressions.find({token:token}).count());
+    return Regressions.find({token:token});
+  });
 
   var connectHandler = WebApp.connectHandlers;
 

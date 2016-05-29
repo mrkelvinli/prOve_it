@@ -93,10 +93,19 @@ Uploader = {
           console.log("NOT EMPTY: " + Market.find({}).count());
         }
 
+
+
         // StockPrices.remove({});
         // StockEvents.remove({});
         ES.process_stock_price_file(stock_price_file_json, token);
         ES.process_stock_characteristic_file(stock_characteristic_file_json, token);
+        ES.process_regressions(token);
+        
+        if (Regressions.find({}).count() !== 0) {
+          console.log('Regressions processed');
+        } else {
+          console.log('Regressions not processed');
+        }
 
         console.log("process ok");
 
