@@ -2,6 +2,9 @@
 @import url(https://fonts.googleapis.com/css?family=Poiret+One|Slabo+27px|Noto+Sans);
 @import url(http://fonts.googleapis.com/css?family=Droid+Sans:400,700);
 
+a, a:hover {
+  color: #00aeff;
+}
 
 #miniGraph {
   width     : 60%;
@@ -255,10 +258,26 @@ input.form-control {
   color: #ddd;
 }
 
+/*.dropdown-toggle.btn-default[aria-expanded="true"] {*/
+.btn-default:hover, .btn-default:focus, .btn-group.open .dropdown-toggle.btn-default {
+  background-color: #686868;
+  color: white;
+}
+
+.dropdown-menu.open {
+  margin-top: 5px;
+}
+
 .dropdown-menu.open, .dropdown-menu.open a {
-  color: #333;
-  /*background-color: rgba(100,100,100,0.4);*/
-  background-color: #eee;
+  color: white;
+  background-color: #686868;
+  border:0;
+  /*background-color: #eee;*/
+}
+
+.dropdown-menu.open a:hover {
+  color: white;
+  background-color: #777;
 }
 
 .dropdown-menu>.active>a, .dropdown-menu>.active>a:hover, .dropdown-menu>.active>a:focus {

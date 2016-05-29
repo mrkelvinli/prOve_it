@@ -2393,7 +2393,7 @@ Template.chart.rendered = function () {
               $('#chartdiv3.related_news').find('ul li a').each(function () {
                 var headline = $(this).html();
                 if (headline == highlightHeadline) {
-                  $(this).css('background-color', 'yellow');
+                  $(this).css({'background-color': 'rgba(255,255,0,0.35', 'padding': '3px 5px'});
                 }
               });
             }
