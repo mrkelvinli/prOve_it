@@ -979,7 +979,18 @@ Template.chart.rendered = function () {
             "marginTop": 1,
             // "showCategoryAxis": true,
             "valueAxes": [{
-              "dashLength": 5
+              "dashLength": 5,
+              "guides": [{
+                "value": 100,
+                "lineAlpha": 0.6,
+                "lineColor": "#ff6600",
+                "dashLength": 0
+              }, {
+                "value": -100,
+                "lineAlpha": 0.6,
+                "lineColor": "#00bfff",
+                "dashLength": 0
+              }]
               }],
 
             "categoryAxis": {
@@ -1005,6 +1016,7 @@ Template.chart.rendered = function () {
               //"lineColorField": "lineColor",
               "lineColor": "#cc6600",
               "negativeLineColor": "#2eb82e",
+              "negativeLineAlpha": 1,
               "fillColor": "#cc6600",
               "negativeFillColor": "#2eb82e",
               "negativeBase": 100,
@@ -1026,8 +1038,8 @@ Template.chart.rendered = function () {
               "lineAlpha": 0,
               "negativeLineAlpha": 0,
               "negativeLineColor": "#00bfff",
-              "fillColor": "#2eb82e",
-              "negativeFillColor": "#00bfff",
+              //"fillColor": "#2eb82e",
+              //"negativeFillColor": "#00bfff",
               "fillAlphas": 0,
               "negativeFillAlphas": 1,
               "lineThickness": 2,
@@ -1061,7 +1073,7 @@ Template.chart.rendered = function () {
               "autoGridCount": false,
               "gridAlpha": 0.2,
               "dashLength": 10,
-              "title": "Stock Price ($)",
+              //"title": "Stock Price ($)",
               "unit": "$",
               "unitPosition": "left",
               "axisTitleOffset": -50,
@@ -1078,6 +1090,57 @@ Template.chart.rendered = function () {
             },
 
             "stockGraphs": [{
+              "id": "sdUpperGraph",
+              //"balloonText": "Upper Band: <b>[[value]]</b>",
+              "showBalloon": false,
+              "fillAlphas": 0.15,
+              "fillColors": ["#ffa31a"],
+              "lineAlpha": 0,
+              "type": "line",
+              "fillToGraph": "sdLowerGraph",
+              "valueField": "sdUpper",
+              "title": "UpperBand",
+              "visibleInLegend": false,
+              "labelPosition": "right",
+              "labelFunction": labelFunction,
+              "useDataSetColors": false,
+              "labelText": "Upper Band",
+              "labelOffset": -70,
+              //"labelText": "Upper Band"
+              }, {
+              "id": "sdLowerGraph",
+              //"balloonText": "Lower Band: <b>[[value]]</b>",
+              "showBalloon": false,
+              "fillAlphas": 0,
+              "lineAlpha": 0,
+              "type": "line",
+              "valueField": "sdLower",
+              "title": "LowerBand",
+              "labelPosition": "right",
+              "visibleInLegend": false,
+              "labelFunction": labelFunction,
+              "useDataSetColors": false,
+              "labelOffset": -70,
+              "labelText": "Lower Band",
+              //"labelText": "Lower Band"
+              }, {
+              "id": "smaGraph",
+              //"balloonText": "SMA(30): <b>[[value]]</b>",
+              "showBalloon": false,
+              "fillAlphas": 0,
+              "lineAlpha": 0.8,
+              "lineThickness": 2,
+              "type": "line",
+              "dashLength": 4,
+              "lineColor": "#00bfff",
+              "valueField": "mAvg",
+              "title": "Bollinger Bands",
+              "labelPosition": "right",
+              "labelFunction": labelFunction,
+              "labelText": "SMA(30)",
+              "useDataSetColors": false,
+              "labelOffset": -45,
+              },{
               "id": "priceGraph",
               "balloonText": "Price: <b>[[price]]</b><br>Upper Band: <b>[[sdUpper]]</b><br>SMA(30): <b>[[mAvg]]</b><br>Lower Band: <b>[[sdLower]]</b>",
               "balloonFunction": function (item, graph) {
@@ -1109,60 +1172,7 @@ Template.chart.rendered = function () {
               //"labelText": "Stock Price ($)",
               "useDataSetColors": false,
               "labelOffset": -75,
-              }, {
-              "id": "smaGraph",
-              //"balloonText": "SMA(30): <b>[[value]]</b>",
-              "showBalloon": false,
-              "fillAlphas": 0,
-              "lineAlpha": 0.8,
-              "lineThickness": 2,
-              "type": "line",
-              "dashLength": 4,
-              "lineColor": "#0077aa",
-              "valueField": "mAvg",
-              "title": "Bollinger Bands",
-              "labelPosition": "right",
-              "labelFunction": labelFunction,
-              "labelText": "SMA(30)",
-              "useDataSetColors": false,
-              "labelOffset": -45,
-              }, {
-              "id": "sdUpperGraph",
-              //"balloonText": "Upper Band: <b>[[value]]</b>",
-              "showBalloon": false,
-              "fillAlphas": 0.3,
-              "fillColors": ["#ffa31a"],
-              "lineAlpha": 0,
-              "type": "line",
-              "fillToGraph": "sdLowerGraph",
-              "valueField": "sdUpper",
-              "title": "UpperBand",
-              "visibleInLegend": false,
-              "labelPosition": "right",
-              "labelFunction": labelFunction,
-              "useDataSetColors": false,
-              "labelText": "Upper Band",
-              "labelOffset": -70,
-              //"labelText": "Upper Band"
-              }, {
-              "id": "sdLowerGraph",
-              //"balloonText": "Lower Band: <b>[[value]]</b>",
-              "showBalloon": false,
-              "fillAlphas": 0,
-              "lineAlpha": 0,
-              "type": "line",
-              "valueField": "sdLower",
-              "title": "LowerBand",
-              "labelPosition": "right",
-              "visibleInLegend": false,
-              "labelFunction": labelFunction,
-              "useDataSetColors": false,
-              "labelOffset": -70,
-              "labelText": "Lower Band",
-              //"labelText": "Lower Band"
-              }, {
-
-              }],
+              },],
 
             "stockLegend": {
               // "valueTextRegular": undefined,
@@ -1184,13 +1194,13 @@ Template.chart.rendered = function () {
             "percentHeight": 25,
             autoMargins: true,
             "marginTop": 1,
-            // "showCategoryAxis": true,
+            "showCategoryAxis": false,
             "valueAxes": [{
               "dashLength": 5
               }],
 
             "categoryAxis": {
-              "labelsEnabled": false,
+              "labelsEnabled": true,
               "dashLength": 5
             },
 
@@ -1346,19 +1356,19 @@ Template.chart.rendered = function () {
       var hidden = graph.hidden;
       if (graph.id == 'priceGraph') {
         if (hidden) {
-          chart.showGraph(chart.graphs[0]);
+          chart.showGraph(chart.graphs[3]);
         } else {
-          chart.hideGraph(chart.graphs[0]);
+          chart.hideGraph(chart.graphs[3]);
         }
       } else {
         if (hidden) {
-          chart.showGraph(chart.graphs[1]);
+          chart.showGraph(chart.graphs[0]);
           chart.showGraph(chart.graphs[2]);
-          chart.showGraph(chart.graphs[3]);
+          chart.showGraph(chart.graphs[1]);
         } else {
+          chart.hideGraph(chart.graphs[0]);
           chart.hideGraph(chart.graphs[1]);
           chart.hideGraph(chart.graphs[2]);
-          chart.hideGraph(chart.graphs[3]);
         }
       }
 
