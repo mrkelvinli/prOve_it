@@ -2689,7 +2689,7 @@ function render_stock_topics_graph_significance_table (company, topic, upper_ran
 
   function render_dividends(company) {
     DividendHistory.remove({});
-    $("#chartdiv2").html('');
+    $('#chartdiv2').html('<h4 style="padding: 5px 0 5px 5px;">Dividend history of ' + curr_company + '</h4><p style="padding-left: 5px">Loading...</p>');
     $('#chartdiv2').parent().removeClass();
     $('#chartdiv2').parent().addClass('col-md-8');
 
@@ -2765,7 +2765,7 @@ function render_stock_topics_graph_significance_table (company, topic, upper_ran
             if (headlinesNoBackslash !== 'null') {
               $('#chartdiv3').append(headlinesNoBackslash);
             } else {
-            $('#chartdiv3').html('<h4 style="padding: 0 0 5px 5px;">News related to ' + curr_company + '</h4><p style="padding-left:5px">No related news found for the current events.</p>');
+              $('#chartdiv3').html('<h4 style="padding: 0 0 5px 5px;">News related to ' + curr_company + '</h4><p style="padding-left:5px">No related news found for the current events.</p>');
               // $('#chartdiv3').append(headlines);
             }
           } else {
@@ -2906,6 +2906,7 @@ function render_rrg(company) {
     Blaze.render(Template.rrgControls, dom3);
   }
 
+  // [ this graph doesn't work, we're using render_regression_raw() ]
   // market change vs company change
   // can reference http://asxiq.com/statistical-rankings/end-of-day/top-stocks-ranked-by-beta/
   function render_regression_change(company) {
@@ -3019,23 +3020,32 @@ function render_rrg(company) {
     $('#chartdiv2').parent().removeClass();
     $('#chartdiv2').parent().addClass('col-md-12');
 
-    var company_prices = StockPrices.find({token: token, company_name: company, cum_return: {$ne: null}},{fields:{cum_return:true, date:true, _id:false}}).fetch();
-    // console.log(company_cr);
-
+    var data_query = Regressions.findOne({token: token, company: company},{fields:{data:true, _id:false}});
+    console.log(data_query);
     var data = [];
-    var prev_price = null;
-    var prev_market = null;
-    company_prices.forEach(function(entry) {
-      var date = entry.date;
-      var price = entry.cum_return;
-      var db_query = Market.findOne({date: date}, {fields: {value: true, _id: false}});
-      if ((db_query != null) && (price != null)) {
-        var market_price = parseFloat(db_query.value);
-        //console.log('cr: ' + price + ', market: ' + market_price + ', date: ' + date);
-        data.push([market_price, price]);
-      }
-    });
-    // console.log("DONE");
+    if ((data_query != null) && (data_query.length != 0)) {
+      console.log('Cached data loaded');
+      data = data_query.data;
+      // console.log("DATA:");
+      // console.log(data);
+    } else {
+      console.warn("Regression cache for " + company + " has no data! Slow manual pulling starting.");
+      var company_prices = StockPrices.find({token: token, company_name: company, cum_return: {$ne: null}},{fields:{cum_return:true, date:true, _id:false}}).fetch();
+
+      var prev_price = null;
+      var prev_market = null;
+      company_prices.forEach(function(entry) {
+        var date = entry.date;
+        var price = entry.cum_return;
+        var db_query = Market.findOne({date: date}, {fields: {value: true, _id: false}});
+        if ((db_query != null) && (price != null)) {
+          var market_price = parseFloat(db_query.value);
+          //console.log('cr: ' + price + ', market: ' + market_price + ', date: ' + date);
+          data.push([market_price, price]);
+        }
+      });
+    }
+
     drawGraph(data);
 
     function drawGraph(data) {
