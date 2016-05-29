@@ -3177,53 +3177,49 @@ function render_rrg(company) {
 
   function render_mini_company_chart (company) {
     var stocksPrice = StockPrices.find({company_name: company, token: token},{fields: {cum_return: true, date: true}, sort:{date: -1}, limit: 20}).fetch();
-    console.log(stocksPrice);
+    // console.log(stocksPrice);
     var last_cr = parseFloat(stocksPrice[0].cum_return);
     var first_cr = parseFloat(stocksPrice[stocksPrice.length-1].cum_return);
     var percent = (last_cr - first_cr)/first_cr;
-    $('#miniGraph-init-value').html(first_cr.toFixed(5));
-    $('#miniGraph-final-percent-changed').html(percent.toFixed(5)+"%");
+    $('#miniGraph-init-value').html(first_cr.toFixed(2));
+    $('#miniGraph-final-percent-changed').html(percent.toFixed(2)+"%");
 
-
-    var chart = new AmCharts.AmSerialChart(AmCharts.themes.none);
-    chart.dataProvider = [];
+    var chartData = [];
     stocksPrice.forEach(function(e){
-      chart.dataProvider.push({
-        day: e.date,
+      chartData.push({
+        date: e.date,
         value: e.cum_return,
       });
     });
-    chart.categoryField = "day";
-    chart.autoMargins = false;
-    chart.marginLeft = 0;
-    chart.marginRight = 5;
-    chart.marginTop = 0;
-    chart.marginBottom = 0;
+    chartData.reverse();
+    console.log(chartData);
 
-    var graph = new AmCharts.AmGraph();
-    graph.valueField = "value";
-    graph.showBalloon = false;
-    graph.lineColor = "#ffbf63";
-    graph.negativeLineColor = "#289eaf";
-    chart.addGraph(graph);
-
-    var valueAxis = new AmCharts.ValueAxis();
-    valueAxis.gridAlpha = 0;
-    valueAxis.axisAlpha = 0;
-    chart.addValueAxis(valueAxis);
-
-    var categoryAxis = chart.categoryAxis;
-    categoryAxis.gridAlpha = 0;
-    categoryAxis.axisAlpha = 0;
-    categoryAxis.startOnAxis = true;
-    categoryAxis.parseDates = true;
-
-    // using guide to show 0 grid
-    var guide = new AmCharts.Guide();
-    guide.value = 0;
-    guide.lineAlpha = 0.1;
-    valueAxis.addGuide(guide);
-    chart.write("miniGraph");
+    var chart = AmCharts.makeChart("miniGraph", {
+      "type": "serial",
+      "theme": "light",
+      "dataProvider": chartData,
+      "valueAxes": [{
+        "axisAlpha": 0,
+        "gridAlpha": 0,
+        labelsEnabled: false,
+      }],
+      "graphs": [{
+        "id": "g1",
+        "lineColor": "#d1655d",
+        "lineThickness": 2,
+        "negativeLineColor": "#637bb6",
+        "type": "line",
+        "valueField": "value"
+      }],
+      "categoryField": "date",
+      "categoryAxis": {
+        // parseDates: true,
+        gridAlpha: 0,
+        axisAlpha: 0,
+        startOnAxis: true,
+        labelsEnabled: false,
+      },
+    });
 
   }
 
