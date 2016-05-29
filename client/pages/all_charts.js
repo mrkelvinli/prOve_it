@@ -2167,8 +2167,11 @@ function render_company_chart() {
         "event": "rollOverGraph",
         "method": function(event) {
           $('#chartdiv3.related_news').find('ul li a').each(function() {
-           $(this).css('background-color','');
-         });
+            $(this).css('background-color','');
+          });
+          $('#chartdiv2').find('table.dividends-table tbody tr').each(function(){
+            $(this).removeClass("info");
+          });
 
           var idx = event.chart.chartCursor.index;
           var thisDate = event.chart.dataProvider[idx].date;
@@ -2180,6 +2183,25 @@ function render_company_chart() {
               var headline = $(this).html();
               if (headline == highlightHeadline){
                 $(this).css('background-color','yellow');
+              }
+            });
+          }
+
+          // console.log(DividendHistory.find().fetch());
+          var dividend = DividendHistory.findOne({date: thisDate, company: company_name});
+
+          if (dividend != null) {
+            $('#chartdiv2').find('table.dividends-table tbody tr td:first-child').each(function(){
+              var dateString = $(this).html();
+              var regex = /([0-9]{2})\-([0-9]{2})\-([0-9]{4})/;
+              var matches = regex.exec(dateString);
+              var newDate = new Date(Date.UTC(parseInt(matches[3]), parseInt(matches[2])-1, parseInt(matches[1]), 6));
+              var dividendYear = dividend.date.getUTCFullYear();
+              var dividendMonth = dividend.date.getUTCMonth();
+              var dividendDate = dividend.date.getUTCDate();
+              if (dividendYear == parseInt(matches[3]) && dividendMonth == parseInt(matches[2])-1 && dividendDate == parseInt(matches[1])){
+                console.log("date found for dividend");
+                $(this).parent().addClass("info");
               }
             });
           }
@@ -2729,7 +2751,7 @@ function render_stock_topics_graph_significance_table (company, topic, upper_ran
 
         // populate the dividend history date collection, grab the date from the table
         // console.log("populating");
-        $('#chartdiv2').find('table.dividends-table tbody tr td:nth-child(2)').each(function(){
+        $('#chartdiv2').find('table.dividends-table tbody tr td:first-child').each(function(){
           var dateString = $(this).html();
           var regex = /([0-9]{2})\-([0-9]{2})\-([0-9]{4})/;
           var matches = regex.exec(dateString);
