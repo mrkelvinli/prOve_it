@@ -6,8 +6,7 @@ Template.chart.rendered = function() {
   $('.selectpicker').selectpicker();
   $('#chart-options').hide();
 
-
-  // $('a[href="http://www.amcharts.com/javascript-charts/"').hide();
+  // $("a[href$='http://www.amcharts.com/javascript-charts/']").hide();
 
   $('#share-link').attr('value',window.location.href);
   new Clipboard('.btn');
@@ -110,7 +109,8 @@ Template.chart.rendered = function() {
     $('#chartdiv').attr('style', '');
     $('#chart-options').hide();
     $('#chartdiv2').hide();
-    $('#chartdiv3').hide();
+    $('#chartdiv2').hide();
+    $('#chartdiv4').hide();
     $('#details').hide();
     $('#chartdiv2').html('');
     $('#chartdiv3').html('');
@@ -132,6 +132,8 @@ Template.chart.rendered = function() {
 
     choose_main_stock.selectpicker('val', curr_company);
 
+    render_main_chart_title(curr_company,curr_topic, curr_graph);
+    render_mini_company_chart(curr_company);
     if (curr_graph == 'overview') {
       render_overview(curr_company, curr_topic, curr_upper, curr_lower);
     } else if (curr_graph == "candlesticks"){
@@ -143,7 +145,6 @@ Template.chart.rendered = function() {
     } else if (curr_graph == 'volatility'){
       $('#chartdiv2').show();
       render_volatility_chart(curr_company,second_company);
-      render_regression_raw(curr_company);
     } else if (curr_graph == 'event-study'){
       $('#chartdiv2').show();
       $('#chartdiv3').show();
@@ -155,6 +156,7 @@ Template.chart.rendered = function() {
       render_stock_vs_topic_graph(curr_company, curr_topic, curr_upper, curr_lower);
       render_stock_topics_average_graph(curr_company,curr_upper,curr_lower);
       render_stock_topics_graph_significance_table(curr_company, curr_topic, curr_upper, curr_lower);
+      render_regression_raw(curr_company);
     } else if (curr_graph == 'rrg') {
       $('#chartdiv').html('');
       var company1 = '';
@@ -1320,6 +1322,13 @@ Template.chart.rendered = function() {
   function render_stock_vs_topic_graph (company, topic, upper_range, lower_range) {
     $('#chart-options').show();
     $('#second-stock-selection').hide();
+
+    $('#chartdiv2').parent().removeClass();
+    $('#chartdiv2').parent().addClass('col-md-4');
+    $('#chartdiv3').parent().removeClass();
+    $('#chartdiv3').parent().addClass('col-md-3');
+    $('#chartdiv4').parent().removeClass();
+    $('#chartdiv4').parent().addClass('col-md-5');
 
 
 
@@ -2634,7 +2643,7 @@ function render_stock_topics_graph_significance_table (company, topic, upper_ran
       else
         html += '<tr class=\"danger\">';
 
-      html += '<td>' + data[i].date + '</td><td>' + data[i].p + '&#37;</td></tr>';
+      html += '<td>' + data[i].date + '</td><td>' + parseFloat(data[i].p).toFixed(8) + '&#37;</td></tr>';
     }
     $('#sig_table tr').first().after(html);
   }
@@ -3057,8 +3066,7 @@ function render_rrg(company) {
 
   // market index vs company cr
   function render_regression_raw(company) {
-    $('#chartdiv2').parent().removeClass();
-    $('#chartdiv2').parent().addClass('col-md-12');
+    $('#chartdiv4').show();
 
     var data_query = Regressions.findOne({token: token, company: company},{fields:{data:true, _id:false}});
     console.log(data_query);
@@ -3089,7 +3097,7 @@ function render_rrg(company) {
     drawGraph(data);
 
     function drawGraph(data) {
-      $('#chartdiv2').highcharts({
+      $('#chartdiv4').highcharts({
         chart: {
           type: 'scatter',
           zoomType: 'xy'
@@ -3164,6 +3172,94 @@ function render_rrg(company) {
           data: data
         }]
       });
+    }
+  }
+
+  function render_mini_company_chart (company) {
+    var stocksPrice = StockPrices.find({company_name: company, token: token},{fields: {cum_return: true, date: true}, sort:{date: -1}, limit: 20}).fetch();
+    console.log(stocksPrice);
+    var last_cr = parseFloat(stocksPrice[0].cum_return);
+    var first_cr = parseFloat(stocksPrice[stocksPrice.length-1].cum_return);
+    var percent = (last_cr - first_cr)/first_cr;
+    $('#miniGraph-init-value').html(first_cr.toFixed(5));
+    $('#miniGraph-final-percent-changed').html(percent.toFixed(5)+"%");
+
+
+    var chart = new AmCharts.AmSerialChart(AmCharts.themes.none);
+    chart.dataProvider = [];
+    stocksPrice.forEach(function(e){
+      chart.dataProvider.push({
+        day: e.date,
+        value: e.cum_return,
+      });
+    });
+    chart.categoryField = "day";
+    chart.autoMargins = false;
+    chart.marginLeft = 0;
+    chart.marginRight = 5;
+    chart.marginTop = 0;
+    chart.marginBottom = 0;
+
+    var graph = new AmCharts.AmGraph();
+    graph.valueField = "value";
+    graph.showBalloon = false;
+    graph.lineColor = "#ffbf63";
+    graph.negativeLineColor = "#289eaf";
+    chart.addGraph(graph);
+
+    var valueAxis = new AmCharts.ValueAxis();
+    valueAxis.gridAlpha = 0;
+    valueAxis.axisAlpha = 0;
+    chart.addValueAxis(valueAxis);
+
+    var categoryAxis = chart.categoryAxis;
+    categoryAxis.gridAlpha = 0;
+    categoryAxis.axisAlpha = 0;
+    categoryAxis.startOnAxis = true;
+    categoryAxis.parseDates = true;
+
+    // using guide to show 0 grid
+    var guide = new AmCharts.Guide();
+    guide.value = 0;
+    guide.lineAlpha = 0.1;
+    valueAxis.addGuide(guide);
+    chart.write("miniGraph");
+
+  }
+
+  function render_main_chart_title (company, topic, chart_name) {
+    // NOTE: styling is in styling.css
+    var main_title = $('#main-chart-main-title');
+    var sub_title = $('#main-chart-sub-title');
+    switch(chart_name) {
+      case 'overview':
+        main_title.html("overview title");
+        sub_title.html("overview sub title");
+        break;
+      case 'candlesticks':
+        main_title.html("candlesticks title");
+        sub_title.html("candlesticks sub title");
+        break;
+      case 'volatility':
+        main_title.html("volatility title");
+        sub_title.html("volatility sub title");
+        break;
+      case 'event-study':
+        main_title.html("event-study title");
+        sub_title.html("event-study sub title");
+        break;
+      case 'stock-topic':
+        main_title.html("stock-topic title");
+        sub_title.html("stock-topic sub title");
+        break;
+      case 'rrg':
+        main_title.html("rrg title");
+        sub_title.html("rrg sub title");
+        break;
+      default:
+        main_title.html('');
+        sub_title.html('');
+        break;
     }
   }
 };
