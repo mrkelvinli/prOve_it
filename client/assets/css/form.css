@@ -39,13 +39,13 @@
   margin: 0;
 }
 
-.form-validation .form-row > label span {
+.form-validation span.title {
   display: inline-block;
   box-sizing: border-box;
   color: #5f5f5f;
   /*width: 650px;*/
   text-align: right;
-  font-size: 0.9em;
+  font-size: 0.95em;
   padding: 8px 25px;
 }
 
@@ -74,7 +74,7 @@
   background-color: #a2cf78;
 /*  left: 520px;*/
   top: 10px;
-  margin-left:10px;
+  margin-left:240px;
   display: none;
 }
 
@@ -103,7 +103,7 @@
   background-color: #e17c4f;
 
     top: 10px;
-  margin-left:10px;
+  margin-left:240px;
   display: none;
 }
 
@@ -179,7 +179,7 @@
 }
 
 
-/*	Making the form responsive. Remove this media query
+/*  Making the form responsive. Remove this media query
     if you don't need the form to work on mobile devices. */
 
 @media (max-width: 700px) {

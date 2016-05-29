@@ -2,6 +2,11 @@
 @import url(https://fonts.googleapis.com/css?family=Poiret+One|Slabo+27px|Noto+Sans);
 @import url(http://fonts.googleapis.com/css?family=Droid+Sans:400,700);
 
+.amcharts-chart-div a {
+  /*background-color: red !important;*/
+  display:none !important;
+}
+
 /* chart fonts */
 .amcharts-main-div tspan {
   font-family: 'Droid Sans', sans-serif;
