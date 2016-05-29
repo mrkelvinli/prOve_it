@@ -1042,12 +1042,12 @@ Template.chart.rendered = function () {
               //"lineColorField": "lineColor",
               "lineColor": "#e6b800",
               "lineAlpha": 0,
-              "negativeLineAlpha": 1,
+              "negativeLineAlpha": 0,
               "negativeLineColor": "#00bfff",
               "fillColor": "#2eb82e",
               "negativeFillColor": "#00bfff",
               "fillAlphas": 0,
-              "negativeFillAlphas": 0.8,
+              "negativeFillAlphas": 1,
               "lineThickness": 2,
               "showBalloon": false,
               "negativeBase": -100,
@@ -2398,7 +2398,6 @@ Template.chart.rendered = function () {
               });
             }
 
-            // console.log(DividendHistory.find().fetch());
             var dividend = DividendHistory.findOne({
               date: thisDate,
               company: company_name
@@ -2416,6 +2415,31 @@ Template.chart.rendered = function () {
                 if (dividendYear == parseInt(matches[3]) && dividendMonth == parseInt(matches[2]) - 1 && dividendDate == parseInt(matches[1])) {
                   console.log("date found for dividend");
                   $(this).parent().addClass("info");
+                }
+              });
+            }
+          }
+      },{
+          "event": "clickGraphItem",
+          "method": function (event) {
+            var idx = event.index;
+            var itemDate = event.chart.dataProvider[idx].date;
+            console.log('clicking on '+itemDate);
+            var news = RelatedNews.findOne({
+              'date': itemDate,
+              'company': company_name,
+              'topic': topic
+            });
+            console.log(RelatedNews.find({}).fetch());
+            if (news != null) {
+              console.log('have news');
+              var highlightHeadline = news.headline;
+              $('#chartdiv3.related_news').find('ul li a').each(function () {
+                var headline = $(this).html();
+                if (headline == highlightHeadline) {
+                  console.log('headline matched');
+                  var url = $(this).attr('href');
+                  window.open(url,'_blank');
                 }
               });
             }
