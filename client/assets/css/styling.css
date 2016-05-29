@@ -242,6 +242,10 @@ input.form-control {
   color: #ddd;
 }
 
+.dropdown-menu.open {
+  background-color: ;
+}
+
 .dropdown-menu>.active>a, .dropdown-menu>.active>a:hover, .dropdown-menu>.active>a:focus {
   background-color: #F47C3C !important;
 }
@@ -283,12 +287,12 @@ ul#tabs li>a {
 
 ul#tabs li > a:hover {
   color: #aaa;
-  border-radius: 1px;
-  background-color: rgba(50, 50, 50, 0.1);
+  background-color: rgba(100, 100, 100, 0.1);
 }
 
 ul#tabs li.active > a {
-  /*background-color: rgba(255, 163, 26, 0.7);*/
+  /*background-color: rgba(100,100,100,0.23);*/
+  /*color: #ddd;*/
   background-color: #aaa;
   color: #333;
 }
