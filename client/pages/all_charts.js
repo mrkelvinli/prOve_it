@@ -249,7 +249,7 @@ Template.chart.rendered = function() {
         entry['sdLower'] = result[1]-(result[0]*2);
         entry['sd'] = result[0];
         entry['zScore'] = zScore;
-        if (zScore >= 1)
+        if (zScore >= 2)
           entry["lineColor"] = "#ff0000";
         else
           entry['lineColor'] = "#0077aa";
@@ -729,7 +729,7 @@ Template.chart.rendered = function() {
           entry['sd'] = result[0];
           entry['cci'] = cci;
           entry['zScore'] = zScore;
-          if (zScore >= 1)
+          if (zScore >= 1.75)
             entry["lineColor"] = "#ff0000";
           else
             entry['lineColor'] = "#0077aa";
@@ -888,6 +888,11 @@ Template.chart.rendered = function() {
           "theme": "dark",
           "pathToImages": "/amcharts/images/",
           "autoMarginOffset": 20,
+
+           categoryAxesSettings: {
+            alwaysGroup: false,
+            groupToPeriods: ["DD"],
+          },
           "marginRight": 80,
           "titles": [{
             "text": "Bollinger Bands for "+ company,
@@ -940,7 +945,7 @@ Template.chart.rendered = function() {
 
 
           "panels": [ {
-              "title": "Lambert's Commodity Channel Index: Potential new trend indicator",
+              "title": "Lambert's Commodity Channel Index",
               "percentHeight": 35,
               "marginTop": 1,
               // "showCategoryAxis": true,
