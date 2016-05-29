@@ -25,6 +25,9 @@
   font-size: 12px;
 }
 
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+  color: #ddd;
+}
 
 .amcharts-chart-div a {
   /*background-color: red !important;*/
@@ -43,10 +46,11 @@
 
 .my-body {
   font-family: 'Droid Sans', sans-serif;
-  background-color: #161415;
+  background-color: #191919;
   padding-bottom:20px;
   padding-left:20px;
   padding-right:20px;
+  color: #ddd;
 }
 
 form.navbar-form {
@@ -54,13 +58,15 @@ form.navbar-form {
 }
 
 nav.navbar {
-  background-color: rgba(100,100,100,0.1);
+  background-color: rgba(100,100,100,0.23);
   border-radius: 3px;
   /*border: 1px solid #e9e9e9;*/
   border: 0;
   margin-top: 20px;
+  margin-bottom: 0;
   text-align: center;
-  box-shadow: 0 0 20px rgba(0,0,0,0.08);
+  border: 1px solid #191919;
+  /*box-shadow: 0 0 20px rgba(0,0,0,0.08);*/
 }
 
 nav.navbar div {
@@ -81,7 +87,7 @@ span.input-group-addon {
 }
 
 .input-group-btn:last-child, .input-group-btn:last-child  {
-  background-color: rgba(100,100,100,0.1);
+  background-color: rgba(100,100,100,0.23);
   border-radius: 100px !important;
 }
 
@@ -112,11 +118,12 @@ button.btn:hover{
 }
 
 .chart-frame {
-  background-color: rgba(100,100,100,0.1);
+  background-color: rgba(100,100,100,0.23);
   border-radius: 3px;
   padding: 10px;
   position: relative; 
-  box-shadow: 0 0 20px rgba(0,0,0,0.08);
+  border: 1px solid #191919;
+  /*box-shadow: 0 0 20px rgba(0,0,0,0.08);*/
 }
 
 #chartdiv {
@@ -218,9 +225,10 @@ div.highcharts-container {
   /*margin-top:17px;*/
   padding: 10px;
   margin-top: 12px;
-  background-color: rgba(100,100,100,0.1);
+  background-color: rgba(100,100,100,0.23);
   border-radius: 3px;
-  box-shadow: 0 0 20px rgba(0,0,0,0.08);
+  border: 1px solid #191919;
+  /*box-shadow: 0 0 20px rgba(0,0,0,0.08);*/
 }
 
 div.form-group {
@@ -235,8 +243,16 @@ input.form-control {
   margin: 0;
   border: none;
   box-shadow: none;
-  border-bottom: 2px solid #ddd;
+  border-bottom: 2px solid rgba(100,100,100,0.9);
   border-radius: 0;
+  background-color: rgba(0,0,0,0);
+  color: #ddd;
+}
+
+.dropdown-menu.open, .dropdown-menu.open a {
+  color: #333;
+  /*background-color: rgba(100,100,100,0.4);*/
+  background-color: #eee;
 }
 
 .dropdown-menu>.active>a, .dropdown-menu>.active>a:hover, .dropdown-menu>.active>a:focus {
@@ -256,16 +272,38 @@ input.form-control:focus {
   border-bottom: 2px solid #F47C3C;
 }
 
+.nav#tabs>li>a {
+  padding: 7px 12px;
+  margin: 0 5px;
+  border-radius: 1px;
+}
+
 ul#tabs {
+  margin-bottom: 10px;
+  margin-top: 10px;
   margin-left: 20px;
   cursor:pointer;
   border: 0;
+  /*background-color: rgba(0,0,0,0);*/
 }
 
 ul#tabs li>a {
+  color: #999;
   border: 0;
-  box-shadow: 0 0 20px rgba(0,0,0,0.08);
+  /*background-color: rgba(0,0,0,0);*/
   margin-right: 5px;
+}
+
+ul#tabs li > a:hover {
+  color: #aaa;
+  background-color: rgba(100, 100, 100, 0.1);
+}
+
+ul#tabs li.active > a {
+  /*background-color: rgba(100,100,100,0.23);*/
+  /*color: #ddd;*/
+  background-color: #aaa;
+  color: #333;
 }
 
 .head-brandname {
@@ -273,7 +311,7 @@ ul#tabs li>a {
   padding-bottom: 5px;*/
   position: relative;
   bottom: 2px;
-  height:50px;
+  /*height:50px;*/
   color: #F47C3C;
   text-align: center;
   /*font-size: 35px;*/

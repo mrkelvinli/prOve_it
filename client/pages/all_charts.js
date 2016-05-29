@@ -40,7 +40,7 @@ Template.chart.rendered = function () {
   Meteor.call('checkToken', token, function (err, response) {
     validToken = response;
     if (validToken) {
-      $('ul.nav-tabs li a#' + curr_graph).parent().addClass('active');
+      $('ul#tabs li a#'+curr_graph).parent().addClass('active');
       // initialise the correct first company
       // var company = StockPrices.findOne({token: token}, {fields:{company_name:1}, sort:{company_name: 1}});
       // curr_company = company.company_name;
@@ -52,11 +52,11 @@ Template.chart.rendered = function () {
   });
 
   // control the tabs
-  $('ul.nav-tabs li a').on('click', function () {
+  $('ul#tabs li a').on('click', function() {
     var currentTab = $(this);
     var tabId = currentTab.attr('id');
     console.log(tabId);
-    $('ul.nav-tabs li').removeClass('active');
+    $('ul#tabs li').removeClass('active');
     if (tabId == 'overview') {
       curr_graph = 'overview';
     } else if (tabId == 'candlesticks') {
@@ -376,8 +376,8 @@ Template.chart.rendered = function () {
         } else {
           guides.push({
             "fillAlpha": 0.30,
-            "fillColor": "#404040",
-            "lineColor": "#404040",
+            "fillColor": "#666",
+            "lineColor": "#666",
             "lineAlpha": 0.9,
             "label": topic,
             "balloonText": significance,
@@ -2220,8 +2220,8 @@ Template.chart.rendered = function () {
         } else {
           guides.push({
             "fillAlpha": 0.30,
-            "fillColor": "#404040",
-            "lineColor": "#404040",
+            "fillColor": "#666",
+            "lineColor": "#666",
             "lineAlpha": 0.9,
             "label": topic,
             "balloonText": significance,
@@ -3575,9 +3575,9 @@ Template.chart.rendered = function () {
       }],
       "graphs": [{
         "id": "g1",
-        "lineColor": "#d1655d",
+        "lineColor": "#637bb6",
         "lineThickness": 2,
-        "negativeLineColor": "#637bb6",
+        "negativeLineColor": "#F47C3C",
         "type": "line",
         "valueField": "value"
       }],

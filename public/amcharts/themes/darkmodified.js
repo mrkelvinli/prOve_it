@@ -7,15 +7,19 @@ AmCharts.themes.dark = {
     },
 
     AmCoordinateChart: {
-        colors: ["#67b7dc", "#fdd400", "#84b761", "#cc4748", "#cd82ad", "#2f4074", "#448e4d", "#b7b83f", "#b9783f", "#b93e3d", "#913167"]
-        // custom colours (same as bar)
-        // colors: ["#334D5C", "#45B29D", "#EFC94C", "#E27A3F", "#DF5A49", "#334D5C", "#45B29D", "#EFC94C", "#E27A3F", "#DF5A49"]
+        //custom colors
+        colors: ["#00aeff", "#fdd400", "#5fbc21", "#e32b2b", "#ff6abe", "#183288", "#1b8527", "#e5dd00", "#ff7800", "#a70000", "#8e2a62"]
+
+        // default light colors
+        // colors: ["#67b7dc", "#fdd400", "#84b761", "#cc4748", "#cd82ad", "#2f4074", "#448e4d", "#b7b83f", "#b9783f", "#b93e3d", "#913167"]
     },
 
     AmStockChart: {
-        colors: ["#67b7dc", "#fdd400", "#84b761", "#cc4748", "#cd82ad", "#2f4074", "#448e4d", "#b7b83f", "#b9783f", "#b93e3d", "#913167"]
-        // custom colours (same as bar)
-        // colors: ["#334D5C", "#45B29D", "#EFC94C", "#E27A3F", "#DF5A49", "#334D5C", "#45B29D", "#EFC94C", "#E27A3F", "#DF5A49"]
+        //custom colors
+        colors: ["#00aeff", "#fdd400", "#5fbc21", "#e32b2b", "#ff6abe", "#183288", "#1b8527", "#e5dd00", "#ff7800", "#a70000", "#8e2a62"]
+
+        // default light colors
+        // colors: ["#67b7dc", "#fdd400", "#84b761", "#cc4748", "#cd82ad", "#2f4074", "#448e4d", "#b7b83f", "#b9783f", "#b93e3d", "#913167"]
     },
 
     AmSlicedChart: {
@@ -23,7 +27,11 @@ AmCharts.themes.dark = {
         outlineThickness: 2,
         labelTickColor: "#FFFFFF",
         labelTickAlpha: 0.3,
-        colors: ["#67b7dc", "#fdd400", "#84b761", "#cc4748", "#cd82ad", "#2f4074", "#448e4d", "#b7b83f", "#b9783f", "#b93e3d", "#913167"],
+        //custom colors
+        colors: ["#00aeff", "#fdd400", "#5fbc21", "#e32b2b", "#ff6abe", "#183288", "#1b8527", "#e5dd00", "#ff7800", "#a70000", "#8e2a62"]
+
+        // default light colors
+        // colors: ["#67b7dc", "#fdd400", "#84b761", "#cc4748", "#cd82ad", "#2f4074", "#448e4d", "#b7b83f", "#b9783f", "#b93e3d", "#913167"]
     },
 
     AmRectangularChart: {
