@@ -890,7 +890,7 @@ Template.chart.rendered = function() {
           "autoMarginOffset": 20,
           "marginRight": 80,
           "titles": [{
-            "text": "Volatility Analysis for "+ company,
+            "text": "Bollinger Bands for "+ company,
             "bold": true
           },
           {
@@ -1399,14 +1399,14 @@ Template.chart.rendered = function() {
           "useGraphSettings": true,
           "valueText": '',
         },
-        "titles":[{
-          "text": "Individual "+topic+" events for "+company,
-          "size": 15
-        },
-        {
-          "text": "By comparing individual event-windows we can determine how companies can expect to react to certain event types",
-          "bold": false
-        }],
+        // "titles":[{
+        //   "text": "Individual "+topic+" events for "+company,
+        //   "size": 15
+        // },
+        // {
+        //   "text": "By comparing individual event-windows we can determine how companies can expect to react to certain event types",
+        //   "bold": false
+        // }],
         "dataProvider": chartData,
 
         "valueAxes": [{
@@ -1908,10 +1908,10 @@ function render_company_chart() {
       chart.theme = 'dark';
 
       chart.titles = [{
-        "text": "Stock Comparison",
+        "text": "30-Day Rankings",
         "bold": true,
       },{
-        "text": "Cumulative returns for the last 30 days",
+        "text": "Cumulative returns for each stock over the last 30 days",
         "bold": false,
       }];
 
@@ -3225,24 +3225,24 @@ function render_rrg(company) {
     var sub_title = $('#main-chart-sub-title');
     switch(chart_name) {
       case 'overview':
-        main_title.html("overview title");
-        sub_title.html("overview sub title");
+        main_title.html("Overview");
+        sub_title.html("Abstract view of one or two companies to help consolidate basic information from other analysis tools.");
         break;
       case 'candlesticks':
-        main_title.html("candlesticks title");
-        sub_title.html("candlesticks sub title");
+        main_title.html("Breakdown of "+company);
+        sub_title.html("This tool uses a candlestick chart to show the price movements in your selected stock. A company profile is also available alongside the 30-Day Rankings chart.");
         break;
       case 'volatility':
-        main_title.html("volatility title");
-        sub_title.html("volatility sub title");
+        main_title.html("Volatility Analysis for "+company);
+        sub_title.html("This tool is designed to help you understand the risks and rewards ascociated with investing in certain stocks.");
         break;
       case 'event-study':
-        main_title.html("event-study title");
-        sub_title.html("event-study sub title");
+        main_title.html("Event Study for "+company);
+        sub_title.html("Individual events are highlighted vertically, change event-type with the dropdown menu. Relevant news articles and dividends paid are also placed along the cumulative-returns line as icons.");
         break;
       case 'stock-topic':
-        main_title.html("stock-topic title");
-        sub_title.html("stock-topic sub title");
+        main_title.html("Reaction Profile for "+company);
+        sub_title.html("This tool gives you an idea on how companies react to certain events and what time-window they react in. A linear regression model also shows you the relationship(beta) between the company's CR and market movements.");
         break;
       case 'rrg':
         main_title.html("rrg title");
