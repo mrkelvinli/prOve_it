@@ -23,7 +23,7 @@ Template.chart.rendered = function () {
   var validToken = false;
 
   // var curr_graph = 'candlesticks';  // default
-  var curr_graph = 'stock-topic';
+  var curr_graph = 'volatility';
   var curr_company = "TGR.AX";
   var second_company = '';
   var curr_topic = "Cash Rate";
@@ -132,7 +132,7 @@ Template.chart.rendered = function () {
     $('#chartdiv').attr('style', '');
     $('#chart-options').hide();
     $('#chartdiv2').hide();
-    $('#chartdiv2').hide();
+    $('#chartdiv3').hide();
     $('#chartdiv4').parent().hide();
     $('#chartdiv4').hide();
     $('#details').hide();
@@ -164,7 +164,6 @@ Template.chart.rendered = function () {
       render_company_details();
       render_company_chart();
     } else if (curr_graph == 'volatility') {
-      $('#chartdiv2').show();
       render_volatility_chart(curr_company, second_company);
     } else if (curr_graph == 'event-study') {
       $('#chartdiv2').show();
@@ -827,57 +826,6 @@ Template.chart.rendered = function () {
       console.log(sma);
       return sma;
     }
-    // function generateData (company) {
-
-    //   var prices = StockPrices.find({token:token, company_name: company, flat_value: {$ne: null}},{fields:{date:true, flat_value: true}}).fetch();
-    //   var stock_prices = [];
-    //   prices.forEach(function(p){
-    //     stock_prices.push({
-    //       time: p.date,
-    //       price: p.flat_value,
-    //     });
-    //   });
-
-    //   var sma = [];
-    //   var avg = 0;
-    //   var currPrice = 0;
-    //   var prevPrice = 0;
-
-    //   //calculate standard deviation
-    //   var toDoList = []; //array of arrays of values [[1,2],[2,3],[9,10]]
-    //   currPrice = prevPrice = 0;
-
-    //   for(var i = 0; i<(stock_prices.length); i++) {
-    //     var currArray = [];
-    //     if (i < 29) {
-    //       //currArray.push(stock_prices[i].price);
-    //     } 
-    //     for(var x = 0; x<30; x++) {
-    //       if (i>=29) {
-    //         currArray.push(stock_prices[i-x].price);
-    //       }
-    //     }
-    //     if (i > 29) {
-    //       toDoList.push({"currArray": currArray, "time": stock_prices[i-30].time, "price": stock_prices[i].price});
-    //     }
-    //     // console.log(toDoList);
-    //   }
-    //   toDoList.forEach(function (c){
-    //     var result = standardDeviation(c.currArray);
-    //     var zScore = (c.price - result[1]) / result[0];
-    //     zScore = Math.abs(zScore);
-    //     var entry = {};
-    //     if (zScore >= 1) {
-    //       entry = {"time": c.time, "price": c.price, "mAvg": result[1], "sdUpper": ((result[0]*2)+result[1]), "sdLower": (result[1]-(result[0]*2)), "sd": result[0], "zScore": zScore, "lineColor": "#ff0000"};
-    //     } else {
-    //       entry = {"time": c.time, "price": c.price, "mAvg": result[1], "sdUpper": ((result[0]*2)+result[1]), "sdLower": (result[1]-(result[0]*2)), "sd": result[0], "zScore": zScore, "lineColor": "#0077aa"};
-    //     }
-    //       // console.log(entry);
-    //       sma.push(entry);
-    //     });
-
-    //   return sma;
-    // }
 
     var chartData1 = generateData(company);
     var chartData2 = [];
@@ -988,10 +936,10 @@ Template.chart.rendered = function () {
         "pathToImages": "/amcharts/images/",
         "autoMarginOffset": 20,
 
-        categoryAxesSettings: {
-          alwaysGroup: false,
-          groupToPeriods: ["DD"],
-        },
+//        categoryAxesSettings: {
+//          alwaysGroup: false,
+//          groupToPeriods: ["DD"],
+//        },
         "marginRight": 80,
         "titles": [{
             "text": "Bollinger Bands for " + company,
@@ -1087,6 +1035,7 @@ Template.chart.rendered = function () {
               //"lineColor": "#ff6600",
               "comparable": true,
               "useDataSetColors": false,
+              "visibleInLegend": false,
               }, {
               "valueField": "cci",
               "type": "line",
@@ -1110,6 +1059,10 @@ Template.chart.rendered = function () {
               "markerType": "none",
               "markerSize": 0,
               "labelText": "",
+              "valueFunction": function (item, text) {
+                var value = parseFloat(text);
+                return value.toFixed(2);
+              },
               //"periodValueTextRegular": "[[zScore]]"
             }
             }, {
@@ -1134,7 +1087,7 @@ Template.chart.rendered = function () {
             "categoryAxis": {
               "parseDates": true,
               "guides": guides,
-              "position": "top",
+              "position": "bottom",
               "gridPosition": "middle",
               "gridAlpha": 0.2,
               "dashLength": 10,
@@ -1206,7 +1159,7 @@ Template.chart.rendered = function () {
               "labelFunction": labelFunction,
               "useDataSetColors": false,
               "labelText": "Upper Band",
-              "labelOffset": -60,
+              "labelOffset": -70,
               //"labelText": "Upper Band"
               }, {
               "id": "sdLowerGraph",
@@ -1221,7 +1174,7 @@ Template.chart.rendered = function () {
               "visibleInLegend": false,
               "labelFunction": labelFunction,
               "useDataSetColors": false,
-              "labelOffset": -60,
+              "labelOffset": -70,
               "labelText": "Lower Band",
               //"labelText": "Lower Band"
               }, {
@@ -1237,11 +1190,13 @@ Template.chart.rendered = function () {
               "valueAlign": "left",
               "valueWidth": 100,
               "clickMarker": handleLegendClick,
-              "clickLabel": handleLegendClick
-
-            }
+              "clickLabel": handleLegendClick,
+              "valueFunction": function (item, text) {
+                var value = parseFloat(text);
+                return value.toFixed(5);
+              },
             },
-          {
+          }, {
             "title": sdScoreTitle,
             "percentHeight": 35,
             "marginTop": 1,
@@ -1295,18 +1250,23 @@ Template.chart.rendered = function () {
               "markerSize": 0,
               "labelText": "",
               //"periodValueTextRegular": "[[zScore]]"
-            }
+              "valueFunction": function (item, text) {
+                var value = parseFloat(text);
+                return value.toFixed(5);
+              },
             },
+          }],
 
-
-
-            ],
+        "ChartScrollbar": {
+          enabled: true,
+        },
 
         "chartScrollbarSettings": {
           "graph": "priceGraph",
           "graphType": "line",
           "usePeriod": "WW",
-          "position": "top"
+          "position": "bottom",
+          "enabled": true,
         },
 
 
@@ -1316,10 +1276,20 @@ Template.chart.rendered = function () {
           //"valueLineEnabled": true
         },
 
-        // categoryAxesSettings: {
-        //   alwaysGroup: false,
-        //   groupToPeriods: ["DD"],
-        // },
+        "categoryAxis": {
+            "parseDates": true,
+            "dashLength": 1,
+            "minorGridEnabled": true,
+            // let's start with the monthly data
+            "minPeriod": "DD",
+            "position": "bottom",
+        },
+
+        categoryAxesSettings: {
+          alwaysGroup: false,
+          // groupToPeriods: ["DD"],
+          maxSeries: Number.MAX_SAFE_INTEGER,
+        },
 
         "periodSelector": {
           "position": "bottom",
@@ -2085,51 +2055,51 @@ Template.chart.rendered = function () {
 
       }, ["serial"]);
 
-       var chart = AmCharts.makeChart("chartdiv2", {
+      var chart = AmCharts.makeChart("chartdiv2", {
         "type": "serial",
-        "theme": "dark",  
+        "theme": "dark",
         "dataProvider": chartData,
         "valueAxes": [{
-            "minorGridAlpha": 0.08,
-            "minorGridEnabled": true,
-            "position": "top",
-            "axisAlpha":1,
-            "title" : "Cumulative Return (%)",
-            "titleBold" : true,
-            "titleFontSize" : 12,
+          "minorGridAlpha": 0.08,
+          "minorGridEnabled": true,
+          "position": "top",
+          "axisAlpha": 1,
+          "title": "Cumulative Return (%)",
+          "titleBold": true,
+          "titleFontSize": 12,
         }],
-//         "startDuration": 1,
+        //         "startDuration": 1,
         "graphs": [{
-            "type": "column",
-            "balloonText": "[[category]]: [[value]]",
-            "valueField": "last_cr",
-            "lineAlpha": 1,
-            "fillAlphas": 1,
-            "autoColor": true,
+          "type": "column",
+          "balloonText": "[[category]]: [[value]]",
+          "valueField": "last_cr",
+          "lineAlpha": 1,
+          "fillAlphas": 1,
+          "autoColor": true,
         }],
         "rotate": true,
         "categoryField": "company_name",
         "categoryAxis": {
-            gridPosition: "start",
-            labelRotation: 90,
-            title: "Companies",
-            lineAlpha: 0,
-            fillAlphas :0.8,
-            rotate: true,
-            columnWidth: 1,
-            "titleBold" : true,
-            "titleFontSize" : 12,
+          gridPosition: "start",
+          labelRotation: 90,
+          title: "Companies",
+          lineAlpha: 0,
+          fillAlphas: 0.8,
+          rotate: true,
+          columnWidth: 1,
+          "titleBold": true,
+          "titleFontSize": 12,
         },
         titles: [{
           "text": "Stock Comparison",
           "bold": true,
-        },{
+        }, {
           "text": "Cumulative returns for the last 30 days",
           "bold": false,
         }],
         "export": {
           "enabled": true
-         }
+        }
 
       });
 
@@ -3561,12 +3531,28 @@ Template.chart.rendered = function () {
       },
       limit: 20
     }).fetch();
-    // console.log(stocksPrice);
+    console.log(stocksPrice);
     var last_cr = parseFloat(stocksPrice[0].cum_return);
     var first_cr = parseFloat(stocksPrice[stocksPrice.length - 1].cum_return);
-    var percent = (last_cr - first_cr) / first_cr;
-    $('#miniGraph-init-value').html(first_cr.toFixed(2));
-    $('#miniGraph-final-percent-changed').html(percent.toFixed(2) + "%");
+    var percent = (last_cr - first_cr) / Math.abs(first_cr);
+    console.log(last_cr);
+    console.log(first_cr);
+    $('#miniGraph-init-value').html(first_cr.toFixed(2)+"%");
+    percent = percent.toFixed(2);
+    $('#miniGraph-final-percent-changed').removeClass('text-success');
+    $('#miniGraph-final-percent-changed').removeClass('text-danger');
+    if (percent > 0){
+      $('#miniGraph-final-percent-changed').html('+'+percent + "%");
+      $('#miniGraph-final-percent-changed').addClass('text-success');
+    } else if (percent == 0) {
+      $('#miniGraph-final-percent-changed').html(percent + "%");
+      $('#miniGraph-final-percent-changed').addClass('text-success');
+    } else {
+      $('#miniGraph-final-percent-changed').html(percent + "%");
+      $('#miniGraph-final-percent-changed').addClass('text-danger');
+      
+    }
+    $('#miniGraph-title').html('CR of last 20 days on '+company);
 
     var chartData = [];
     stocksPrice.forEach(function (e) {
