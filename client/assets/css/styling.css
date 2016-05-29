@@ -200,15 +200,18 @@ div.highcharts-container {
 }
 
 .dividends-table th {
-  /*background-color: #F47C3C;*/
-  /*background-color: rgba(244, 124, 60, 0.9);*/
-  background-color: orange;
-  color: white;
+  background-color: rgba(255, 165, 0, 0.9);
+  color: #333;
   text-align: center;
   /*text-transform: uppercase;*/
   font-size: 13px;
   font-weight: 400;
 }
+
+.table-striped>tbody>tr:nth-of-type(odd) {
+  background-color: rgba(100,100,100,0.3)
+}
+
 
 #details {
   /*height: 500px;*/
