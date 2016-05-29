@@ -107,7 +107,7 @@ Template.chart.rendered = function() {
   function renderMainGraph() {
     $('#chartdiv2').attr('style', '');
     $('#chartdiv3').attr('style', '');
-    $('.chart-frame').attr('style', '');
+    $('#chartdiv').attr('style', '');
     $('#chart-options').hide();
     $('#chartdiv2').hide();
     $('#chartdiv3').hide();
@@ -644,7 +644,8 @@ Template.chart.rendered = function() {
 
   function render_volatility_chart (company,second_company) {
     $('#chart-options').show();
-    $('.chart-frame').css("height","800");
+    $('#chartdiv').css("height","800");
+
     $('#topic-selection').hide();
     $('#upper-window-selection').hide();
     $('#lower-window-selection').hide();
@@ -707,7 +708,7 @@ Template.chart.rendered = function() {
             distinctAvgToDo = [];
           }
           if (i<20) {
-            currAvg = stock_prices[0].flat_value;
+            currAvg = 1;//stock_prices[0].flat_value;
           }
           distinctAvgToDo.push(stock_prices[i].flat_value);
           console.log(currAvg);
@@ -939,7 +940,7 @@ Template.chart.rendered = function() {
 
 
           "panels": [ {
-              "title": "CCI",
+              "title": "Lambert's Commodity Channel Index: Potential new trend indicator",
               "percentHeight": 35,
               "marginTop": 1,
               // "showCategoryAxis": true,
@@ -949,6 +950,8 @@ Template.chart.rendered = function() {
 
               "categoryAxis": {
                 "dashLength": 5,
+                "labelsEnabled": false,
+
               //   "guides":  [{
               //     "value": 100,
               //     "toValue": 120,
@@ -966,9 +969,9 @@ Template.chart.rendered = function() {
                 "valueField": "cci",
                 "type": "line",
                 //"lineColorField": "lineColor",
-                "lineColor": "#e6b800",
+                "lineColor": "#cc6600",
                 "negativeLineColor": "#2eb82e",
-                "fillColor": "#e6b800",
+                "fillColor": "#cc6600",
                 "negativeFillColor": "#2eb82e",
                 "negativeBase": 100,
                 "fillAlphas": 0.8,
@@ -987,9 +990,9 @@ Template.chart.rendered = function() {
                 "lineColor": "#e6b800",
                 "lineAlpha": 0,
                 "negativeLineAlpha": 1,
-                "negativeLineColor": "#e6b800",
+                "negativeLineColor": "#00bfff",
                 "fillColor": "#2eb82e",
-                "negativeFillColor": "#2eb82e",
+                "negativeFillColor": "#00bfff",
                 "fillAlphas": 0,
                 "negativeFillAlphas": 0.8,
                 "lineThickness": 2,
@@ -1016,7 +1019,6 @@ Template.chart.rendered = function() {
               "gridColor": "#000000",
               "gridCount": 500,
               "autoGridCount": false,
-
               "gridAlpha": 0.2,
               "dashLength": 10,
               "title": "Stock Price ($)",
@@ -1030,7 +1032,6 @@ Template.chart.rendered = function() {
               "guides": guides,
               "position":"top",
               "gridPosition": "middle",
-
               "gridAlpha": 0.2,
               "dashLength": 10,
               "title": "Time (Days)"
@@ -1125,7 +1126,7 @@ Template.chart.rendered = function() {
 
               "stockLegend": {
                 // "valueTextRegular": undefined,
-                // "periodValueTextComparing": "[[percents.value.close]]%"
+                "periodValueTextComparing": "[[percents.value.close]]%",
                 "equalWidths": false,
                 //"periodValueText": "total: [[value.sum]]",
                 "position": "top",
@@ -1146,6 +1147,7 @@ Template.chart.rendered = function() {
               } ],
 
               "categoryAxis": {
+                "labelsEnabled": false,
                 "dashLength": 5
               },
 
@@ -2054,6 +2056,9 @@ function render_company_chart() {
         },{
           fromField: "customBullet",
           toField: "customBullet"
+        }, {
+          fromField: "customDescription",
+          toField: "customDescription"
         }],
         dataProvider: stocks,
         "categoryField": "date",
@@ -2092,7 +2097,7 @@ function render_company_chart() {
 
         stockGraphs: [{
           "id": "g1",
-          "balloonText": "Cumulative Return: [[cum_return]]%",
+          "balloonText": "[[customDescription]]",
           // "balloonFunction": function(item, graph) {
           //   var result = graph.balloonText;
           //   for (var key in item.dataContext) {
@@ -2123,7 +2128,8 @@ function render_company_chart() {
           "useDataSetColors": false,
         },{
           "id": "g2",
-          "balloonText": "Daily Stock Price Average: $[[flat_value]]",
+          //"balloonText": "Daily Stock Price Average: $[[flat_value]]",
+          "balloonText": "",
         // "balloonFunction": function(item, graph) {
         //   var result = graph.balloonText;
         //   for (var key in item.dataContext) {
@@ -2450,10 +2456,13 @@ function render_company_chart() {
         var newEntry = {'date': c.date, 'cum_return': c.cum_return, 'flat_value': c.flat_value};
         if (RelatedNews.find({'date':c.date, 'company':company_name, 'topic':topic}).count() > 0){
           newEntry['customBullet'] = "/assets/img/news-icon.png";
+          newEntry['customDescription'] = "NEWS!";
           console.log('have news');
         }
-        if (DividendHistory.find({'date':c.date, 'company':company_name}).count() > 0)
+        if (DividendHistory.find({'date':c.date, 'company':company_name}).count() > 0) {
           newEntry['customBullet'] = "/assets/img/money-icon.png";
+          newEntry['customDescription'] = "DIVIDENDS!";    
+        }
         if (newEntry.flat_value == null)
           delete newEntry.flat_value;
         if (newEntry.cum_return == null)
@@ -2784,11 +2793,11 @@ function render_stock_topics_graph_significance_table (company, topic, upper_ran
 
           // check if we haven't changed anything already in the span of scraping
           if ((curr_graph == 'event-study') && (curr_company == company)) {
-            if (headlinesNoBackslash == null) {
-              $('#chartdiv3').append(headlines);
-              
-            } else {
+            if (headlinesNoBackslash !== 'null') {
               $('#chartdiv3').append(headlinesNoBackslash);
+            } else {
+            $('#chartdiv3').html('<h4 style="padding: 0 0 5px 5px;">News related to ' + curr_company + '</h4><p style="padding-left:5px">No related news found for the current events.</p>');
+              // $('#chartdiv3').append(headlines);
             }
           } else {
             return;
@@ -2886,10 +2895,10 @@ function render_stock_topics_graph_significance_table (company, topic, upper_ran
             // });
           });
         } else {
-          $('#chartdiv3').html('No related news found for the current events.');
+          $('#chartdiv3').html('<h4 style="padding: 0 0 5px 5px;">News related to ' + curr_company + '</h4><p style="padding-left:5px">No related news found for the current events.</p>');
         }
       } else {
-        $('#chartdiv3').html('No related news found for the current events.');
+          $('#chartdiv3').html('<h4 style="padding: 0 0 5px 5px;">News related to ' + curr_company + '</h4><p style="padding-left:5px">No related news found for the current events.</p>');
       }
     });
 }
