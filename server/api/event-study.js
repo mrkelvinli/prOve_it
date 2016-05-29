@@ -540,11 +540,35 @@ ES = {
     }
     // });
   },
+  process_regressions: function(token) {
+    var all_company = _.uniq(StockPrices.find({token:token}, {fields:{company_name:1}},{sort:{company_name: 1}}).fetch().map(function(x){return x.company_name}),true);
+    console.log('    > regressions: IN FUNCTION ' + all_company);
+      all_company.forEach(function(company) {
+        // console.log('    > regressions: ENTERS LOOP');
+      var company_prices = StockPrices.find({token: token, company_name: company, cum_return: {$ne: null}},{fields:{cum_return:true, date:true, _id:false}}).fetch();
 
-
-
-
-
+      var data = [];
+      var prev_price = null;
+      var prev_market = null;
+      company_prices.forEach(function(entry) {
+        var date = entry.date;
+        var price = entry.cum_return;
+        var db_query = Market.findOne({date: date}, {fields: {value: true, _id: false}});
+        if ((db_query != null) && (price != null)) {
+          var market_price = parseFloat(db_query.value);
+          //console.log('cr: ' + price + ', market: ' + market_price + ', date: ' + date);
+          data.push([market_price, price]);
+        }
+      });
+      // console.log("    > regressions: PUSHING!!");
+      // put 'data' into db
+      Regressions.insert({
+        company: company,
+        data: data,
+        token: token,
+      });
+    });
+  },
 
   // -------- old getter function
     get_cum_return_by_date: function (stock_price_file, c_name, date) {

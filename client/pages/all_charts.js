@@ -25,7 +25,7 @@ Template.chart.rendered = function() {
   var second_company = '';
   var curr_topic = "Cash Rate";
   var curr_upper = 5;
-  var curr_lower = -5;
+  var curr_lower = 0;
   RelatedNews = new Mongo.Collection(null);
   DividendHistory = new Mongo.Collection(null);
 
@@ -2729,7 +2729,7 @@ function render_stock_topics_graph_significance_table (company, topic, upper_ran
 
   function render_dividends(company) {
     DividendHistory.remove({});
-    $("#chartdiv2").html('');
+    $('#chartdiv2').html('<h4 style="padding: 5px 0 5px 5px;">Dividend history of ' + curr_company + '</h4><p style="padding-left: 5px">Loading...</p>');
     $('#chartdiv2').parent().removeClass();
     $('#chartdiv2').parent().addClass('col-md-8');
 
@@ -2749,9 +2749,17 @@ function render_stock_topics_graph_significance_table (company, topic, upper_ran
         var tableNoBackslash = table.replace(/\\[a-zA-Z]/g, '');
         // console.log('      >> table is: ');
         // console.log(table);
+          
         if ((curr_graph == 'event-study') && (curr_company == company)) {
           console.log("RENDERING");
-          $('#chartdiv2').html('<h4 style="padding: 5px 0 5px 5px;">Dividend history of ' + curr_company + '</h4>' + tableNoBackslash);
+          console.log(tableNoBackslash);
+          console.log(tableNoBackslash == null);
+          console.log(tableNoBackslash === '<table class="table table-striped table-hover dividends-table"><thead>null');
+          if ((tableNoBackslash !== '<table class="table table-striped table-hover dividends-table"><thead>null') && (tableNoBackslash.length != 0)) {
+            $('#chartdiv2').html('<h4 style="padding: 5px 0 5px 5px;">Dividend history of ' + curr_company + '. Courtesy of <img src="/assets/img/dividend-icon.png" style="height:50px"></img></h4>' + tableNoBackslash);
+          } else {
+            $('#chartdiv2').html('<h4 style="padding: 5px 0 5px 5px;">Dividend history of ' + curr_company + '. Courtesy of <img src="/assets/img/dividend-icon.png" style="height:50px"></img></h4><p style="padding-left:5px">No dividend data found.</p>');
+          }
         } else {
           return;
         }
@@ -2778,7 +2786,7 @@ function render_stock_topics_graph_significance_table (company, topic, upper_ran
     $('#chartdiv3').css('height', '500px');
 
     $('#chartdiv3').addClass('related_news');
-    $('#chartdiv3').html('<h4 style="padding: 0 0 5px 5px;">News related to ' + curr_company + '</h4>');
+    $('#chartdiv3').html('<h4 style="padding: 0 0 5px 5px;">News related to ' + curr_company + '. Courtesy of <img style="height:20px" src="/assets/img/yahoo-icon.png"</img></h4>');
     RelatedNews.remove({});
     // date wanted
     var dom = document.getElementById('details');
@@ -2805,7 +2813,7 @@ function render_stock_topics_graph_significance_table (company, topic, upper_ran
             if (headlinesNoBackslash !== 'null') {
               $('#chartdiv3').append(headlinesNoBackslash);
             } else {
-            $('#chartdiv3').html('<h4 style="padding: 0 0 5px 5px;">News related to ' + curr_company + '</h4><p style="padding-left:5px">No related news found for the current events.</p>');
+              $('#chartdiv3').html('<h4 style="padding: 0 0 5px 5px;">News related to ' + curr_company + '</h4><p style="padding-left:5px">No related news found for the current events.</p>');
               // $('#chartdiv3').append(headlines);
             }
           } else {
@@ -2938,6 +2946,7 @@ function render_rrg(company) {
 
     $('#chartdiv3').show();
     $('#chartdiv3').html('');
+    $('#chartdiv3').html('<h4 style="padding: 0 0 5px 5px;">Relative Rotation Graph - Courtesy of <img style="height:50px" src="/assets/img/stockchart-icon.png"</img></h4>');
     $('#chartdiv3').parent().removeClass('col-md-5');
     $('#chartdiv3').parent().addClass('col-md-4');
     $('#chartdiv3').css('height', 370);
@@ -2946,6 +2955,7 @@ function render_rrg(company) {
     Blaze.render(Template.rrgControls, dom3);
   }
 
+  // [ this graph doesn't work, we're using render_regression_raw() ]
   // market change vs company change
   // can reference http://asxiq.com/statistical-rankings/end-of-day/top-stocks-ranked-by-beta/
   function render_regression_change(company) {
@@ -3058,23 +3068,32 @@ function render_rrg(company) {
   function render_regression_raw(company) {
     $('#chartdiv4').show();
 
-    var company_prices = StockPrices.find({token: token, company_name: company, cum_return: {$ne: null}},{fields:{cum_return:true, date:true, _id:false}}).fetch();
-    // console.log(company_cr);
-
+    var data_query = Regressions.findOne({token: token, company: company},{fields:{data:true, _id:false}});
+    console.log(data_query);
     var data = [];
-    var prev_price = null;
-    var prev_market = null;
-    company_prices.forEach(function(entry) {
-      var date = entry.date;
-      var price = entry.cum_return;
-      var db_query = Market.findOne({date: date}, {fields: {value: true, _id: false}});
-      if ((db_query != null) && (price != null)) {
-        var market_price = parseFloat(db_query.value);
-        //console.log('cr: ' + price + ', market: ' + market_price + ', date: ' + date);
-        data.push([market_price, price]);
-      }
-    });
-    // console.log("DONE");
+    if ((data_query != null) && (data_query.length != 0)) {
+      console.log('Cached data loaded');
+      data = data_query.data;
+      // console.log("DATA:");
+      // console.log(data);
+    } else {
+      console.warn("Regression cache for " + company + " has no data! Slow manual pulling starting.");
+      var company_prices = StockPrices.find({token: token, company_name: company, cum_return: {$ne: null}},{fields:{cum_return:true, date:true, _id:false}}).fetch();
+
+      var prev_price = null;
+      var prev_market = null;
+      company_prices.forEach(function(entry) {
+        var date = entry.date;
+        var price = entry.cum_return;
+        var db_query = Market.findOne({date: date}, {fields: {value: true, _id: false}});
+        if ((db_query != null) && (price != null)) {
+          var market_price = parseFloat(db_query.value);
+          //console.log('cr: ' + price + ', market: ' + market_price + ', date: ' + date);
+          data.push([market_price, price]);
+        }
+      });
+    }
+
     drawGraph(data);
 
     function drawGraph(data) {

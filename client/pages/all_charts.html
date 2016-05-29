@@ -52,7 +52,7 @@
         <!-- <div>Lower Window:</div> -->
         <div class='input-group'>
           <span class='input-group-addon'>Lower Window</span>
-          <input type="number"  class="form-control" max="0" id='choose-lower-window' value="-5">
+          <input type="number"  class="form-control" max="0" id='choose-lower-window' value="0">
         </div>
 
       </div>
@@ -314,24 +314,30 @@
 <!--       <div class="form-title-row">
         <h1>Submit Files</h1>
       </div> -->
-      <div class="form-row form-input-name-row">
-        <label>
-          <span>Stock Price File</span>
-          <input type="file" class="pull-right" name="stock_price_file">
-        </label>
-        <span class="form-valid-data-sign"><i class="fa fa-check"></i></span>
-        <span class="form-invalid-data-sign"><i class="fa fa-close"></i></span>
-        <span class="form-invalid-data-info"></span>
+      <div class="form-row form-input-name-row row">
+          <div class='col-md-2 col-md-offset-4'>
+            <span class='title'>Stock Price File</span>
+          </div>
+          <div class='col-md-2'>
+            <input type="file" class="pull-right" name="stock_price_file">
+            <span class="form-valid-data-sign"><i class="fa fa-check"></i></span>
+            <span class="form-invalid-data-sign"><i class="fa fa-close"></i></span>
+            <span class="form-invalid-data-info"></span>
+          </div>
       </div>
-      <div class="form-row form-input-name-row">
-        <label>
-          <span>Stock Characteristic File</span>
-          <input type="file" class="pull-right" name="stock_characteristic_file">
-        </label>
-        <span class="form-valid-data-sign"><i class="fa fa-check"></i></span>
-        <span class="form-invalid-data-sign"><i class="fa fa-close"></i></span>
-        <span class="form-invalid-data-info"></span>
+
+      <div class="form-row form-input-name-row row">
+          <div class='col-md-2 col-md-offset-4'>
+            <span class='title'>Stock Characteristic File</span>
+          </div>
+          <div class='col-md-2'>
+            <input type="file" class="pull-right" name="stock_characteristic_file">
+            <span class="form-valid-data-sign"><i class="fa fa-check"></i></span>
+            <span class="form-invalid-data-sign"><i class="fa fa-close"></i></span>
+            <span class="form-invalid-data-info"></span>
+          </div>
       </div>
+
       <div class="form-row">
         <button type="submit" class="link animated fadeInUp delay-1s" style='margin-top: 50px'>Upload</button>
         <!-- <a class="link animated fadeInUp delay-1s upload" >Upload</a> -->

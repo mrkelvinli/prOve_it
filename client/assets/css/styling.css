@@ -26,6 +26,11 @@
 }
 
 
+.amcharts-chart-div a {
+  /*background-color: red !important;*/
+  display:none !important;
+}
+
 /* chart fonts */
 .amcharts-main-div tspan {
   font-family: 'Droid Sans', sans-serif;
