@@ -1851,9 +1851,14 @@ Template.chart.rendered = function () {
 
             "stockLegend": {
               "clickMarker": handleCandleLegend,
-              "clickLabel": handleCandleLegend
+              "clickLabel": handleCandleLegend,
                 // "valueTextRegular": undefined,
                 // "periodValueTextComparing": "[[value.close]]%"
+
+              "valueFunction": function (item, text) {
+                var value = parseFloat(text);
+                return value.toFixed(5);
+              },
             },
             "drawingIconsEnabled": true,
         },
