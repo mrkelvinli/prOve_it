@@ -1628,8 +1628,10 @@ Template.chart.rendered = function() {
             "highField": "high",
             "lowField": "low",
             "valueField": "close",
-            "lineColor": "#7f8da9",
-            "fillColors": "#7f8da9",
+            // "lineColor": "#7f8da9",
+            // "fillColors": "#7f8da9",
+            "lineColor": "#ff6600",
+            "fillColors": "#ff6600",
             "negativeLineColor": "#ff6600",
             "negativeFillColors": "#ff6600",
             "fillAlphas": 1,
@@ -2467,13 +2469,16 @@ function render_company_chart() {
       stocks.forEach(function(c) {
         var newEntry = {'date': c.date, 'cum_return': c.cum_return, 'flat_value': c.flat_value};
         if (RelatedNews.find({'date':c.date, 'company':company_name, 'topic':topic}).count() > 0){
+          var matchingHeadline = RelatedNews.findOne({'date':c.date, 'company':company_name, 'topic':topic}).headline;
+          //console.log(matchingHeadline);
           newEntry['customBullet'] = "/assets/img/news-icon.png";
-          newEntry['customDescription'] = "NEWS!";
+          newEntry['customDescription'] = matchingHeadline;
           console.log('have news');
         }
         if (DividendHistory.find({'date':c.date, 'company':company_name}).count() > 0) {
+          var matchingDividend = DividendHistory.find({'date':c.date, 'company':company_name}).price;
           newEntry['customBullet'] = "/assets/img/money-icon.png";
-          newEntry['customDescription'] = "DIVIDENDS!";    
+          newEntry['customDescription'] = "Ex-Dividend";    
         }
         if (newEntry.flat_value == null)
           delete newEntry.flat_value;
@@ -3250,8 +3255,8 @@ function render_rrg(company) {
         sub_title.html("This tool gives you an idea on how companies react to certain events and what time-window they react in. A linear regression model also shows you the relationship(beta) between the company's CR and market movements.");
         break;
       case 'rrg':
-        main_title.html("rrg title");
-        sub_title.html("rrg sub title");
+        main_title.html("Performance Benchmark relative to "+company);
+        sub_title.html("Compare relative strength in combination with momentum indicators to show whether other companies are leading, improving, weakening or lagging.");
         break;
       default:
         main_title.html('');
