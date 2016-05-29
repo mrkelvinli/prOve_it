@@ -1474,6 +1474,7 @@ Template.chart.rendered = function() {
 
 
   function render_candlestick_graph (company_name) {
+    $('#chartdiv2').css('height', '520');
     var stockPrices = StockPrices.find({company_name: company_name, token: token, 'open': {$ne : null}}, {fields: {'date':1, 'open':1, 'last':1, 'high':1, 'low':1, 'volume':1, 'flat_value':1}}).fetch();
 
     //calculate MACD
