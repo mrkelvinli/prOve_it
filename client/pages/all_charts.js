@@ -2565,7 +2565,7 @@ function render_stock_topics_average_graph (company,upper_range,lower_range) {
 
   var chart = AmCharts.makeChart( "chartdiv2", {
     "type": "serial",
-    "theme": "dar",
+    "theme": "dark",
     "dataProvider": chartData,
     "valueAxes": [ {
       "gridColor": "#000000",

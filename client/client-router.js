@@ -19,7 +19,7 @@ Router.map(function() {
       if(!ReadyList.js1.ready()){ return }
       ReadyList.js2 = IRLibLoader.load('/amcharts/serial.js');
       if(!ReadyList.js2.ready()){ return }
-      ReadyList.js3 = IRLibLoader.load('/amcharts/themes/dark.js');
+      ReadyList.js3 = IRLibLoader.load('/amcharts/themes/darkmodified.js');
       if(!ReadyList.js3.ready()){ return }
       ReadyList.js4 = IRLibLoader.load('/amcharts/amstock.js');
       if(!ReadyList.js4.ready()){ return }
