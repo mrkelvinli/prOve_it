@@ -158,7 +158,8 @@ div.highcharts-container {
 
 .dividends-table th {
   /*background-color: #F47C3C;*/
-  background-color: rgba(244, 124, 60, 0.9);
+  /*background-color: rgba(244, 124, 60, 0.9);*/
+  background-color: orange;
   color: white;
   text-align: center;
   /*text-transform: uppercase;*/
