@@ -23,7 +23,7 @@ Template.chart.rendered = function () {
   var validToken = false;
 
   // var curr_graph = 'candlesticks';  // default
-  var curr_graph = 'volatility';
+  var curr_graph = 'event-study';
   var curr_company = "TGR.AX";
   var second_company = '';
   var curr_topic = "Cash Rate";
@@ -2364,7 +2364,11 @@ Template.chart.rendered = function () {
           "equalWidths": false,
           "useGraphSettings": true,
           "valueAlign": "left",
-          "valueWidth": 120
+          "valueWidth": 120,
+          "valueFunction": function (item, text) {
+            var value = parseFloat(text);
+            return value.toFixed(5);
+          },
         },
         "listeners": [{
           "event": "rollOverGraph",
