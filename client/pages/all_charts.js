@@ -130,11 +130,13 @@ Template.chart.rendered = function () {
     $('#chartdiv2').attr('style', '');
     $('#chartdiv3').attr('style', '');
     $('#chartdiv').attr('style', '');
+    $('#chartdiv-second_company').attr('style','');
     $('#chart-options').hide();
     $('#chartdiv2').hide();
     $('#chartdiv3').hide();
     $('#chartdiv4').parent().hide();
     $('#chartdiv4').hide();
+    $('#chartdiv-second_company').hide();
     $('#details').hide();
     $('#chartdiv2').html('');
     $('#chartdiv3').html('');
@@ -156,7 +158,7 @@ Template.chart.rendered = function () {
     render_main_chart_title(curr_company, curr_topic, curr_graph);
     render_mini_company_chart(curr_company);
     if (curr_graph == 'overview') {
-      render_overview(curr_company, second_company, curr_topic, curr_upper, curr_lower);
+      render_overview(curr_company, second_company, curr_upper, curr_lower);
     } else if (curr_graph == "candlesticks") {
       $('#chartdiv2').show();
       $('#details').show();
@@ -225,10 +227,13 @@ Template.chart.rendered = function () {
 
   renderMainGraph();
 
-  function render_overview(company, second_company, topic, upper_range, lower_range) {
+  function render_overview(company, second_company, upper_range, lower_range) {
+    $('#chartdiv-second_company').show();
     $('#chart-options').show();
-    if (second_company != '')
-      $('#chartdiv').css("height", "800");
+    if (second_company != ''){
+      $('#chartdiv').css("height", "400");
+      $('#chartdiv-second_company').css("height", "400");
+    }
 
     $('#topic-selection').hide();
     $('#upper-window-selection').hide();
@@ -236,118 +241,129 @@ Template.chart.rendered = function () {
     $('#second-stock-selection').show();
 
 
+    drawGraph(generateChartData(company),generateGuides(company),company,"chartdiv");
+    if (second_company != '')
+      drawGraph(generateChartData(second_company),generateGuides(second_company),second_company,"chartdiv-second_company");
 
 
-    var stock_prices = StockPrices.find({
-      company_name: company,
-      token: token,
-      'open': {
-        $ne: null
-      }
-    }, {
-      fields: {
-        'date': 1,
-        'open': 1,
-        'last': 1,
-        'high': 1,
-        'low': 1,
-        'volume': 1,
-        'flat_value': 1
-      }
-    }).fetch();
-    //calculate MACD
-    var ppo = [];
-    var currPrice = prevPrice = 0;
-    var avg = 0;
-    var currPrice = 0;
-    var prevPrice = 0;
-    //calculate standard deviation
-    currPrice = prevPrice = 0;
-    var range = 30;
-    for (var i = 0; i < (stock_prices.length); i++) {
-      var bigArray = [];
-      var smallArray = [];
+    function generateChartData(company) {
 
-      if (i < 29) {
-        //currArray.push(stock_prices[i].price);
-      }
-      for (var x = 0; x < 30; x++) {
-        if (i >= 29) {
-          if (x < 15) {
-            smallArray.push(stock_prices[i - x].last);
-          }
-          bigArray.push(stock_prices[i - x].last);
+      var stock_prices = StockPrices.find({
+        company_name: company,
+        token: token,
+        'open': {
+          $ne: null
         }
-      }
-      var entry = {};
-      if (i > 29) {
-        var result = average(bigArray);
-        var result2 = average(smallArray);
-        entry = {
-          "bigAvg": result,
-          "smallAvg": result2,
-          "date": stock_prices[i - 30].date,
-          "open": stock_prices[i].open,
-          "last": stock_prices[i].last,
-          "high": stock_prices[i].high,
-          "low": stock_prices[i].low,
-          "volume": stock_prices[i].volume,
-          "flat_value": stock_prices[i].flat_value
-        };
-        entry['price'] = stock_prices[i - 30].flat_value;
-        var currArray = [];
-        for (var j = 0; j < range; j++) {
-          if ((i - 30) - j >= 0) {
-            currArray.push(stock_prices[i - j].flat_value);
+      }, {
+        fields: {
+          'date': 1,
+          'open': 1,
+          'last': 1,
+          'high': 1,
+          'low': 1,
+          'volume': 1,
+          'flat_value': 1
+        }
+      }).fetch();
+      //calculate MACD
+      var ppo = [];
+      var currPrice = prevPrice = 0;
+      var avg = 0;
+      var currPrice = 0;
+      var prevPrice = 0;
+      //calculate standard deviation
+      currPrice = prevPrice = 0;
+      var range = 30;
+      for (var i = 0; i < (stock_prices.length); i++) {
+        var bigArray = [];
+        var smallArray = [];
+
+        if (i < 29) {
+          //currArray.push(stock_prices[i].price);
+        }
+        for (var x = 0; x < 30; x++) {
+          if (i >= 29) {
+            if (x < 15) {
+              smallArray.push(stock_prices[i - x].last);
+            }
+            bigArray.push(stock_prices[i - x].last);
           }
         }
-        var result = standardDeviation(currArray);
-        var zScore = (stock_prices[i].flat_value - result[1]) / result[0];
-        zScore = Math.abs(zScore);
-        entry['mAvg'] = result[1];
-        entry['sdUpper'] = (result[0] * 2) + result[1];
-        entry['sdLower'] = result[1] - (result[0] * 2);
-        entry['sd'] = result[0];
-        entry['zScore'] = zScore;
-        if (zScore >= 2)
-          entry["lineColor"] = "#ff0000";
-        else
-          entry['lineColor'] = "#0077aa";
-        ppo.push(entry);
+        var entry = {};
+        if (i > 29) {
+          var result = average(bigArray);
+          var result2 = average(smallArray);
+          entry = {
+            "bigAvg": result,
+            "smallAvg": result2,
+            "date": stock_prices[i - 30].date,
+            "open": stock_prices[i].open,
+            "last": stock_prices[i].last,
+            "high": stock_prices[i].high,
+            "low": stock_prices[i].low,
+            "volume": stock_prices[i].volume,
+            "flat_value": stock_prices[i].flat_value
+          };
+          entry['price'] = stock_prices[i - 30].flat_value;
+          var currArray = [];
+          for (var j = 0; j < range; j++) {
+            if ((i - 30) - j >= 0) {
+              currArray.push(stock_prices[i - j].flat_value);
+            }
+          }
+          var result = standardDeviation(currArray);
+          var zScore = (stock_prices[i].flat_value - result[1]) / result[0];
+          zScore = Math.abs(zScore);
+          entry['mAvg'] = result[1];
+          entry['sdUpper'] = (result[0] * 2) + result[1];
+          entry['sdLower'] = result[1] - (result[0] * 2);
+          entry['sd'] = result[0];
+          entry['zScore'] = zScore;
+          if (zScore >= 2)
+            entry["lineColor"] = "#ff0000";
+          else
+            entry['lineColor'] = "#0077aa";
+          ppo.push(entry);
+        }
       }
+      return ppo;
     }
 
-    var guides = [];
-    var events = StockEvents.find({
-      token: token,
-      company_name: company,
-      value: {
-        $gt: 0
-      }
-    }, {
-      fields: {
-        'date': 1,
-        'topic': 1
-      }
-    }).fetch();
-    // console.log(events);
+    function generateGuides(company){
 
-    events.forEach(function (c) {
-      var date = new Date(c.date);
-      guides.push({
-        "lineColor": "#00aa77",
-        "lineAlpha": 1,
-        //"label": c.topic+" event",
-        "balloonText": c.topic + " event",
-        "dashLength": 1,
-        "lineThickness": 2,
-        "date": date,
-        "above": false,
-        //"toDate": date.setDate(date.getDate() + 1)
+      var guides = [];
+      var events = StockEvents.find({
+        token: token,
+        company_name: company,
+        value: {
+          $gt: 0
+        }
+      }, {
+        fields: {
+          'date': 1,
+          'topic': 1
+        }
+      }).fetch();
+      // console.log(events);
+
+      events.forEach(function (c) {
+        var date = new Date(c.date);
+        guides.push({
+          "lineColor": "#00aa77",
+          "lineAlpha": 1,
+          //"label": c.topic+" event",
+          "balloonText": c.topic + " event",
+          "dashLength": 1,
+          "lineThickness": 2,
+          "date": date,
+          "above": false,
+          //"toDate": date.setDate(date.getDate() + 1)
 
 
+        });
       });
-    });
+      return guides;
+    }
 
     function standardDeviation(values) {
       var avg = average(values);
@@ -382,10 +398,8 @@ Template.chart.rendered = function () {
       return avg;
     }
 
-    drawGraph(ppo, company);
-
-    function drawGraph(chartData, company) {
-      var chart = AmCharts.makeChart("chartdiv", {
+    function drawGraph(chartData, guides, company, chartdiv) {
+      var chart = AmCharts.makeChart(chartdiv, {
         "type": "stock",
         "theme": "dark",
         "pathToImages": "/amcharts/images/",
