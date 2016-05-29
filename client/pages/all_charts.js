@@ -3193,7 +3193,7 @@ function render_rrg(company) {
 
     var chart = AmCharts.makeChart("miniGraph", {
       "type": "serial",
-      "theme": "light",
+      "theme": "dark",
       "dataProvider": chartData,
       "valueAxes": [{
         "axisAlpha": 0,
