@@ -26,7 +26,7 @@ Template.chart.rendered = function() {
   var second_company = '';
   var curr_topic = "Cash Rate";
   var curr_upper = 5;
-  var curr_lower = -5;
+  var curr_lower = 0;
   RelatedNews = new Mongo.Collection(null);
   DividendHistory = new Mongo.Collection(null);
 
