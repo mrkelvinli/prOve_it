@@ -99,7 +99,8 @@ button.btn{
   transition:all 0.3s ease-in-out;
   -moz-transition:all 0.3s ease-in-out;
   -webkit-transition:all 0.3s ease-in-out;
-  color: #555;
+  background-color: rgba(100,100,100,0.9);
+  color: #ddd;
 }
 
 button.btn:hover{
