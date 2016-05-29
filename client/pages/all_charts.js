@@ -107,7 +107,7 @@ Template.chart.rendered = function() {
   function renderMainGraph() {
     $('#chartdiv2').attr('style', '');
     $('#chartdiv3').attr('style', '');
-    
+    $('.chart-frame').attr('style', '');
     $('#chart-options').hide();
     $('#chartdiv2').hide();
     $('#chartdiv3').hide();
@@ -644,6 +644,7 @@ Template.chart.rendered = function() {
 
   function render_volatility_chart (company,second_company) {
     $('#chart-options').show();
+    $('.chart-frame').css("height","800");
     $('#topic-selection').hide();
     $('#upper-window-selection').hide();
     $('#lower-window-selection').hide();
@@ -938,14 +939,84 @@ Template.chart.rendered = function() {
 
 
           "panels": [ {
+              "title": "CCI",
+              "percentHeight": 35,
+              "marginTop": 1,
+              // "showCategoryAxis": true,
+              "valueAxes": [ {
+                "dashLength": 5
+              } ],
+
+              "categoryAxis": {
+                "dashLength": 5,
+              //   "guides":  [{
+              //     "value": 100,
+              //     "toValue": 120,
+              //     "lineColor": "#ff0000",
+              //     "inside": true,
+              //     "fillAlpha": 0.9,
+              //     "fillColor": "#CC0000",
+              //     "lineAlpha": 1,
+              //     "label": "Lambert Correction",
+              // }],
+              },
+
+              "recalculateToPercents":"never" ,
+              "stockGraphs": [{
+                "valueField": "cci",
+                "type": "line",
+                //"lineColorField": "lineColor",
+                "lineColor": "#e6b800",
+                "negativeLineColor": "#2eb82e",
+                "fillColor": "#e6b800",
+                "negativeFillColor": "#2eb82e",
+                "negativeBase": 100,
+                "fillAlphas": 0.8,
+                "negativeFillAlphas": 0,
+                "lineThickness": 2,
+                "showBalloon": true,
+                "balloonText": "[[value]]",
+                //"fillAlpha": 0.8,
+                //"lineColor": "#ff6600",
+                "comparable": true,
+                "useDataSetColors":false,
+              },{
+                "valueField": "cci",
+                "type": "line",
+                //"lineColorField": "lineColor",
+                "lineColor": "#e6b800",
+                "lineAlpha": 0,
+                "negativeLineAlpha": 1,
+                "negativeLineColor": "#e6b800",
+                "fillColor": "#2eb82e",
+                "negativeFillColor": "#2eb82e",
+                "fillAlphas": 0,
+                "negativeFillAlphas": 0.8,
+                "lineThickness": 2,
+                "showBalloon": false,
+                "negativeBase": -100,
+                "comparable": true,
+                "useDataSetColors":false,
+              },],
+
+              "stockLegend": {
+                "markerType": "none",
+                "markerSize": 0,
+                "labelText": "",
+                //"periodValueTextRegular": "[[zScore]]"
+              }
+            },{
             "title": "Volatility Analysis for "+ company,
-            "percentHeight": 40,
+            //"percentHeight": 40,
             "marginTop": 1,
             "showCategoryAxis": true,
             "percentHeight": 70,
             "valueAxes": [ {
               "id": "v1",
               "gridColor": "#000000",
+              "gridCount": 500,
+              "autoGridCount": false,
+
               "gridAlpha": 0.2,
               "dashLength": 10,
               "title": "Stock Price ($)",
@@ -983,7 +1054,7 @@ Template.chart.rendered = function() {
                 return result;
               },
               "bullet": "round",
-              "bulletSize": 2.5,
+              "bulletSize": 4,
               "fillAlphas": 0,
               "lineAlpha": 1,
               "type": "line",
@@ -1120,74 +1191,7 @@ Template.chart.rendered = function() {
                 //"periodValueTextRegular": "[[zScore]]"
               }
             },
-            {
-              "title": "CCI",
-              "percentHeight": 35,
-              "marginTop": 1,
-              // "showCategoryAxis": true,
-              "valueAxes": [ {
-                "dashLength": 5
-              } ],
-
-              "categoryAxis": {
-                "dashLength": 5,
-              //   "guides":  [{
-              //     "value": 100,
-              //     "toValue": 120,
-              //     "lineColor": "#ff0000",
-              //     "inside": true,
-              //     "fillAlpha": 0.9,
-              //     "fillColor": "#CC0000",
-              //     "lineAlpha": 1,
-              //     "label": "Lambert Correction",
-              // }],
-              },
-
-              "recalculateToPercents":"never" ,
-              "stockGraphs": [{
-                "valueField": "cci",
-                "type": "line",
-                //"lineColorField": "lineColor",
-                "lineColor": "#e6b800",
-                "negativeLineColor": "#2eb82e",
-                "fillColor": "#e6b800",
-                "negativeFillColor": "#2eb82e",
-                "negativeBase": 100,
-                "fillAlphas": 0.8,
-                "negativeFillAlphas": 0,
-                "lineThickness": 2,
-                "showBalloon": true,
-                "balloonText": "[[value]]",
-                //"fillAlpha": 0.8,
-                //"lineColor": "#ff6600",
-                "comparable": true,
-                "useDataSetColors":false,
-              },{
-                "valueField": "cci",
-                "type": "line",
-                //"lineColorField": "lineColor",
-                "lineColor": "#e6b800",
-                "lineAlpha": 0,
-                "negativeLineAlpha": 1,
-                "negativeLineColor": "#e6b800",
-                "fillColor": "#2eb82e",
-                "negativeFillColor": "#2eb82e",
-                "fillAlphas": 0,
-                "negativeFillAlphas": 0.8,
-                "lineThickness": 2,
-                "showBalloon": false,
-                "negativeBase": -100,
-                "comparable": true,
-                "useDataSetColors":false,
-              },],
-
-              "stockLegend": {
-                "markerType": "none",
-                "markerSize": 0,
-                "labelText": "",
-                //"periodValueTextRegular": "[[zScore]]"
-              }
-            },
+            
 
 
             ],
@@ -1531,6 +1535,8 @@ Template.chart.rendered = function() {
     var chart = AmCharts.makeChart( "chartdiv", {
       "type": "stock",
       "theme": "light",
+      "marginRight": 80,
+
       "pathToImages": "/amcharts/images/",
       "titles":[{
         "text": "Candlestick graph for "+company,
@@ -1653,6 +1659,10 @@ Template.chart.rendered = function() {
             "lineThickness": 2,
             //"dashLength": 4,
             "useDataSetColors": false,
+            "labelPosition": "right",
+            "labelText": "MA(15)",
+            "labelOffset":-60,
+            "labelFunction": labelFunction,
             // "comparable": true,
             // "compareField": "value",
             // "showBalloon": false,
@@ -1673,6 +1683,11 @@ Template.chart.rendered = function() {
             "lineThickness": 2,
             //"dashLength": 4,
             "useDataSetColors": false,
+            "labelText": "MA(30)",
+            "labelPosition": "right",
+            "labelOffset":-60,
+
+            "labelFunction": labelFunction,
             // "comparable": true,
             // "compareField": "value",
             // "showBalloon": false,
@@ -1764,6 +1779,15 @@ Template.chart.rendered = function() {
         // }
       });
 }
+
+
+  function labelFunction(item, label) {
+    if (item.index === item.graph.chart.dataProvider.length - 1)
+      return label;
+    else
+      return "";
+  }
+
 function handleCandleLegend( graph ) {
   var chart = graph.chart;
   var hidden = graph.hidden;
