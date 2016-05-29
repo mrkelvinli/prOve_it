@@ -2762,11 +2762,11 @@ function render_stock_topics_graph_significance_table (company, topic, upper_ran
 
           // check if we haven't changed anything already in the span of scraping
           if ((curr_graph == 'event-study') && (curr_company == company)) {
-            if (headlinesNoBackslash == null) {
-              $('#chartdiv3').append(headlines);
-              
-            } else {
+            if (headlinesNoBackslash !== 'null') {
               $('#chartdiv3').append(headlinesNoBackslash);
+            } else {
+            $('#chartdiv3').html('<h4 style="padding: 0 0 5px 5px;">News related to ' + curr_company + '</h4><p style="padding-left:5px">No related news found for the current events.</p>');
+              // $('#chartdiv3').append(headlines);
             }
           } else {
             return;
@@ -2864,10 +2864,10 @@ function render_stock_topics_graph_significance_table (company, topic, upper_ran
             // });
           });
         } else {
-          $('#chartdiv3').html('No related news found for the current events.');
+          $('#chartdiv3').html('<h4 style="padding: 0 0 5px 5px;">News related to ' + curr_company + '</h4><p style="padding-left:5px">No related news found for the current events.</p>');
         }
       } else {
-        $('#chartdiv3').html('No related news found for the current events.');
+          $('#chartdiv3').html('<h4 style="padding: 0 0 5px 5px;">News related to ' + curr_company + '</h4><p style="padding-left:5px">No related news found for the current events.</p>');
       }
     });
 }
