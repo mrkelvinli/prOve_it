@@ -3174,12 +3174,49 @@ function render_rrg(company) {
 
   function render_mini_company_chart (company) {
     var stocksPrice = StockPrices.find({company_name: company, token: token},{fields: {cum_return: true, date: true}, sort:{date: -1}, limit: 20}).fetch();
-    console.log(stocksPrice);
+    // console.log(stocksPrice);
     var last_cr = parseFloat(stocksPrice[0].cum_return);
     var first_cr = parseFloat(stocksPrice[stocksPrice.length-1].cum_return);
     var percent = (last_cr - first_cr)/first_cr;
-    $('#miniGraph-init-value').html(first_cr.toFixed(5));
-    $('#miniGraph-final-percent-changed').html(percent.toFixed(5)+"%");
+    $('#miniGraph-init-value').html(first_cr.toFixed(2));
+    $('#miniGraph-final-percent-changed').html(percent.toFixed(2)+"%");
+
+    var chartData = [];
+    stocksPrice.forEach(function(e){
+      chartData.push({
+        date: e.date,
+        value: e.cum_return,
+      });
+    });
+    chartData.reverse();
+    console.log(chartData);
+
+    var chart = AmCharts.makeChart("miniGraph", {
+      "type": "serial",
+      "theme": "light",
+      "dataProvider": chartData,
+      "valueAxes": [{
+        "axisAlpha": 0,
+        "gridAlpha": 0,
+        labelsEnabled: false,
+      }],
+      "graphs": [{
+        "id": "g1",
+        "lineColor": "#d1655d",
+        "lineThickness": 2,
+        "negativeLineColor": "#637bb6",
+        "type": "line",
+        "valueField": "value"
+      }],
+      "categoryField": "date",
+      "categoryAxis": {
+        // parseDates: true,
+        gridAlpha: 0,
+        axisAlpha: 0,
+        startOnAxis: true,
+        labelsEnabled: false,
+      },
+    });
   }
 
   function render_main_chart_title (company, topic, chart_name) {
