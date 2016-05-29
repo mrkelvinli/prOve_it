@@ -28,11 +28,11 @@ Router.map(function() {
     waitOn: function(){
       return [
         Meteor.subscribe('stockPrices_db',this.params.token),
-        Meteor.subscribe('stockEvents_db',this.params.token),
-        Meteor.subscribe('market_db'),
-        Meteor.subscribe('regressions_db', this.params.token, function() {
-          console.log(Regressions.find().count());
-        }),
+        // Meteor.subscribe('stockEvents_db',this.params.token),
+        // Meteor.subscribe('market_db'),
+        // Meteor.subscribe('regressions_db', this.params.token, function() {
+        //   console.log(Regressions.find().count());
+        // }),
       ];
     },
     fastRender: true,
