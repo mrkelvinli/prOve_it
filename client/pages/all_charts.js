@@ -1455,7 +1455,7 @@ Template.chart.rendered = function () {
     $('#chartdiv4').parent().removeClass();
     $('#chartdiv4').parent().addClass('col-md-5');
 
-
+    var kelvin;
 
     var chartData = [];
 
@@ -1469,8 +1469,6 @@ Template.chart.rendered = function () {
       topic: topic,
       value: {
         $gt: 0
-
-        
       }
     }, {
       sort: {
