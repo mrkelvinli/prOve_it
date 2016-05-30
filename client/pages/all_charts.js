@@ -997,7 +997,22 @@ Template.chart.rendered = function () {
             "marginTop": 1,
             // "showCategoryAxis": true,
             "valueAxes": [{
+<<<<<<< HEAD
               "dashLength": 5
+=======
+              "dashLength": 5,
+              "guides": [{
+                "value": 100,
+                "lineAlpha": 0.6,
+                "lineColor": "#ff6600",
+                "dashLength": 0
+              }, {
+                "value": -100,
+                "lineAlpha": 0.6,
+                "lineColor": "#00bfff",
+                "dashLength": 0
+              }]
+>>>>>>> parent of 9a79abe... Merge branch 'analysisPlatform' of https://github.com/kelvinlcf/prOve_it into analysisPlatform
               }],
 
             "categoryAxis": {
