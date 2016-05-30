@@ -1034,6 +1034,16 @@ Template.chart.rendered = function () {
 
 
         "panels": [{
+<<<<<<< HEAD
+          "title": "Lambert's Commodity Channel Index",
+          "percentHeight": 25,
+          // autoMargins: true,
+          marginBottom: 30,
+          "marginTop": 1,
+          // "showCategoryAxis": true,
+          "valueAxes": [{
+            "dashLength": 5
+=======
             "title": "Lambert's Commodity Channel Index",
             "percentHeight": 25,
             autoMargins: true,
@@ -1052,6 +1062,7 @@ Template.chart.rendered = function () {
                 "lineColor": "#00bfff",
                 "dashLength": 0
               }]
+>>>>>>> 3dccb39df82c7198d4c36446dd6b4709227b188b
               }],
 
           "categoryAxis": {
@@ -1249,6 +1260,14 @@ Template.chart.rendered = function () {
             },
           },
           }, {
+          "title": sdScoreTitle,
+          "percentHeight": 25,
+          // autoMargins: true,
+          marginBottom:30,
+          "marginTop": 1,
+          // "showCategoryAxis": true,
+          "valueAxes": [{
+            "dashLength": 5
             "title": sdScoreTitle,
             "percentHeight": 25,
             autoMargins: true,
@@ -1310,7 +1329,7 @@ Template.chart.rendered = function () {
           },
           }],
 
-        "ChartScrollbar": {
+        "chartScrollbar": {
           enabled: true,
         },
 
@@ -1326,7 +1345,7 @@ Template.chart.rendered = function () {
 
         "chartCursorSettings": {
           "valueLineBalloonEnabled": true,
-          //"valueLineEnabled": true
+          "valueLineEnabled": true
         },
 
         "categoryAxis": {
