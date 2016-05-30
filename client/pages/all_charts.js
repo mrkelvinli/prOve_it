@@ -3305,21 +3305,21 @@ Template.chart.rendered = function () {
 
             // ====== [[[ TOGGLE AYLIEN HERE ]]] ======
 
-            // Meteor.call('aylienApi', link, function(err, response) {
-            //   console.log(response);
-            //   // console.log(err);
-            //   if (response != null) {
-            //     var sentiment = JSON.parse(response.content).polarity;
-            //     console.log(sentiment);
-            //     if (sentiment == 'positive') {
-            //       $('a[href="'+linkMid+'"]').css({'color': 'green', 'font-weight': '700', 'background-color': 'rgba(0, 255, 0, 0.1)'});
-            //     } else if (sentiment == 'negative') {
-            //       $('a[href="'+linkMid+'"]').css({'color': 'red', 'font-weight': '700', 'background-color' : 'rgba(255, 0, 0, 0.1)'});
-            //     } else {
-            //       console.log(link + ' is neutral or null');
-            //     }
-            //   }
-            // });
+            Meteor.call('aylienApi', link, function(err, response) {
+              console.log(response);
+              // console.log(err);
+              if (response != null) {
+                var sentiment = JSON.parse(response.content).polarity;
+                console.log(sentiment);
+                if (sentiment == 'positive') {
+                  $('a[href="'+linkMid+'"]').css({'color': 'green', 'font-weight': '700', 'background-color': 'rgba(0, 255, 0, 0.1)'});
+                } else if (sentiment == 'negative') {
+                  $('a[href="'+linkMid+'"]').css({'color': 'red', 'font-weight': '700', 'background-color' : 'rgba(255, 0, 0, 0.1)'});
+                } else {
+                  console.log(link + ' is neutral or null');
+                }
+              }
+            });
           });
         } else {
           $('#chartdiv3').html('<h4 style="padding: 0 0 5px 5px;">News related to ' + curr_company + '</h4><p style="padding-left:5px">No related news found for the current events.</p>');
