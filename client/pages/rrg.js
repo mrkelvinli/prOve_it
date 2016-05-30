@@ -2544,20 +2544,20 @@ Template.rrgMain.rendered = function() {
               "chg" == s && (s = "%chg");
               if (s == 'visible') {
                 s = 'Toggle';
-                i += t[e] == this.sortColumn ? "a" == this.sortDirection ? "<th class='sort-ascending'style='width:9%'>" + s + "</th>" : "<th class='sort-descending' style='width:9%'>" + s + "</th>" : "<th style='width:9%'>" + s + "</th>"
+                i += t[e] == this.sortColumn ? "a" == this.sortDirection ? "<th class='sort-ascending'style='width:15%'>" + s + "</th>" : "<th class='sort-descending' style='width:15%'>" + s + "</th>" : "<th style='width:15%'>" + s + "</th>"
               } else if (s == 'tail') {
                 s = 'Tail';
-                i += t[e] == this.sortColumn ? "a" == this.sortDirection ? "<th class='sort-ascending'style='width:8.5%'>" + s + "</th>" : "<th class='sort-descending' style='width:8.5%'>" + s + "</th>" : "<th style='width:8.5%'>" + s + "</th>"
+                i += t[e] == this.sortColumn ? "a" == this.sortDirection ? "<th class='sort-ascending'style='width:9%'>" + s + "</th>" : "<th class='sort-descending' style='width:9%'>" + s + "</th>" : "<th style='width:9%'>" + s + "</th>"
               } else if (s == 'symbol') {
                 s = 'Company';
-                i += t[e] == this.sortColumn ? "a" == this.sortDirection ? "<th class='sort-ascending'style='width:21%'>" + s + "</th>" : "<th class='sort-descending' style='width:21%'>" + s + "</th>" : "<th style='width:21%'>" + s + "</th>"
+                i += t[e] == this.sortColumn ? "a" == this.sortDirection ? "<th class='sort-ascending'style='width:56%'>" + s + "</th>" : "<th class='sort-descending' style='width:56%'>" + s + "</th>" : "<th style='width:56%'>" + s + "</th>"
               } else if (s == 'price') {
                 s = 'Price';
-                i += t[e] == this.sortColumn ? "a" == this.sortDirection ? "<th class='sort-ascending'style='width:12%'>" + s + "</th>" : "<th class='sort-descending' style='width:12%'>" + s + "</th>" : "<th style='width:12%'>" + s + "</th>"
+                i += t[e] == this.sortColumn ? "a" == this.sortDirection ? "<th class='sort-ascending'style='width:14.4%'>" + s + "</th>" : "<th class='sort-descending' style='width:14.4%'>" + s + "</th>" : "<th style='width:14.4%'>" + s + "</th>"
               } else {
                 console.log(s);
                 s = 'Change';
-                i += t[e] == this.sortColumn ? "a" == this.sortDirection ? "<th class='sort-ascending'style='width:12%'>" + s + "</th>" : "<th class='sort-descending' style='width:12%'>" + s + "</th>" : "<th style='width:12%'>" + s + "</th>"
+                i += t[e] == this.sortColumn ? "a" == this.sortDirection ? "<th class='sort-ascending'style='width:9%'>" + s + "</th>" : "<th class='sort-descending' style='width:9%'>" + s + "</th>" : "<th style='width:9%'>" + s + "</th>"
               }
               // i += t[e] == this.sortColumn ? "a" == this.sortDirection ? "<th class='sort-ascending'>" + s + "</th>" : "<th class='sort-descending'>" + s + "</th>" : "<th>" + s + "</th>"
           }

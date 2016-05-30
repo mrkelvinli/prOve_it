@@ -23,7 +23,7 @@ Template.chart.rendered = function () {
   var validToken = false;
 
   // var curr_graph = 'candlesticks';  // default
-  var curr_graph = 'overview';
+  var curr_graph = 'candlesticks';
   var curr_company = "TGR.AX";
   var second_company = '';
   var curr_topic = "Cash Rate";
@@ -3158,7 +3158,7 @@ Template.chart.rendered = function () {
           console.log(tableNoBackslash);
           console.log(tableNoBackslash == null);
           console.log(tableNoBackslash === '<table class="table table-striped dividends-table"><thead>null');
-          if ((tableNoBackslash !== '<table class="table table-striped table-hover dividends-table"><thead>null') && (tableNoBackslash.length != 0)) {
+          if ((tableNoBackslash !== '<table class="table table-striped dividends-table"><thead>null') && (tableNoBackslash.length != 0)) {
             $('#chartdiv2').html('<h4 style="padding: 5px 0 5px 5px;">Dividend history of ' + curr_company + '. Courtesy of <div style="display: inline-block; background-color:grey; margin-left:10px;"><img src="/assets/img/dividend-icon.png" style="height:50px"></div></h4>' + tableNoBackslash);
           } else {
             $('#chartdiv2').html('<h4 style="padding: 5px 0 5px 5px;">Dividend history of ' + curr_company + '. Courtesy of <div style="display: inline-block; background-color:grey; margin-left:10px;"><img src="/assets/img/dividend-icon.png" style="height:50px"></div></h4><p style="padding-left:5px">No dividend data found.</p>');
