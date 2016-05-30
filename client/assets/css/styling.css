@@ -304,8 +304,8 @@ input.form-control:focus {
 }
 
 ul#tabs {
-  margin-bottom: 10px;
-  margin-top: 10px;
+  margin-bottom: 7px;
+  margin-top: 15px;
   margin-left: 20px;
   cursor:pointer;
   border: 0;
@@ -325,10 +325,12 @@ ul#tabs li > a:hover {
 }
 
 ul#tabs li.active > a {
-  /*background-color: rgba(100,100,100,0.23);*/
-  /*color: #ddd;*/
-  background-color: #aaa;
-  color: #333;
+  /*background-color: #aaa;
+  color: #333;*/
+  font-size: 15px;
+  color: #F47C3C;
+  background-color: rgba(0,0,0,0.1);
+  /*background-color: #2e2e2e;*/
 }
 
 .head-brandname {
