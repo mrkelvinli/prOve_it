@@ -325,10 +325,12 @@ ul#tabs li > a:hover {
 }
 
 ul#tabs li.active > a {
-  /*background-color: rgba(100,100,100,0.23);*/
-  /*color: #ddd;*/
-  background-color: #aaa;
-  color: #333;
+  /*background-color: #aaa;
+  color: #333;*/
+  font-size: 15px;
+  color: #F47C3C;
+  background-color: rgba(0,0,0,0.1);
+  /*background-color: #2e2e2e;*/
 }
 
 .head-brandname {
