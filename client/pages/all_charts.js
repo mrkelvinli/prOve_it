@@ -3157,7 +3157,7 @@ Template.chart.rendered = function () {
           console.log("RENDERING");
           console.log(tableNoBackslash);
           console.log(tableNoBackslash == null);
-          console.log(tableNoBackslash === '<table class="table table-striped table-hover dividends-table"><thead>null');
+          console.log(tableNoBackslash === '<table class="table table-striped dividends-table"><thead>null');
           if ((tableNoBackslash !== '<table class="table table-striped table-hover dividends-table"><thead>null') && (tableNoBackslash.length != 0)) {
             $('#chartdiv2').html('<h4 style="padding: 5px 0 5px 5px;">Dividend history of ' + curr_company + '. Courtesy of <div style="display: inline-block; background-color:grey; margin-left:10px;"><img src="/assets/img/dividend-icon.png" style="height:50px"></div></h4>' + tableNoBackslash);
           } else {
@@ -3344,15 +3344,16 @@ Template.chart.rendered = function () {
     Blaze.render(Template.rrgSymbols, dom2);
     console.log($('table.symbolgrid'));
 
-    $('#chartdiv3').show();
-    $('#chartdiv3').html('');
-    $('#chartdiv3').html('<h4 style="padding: 0 0 5px 5px;">Relative Rotation Graph - Courtesy of <div style="display: inline-block; background-color:grey; margin-left:10px;"><img style="height:50px" src="/assets/img/stockchart-icon.png"</div></h4>');
-    $('#chartdiv3').parent().removeClass('col-md-5');
-    $('#chartdiv3').parent().addClass('col-md-4');
-    $('#chartdiv3').css('height', 370);
+    // $('#chartdiv3').show();
+    // $('#chartdiv3').html('');
+    // $('#chartdiv3').html('<h4 style="padding: 0 0 5px 5px;">Relative Rotation Graph - Courtesy of <img style="height:50px" src="/assets/img/stockchart-icon.png"</img></h4>');
+    // $('#chartdiv3').parent().removeClass('col-md-5');
+    // $('#chartdiv3').parent().addClass('col-md-4');
+    // $('#chartdiv3').css('height', 370);
+
     $('#chartdiv2').css('padding', '50px 40px 20px 40px');
-    var dom3 = document.getElementById('chartdiv3');
-    Blaze.render(Template.rrgControls, dom3);
+    // var dom3 = document.getElementById('chartdiv3');
+    // Blaze.render(Template.rrgControls, dom3);
   }
 
   // [ this graph doesn't work, we're using render_regression_raw() ]
