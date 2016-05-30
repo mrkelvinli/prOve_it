@@ -113,6 +113,7 @@ Template.chart.rendered = function () {
     return x.topic
   }), true);
   choose_topic.empty();
+  choose_topic.append("<option data-hidden=\"true\"></option>");
   all_topics.forEach(function (c) {
     choose_topic.append("<option>" + c + "</option>");
   });
@@ -519,7 +520,7 @@ Template.chart.rendered = function () {
                 "id": "sdUpperGraph",
                 //"balloonText": "Upper Band: <b>[[value]]</b>",
                 "showBalloon": false,
-                "fillAlphas": 0.3,
+                "fillAlphas": 0.15,
                 "fillColors": ["#ffa31a"],
                 "lineAlpha": 0,
                 "type": "line",
@@ -557,8 +558,8 @@ Template.chart.rendered = function () {
                 "highField": "high",
                 "lowField": "low",
                 "valueField": "close",
-                "lineColor": "#7f8da9",
-                "fillColors": "#7f8da9",
+                "lineColor": "#ff6600",
+                "fillColors": "#ff6600",
                 "negativeLineColor": "#ff6600",
                 "negativeFillColors": "#ff6600",
                 "fillAlphas": 1,
@@ -986,10 +987,10 @@ Template.chart.rendered = function () {
             "text": "Bollinger Bands for " + company,
             "bold": true
           },
-          {
-            "text": "This tool allows you to determine the dispersion that a stock price has around its average.",
-            "bold": false
-          },
+          // {
+          //   "text": "This tool allows you to determine the dispersion that a stock price has around its average.",
+          //   "bold": false
+          // },
 
           ],
 
@@ -1127,7 +1128,7 @@ Template.chart.rendered = function () {
             autoMargins: true,
             "valueAxes": [{
               "id": "v1",
-              "gridColor": "#000000",
+              "gridColor": "#555555",
               "gridCount": 500,
               "autoGridCount": false,
               "gridAlpha": 0.2,
@@ -1287,7 +1288,7 @@ Template.chart.rendered = function () {
               //"showBalloon": true,
               "bullet": "round",
               //"bulletSize": 1.5,
-              //"balloonText": "[[value]]",
+              "balloonText": "Z-Score: [[value]]",
               //"fillAlpha": 0.8,
               //"lineColor": "#ff6600",
               //"useDataSetColors":false,
@@ -3488,12 +3489,14 @@ Template.chart.rendered = function () {
     });
     console.log(data_query);
     var data = [];
-    if ((data_query != null) && (data_query.length != 0)) {
+    //if ((data_query != null) && (data_query.length != 0)) {
+    if (false) {
+
       console.log('Cached data loaded');
       data = data_query.data;
       // console.log("DATA:");
       // console.log(data);
-    } else {
+     } else {
       console.warn("Regression cache for " + company + " has no data! Slow manual pulling starting.");
       var company_prices = StockPrices.find({
         token: token,
@@ -3511,10 +3514,41 @@ Template.chart.rendered = function () {
 
       var prev_price = null;
       var prev_market = null;
+      // company_prices.forEach(function (entry) {
+      //   var date = entry.date;
+      //   var price = entry.cum_return;
+      //   var db_query = Market.findOne({
+      //     date: date
+      //   }, {
+      //     fields: {
+      //       value: true,
+      //       _id: false
+      //     }
+      //   });
+      //   if ((db_query != null) && (price != null)) {
+      //     var market_price = parseFloat(db_query.value);
+      //     //console.log('cr: ' + price + ', market: ' + market_price + ', date: ' + date);
+      //     data.push([market_price, price]);
+      //   }
+      // });
+
+      var prevPrice = 1;
+      var prevIndex = 1;
+      var price = 0;
+      var db_query;
+      var changeInIndex = 0;
+      //var data = [];
       company_prices.forEach(function (entry) {
+        prevPrice = price;
+        if (db_query != null) {
+          prevIndex = parseFloat(db_query.value);
+        }
+
         var date = entry.date;
-        var price = entry.cum_return;
-        var db_query = Market.findOne({
+
+        price = entry.cum_return;
+        var changeInCR = Math.abs(100*(price - prevPrice)/prevPrice);
+        db_query = Market.findOne({
           date: date
         }, {
           fields: {
@@ -3522,14 +3556,22 @@ Template.chart.rendered = function () {
             _id: false
           }
         });
-        if ((db_query != null) && (price != null)) {
-          var market_price = parseFloat(db_query.value);
-          //console.log('cr: ' + price + ', market: ' + market_price + ', date: ' + date);
-          data.push([market_price, price]);
+
+        if (db_query === undefined) {
+          console.log("error");
+        }
+       //var changeInIndex = Math.abs(100*(parseFloat(db_query.value) - prevIndex)/prevIndex);
+
+        //if ((db_query != null) && (price != null)) {
+        if ((changeInCR != null) && (db_query != null)) {
+          changeInIndex = Math.abs(100*(parseFloat(db_query.value) - prevIndex)/prevIndex);
+          //console.log('cr: ' + changeInCR + ', market: ' + changeInIndex + ', date: ' + date);
+          data.push([parseFloat(changeInIndex), parseFloat(changeInCR)]);
         }
       });
     }
 
+    console.log(data);
     drawGraph(data);
 
     function drawGraph(data) {
