@@ -3159,9 +3159,9 @@ Template.chart.rendered = function () {
           console.log(tableNoBackslash == null);
           console.log(tableNoBackslash === '<table class="table table-striped table-hover dividends-table"><thead>null');
           if ((tableNoBackslash !== '<table class="table table-striped table-hover dividends-table"><thead>null') && (tableNoBackslash.length != 0)) {
-            $('#chartdiv2').html('<h4 style="padding: 5px 0 5px 5px;">Dividend history of ' + curr_company + '. Courtesy of <img src="/assets/img/dividend-icon.png" style="height:50px"></img></h4>' + tableNoBackslash);
+            $('#chartdiv2').html('<h4 style="padding: 5px 0 5px 5px;">Dividend history of ' + curr_company + '. Courtesy of <div style="display: inline-block; background-color:grey; margin-left:10px;"><img src="/assets/img/dividend-icon.png" style="height:50px"></div></h4>' + tableNoBackslash);
           } else {
-            $('#chartdiv2').html('<h4 style="padding: 5px 0 5px 5px;">Dividend history of ' + curr_company + '. Courtesy of <img src="/assets/img/dividend-icon.png" style="height:50px"></img></h4><p style="padding-left:5px">No dividend data found.</p>');
+            $('#chartdiv2').html('<h4 style="padding: 5px 0 5px 5px;">Dividend history of ' + curr_company + '. Courtesy of <div style="display: inline-block; background-color:grey; margin-left:10px;"><img src="/assets/img/dividend-icon.png" style="height:50px"></div></h4><p style="padding-left:5px">No dividend data found.</p>');
           }
         } else {
           return;
@@ -3189,7 +3189,7 @@ Template.chart.rendered = function () {
     $('#chartdiv3').css('height', '500px');
 
     $('#chartdiv3').addClass('related_news');
-    $('#chartdiv3').html('<h4 style="padding: 0 0 5px 5px;">News related to ' + curr_company + '. Courtesy of <img style="height:20px" src="/assets/img/yahoo-icon.png"</img></h4>');
+    $('#chartdiv3').html('<h4 style="padding: 0 0 5px 5px;">News related to ' + curr_company + '. Courtesy of <div style="display: inline-block; background-color:grey; margin-left:10px;"><img style="height:20px" src="/assets/img/yahoo-icon.png"</div></h4>');
     RelatedNews.remove({});
     // date wanted
     var dom = document.getElementById('details');
@@ -3346,7 +3346,7 @@ Template.chart.rendered = function () {
 
     $('#chartdiv3').show();
     $('#chartdiv3').html('');
-    $('#chartdiv3').html('<h4 style="padding: 0 0 5px 5px;">Relative Rotation Graph - Courtesy of <img style="height:50px" src="/assets/img/stockchart-icon.png"</img></h4>');
+    $('#chartdiv3').html('<h4 style="padding: 0 0 5px 5px;">Relative Rotation Graph - Courtesy of <div style="display: inline-block; background-color:grey; margin-left:10px;"><img style="height:50px" src="/assets/img/stockchart-icon.png"</div></h4>');
     $('#chartdiv3').parent().removeClass('col-md-5');
     $('#chartdiv3').parent().addClass('col-md-4');
     $('#chartdiv3').css('height', 370);
