@@ -2425,7 +2425,7 @@ Template.chart.rendered = function () {
           },
         },
         "listeners": [{
-          "event": "rollOverGraph",
+          "event": "changed",
           "method": function (event) {
             $('#chartdiv3.related_news').find('ul li a').each(function () {
               $(this).css('background-color', '');
@@ -2434,8 +2434,18 @@ Template.chart.rendered = function () {
               $(this).removeClass("info");
             });
 
-            var idx = event.chart.chartCursor.index;
+
+            var idx = event.index;
+
+            if (idx === undefined)
+              return;
+
+
+
             var thisDate = event.chart.dataProvider[idx].date;
+
+            console.log(thisDate);
+
 
             var news = RelatedNews.findOne({
               'date': thisDate,
