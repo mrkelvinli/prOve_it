@@ -89,6 +89,7 @@ Template.chart.rendered = function () {
   }), true);
   choose_main_stock.empty();
   choose_second_stock.empty();
+  choose_second_stock.append("<option value=''>None</option>");
   all_company.forEach(function (c) {
     choose_main_stock.append("<option value=\'" + c + "\'>" + c + "</option>");
     choose_second_stock.append("<option value=\'" + c + "\'>" + c + "</option>");
@@ -228,9 +229,9 @@ Template.chart.rendered = function () {
   renderMainGraph();
 
   function render_overview(company, second_company, upper_range, lower_range) {
-    $('#chartdiv-second_company').show();
     $('#chart-options').show();
     if (second_company != '') {
+      $('#chartdiv-second_company').show();
       $('#chartdiv').css("height", "400");
       $('#chartdiv-second_company').css("height", "400");
     }
