@@ -688,9 +688,12 @@ Template.chart.rendered = function () {
           "valueLineBalloonEnabled": true,
           "valueLineEnabled": true
         },
+        
         "chartCursor": {
 
         },
+
+
         "periodSelector": {
           "position": "bottom",
           "periods": [{
