@@ -1035,7 +1035,8 @@ Template.chart.rendered = function () {
         "panels": [{
           "title": "Lambert's Commodity Channel Index",
           "percentHeight": 25,
-          autoMargins: true,
+          // autoMargins: true,
+          marginBottom: 30,
           "marginTop": 1,
           // "showCategoryAxis": true,
           "valueAxes": [{
@@ -1242,7 +1243,8 @@ Template.chart.rendered = function () {
           }, {
           "title": sdScoreTitle,
           "percentHeight": 25,
-          autoMargins: true,
+          // autoMargins: true,
+          marginBottom:30,
           "marginTop": 1,
           // "showCategoryAxis": true,
           "valueAxes": [{
@@ -1301,7 +1303,7 @@ Template.chart.rendered = function () {
           },
           }],
 
-        "ChartScrollbar": {
+        "chartScrollbar": {
           enabled: true,
         },
 
@@ -1317,7 +1319,7 @@ Template.chart.rendered = function () {
 
         "chartCursorSettings": {
           "valueLineBalloonEnabled": true,
-          //"valueLineEnabled": true
+          "valueLineEnabled": true
         },
 
         "categoryAxis": {
