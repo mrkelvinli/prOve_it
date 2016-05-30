@@ -191,6 +191,8 @@
 </template>
 
 <template name="rrgMain">
+  <div class="row">
+    <div class="col-sm-8">
   <input type='hidden' id='hidden'/>
   <div class="box">
      <table id="ui">
@@ -230,6 +232,14 @@
               <div id="rrgchart" style='width: 100%; margin-left: 30px'><canvas width="800" height="600" style="-webkit-user-select: none; cursor: default;"></canvas></div></td>
         </tr>
      </tbody></table>
+    </div>
+  </div>
+  <div class="col-sm-4">
+    <div style="margin-top:100px;">
+     {{ > rrgControls }}
+    <p style="margin-top:40px;">Relative Rotation Graph - Courtesy of <img style="height:50px; margin-left:5px;" src="/assets/img/stockchart-icon.png"></p>
+    </div>
+  </div>
   </div>
 </template>
 

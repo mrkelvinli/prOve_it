@@ -23,7 +23,7 @@ Template.chart.rendered = function () {
   var validToken = false;
 
   // var curr_graph = 'candlesticks';  // default
-  var curr_graph = 'event-study';
+  var curr_graph = 'rrg';
   var curr_company = "TGR.AX";
   var second_company = '';
   var curr_topic = "Cash Rate";
@@ -3259,15 +3259,15 @@ Template.chart.rendered = function () {
     Blaze.render(Template.rrgSymbols, dom2);
     console.log($('table.symbolgrid'));
 
-    $('#chartdiv3').show();
+    // $('#chartdiv3').show();
     $('#chartdiv3').html('');
-    $('#chartdiv3').html('<h4 style="padding: 0 0 5px 5px;">Relative Rotation Graph - Courtesy of <img style="height:50px" src="/assets/img/stockchart-icon.png"</img></h4>');
-    $('#chartdiv3').parent().removeClass('col-md-5');
-    $('#chartdiv3').parent().addClass('col-md-4');
-    $('#chartdiv3').css('height', 370);
+    // $('#chartdiv3').html('<h4 style="padding: 0 0 5px 5px;">Relative Rotation Graph - Courtesy of <img style="height:50px" src="/assets/img/stockchart-icon.png"</img></h4>');
+    // $('#chartdiv3').parent().removeClass('col-md-5');
+    // $('#chartdiv3').parent().addClass('col-md-4');
+    // $('#chartdiv3').css('height', 370);
     $('#chartdiv2').css('padding', '50px 40px 20px 40px');
-    var dom3 = document.getElementById('chartdiv3');
-    Blaze.render(Template.rrgControls, dom3);
+    // var dom3 = document.getElementById('chartdiv3');
+    // Blaze.render(Template.rrgControls, dom3);
   }
 
   // [ this graph doesn't work, we're using render_regression_raw() ]
