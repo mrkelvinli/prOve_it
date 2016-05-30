@@ -3157,8 +3157,8 @@ Template.chart.rendered = function () {
           console.log("RENDERING");
           console.log(tableNoBackslash);
           console.log(tableNoBackslash == null);
-          console.log(tableNoBackslash === '<table class="table table-striped table-hover dividends-table"><thead>null');
-          if ((tableNoBackslash !== '<table class="table table-striped table-hover dividends-table"><thead>null') && (tableNoBackslash.length != 0)) {
+          console.log(tableNoBackslash === '<table class="table table-striped dividends-table"><thead>null');
+          if ((tableNoBackslash !== '<table class="table table-striped dividends-table"><thead>null') && (tableNoBackslash.length != 0)) {
             $('#chartdiv2').html('<h4 style="padding: 5px 0 5px 5px;">Dividend history of ' + curr_company + '. Courtesy of <img src="/assets/img/dividend-icon.png" style="height:50px"></img></h4>' + tableNoBackslash);
           } else {
             $('#chartdiv2').html('<h4 style="padding: 5px 0 5px 5px;">Dividend history of ' + curr_company + '. Courtesy of <img src="/assets/img/dividend-icon.png" style="height:50px"></img></h4><p style="padding-left:5px">No dividend data found.</p>');
