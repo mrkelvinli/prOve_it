@@ -59,7 +59,7 @@
 #rrg table.symbolgrid tr.blue   { background: rgba(48, 68, 219, 0.2); }
 #rrg table.symbolgrid tr.yellow { background: rgba(243, 195, 0, 0.2); }
 #rrg table.symbolgrid tr.red    { background: rgba(255, 0, 0, 0.2); }
-#rrg table.symbolgrid tr.white  { background: rgba(255, 255, 255, 1.0); }
+#rrg table.symbolgrid tr.white  { background: rgba(0, 0, 0, 0.8); font-weight: 700;}
 
 #rrg table.symbolgrid tr.hovered.green  { background: rgba(0, 128, 0, 0.3); }
 #rrg table.symbolgrid tr.hovered.blue   { background: rgba(48, 68, 219, 0.3); }
