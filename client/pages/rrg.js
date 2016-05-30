@@ -1014,9 +1014,9 @@ Template.rrgMain.rendered = function() {
   };
   RrgChartAxes.prototype = {
     GREEN: {
-        r: 68,
-        g: 142,
-        b: 77
+        r: 0,
+        g: 128,
+        b: 0
     },
     BLUE: {
         r: 48,
@@ -1024,14 +1024,14 @@ Template.rrgMain.rendered = function() {
         b: 219
     },
     YELLOW: {
-        r: 253,
-        g: 212,
+        r: 243,
+        g: 195,
         b: 0
     },
     RED: {
-        r: 204,
-        g: 71,
-        b: 72
+        r: 255,
+        g: 0,
+        b: 0
     },
     init: function(t, i) {
         this.settings = $.extend({
@@ -1216,10 +1216,10 @@ Template.rrgMain.rendered = function() {
         var s = t.x > this.bounds.left && t.y < this.bounds.bottom;
         var n = t.x > this.bounds.left && t.y > this.bounds.top;
 
-        i && new Rectangle(t.x, this.bounds.top, this.bounds.right - t.x, t.y - this.bounds.top).paint(this.ctx, this.getColor(this.GREEN, .2), null);
-        e && new Rectangle(t.x, t.y, this.bounds.right - t.x, this.bounds.bottom - t.y).paint(this.ctx, this.getColor(this.YELLOW, .2), null);
-        s && new Rectangle(this.bounds.left, t.y, t.x - this.bounds.left, this.bounds.bottom - t.y).paint(this.ctx, this.getColor(this.RED, .2), null);
-        n && new Rectangle(this.bounds.left, this.bounds.top, t.x - this.bounds.left, t.y - this.bounds.top).paint(this.ctx, this.getColor(this.BLUE, .2), null);
+        i && new Rectangle(t.x, this.bounds.top, this.bounds.right - t.x, t.y - this.bounds.top).paint(this.ctx, this.getColor(this.GREEN, .1), null);
+        e && new Rectangle(t.x, t.y, this.bounds.right - t.x, this.bounds.bottom - t.y).paint(this.ctx, this.getColor(this.YELLOW, .1), null);
+        s && new Rectangle(this.bounds.left, t.y, t.x - this.bounds.left, this.bounds.bottom - t.y).paint(this.ctx, this.getColor(this.RED, .1), null);
+        n && new Rectangle(this.bounds.left, this.bounds.top, t.x - this.bounds.left, t.y - this.bounds.top).paint(this.ctx, this.getColor(this.BLUE, .1), null);
         var o = 14;
         this.ctx.font = "bold " + o + "px Arial";
         if (i) {
