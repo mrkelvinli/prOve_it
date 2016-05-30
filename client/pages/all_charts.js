@@ -1469,6 +1469,8 @@ Template.chart.rendered = function () {
       topic: topic,
       value: {
         $gt: 0
+
+        
       }
     }, {
       sort: {
