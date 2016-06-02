@@ -1,34 +1,17 @@
-import { Template } from 'meteor/templating';
-import { ReactiveVar } from 'meteor/reactive-var';
+// if(Meteor.isClient) {
+//   Meteor.startup(function() {
+//     Meteor.subscribe('companys');
+//   });
+// }
 
-import './guiPage.html';
-
-Router.route('/', function(){
-  this.render('api_gui');
-});
-
-Router.configure({
-    loadingTemplate: 'loading',
-    notFoundTemplate: 'notFound',
-});
+if (Meteor.isClient) {
+  // Meteor.subscribe('stocks_db');
+  // Meteor.subscribe('events_db');
+  // Meteor.subscribe('topics_db');
+  // Meteor.subscribe('companys_db');
 
 
+  // Meteor.subscribe('stockPrices_db',token);
+  // Meteor.subscribe('stockEvents_db',token);
 
-//Template.hello.onCreated(function helloOnCreated() {
-//  // counter starts at 0
-//  this.counter = new ReactiveVar(0);
-//});
-//
-//Template.hello.helpers({
-//  counter() {
-//    return Template.instance().counter.get();
-//  },
-//});
-//
-//Template.hello.events({
-//  'click button'(event, instance) {
-//    // increment the counter when button is clicked
-//    instance.counter.set(instance.counter.get() + 1);
-//  },
-//});
-
+}

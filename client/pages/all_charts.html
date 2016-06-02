@@ -1,0 +1,639 @@
+<!-- <template name="vs_company_chart">
+<div id="chartdiv"></div>
+</template>
+
+<template name="company_topics_chart">
+<div id="chartdiv"></div>
+</template>
+
+<template name="company_events_highlight">
+<div id="chartdiv"></div>
+</template>
+-->
+
+<template name="chart">
+  <ul class="nav nav-pills" id='tabs'>
+    <li role="presentation"><a id='overview'>Overview</a></li>
+    <li role="presentation"><a id='candlesticks'>Company Breakdown</a></li>
+    <li role="presentation"><a id='volatility'>Volatility Analysis</a></li>
+    <li role="presentation"><a id='event-study'>Event Study</a></li>
+    <li role="presentation"><a id='stock-topic'>Reaction Study</a></li>
+    <li role="presentation"><a id='rrg'>Relative Performance Ratios</a></li>
+  </ul>
+  <div class="chart-frame">
+    <!-- chart setting section -->
+    <div class="row" id="chart-options" style='margin-bottom: 10px'>
+      <div class="col-sm-3" id="second-stock-selection">
+        <!-- <span style='font-weight: 700'>Compare with:</span> -->
+        <div class='input-group'>
+          <span class='input-group-addon' style="color:white">Compare With</span>
+          <select class="form-control selectpicker" id="choose-second-stock" data-live-search="true">
+          </select>
+        </div>
+      </div>
+      <div class="col-sm-4" id="topic-selection">
+        <!-- <div>Topics:</div> -->
+        <div class='input-group'>
+          <span class='input-group-addon'  style="color:white">Topics</span>
+          <select class="form-control selectpicker" id="choose-topic" data-live-search="true">
+          </select>
+        </div>
+
+      </div>
+       <div class="col-sm-3" id="upper-window-selection">
+        <!-- <div>Upper Window</div> -->
+        <div class='input-group'>
+          <span class='input-group-addon' style="color:white">Upper Window</span>
+          <input type="number" class="form-control" min="0" id='choose-upper-window' value="5">
+        </div>
+
+      </div>
+      <div class="col-sm-3" id="lower-window-selection">
+        <!-- <div>Lower Window:</div> -->
+        <div class='input-group'>
+          <span class='input-group-addon' style="color:white">Lower Window</span>
+          <input type="number"  class="form-control" max="0" id='choose-lower-window' value="0">
+        </div>
+
+      </div>
+    </div>
+    <div class="row main-chart-title">
+      <div class="col-sm-6 col-sm-offset-3">
+        <div id='main-chart-main-title'></div>
+        <div id='main-chart-sub-title'></div>
+      </div>
+      <div class="col-sm-3">
+        <div style="font-size:12px; text-align: center" id="miniGraph-title">I am kelvin</div>
+        <div id="miniGraph-init-value" style="font-size:10px; vertical-align: middle;display: inline-block; margin-right: 0px;">120</div><div id="miniGraph" style="vertical-align: middle; display: inline-block;"></div><div id="miniGraph-final-percent-changed" style="font-size:10px; vertical-align: middle;display: inline-block; margin-left:0px;">6%</div>
+      </div>
+    </div>
+    <!-- <div id="miniGraph"></div> -->
+    <div id="chartdiv"></div>
+    <div id="chartdiv-second_company"></div>
+  </div>
+</template>
+
+<!-- <template name="chart_breadcrumb">
+  <ul class="breadcrumb" id="chart_breadcrumb">
+    <li class="active">Companys</li>
+  </ul>
+</template> -->
+
+<template name="subsection1">
+  <div id="chartdiv2" class="subsection"></div>
+</template>
+
+<template name="subsection2">
+  <div id='chartdiv3' class="subsection"></div>
+  <div id="details" class="subsection"></div>
+</template>
+
+<template name="subsection3">
+  <div id='chartdiv4' class="subsection"></div>
+</template>
+
+<template name="navbar">
+  <nav class="navbar navbar-default">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <!-- <a class="navbar-brand" href="#">Market Analysis Platform</a> -->
+        <a class="navbar-brand"><p class="head-brandname"><b>prOve_it</b></p></a>
+      </div>
+
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <!-- <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input type="text" class="form-control" placeholder="Token" id="token-input">
+          </div>
+        </form> -->
+
+
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="" data-toggle="modal" data-target="#shareModal"><i class="fa fa-sliders" aria-hidden="true"></i></a></li>
+      </ul>
+        <div class="navbar-form navbar-right">
+          <div class="input-group">
+            <span class='input-group-addon' style="color: white;">Current Stock</span>
+            <select class="form-control selectpicker" title="Choose a stock" id="choose-main-stock" data-live-search="true">
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+</template>
+
+<template name="share_modal">
+<div class="modal fade" id="shareModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" style="color:black;">Session Settings</h4>
+      </div>
+      <div class="modal-body">
+        <!-- <p>One fine body…</p> -->
+        <div>
+          <div class="form-group">
+            <label for="exampleInputEmail1" style="color:black;">Session Token</label>
+            <input type="text" class="form-control" placeholder="Token" id="token-input" style="color:grey;">
+            <small class="text-muted" style="color:grey;">This is a unique token for your current session on this analysis platform.</small>
+          </div>
+          <div class="form-group">
+            <label class="control-label" style="color:black;">Share Link</label>
+            <div class="input-group">
+              <input type="text" class="form-control" id="share-link" style="color:grey;">
+              <span class="input-group-btn">
+                <button class="btn btn-default btn-sm" type="button" id="share-link-copy-btn" data-clipboard-target="#share-link">Copy</button>
+              </span>
+            </div>
+            <small class="text-muted" style="color:grey;">Share this link.</small>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+      </div>
+    </div>
+  </div>
+</div>
+</template>
+
+<template name="app_ui">
+  {{ > navbar }}
+  {{ > chart }}
+  <p></p>
+  <div class="row">
+    <div class="col-md-5">
+      {{ > subsection3 }}
+    </div>
+    <div class="col-md-7">
+        {{ > subsection1 }}
+    </div>
+    <div class="col-md-5">
+      {{ > subsection2 }}
+    </div>
+  </div>
+  {{ > share_modal }}
+</template>
+
+<template name="companyDetails">
+  <div id="logo"></div>
+  <div id="description"></div>
+  <div id="table"></div>
+  <div id="website"></div>
+</template>
+
+<template name="rrgMain">
+  <div class="row">
+    <div class="col-sm-8">
+  <input type='hidden' id='hidden'/>
+  <div class="box">
+     <table id="ui">
+        <tbody><tr class="membercontent" style="display: none;">
+           <td valign="middle" colspan="3">
+              Symbols: <input id="symbols" type="text" value="" size="50">&nbsp;
+              Benchmark: <input id="benchmark" type="text" value="" size="8">&nbsp;
+              Groups:
+              <select id="predef">
+                 <option value="" selected="true">- Select -</option>
+                 <option value="s=$indu,$compq,$nya,$xax,$tsx,$cdnx&amp;b=$spx">Major Markets</option>
+                 <option value="s=$dja,$tran,$util,$ndx,$rui,$rut,$rua,$oex,$mid,$sml,$wlsh&amp;b=$spx">Major Indexes</option>
+                 <option value="s=$xal,$bkx,$btk,$xbd,$djusch,$xci,$ddx,$drg,$xau,$hwi,$insr,$xng,$nwx,$xoi,$osx,$djuspp,$djr,xrt,$sox,$xtc,$tranq,$uty&amp;b=$spx">US Industry Indexes</option>
+                 <option value="s=xlb,xle,xlf,xli,xlk,xlp,xlu,xlv,xly&amp;b=$spx">S&amp;P 500 Sector ETFs</option>
+                 <option value="s=ewa,ewo,ewk,ewc,ewq,ewg,ewh,ewi,ewj,ewm,eww,ewn,ews,ewp,ewd,ewl,ewu&amp;b=spy">International ETFs</option>
+                 <option value="s=gld,slv,pplt,pall,cu,uso,uga,ung,uhn,corn,sgg,jo,dbc,dba,dbe,dbb,cow,dbp&amp;b=$spx">Commodity ETFs</option>
+                 <option value="s=uup,$xad,$xbp,$cdw,$xeu,$xjy,fxs,$xsf&amp;b=$spx">Currencies</option>
+                 <option value="s=aapl,axp,ba,cat,csco,cvx,dd,dis,ge,gs,hd,ibm,intc,jnj,jpm,ko,mcd,mmm,mrk,msft,nke,pfe,pg,trv,v,unh,utx,vz,wmt,xom&amp;b=$indu">Dow 30 Industrials</option>
+                 <option value="s=$sptcd,$spttk,$sptin,$sptmt,$spten,$sptcs,$spthc,$sptut,$sptfs&amp;b=$tsx">Canadian S&amp;P Sector Indexes</option>
+              </select>&nbsp;
+              <select id="years">
+                 <option value="1">1 year</option>
+                 <option value="3">3 years</option>
+                 <option value="5">5 years</option>
+                 <option value="10">10 years</option>
+              </select>
+              <select id="period">
+                 <option value="w">Weekly</option>
+                 <option value="d">Daily</option>
+              </select>&nbsp;  
+              <input id="update" type="submit" value="Update">&nbsp;
+              <img id="expandscreen" class="float-right" src="./expand.png">
+           </td>
+        </tr>
+        <tr>
+           <td rowspan="3" valign="top">
+              <div id="rrgchart" style='width: 100%; margin-left: 30px'><canvas width="800" height="600" style="-webkit-user-select: none; cursor: default;"></canvas></div></td>
+        </tr>
+     </tbody></table>
+    </div>
+  </div>
+  <div class="col-sm-4">
+    <div style="margin-top:100px;">
+     {{ > rrgControls }}
+    <p style="margin-top:40px;">Relative Rotation Graph - Courtesy of <img style="height:50px; margin-left:5px;" src="/assets/img/stockchart-icon.png"></p>
+    </div>
+  </div>
+  </div>
+</template>
+
+<template name="rrgControls">
+  <table>
+    <tbody>
+      <tr>
+        <td colspan="2" valign="top">
+          <div id="benchmarkchart"><canvas width="320" height="240" style="-webkit-user-select: none; cursor: -webkit-grab;"></canvas></div></td>
+      </tr>
+      <tr>
+         <td colspan="2" valign="middle">
+            <div id="controls" style="display: block;">
+               Tail Length: <!-- <div style="width: 150px; min-height: 16px; margin-left: 8px; margin-right: 8px; -webkit-user-select: none; position: relative; box-sizing: border-box; display: inline-block; vertical-align: middle;"><div id='herp' style="position: absolute; top: 50%; -webkit-user-select: none; cursor: pointer; border: 1px solid rgb(102, 102, 102); width: 100%; height: 4px; margin-top: -3px; border-radius: 3px; background: -webkit-linear-gradient(top, rgb(187, 187, 187), rgb(221, 221, 221));"></div><div id='derp' style="position: absolute; top: 50%; -webkit-user-select: none; cursor: pointer; border: 1px solid rgb(68, 68, 68); width: 14px; height: 14px; margin-top: -8px; margin-left: -8px; border-radius: 8px; left: 0px; background: -webkit-linear-gradient(top, rgb(255, 255, 255), rgb(238, 238, 238));" class=""></div></div> --><div id="taillength" type="text" value="10"></div><span class="taillength-value">0</span> <span class="period-value">weeks</span><br><br>
+               <div style='border: 1px solid #fafafa' class="btn animate" id="animate">animate</div>
+               <div style='border: 1px solid #fafafa' class="btn zoom" id="zoomin">+</div>
+               <div style='border: 1px solid #fafafa' class="btn zoom" id="zoomout">-</div>
+               <div style='border: 1px solid #fafafa' class="btn zoom" id="zoomfit">fit</div>
+               <div style='border: 1px solid #fafafa' class="btn zoom" id="zoomctr">ctr</div>
+               <div style='border: 1px solid #fafafa' class="btn zoom" id="zoommax">max</div>
+            </div>
+         </td>
+      </tr>
+      <tr>
+         <td colspan="2" align="right" valign="bottom">
+            <img id="resize" class="membercontent" src="./corner-resize.png" style="display: none;">
+         </td>
+      </tr>
+    </tbody>
+  </table>
+</template>
+
+<template name="rrgSymbols">
+<div id="rrg">
+  <div id="symbolgrid">
+    <table class="symbolgrid">
+      <thead>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+  </div>
+</div>
+</template>
+
+<template name="homePage">
+  <div style="overflow:hidden;">
+  <header class="header" id="header"><!--header-start-->
+    <div class="container">
+        <figure class="logo animated fadeInDown delay-07s">
+            <a href="#"><img src="/images/logobig.svg" alt=""></a> 
+          </figure> 
+          <h1 class="animated fadeInDown delay-07s">prOve_it</h1>
+          <ul class="we-create animated fadeInUp delay-1s">
+            <li>A UNSW Software Engineering Workshop Project 2016</li>
+          </ul>
+          <a class="link animated fadeInUp delay-1s upload" href="#fileUpload">Get Started</a>
+      </div>
+  </header><!--header-end-->
+  </div>
+
+  <nav class="main-nav-outer" id="test"><!--main-nav-start-->
+    <div class="container">
+          <ul class="main-nav">
+            <li><a href="#header">Home</a></li>
+              <li><a href="#fileUpload">Submit Files</a></li>
+              <li><a href="#fileToken">Use File Key</a></li>
+              <li class="small-logo"><a href="#header"><img src="/images/logoblack.svg" alt="" style='width: 30px; position: relative; bottom: 5px'></a></li>
+              <li><a href="#about">About Project</a></li>
+              <li><a href="#team">Team</a></li>
+              <li><a href="http://prove-it.tk/api" target="_blank">API Docs</a></li>
+          </ul>
+          <a class="res-nav_click" href="#"><i class="fa-bars"></i></a>
+      </div>
+  </nav><!--main-nav-end-->
+
+  <section class="main-section paddind" id="fileUpload"><!--main-section-->
+    <div class="container">
+      <h2>Submit Files</h2>
+      <h6>To access our analysis platform, please upload the appropriate .csv files.</h6>
+    </div>
+    <!-- submit1 -->
+    <form class="form-validation" method="post" action="" id="upload_form" enctype="multipart/form-data" style='margin-top: 50px;'>
+<!--       <div class="form-title-row">
+        <h1>Submit Files</h1>
+      </div> -->
+      <div class="form-row form-input-name-row row">
+          <div class='col-md-2 col-md-offset-4'>
+            <span class='title'>Stock Price File</span>
+          </div>
+          <div class='col-md-2'>
+            <input type="file" class="pull-right" name="stock_price_file">
+            <span class="form-valid-data-sign"><i class="fa fa-check"></i></span>
+            <span class="form-invalid-data-sign"><i class="fa fa-close"></i></span>
+            <span class="form-invalid-data-info"></span>
+          </div>
+      </div>
+
+      <div class="form-row form-input-name-row row">
+          <div class='col-md-2 col-md-offset-4'>
+            <span class='title'>Stock Characteristic File</span>
+          </div>
+          <div class='col-md-2'>
+            <input type="file" class="pull-right" name="stock_characteristic_file">
+            <span class="form-valid-data-sign"><i class="fa fa-check"></i></span>
+            <span class="form-invalid-data-sign"><i class="fa fa-close"></i></span>
+            <span class="form-invalid-data-info"></span>
+          </div>
+      </div>
+
+      <div class="form-row">
+        <button type="submit" class="link animated fadeInUp delay-1s" style='margin-top: 50px'>Upload</button>
+        <!-- <a class="link animated fadeInUp delay-1s upload" >Upload</a> -->
+       </div>
+       <div class='form-row'>
+         <p id="upload_response" class="json-response"></p>
+       </div>
+    </form>
+    <!-- end submit1 -->
+  </section>
+  <!-- end main-section -->
+
+  <section class="main-section alabaster" id="fileToken"><!--main-section alabaster-start-->
+    <div class="container">
+      <h2>Or, use an existing file key</h2>
+    </div>
+    <!-- submit2 -->
+    <form class="form-validation " method="post " action="#" id="cumulative-return-form" style='margin-top: 50px'>
+      <div class="form-row form-input-name-row ">
+        <label>
+          <span>Token</span>
+          <input type="text" name="token">
+        </label>
+        <span class="form-valid-data-sign "><i class="fa fa-check "></i></span>
+
+        <span class="form-invalid-data-sign "><i class="fa fa-close "></i></span>
+      </div>
+      <div class="form-row ">
+        <button type="submit" class="link animated fadeInUp delay-1s" style='margin-top: 50px' id='alabaster'>Submit</button>
+      </div>
+      <div class='form-row'>
+        <p id="cumulative_response" class="json-response"></p>
+      </div>
+    
+    </form> 
+    <!-- end submit2 -->
+  </section><!--main-section alabaster-end-->
+
+  <section class="main-section" id="about"><!--main-section-start-->
+    <div class="container">
+        <h2>About this project</h2>
+        <h6>This is a student project which aims to analyse stock prices and to give useful information back to the users.</h6>
+          <div class="row">
+            <div class="col-lg-4 col-sm-6 wow fadeInLeft delay-05s">
+                <div class="service-list">
+                    <div class="service-list-col1">
+                        <i class="fa-paw"></i>
+                      </div>
+                    <div class="service-list-col2">
+                          <h3>An event study API</h3>
+                          <p>To assess the current performance and predict future growth/decline of different companies based on given data.</p>
+                      </div>
+                  </div>
+                  <div class="service-list">
+                    <div class="service-list-col1">
+                        <i class="fa-gear"></i>
+                      </div>
+                    <div class="service-list-col2">
+                          <h3>Goal</h3>
+                          <p>Users will be able to analyse the effects of each event by investigating the shift in cumulative returns. This allows users to predict market shifts when an event is happening.</p>
+                      </div>
+                  </div>
+              </div>
+              <figure class="col-lg-8 col-sm-6  text-center wow fadeInUp delay-02s">
+                <h1 style='margin-top: 160px; font-size: 30px'>Analytics Platform?</h1>
+              </figure>
+            </div>
+            <div class='row'>
+              <figure class="col-lg-8 col-sm-6  text-center wow fadeInDown delay-02s" style='float: left !important'>
+                <h1 style='margin-top: 170px; font-size: 30px;'>Why study events?</h1>
+              </figure>
+              <div class="col-lg-4 col-sm-6 wow fadeInRight text-left delay-05s">
+                <div class="service-list">
+                  <div class="service-list-col1">
+                    <i class="fa-paw"></i>
+                  </div>
+                  <div class="service-list-col2">
+                    <h3>Semi efficient market</h3>
+                    <p>Australia's stock market is believed to be at least semi-strong form efficient.</p>
+                  </div>
+                </div>
+                <div class="service-list">
+                  <div class="service-list-col1">
+                    <i class="fa-gear"></i>
+                  </div>
+                  <div class="service-list-col2">
+                    <h3>Public Information</h3>
+                    <p>This means that the stock prices reflect all publicly available information.</p>
+                  </div>
+                </div>
+                <div class="service-list">
+                  <div class="service-list-col1">
+                    <i class="fa-gear"></i>
+                  </div>
+                  <div class="service-list-col2">
+                    <h3>Study Historical Events</h3>
+                    <p>Knowing this, we can study the effects of historical events and make a confident prediction on its effects on stock price.</p>
+                  </div>
+                </div>
+              </div>
+          </div>
+    </div>
+  </section><!--main-section-end-->
+
+  <section class="main-section client-part" id="client"><!--main-section client-part-start-->
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-6 col-sm-6 wow fadeInRight text-left delay-05s" style='color: white; padding-left: 200px'>
+          <div class="service-list">
+            <div class="service-list-col1">
+              <i class="fa-paw" style='color:#fafafa'></i>
+            </div>
+            <div class="service-list-col2">
+              <h3 style='color:#fafafa'>Frontend</h3>
+              <ul>
+                <li>MeteorJS</li>
+                <li>AmCharts + Chartist</li>
+              </ul>
+            </div>
+          </div>
+          <div class="service-list">
+            <div class="service-list-col1">
+              <i class="fa-gear" style='color:#fafafa'></i>
+            </div>
+            <div class="service-list-col2">
+              <h3 style='color:#fafafa'>Backend</h3>
+              <ul>
+                <li>Own Event Study API</li>
+                <li>MongoDB + MeteorJS</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <figure class="col-lg-4 col-sm-6  text-center wow fadeInDown delay-02s" style='float: left !important'>
+          <h1 style='margin-top: 140px; font-size: 30px; color: #fafafa'>Tech Stack</h1>
+        </figure>
+      </div>
+    </div>
+  </section><!--main-section client-part-end-->
+
+  <section class="main-section team alabaster" id="team"><!--main-section team-start-->
+    <div class="container">
+          <h2>Built by</h2>
+          <div class="team-leader-block clearfix" style='margin-top: 100px'>
+              <div class="team-leader-box">
+                  <div class="team-leader wow fadeInDown delay-03s"> 
+                      <div class="team-leader-shadow"><a href="#"></a></div>
+                      <img src="images/stock3.jpeg" alt="">
+                  </div>
+                  <span class="wow fadeInDown delay-03s">Kelvin Li</span>
+              </div>
+              <div class="team-leader-box">
+                  <div class="team-leader  wow fadeInDown delay-06s"> 
+                      <div class="team-leader-shadow"><a href="#"></a></div>
+                      <img src="images/stock4.jpeg" alt="">
+                  </div>
+                  <span class="wow fadeInDown delay-06s">Gino Conte</span>
+              </div>
+              <div class="team-leader-box">
+                  <div class="team-leader wow fadeInDown delay-09s"> 
+                      <div class="team-leader-shadow"><a href="#"></a></div>
+                      <img src="images/stocks.jpeg" alt="">
+                  </div>
+                  <span class="wow fadeInDown delay-09s">Yan Chi Ku</span>
+              </div>
+              <div class="team-leader-box">
+                  <div class="team-leader wow fadeInDown delay-12s"> 
+                      <div class="team-leader-shadow"><a href="#"></a></div>
+                      <img src="images/stock1.jpeg" alt="">
+                  </div>
+                  <span class="wow fadeInDown delay-12s">Mendel Liang</span>
+              </div>
+              <div class="team-leader-box">
+                  <div class="team-leader wow fadeInDown delay-15s"> 
+                      <div class="team-leader-shadow"><a href="#"></a></div>
+                      <img src="images/stock2.jpeg" alt="">
+                  </div>
+                  <span class="wow fadeInDown delay-15s">Keith Lai</span>
+              </div>
+          </div>
+      </div>
+  </section><!--main-section team-end-->
+  
+  <!-- start footer -->
+  <footer class="footer">
+    <div class="container">
+        <div class="footer-logo"><a href="#"><img src="/images/logowhite.svg" alt="" width="30"></a></div>
+        <small class="copyright" style='position: relative; right: 30px; font-weight: 300'>SENG3011 <span style='font-family: "Poiret One", cursive; font-weight: 400'>prOve_it</span>, 2016</small>
+    </div>
+  </footer>
+  <!-- end footer -->
+
+  <!-- scripts -->
+  <script type="text/javascript">
+    $(document).ready(function(e) {
+        console.log("asd");
+        $('#test').scrollToFixed();
+        $('.res-nav_click').click(function(){
+            $('.main-nav').slideToggle();
+            return false     
+        });
+    });
+  </script>
+  <script>
+    wow = new WOW(
+      {
+        animateClass: 'animated',
+        offset:       100
+      }
+    );
+    wow.init();
+  </script>
+  <script type="text/javascript">
+    // $(window).load(function(){
+    $(document).ready(function() {
+      console.log('hi');
+      $('.main-nav li a').bind('click',function(event){
+        var $anchor = $(this);
+        console.log("INNN");
+        $('html, body').stop().animate({
+          scrollTop: $($anchor.attr('href')).offset().top - 102
+        }, 1500,'easeInOutExpo');
+        /*
+        if you don't want to use the easing effects:
+        $('html, body').stop().animate({
+          scrollTop: $($anchor.attr('href')).offset().top
+        }, 1000);
+        */
+        event.preventDefault();
+      });
+
+      $('a.upload').bind('click',function(event){
+        var $anchor = $(this);
+        console.log("INNN");
+        $('html, body').stop().animate({
+          scrollTop: $($anchor.attr('href')).offset().top - 102
+        }, 1500,'easeInOutExpo');
+        /*
+        if you don't want to use the easing effects:
+        $('html, body').stop().animate({
+          scrollTop: $($anchor.attr('href')).offset().top
+        }, 1000);
+        */
+        event.preventDefault();
+      });
+
+    })
+  </script>
+  <script type="text/javascript">
+  $(window).load(function(){
+    var $container = $('.portfolioContainer'),
+        $body = $('body'),
+        colW = 375,
+        columns = null;
+    $container.isotope({
+      // disable window resizing
+      resizable: true,
+      masonry: {
+        columnWidth: colW
+      }
+    });
+    $(window).smartresize(function(){
+      // check if columns has changed
+      var currentColumns = Math.floor( ( $body.width() -30 ) / colW );
+      if ( currentColumns !== columns ) {
+        // set new column count
+        columns = currentColumns;
+        // apply width to container manually, then trigger relayout
+        $container.width( columns * colW )
+          .isotope('reLayout');
+      }
+    }).smartresize(); // trigger resize to set container width
+    $('.portfolioFilter a').click(function(){
+          $('.portfolioFilter .current').removeClass('current');
+          $(this).addClass('current');
+          var selector = $(this).attr('data-filter');
+          $container.isotope({
+              filter: selector,
+           });
+           return false;
+      });
+  });
+  </script>
+  <!-- end scripts -->
+</template>
+

@@ -1,0 +1,161 @@
+/*
+#rrg thead tr {
+   padding-left: 200px;
+}*/
+
+/*
+#rrg td {
+   _border: 1px solid gray;
+}
+
+#rrg table {
+   font: normal 12px "Helvetica Neue", Helvetica, Arial, sans-serif;
+   text-align: center;
+   border-collapse: collapse;
+}
+
+#rrg table.symbolgrid th {
+   border: 1px solid #cccccc;
+   background-color: #dee4ea;
+   padding: 4px 6px;
+   font-weight: normal;
+   text-align: center;
+   -webkit-user-select: none;
+   -moz-user-select: none;
+}
+
+#rrg table.symbolgrid td {
+   border: 1px solid #dee4ea;
+   padding: 1px 6px;
+   -webkit-user-select: none;
+   -moz-user-select: none;
+   cursor: default;
+   vertical-align: middle;
+}
+
+#rrg table.symbolgrid th.sort-ascending  { background: #dee4ea url(//stockcharts.com/freecharts/rrg/arrow-sort-up.gif) center bottom no-repeat; }
+#rrg table.symbolgrid th.sort-descending { background: #dee4ea url(//stockcharts.com/freecharts/rrg/arrow-sort-down.gif) center top no-repeat; }
+*/
+
+
+#rrg table.symbolgrid th:hover {
+   cursor: pointer;
+}
+
+#rrg table.symbolgrid th {
+   text-align: center;
+}
+
+#rrg table.symbolgrid tr {
+   height: 30px;
+}
+
+#rrg table.symbolgrid td {
+   /*text-align: center;*/
+   vertical-align: middle;
+}
+
+#rrg table.symbolgrid tr.green  { background: rgba(0, 128, 0, 0.2); }
+#rrg table.symbolgrid tr.blue   { background: rgba(48, 68, 219, 0.2); }
+#rrg table.symbolgrid tr.yellow { background: rgba(243, 195, 0, 0.2); }
+#rrg table.symbolgrid tr.red    { background: rgba(255, 0, 0, 0.2); }
+#rrg table.symbolgrid tr.white  { background: rgba(0, 0, 0, 0.8); font-weight: 700;}
+
+#rrg table.symbolgrid tr.hovered.green  { background: rgba(0, 128, 0, 0.3); }
+#rrg table.symbolgrid tr.hovered.blue   { background: rgba(48, 68, 219, 0.3); }
+#rrg table.symbolgrid tr.hovered.yellow { background: rgba(243, 195, 0, 0.3); }
+#rrg table.symbolgrid tr.hovered.red    { background: rgba(255, 0, 0, 0.3); }
+#rrg table.symbolgrid tr.hovered.white  { background: rgba(255, 255, 255, 1.0); }
+
+#rrg table.symbolgrid tr.hilited.green  { background: rgba(0, 128, 0, 0.8); }
+#rrg table.symbolgrid tr.hilited.blue   { background: rgba(48, 68, 219, 0.8); }
+#rrg table.symbolgrid tr.hilited.yellow { background: rgba(243, 195, 0, 0.8); }
+#rrg table.symbolgrid tr.hilited.red    { background: rgba(255, 0, 0, 0.8); }
+#rrg table.symbolgrid tr.hilited.white  { background: rgba(0, 0, 0, 0.3); }
+
+#rrg .button.zoom {
+   width: 36px;
+}
+#rrg .button.animate {
+   width: 66px;
+}
+#rrg .button {
+   font-family: normal 12px "Helvetica Neue", Helvetica, Arial, sans-serif; 
+   color: #333333;
+   border: 1px solid #333333;
+   border-radius: 8px;
+   -moz-user-select: none;
+   -webkit-user-select: none;
+   display: inline-block;
+   text-align: center;
+   vertical-align: middle;
+   cursor: pointer;
+   margin: 1px;
+   height: 22px;
+   line-height: 22px;
+}
+#rrg .button.selected {
+   border: 2px solid #000000;
+   margin: 0;
+   color: #000000;
+}
+#rrg .button:hover {
+   border: 1px solid #1F6B95;
+   color: #1F6B95;
+}
+#rrg a > img{
+   border: 0;
+}
+#rrg a {
+   color: darkblue;
+   text-decoration: none;
+}
+#rrg a:hover {
+   text-decoration: underline;
+}
+#rrg .hidden {
+   display: none;
+}
+#rrg #symbolgrid-title {
+   font-size: 14px;
+}
+#rrg #symbols {
+   width: 280px;
+}
+#rrg #predef {
+   width: 80px;
+}
+#rrg #resize {
+   cursor: nwse-resize;
+}
+#rrg .box {
+   background-color: #f7f9fa;
+   _background-color: #dee4ea;
+   overflow: hidden;
+   padding: 3px;
+   border: 1px solid #cccccc;
+   border-radius: 8px;
+   display: inline-block;
+}
+#rrg #linkableversion {
+   background-color: #dee4ea;
+}
+#rrg #benchmarkchart {
+   margin-left: -13px;
+}
+#rrg .float-right {
+   float: right;
+}
+#rrg input[type=submit] {
+   cursor: pointer;
+}
+#rrg #placeholder320x240 {
+   width: 320px;
+   height: 240px;
+   position: relative;
+}
+#rrg #placeholder600x400 {
+   width: 600px;
+   height: 400px;
+   position: relative;
+}

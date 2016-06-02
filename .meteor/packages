@@ -17,7 +17,6 @@ standard-minifier-js    # JS minifier run for production mode
 es5-shim                # ECMAScript 5 compatibility for older browsers.
 ecmascript              # Enable ECMAScript2015+ syntax in app code
 
-autopublish             # Publish all data to the clients (for prototyping)
 insecure                # Allow all DB writes from clients (for prototyping)
 iron:router
 check
@@ -32,3 +31,11 @@ npm-container
 random
 ostrio:meteor-root
 mrt:moment
+session
+meteorhacks:fast-render
+maximdubrovin:wait-on-lib-js
+jesperwe:bootstrap-select
+mizzao:jquery-ui
+manuel:reactivearray
+fortawesome:fontawesome
+zenorocha:clipboard
