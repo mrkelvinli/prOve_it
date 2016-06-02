@@ -97,10 +97,6 @@ Uploader = {
         }
 
 
-        API.utility.response(context, 200, {
-          log: API.utility.api_log(params, files, context.request.start_time, "Successful."),
-          token: token,
-        });
 
         // StockPrices.remove({});
         // StockEvents.remove({});
@@ -114,6 +110,10 @@ Uploader = {
 
         ES.process_regressions(token);
 
+        API.utility.response(context, 200, {
+          log: API.utility.api_log(params, files, context.request.start_time, "Successful."),
+          token: token,
+        });
         
         // ES.process_regressions(token);
         // if (Regressions.find({}).count() !== 0) {
