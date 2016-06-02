@@ -983,13 +983,11 @@ Template.chart.rendered = function () {
         "type": "stock",
         "theme": "dark",
         "pathToImages": "/amcharts/images/",
-        "autoMarginOffset": 20,
 
         //        categoryAxesSettings: {
         //          alwaysGroup: false,
         //          groupToPeriods: ["DD"],
         //        },
-        "marginRight": 80,
         "titles": [{
             "text": "Bollinger Bands for " + company,
             "bold": true
@@ -1043,7 +1041,8 @@ Template.chart.rendered = function () {
         "panels": [{
             "title": "Lambert's Commodity Channel Index",
             "percentHeight": 25,
-            autoMargins: true,
+            // autoMargins: true,
+            "marginBottom": 20,
             "marginTop": 1,
             // "showCategoryAxis": true,
             "valueAxes": [{
@@ -1258,15 +1257,16 @@ Template.chart.rendered = function () {
           }, {
             "title": sdScoreTitle,
             "percentHeight": 25,
-            autoMargins: true,
+            // autoMargins: true,
+            "marginBottom":20,
             "marginTop": 1,
-            "showCategoryAxis": false,
+            // "showCategoryAxis": false,
             "valueAxes": [{
               "dashLength": 5
               }],
 
             "categoryAxis": {
-              "labelsEnabled": true,
+              "labelsEnabled": false,
               "dashLength": 5
             },
 
@@ -1333,7 +1333,7 @@ Template.chart.rendered = function () {
 
         "chartCursorSettings": {
           "valueLineBalloonEnabled": true,
-          //"valueLineEnabled": true
+          "valueLineEnabled": true,
         },
 
         "categoryAxis": {
