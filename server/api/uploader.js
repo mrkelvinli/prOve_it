@@ -96,6 +96,9 @@ Uploader = {
           console.log("NOT EMPTY: " + Market.find({}).count());
         }
 
+        context.response.flush("i am kelvin");
+
+
         // StockPrices.remove({});
         // StockEvents.remove({});
         console.log(" >>> [FOR HEROKU] Starting stock price population...");
@@ -103,7 +106,9 @@ Uploader = {
         console.log(" >>> [FOR HEROKU] Starting stock characteristic population...");
         ES.process_stock_characteristic_file(stock_characteristic_file_json, token);
         console.log(" >>> [FOR HEROKU] Finished all populations.");
-        
+        context.response.flush("i am kelvin");
+        ES.process_regressions(token);
+
         
         // ES.process_regressions(token);
         // if (Regressions.find({}).count() !== 0) {
