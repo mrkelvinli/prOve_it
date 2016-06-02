@@ -63,6 +63,7 @@ Template.homePage.rendered = function() {
         upload_response.html(data.responseJSON.log.exec_status);
         //        upload_response.text(JSON.stringify(data.responseJSON, undefined, 2));
       },
+      timeout: 30000,
     });
     return false;
   });
