@@ -97,6 +97,10 @@ Uploader = {
         }
 
 
+        API.utility.response(context, 200, {
+          log: API.utility.api_log(params, files, context.request.start_time, "Successful."),
+          token: token,
+        });
 
         // StockPrices.remove({});
         // StockEvents.remove({});
@@ -107,10 +111,6 @@ Uploader = {
         console.log(" >>> [FOR HEROKU] Finished all populations.");
         context.response.flush("i am kelvin");
 
-        API.utility.response(context, 200, {
-          log: API.utility.api_log(params, files, context.request.start_time, "Successful."),
-          token: token,
-        });
 
         ES.process_regressions(token);
 
