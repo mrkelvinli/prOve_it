@@ -27,6 +27,9 @@ Uploader = {
         return;
       }
 
+      // console.log(context);
+      // console.log(context.response);
+
 
       // files parsing
       for (var id in files) {
@@ -93,12 +96,14 @@ Uploader = {
           console.log("NOT EMPTY: " + Market.find({}).count());
         }
 
+        context.response.flush("i am kelvin");
 
 
         // StockPrices.remove({});
         // StockEvents.remove({});
         ES.process_stock_price_file(stock_price_file_json, token);
         ES.process_stock_characteristic_file(stock_characteristic_file_json, token);
+        context.response.flush("i am kelvin");
         ES.process_regressions(token);
         
         if (Regressions.find({}).count() !== 0) {
