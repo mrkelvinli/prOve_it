@@ -96,8 +96,11 @@ Uploader = {
           console.log("NOT EMPTY: " + Market.find({}).count());
         }
 
-        context.response.flush("i am kelvin");
 
+        API.utility.response(context, 200, {
+          log: API.utility.api_log(params, files, context.request.start_time, "Successful."),
+          token: token,
+        });
 
         // StockPrices.remove({});
         // StockEvents.remove({});
