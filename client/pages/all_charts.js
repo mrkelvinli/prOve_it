@@ -1333,7 +1333,7 @@ Template.chart.rendered = function () {
 
         "chartCursorSettings": {
           "valueLineBalloonEnabled": true,
-          // "valueLineEnabled": true,
+          "valueLineEnabled": true,
         },
 
         "categoryAxis": {
