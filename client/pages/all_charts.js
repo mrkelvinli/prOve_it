@@ -3044,7 +3044,6 @@ Template.chart.rendered = function () {
     $('#sig_table tr').first().after(html);
   }
 
-  // predefined list of companies
   function render_company_details() {
     $('#chartdiv3').hide();
     $('#details').html('Loading details of ' + curr_company + '...');
@@ -3363,7 +3362,7 @@ Template.chart.rendered = function () {
     // Blaze.render(Template.rrgControls, dom3);
   }
 
-  // [ this graph doesn't work, we're using render_regression_raw() ]
+  // [ this graph doesn't look correct (no beta), we're using render_regression_raw() ]
   // market change vs company change
   // can reference http://asxiq.com/statistical-rankings/end-of-day/top-stocks-ranked-by-beta/
   function render_regression_change(company) {
