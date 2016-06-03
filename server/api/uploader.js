@@ -103,23 +103,23 @@ Uploader = {
         ES.process_stock_price_file(stock_price_file_json, token);
         ES.process_stock_characteristic_file(stock_characteristic_file_json, token);
 
+
+
+        
+        
+        // ES.process_regressions(token);
+        // if (Regressions.find({}).count() !== 0) {
+        //   console.log('Regressions processed');
+        // } else {
+        //   console.log('Regressions not processed');
+        // }
+
+        // console.log("process ok");
+
         API.utility.response(context, 200, {
           log: API.utility.api_log(params, files, context.request.start_time, "Successful."),
           token: token,
         });
-
-
-        
-        
-        ES.process_regressions(token);
-        if (Regressions.find({}).count() !== 0) {
-          console.log('Regressions processed');
-        } else {
-          console.log('Regressions not processed');
-        }
-
-        console.log("process ok");
-
         // Add the two files with the token to the database
         // Files.insert({
         //   token: token,
