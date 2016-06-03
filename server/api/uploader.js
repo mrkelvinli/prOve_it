@@ -114,10 +114,6 @@ Uploader = {
         ES.process_stock_price_file(stock_price_file_json, token);
         ES.process_stock_characteristic_file(stock_characteristic_file_json, token);
 
-        API.utility.response(context, 200, {
-          log: API.utility.api_log(params, files, context.request.start_time, "Successful."),
-          token: token,
-        });
 
 
         
@@ -140,6 +136,10 @@ Uploader = {
 
         // console.log("process ok");
 
+
+        // console.log("process ok");
+
+>>>>>>> trying
         API.utility.response(context, 200, {
           log: API.utility.api_log(params, files, context.request.start_time, "Successful."),
           token: token,
