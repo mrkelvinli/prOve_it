@@ -27,6 +27,9 @@ Uploader = {
         return;
       }
 
+      // console.log(context);
+      // console.log(context.response);
+
 
       // files parsing
       for (var id in files) {
@@ -99,16 +102,24 @@ Uploader = {
         // StockEvents.remove({});
         ES.process_stock_price_file(stock_price_file_json, token);
         ES.process_stock_characteristic_file(stock_characteristic_file_json, token);
-        ES.process_regressions(token);
+
+
+
         
-        if (Regressions.find({}).count() !== 0) {
-          console.log('Regressions processed');
-        } else {
-          console.log('Regressions not processed');
-        }
+        
+        // ES.process_regressions(token);
+        // if (Regressions.find({}).count() !== 0) {
+        //   console.log('Regressions processed');
+        // } else {
+        //   console.log('Regressions not processed');
+        // }
 
-        console.log("process ok");
+        // console.log("process ok");
 
+        API.utility.response(context, 200, {
+          log: API.utility.api_log(params, files, context.request.start_time, "Successful."),
+          token: token,
+        });
         // Add the two files with the token to the database
         // Files.insert({
         //   token: token,
@@ -128,12 +139,6 @@ Uploader = {
         //   console.log(Events.find().fetch());
         // }
 
-        API.utility.response(context, 200, {
-          log: API.utility.api_log(params, files, context.request.start_time, "Successful."),
-          token: token,
-         // all_query_company: all_query_company,
-          //          stock_price_file: stock_price_file_with_cr,
-        });
       } else {
         API.utility.response(context, 404, {
           log: API.utility.api_log(params, files, context.request.start_time, "Invalid Request."),
