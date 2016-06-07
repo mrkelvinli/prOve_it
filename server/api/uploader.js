@@ -96,15 +96,13 @@ Uploader = {
           console.log("NOT EMPTY: " + Market.find({}).count());
         }
 
-
-
         // StockPrices.remove({});
         // StockEvents.remove({});
+        console.log(" >>> [FOR HEROKU] Starting stock price population...");
         ES.process_stock_price_file(stock_price_file_json, token);
+        console.log(" >>> [FOR HEROKU] Starting stock characteristic population...");
         ES.process_stock_characteristic_file(stock_characteristic_file_json, token);
-
-
-
+        console.log(" >>> [FOR HEROKU] Finished all populations.");
         
         
         // ES.process_regressions(token);
