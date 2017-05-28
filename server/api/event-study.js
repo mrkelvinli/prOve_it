@@ -845,4 +845,3 @@ function get_all_topics (stock_characteristic_file){
 
 
 
-
