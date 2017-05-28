@@ -1,18 +1,3 @@
-
-<<<<<<< HEAD
-=======
-    for (var i = 0; i < stock_characteristic_file.length; i++) {
-      var curr_val = stock_characteristic_file[i][21];
-      //    console.log(curr_val);
-      if (curr_val <= upper_range && curr_val >= lower_range) {
-        rel_events.push(stock_characteristic_file[i]);
-      }
-    }
-    return rel_events;
-  },
-  get_event_date: function (event) {
->>>>>>> get_all_events
-
 ES = {
   
 
@@ -89,7 +74,6 @@ ES = {
 
 
 
-  // calculate the cumulative return for each day in the stock price file
   get_all_events: function(stock_characteristic_file) {
     var title_line = stock_characteristic_file[0];
     var line_length = title_line.length();
@@ -114,6 +98,7 @@ ES = {
     return results;
   },
 
+  // calculate the cumulative return for each day in the stock price file
   calc_cumulative_returns: function (stock_price_file) {
     if (stock_price_file == null) {
       return stock_price_file;
@@ -823,7 +808,6 @@ function get_all_topics (stock_characteristic_file){
   var topics = fields.slice(2, fields.length);
   return topics;
 }
-
 
 
 
