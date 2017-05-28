@@ -358,3 +358,19 @@ body, html {
   align-items: center;*/
   background-color: #e9e9e9;
 }
+
+/* homePage style */
+h1.theme-h1 {
+  font-size: 30px;
+  color: #222;
+}
+
+div.team-leader-box {
+  height: 220px;
+}
+
+#disclaimer {
+  margin-top: 25px;
+  font-style: italic;
+  font-size: 11px;
+}
