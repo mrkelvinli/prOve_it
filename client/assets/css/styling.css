@@ -374,3 +374,15 @@ div.team-leader-box {
   font-style: italic;
   font-size: 11px;
 }
+
+img.small-logo-img {
+  transition: all 0.3s ease-in-out;
+    -moz-transition: all 0.3s ease-in-out;
+    -webkit-transition: all 0.3s ease-in-out;
+}
+
+img.small-logo-img:hover,
+img.small-logo-img:focus {
+  content: url(/images/logobig.svg);
+}
+
